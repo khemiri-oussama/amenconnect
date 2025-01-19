@@ -42,7 +42,6 @@ export default function LoginPage() {
                     type="email"
                     value={email}
                     onIonChange={e => setEmail(e.detail.value!)}
-                    placeholder="foulen@gmail.com"
                     className="custom-input"
                     required
                   />
