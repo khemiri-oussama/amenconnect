@@ -27,7 +27,7 @@ export default function LoginPage() {
         <div className="content-wrapper">
           <div className="login-box">
             <div className="logo-container">
-              <IonImg src="../public/amen_logo.png" alt="Logo" className="logo" />
+              <IonImg src="../amen_logo.png" alt="Logo" className="logo" />
             </div>
             <div className="form-container">
               <h1 className="title">Bienvenu</h1>
