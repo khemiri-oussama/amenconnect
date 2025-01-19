@@ -1,140 +1,162 @@
 .login-container {
-    --background: #1a1a1a;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .login-container::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 0;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(47, 255, 89, 0.2) 0%, rgba(47, 255, 89, 0) 70%);
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-  
-  .login-container::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(47, 255, 89, 0.15) 0%, rgba(47, 255, 89, 0) 70%);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    filter: blur(50px);
-    pointer-events: none;
-    z-index: 1;
-  }
-  
-  .content-wrapper {
-    width: 100%;
-    max-width: 400px;
-  }
-  
+  --background: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(47, 255, 89, 0.2) 0%, rgba(47, 255, 89, 0) 70%);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.login-container::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(47, 255, 89, 0.15) 0%, rgba(47, 255, 89, 0) 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-box {
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  margin-left: 5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.title {
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #a0a0a0;
+  margin-bottom: 2rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-label {
+  color: white;
+  font-size: 0.9rem;
+}
+
+.custom-input {
+  --background: rgba(255, 255, 255, 0.1);
+  --color: white;
+  --placeholder-color: rgba(255, 255, 255, 0.5);
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  --border-radius: 8px;
+}
+
+.forgot-password {
+  display: block;
+  text-align: right;
+  margin-top: -0.5rem;
+}
+
+.forgot-password a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+
+.login-button {
+  --background: #2fff59;
+  --background-hover: #27df4e;
+  --color: black;
+  --border-radius: 8px;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+ion-content {
+  --background: #1a1a1a;
+}
+
+ion-toolbar {
+  --background: #1a1a1a;
+  --color: white;
+}
+
+/* For iOS devices */
+.ios ion-toolbar {
+  padding-top: var(--ion-safe-area-top, 0);
+  padding-bottom: var(--ion-safe-area-bottom, 0);
+}
+
+/* For Android devices */
+.md ion-toolbar {
+  padding-top: var(--ion-safe-area-top, 0);
+}
+
+@media (max-width: 768px) {
   .login-box {
-    padding: 2rem;
-    width: 100%;
-    max-width: 400px;
-    margin-left: 5rem;
-    position: relative;
-    z-index: 2;
-  }
-  
-  .title {
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .subtitle {
-    color: #a0a0a0;
-    margin-bottom: 2rem;
-  }
-  
-  .login-form {
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
   }
-  
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+
+  .login-container::after {
+    width: 300px;
+    height: 300px;
   }
-  
-  .input-label {
-    color: white;
-    font-size: 0.9rem;
+
+  ion-content::part(background) {
+    background: #1a1a1a;
   }
-  
-  .custom-input {
-    --background: rgba(255, 255, 255, 0.1);
+
+  ion-header {
+    --background: #1a1a1a;
+  }
+
+  ion-toolbar {
+    --background: #1a1a1a;
     --color: white;
-    --placeholder-color: rgba(255, 255, 255, 0.5);
-    --padding-start: 1rem;
-    --padding-end: 1rem;
-    --padding-top: 0.75rem;
-    --padding-bottom: 0.75rem;
-    --border-radius: 8px;
   }
-  
-  .forgot-password {
-    display: block;
-    text-align: right;
-    margin-top: -0.5rem;
-  }
-  
-  .forgot-password a {
-    color: rgba(255, 255, 255, 0.6);
-    text-decoration: none;
-    font-size: 0.8rem;
-  }
-  
-  .login-button {
-    --background: #2fff59;
-    --background-hover: #27df4e;
-    --color: black;
-    --border-radius: 8px;
-    --padding-top: 1rem;
-    --padding-bottom: 1rem;
-    margin-top: 1rem;
-    font-weight: 600;
-  }
-  
-  @media (max-width: 768px) {
-    .login-box {
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem 1rem;
-    }
-  
-    .login-container::after {
-      width: 300px;
-      height: 300px;
-    }
-  
-    /* New styles for the header on mobile */
-    ion-header {
-      --background: #1a1a1a;
-    }
-  
-    ion-toolbar {
-      --background: #1a1a1a;
-      --color: white;
-    }
-  }
-  
-  
+}
+
