@@ -1,25 +1,76 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import {
+  IonContent,
+  IonPage,
+  IonInput,
+  IonButton,
+  IonText,
+  IonLabel,
+  IonToolbar,
+  IonTitle,
+} from '@ionic/react';
+import { useState } from 'react';
 import './Home.css';
 
-const Home: React.FC = () => {
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Add login logic here
+    console.log('Login attempt with:', email);
+  };
+
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Blank</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Blank</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer />
+      <IonContent className="ion-padding login-container" fullscreen>
+        <div className="content-wrapper">
+          <div className="login-box">
+            <h1 className="title">Bienvenu</h1>
+            <p className="subtitle">
+              Veuillez saisir les détails de votre compte
+            </p>
+
+            <form onSubmit={handleLogin} className="login-form">
+              <div className="input-group">
+                <IonLabel className="input-label">Identifiant</IonLabel>
+                <IonInput
+                  type="email"
+                  value={email}
+                  onIonChange={e => setEmail(e.detail.value!)}
+                  placeholder="foulen@gmail.com"
+                  className="custom-input"
+                  required
+                />
+              </div>
+
+              <div className="input-group">
+                <IonLabel className="input-label">Mot De Passe</IonLabel>
+                <IonInput
+                  type="password"
+                  value={password}
+                  onIonChange={e => setPassword(e.detail.value!)}
+                  className="custom-input"
+                  required
+                />
+              </div>
+
+              <IonText className="forgot-password">
+                <a href="/forgot-password">Mot De Passe Oublié</a>
+              </IonText>
+
+              <IonButton 
+                expand="block" 
+                type="submit"
+                className="login-button"
+              >
+                Se Connecter
+              </IonButton>
+            </form>
+          </div>
+        </div>
       </IonContent>
     </IonPage>
   );
-};
+}
 
-export default Home;
