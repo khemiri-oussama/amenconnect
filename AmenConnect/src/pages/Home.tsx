@@ -21,8 +21,7 @@ export default function LoginPage() {
     e.preventDefault();
     console.log('Login attempt with:', email);
 
-    // Navigate to OTP page using history.push
-    history.push('/otp');  // Use push to navigate
+    history.push('/otp');
   };
 
   return (
