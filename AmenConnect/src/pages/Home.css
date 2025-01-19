@@ -116,10 +116,12 @@
 }
 
 .logo-container {
-
+  position: absolute; /* Position it absolutely */
+  top: -3rem; /* Adjust as needed */
+  left: 50%; /* Center horizontally */
   transform: translateX(-50%);
   text-align: center;
-
+  z-index: 2; /* Ensure it appears above other elements */
 }
 
 .logo {
