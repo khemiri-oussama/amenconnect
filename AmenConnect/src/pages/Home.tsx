@@ -8,17 +8,21 @@ import {
   IonImg
 } from '@ionic/react';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';  // Import useHistory
 
 import './Home.css';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();  // Use history instead of navigate
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Add login logic here
     console.log('Login attempt with:', email);
+
+    // Navigate to OTP page using history.push
+    history.push('/otp');  // Use push to navigate
   };
 
   return (
@@ -78,4 +82,3 @@ export default function LoginPage() {
     </IonPage>
   );
 }
-
