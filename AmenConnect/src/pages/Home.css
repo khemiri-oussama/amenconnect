@@ -24,8 +24,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 400px;
   background: radial-gradient(circle, rgba(16, 243, 61, 0.496) 0%, rgba(47, 255, 89, 0) 70%);
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -116,12 +116,10 @@
 }
 
 .logo-container {
-  position: absolute; /* Position it absolutely */
-  top: -3rem; /* Adjust as needed */
-  left: 50%; /* Center horizontally */
+
   transform: translateX(-50%);
   text-align: center;
-  z-index: 2; /* Ensure it appears above other elements */
+
 }
 
 .logo {
