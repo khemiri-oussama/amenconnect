@@ -1,0 +1,7 @@
+{
+  "name": "AmenConnect",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
