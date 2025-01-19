@@ -40,7 +40,8 @@
 }
 
 .login-box {
-  padding: 0 2rem 2rem;
+  padding-top: 8rem;
+  
   width: 100%;
   max-width: 400px;
   margin-left: 5rem;
@@ -115,13 +116,16 @@
 }
 
 .logo-container {
+  position: absolute; /* Position it absolutely */
+  top: -3rem; /* Adjust as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%);
   text-align: center;
-  padding-top: 3rem;
-  margin-bottom: 2rem;
+  z-index: 2; /* Ensure it appears above other elements */
 }
 
 .logo {
-  width: 120px;
+  width: 250px;
   height: auto;
 }
 
