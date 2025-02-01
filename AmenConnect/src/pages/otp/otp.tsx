@@ -23,6 +23,7 @@ import {
         newOtp[index] = value;
         setOtp(newOtp);
         
+        
         if (value && index < 5) {
           inputRefs.current[index + 1]?.setFocus();
         }
@@ -38,6 +39,7 @@ import {
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       console.log('OTP submitted:', otp.join(''));
+      history.push("/accueil");
       // Add your OTP verification logic here
     };
   
