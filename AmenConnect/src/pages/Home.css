@@ -2,7 +2,8 @@
   --background: #1a1a1a;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
   position: relative;
   overflow: hidden;
 }
@@ -37,10 +38,17 @@
 .content-wrapper {
   width: 100%;
   max-width: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
 }
 
 .login-box {
-  padding-top: 2rem;
+  padding-top: 1rem; /* Reduced from 2rem to 1rem */
+  padding-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
   width: 100%;
   max-width: 400px;
   margin-left: 5rem;
@@ -48,18 +56,22 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
+  background: rgba(0, 0, 0, 0.5); /* Add a semi-transparent background */
+  border-radius: 16px; /* Rounded corners */
+  backdrop-filter: blur(10px); /* Blur effect */
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .title {
   color: white;
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem; /* Reduced from 0.5rem to 0.25rem */
 }
 
 .subtitle {
   color: #a0a0a0;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem; /* Reduced from 2rem to 1.5rem */
 }
 
 .login-form {
@@ -115,14 +127,14 @@
 }
 
 .logo-container {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem; /* Reduced from 2rem to 1rem */
   text-align: center;
   z-index: 2;
 }
 
 .logo {
-  width: 250px;
-  height: 250px;
+  width: 200px; /* Reduced from 250px to 200px */
+  height: auto; /* Changed from fixed height to auto to maintain aspect ratio */
 }
 
 .form-container {
@@ -148,9 +160,17 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* Changed from center to flex-start */
     min-height: 100vh;
-    padding: 2rem 1rem;
+    padding: 1rem; /* Reduced padding */
+  }
+
+  .logo-container {
+    margin-bottom: 0.5rem; /* Further reduced for mobile */
+  }
+
+  .logo {
+    width: 150px; /* Smaller logo for mobile */
   }
 
   .login-container::after {
@@ -160,6 +180,9 @@
 
   .blurry-div {
     display: none;
+  }
+  .content-wrapper {
+    margin-top: 0; /* Remove top margin on mobile */
   }
 
   ion-header {
