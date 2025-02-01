@@ -11,7 +11,7 @@ const AccueilDesktop: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding">
         <h2>Welcome to the Desktop Version</h2>
-        <p>This is the mobile-specific content for the Accueil page.</p>
+        <p>This is the desktop-specific content for the Accueil page.</p>
       </IonContent>
     </IonPage>
   )
