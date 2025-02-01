@@ -40,8 +40,7 @@
 }
 
 .login-box {
-  padding-top: 8rem;
-  
+  padding-top: 2rem;
   width: 100%;
   max-width: 400px;
   margin-left: 5rem;
@@ -90,8 +89,6 @@
   --padding-top: 0.75rem;
   --padding-bottom: 0.75rem;
   --border-radius: 8px;
-
-  
 }
 
 .forgot-password {
@@ -118,17 +115,14 @@
 }
 
 .logo-container {
-  position: absolute; /* Position it absolutely */
-  top: 2rem; /* Adjust as needed */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%);
+  margin-bottom: 2rem;
   text-align: center;
-  z-index: 2; /* Ensure it appears above other elements */
+  z-index: 2;
 }
 
 .logo {
   width: 250px;
-  height: auto;
+  height: 250px;
 }
 
 .form-container {
@@ -137,14 +131,13 @@
   flex-direction: column;
 }
 
-/* New styles for the blurry div */
 .blurry-div {
   position: fixed;
   top: 0;
   right: 0;
   width: 55%;
   height: 100%;
-  background: #D9D9D9;
+  background: #d9d9d9;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   z-index: 1;
@@ -165,12 +158,10 @@
     height: 300px;
   }
 
-  /* Hide the blurry div on mobile */
   .blurry-div {
     display: none;
   }
 
-  /* New styles for the header on mobile */
   ion-header {
     --background: #1a1a1a;
   }
