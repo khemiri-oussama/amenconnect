@@ -1,0 +1,133 @@
+/* Accueil page specific styles */
+
+.accueil-page {
+    --background: #000000;
+    --ion-background-color: #000000;
+    --ion-text-color: #ffffff;
+  }
+  
+  .greeting {
+    padding: 16px 0;
+  }
+  
+  .greeting h1 {
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0;
+    color: #8e8e93;
+  }
+  
+  .greeting h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 4px 0 0;
+    color: #ffffff;
+  }
+  
+  .account-card {
+    --background: #1c1c1e;
+    margin: 16px 0;
+    border-radius: 8px;
+  }
+  
+  .account-card ion-card-content {
+    padding: 16px;
+  }
+  
+  .account-label {
+    color: #8e8e93;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .account-balance {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4cd964;
+    margin: 8px 0;
+  }
+  
+  .account-details {
+    display: flex;
+    justify-content: space-between;
+    color: #8e8e93;
+    font-size: 12px;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 24px 0 16px;
+  }
+  
+  .section-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0;
+  }
+  
+  .section-action {
+    font-size: 14px;
+    color: #8e8e93;
+  }
+  
+  .card-item {
+    --background: #1c1c1e;
+    margin: 16px 0;
+    border-radius: 8px;
+  }
+  
+  .card-item ion-card-content {
+    padding: 16px;
+  }
+  
+  .card-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .card-info p {
+    margin: 4px 0;
+  }
+  
+  .card-type {
+    color: #8e8e93;
+    font-size: 14px;
+  }
+  
+  .card-name {
+    color: #ffffff;
+    font-size: 16px;
+  }
+  
+  .card-number {
+    color: #8e8e93;
+    font-size: 14px;
+  }
+  
+  .card-expiry {
+    color: #007aff;
+    font-size: 14px;
+  }
+  
+  .budget-card {
+    --background: #1c1c1e;
+    margin: 16px 0;
+    border-radius: 8px;
+    min-height: 100px;
+  }
+  
+  .tab-bar {
+    --background: #1c1c1e;
+    --border-color: #2c2c2e;
+  }
+  
+  .tab-button {
+    --color: #8e8e93;
+    --color-selected: #4cd964;
+  }
+  
+  
