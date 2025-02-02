@@ -1,5 +1,5 @@
 import { IonContent, IonHeader, IonPage, IonIcon, IonLabel } from '@ionic/react';
-import { home, wallet, chatbubble, card, arrowForward, person, statsChart } from 'ionicons/icons';
+import { homeOutline, walletOutline, chatbubbleOutline, cardOutline, arrowForward, personOutline, statsChartOutline } from "ionicons/icons"
 import { useHistory } from 'react-router-dom'; // Import useHistory
 import './AccueilMobile.css';
 import React from 'react';
@@ -21,7 +21,7 @@ const Accueil: React.FC = () => {
             <h1 className="username">Foulen Ben Foulen</h1>
           </div>
           <button className="profile-button">
-            <IonIcon icon={person} />
+            <IonIcon icon={personOutline} />
           </button>
         </div>
 
@@ -29,7 +29,7 @@ const Accueil: React.FC = () => {
         <div className="account-card">
           <div className="account-header">
             <h2>Compte Epargne</h2>
-            <IonIcon icon={statsChart} className="stats-icon" />
+            <IonIcon icon={statsChartOutline} className="stats-icon" onClick={() => history.push('/compte')}/>
           </div>
           <div className="account-details">
             <div>
@@ -44,12 +44,12 @@ const Accueil: React.FC = () => {
         <div className="section">
           <div className="section-header">
             <h2>Cartes</h2>
-            <button className="view-all">Afficher tout</button>
+            <button className="view-all" onClick={() => history.push('/carte')}>Afficher tout</button>
           </div>
-          <div className="payment-card">
+          <div className="payment-card" onClick={() => history.push('/carte')}>
             <p className="card-label">Carte de paiement</p>
             <div className="card-details">
-              <IonIcon icon={card} className="card-icon" />
+              <IonIcon icon={cardOutline} className="card-icon" />
               <div className="card-info">
                 <p className="card-name">EL AMEN WHITE EMV</p>
                 <p className="card-number">1234 •••• •••• 1234</p>
@@ -71,19 +71,19 @@ const Accueil: React.FC = () => {
         {/* Bottom Navigation */}
         <div className="bottom-tabs">
           <button className="tab-button active">
-            <IonIcon icon={home} />
+            <IonIcon icon={homeOutline} />
             <IonLabel>Accueil</IonLabel>
           </button>
           <button className="tab-button" onClick={() => history.push('/compte')}>
-            <IonIcon icon={wallet} />
+            <IonIcon icon={walletOutline} />
             <IonLabel>Compte</IonLabel>
           </button>
           <button className="tab-button">
-            <IonIcon icon={chatbubble} />
+            <IonIcon icon={chatbubbleOutline} />
             <IonLabel>Chat</IonLabel>
           </button>
-          <button className="tab-button">
-            <IonIcon icon={card} />
+          <button className="tab-button" onClick={() => history.push('/Carte')}>
+            <IonIcon icon={cardOutline} />
             <IonLabel>Carte</IonLabel>
           </button>
           <button className="tab-button">

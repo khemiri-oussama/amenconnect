@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import Otp from './pages/otp/otp';
 import Accueil from './pages/accueil/accueil';
 import Compte from './pages/Compte/Compte';
-
+import Carte from './pages/Carte/Carte'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -47,6 +47,7 @@ const App: React.FC = () => (
         <Route exact path="/otp" component={Otp} />
         <Route exact path="/accueil" component={Accueil} />
         <Route exact path="/compte" component={Compte} />
+        <Route exact path="/Carte" component={Carte} />
         <Route exact path="/" render={() => <Redirect to="/home" />} />
         
       </IonRouterOutlet>
