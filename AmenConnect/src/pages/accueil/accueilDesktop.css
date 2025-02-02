@@ -1,0 +1,233 @@
+/* Navbar styles */
+.navbar-logo {
+  height: 24px; /* Make the logo smaller */
+  margin-left: 16px;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 24px;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.navbar-link {
+  color: #a0a0a0;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.navbar-link:hover {
+  color: #ffffff;
+}
+
+.dashboard-container {
+  padding: 24px;
+  background: linear-gradient(180deg, rgba(30, 30, 30, 0.95) 0%, rgba(24, 24, 24, 0.98) 100%);
+  min-height: 100vh;
+  color: #ffffff;
+}
+
+.welcome-section {
+  margin-bottom: 32px;
+}
+
+.welcome-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.welcome-subtitle {
+  color: #878787;
+  font-size: 16px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-label {
+  color: #878787;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.stat-change {
+  font-size: 14px;
+}
+
+.stat-change.positive {
+  color: #47ce65;
+}
+
+.stat-change.negative {
+  color: #ff2b2b;
+}
+
+.sections-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.section-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.section-link {
+  color: #2eb851;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.section-link:hover {
+  color: #47ce65;
+}
+
+.budget-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.budget-item {
+  margin-bottom: 24px;
+  transition: all 0.2s ease;
+}
+
+.budget-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.budget-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.budget-item-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.budget-progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.budget-progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.budget-progress-bar.food {
+  background: #47ce65;
+}
+
+.budget-progress-bar.transport {
+  background: #ffcc00;
+}
+
+.budget-progress-bar.leisure {
+  background: #346fce;
+}
+
+.accounts-list,
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account-item,
+.card-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.account-item:hover,
+.card-item:hover {
+  transform: translateY(-2px);
+}
+
+/* Add smooth transitions for interactive elements */
+* {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #47ce65 0%, #346fce 100%);
+  border-radius: 20px;
+  border: 2px solid rgba(24, 24, 24, 0.5);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #5de47b 0%, #4a8fef 100%);
+}
+
+
+
+body {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: #47ce65 transparent;
+    scroll-behavior: smooth;
+}
+
+
