@@ -1,0 +1,198 @@
+/* Global Variables */
+:root {
+    --primary-green: #47ce65;
+    --background-dark: #1e1e1e;
+    --card-background: rgba(255, 255, 255, 0.1);
+    --text-gray: rgba(255, 255, 255, 0.6);
+  }
+  
+  /* Content Styles */
+  ion-content {
+    --background: var(--background-dark);
+    --padding-bottom: 70px;
+  }
+  
+  /* Status Bar */
+  .status-bar {
+    height: 44px;
+    background: transparent;
+  }
+  
+  /* Page Title */
+  .page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    margin: 10px 0 20px;
+  }
+  
+  /* Account Card */
+  .account-card {
+    background: var(--card-background);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    color: white;
+  }
+  
+  .stats-icon {
+    color: var(--primary-green);
+    font-size: 24px;
+  }
+  
+  .account-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  
+  .balance {
+    font-size: 28px;
+    font-family: monospace;
+    color: var(--primary-green);
+    margin: 0 0 8px 0;
+  }
+  
+  .account-number {
+    color: var(--text-gray);
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .expiry-date {
+    color: var(--text-gray);
+    font-size: 14px;
+  }
+  
+  /* Chart Container */
+  .chart-container {
+    background: var(--card-background);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  /* Custom Segment */
+  .custom-segment {
+    background: var(--card-background);
+    border-radius: 16px;
+    --background: transparent;
+    padding: 4px;
+  }
+  
+  ion-segment-button {
+    --background-checked: transparent;
+    --color-checked: white;
+    --color: var(--text-gray);
+    --indicator-color: transparent;
+    min-height: 40px;
+  }
+  
+  /* Operations Section */
+  .operations-section {
+    margin-top: 20px;
+  }
+  
+  .operations-section h3 {
+    color: white;
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .last-update {
+    color: var(--text-gray);
+    font-size: 14px;
+    margin: 8px 0 16px;
+  }
+  
+  /* Custom Searchbar */
+  .custom-searchbar {
+    --background: var(--card-background);
+    --color: white;
+    --placeholder-color: var(--text-gray);
+    --icon-color: var(--text-gray);
+    --border-radius: 12px;
+    padding: 0;
+  }
+  
+  /* Bottom Navigation */
+  .bottom-tabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    background: var(--background-dark);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 24px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+  
+  .tab-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+  }
+  
+  .tab-button.active {
+    color: var(--primary-green);
+  }
+  
+  .tab-button ion-icon {
+    font-size: 24px;
+  }
+  
+  .tab-button span {
+    font-size: 12px;
+  }
+  
+  /* iOS Specific Styles */
+  .ios .status-bar {
+    height: 50px;
+  }
+  
+  /* Android Specific Styles */
+  .md .status-bar {
+    height: 24px;
+  }
+  
+  .account-info-section {
+    padding-top: 16px;
+  }
+  
+  .account-info-section h2 {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+  
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .info-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+  }
+  
+  .info-value {
+    color: white;
+    font-size: 14px;
+    font-family: monospace;
+  }
