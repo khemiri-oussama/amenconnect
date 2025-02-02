@@ -1,6 +1,10 @@
 /* Navbar styles */
+.custom-toolbar {
+  --background: #181818;
+}
+
 .navbar-logo {
-  height: 40px; /* Make the logo smaller */
+  height: 40px;
   margin-top: 10px;
   margin-left: 25px;
 }
@@ -25,9 +29,12 @@
   color: #ffffff;
 }
 
+.custom-content {
+  --background: linear-gradient(180deg, rgba(30, 30, 30, 0.95) 0%, rgba(24, 24, 24, 0.98) 100%);
+}
+
 .dashboard-container {
   padding: 24px;
-  background: linear-gradient(180deg, rgba(30, 30, 30, 0.95) 0%, rgba(24, 24, 24, 0.98) 100%);
   min-height: 100vh;
   color: #ffffff;
 }
@@ -63,6 +70,7 @@
 
 .stat-card:hover {
   transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .stat-label {
@@ -134,6 +142,8 @@
 .budget-item {
   margin-bottom: 24px;
   transition: all 0.2s ease;
+  padding: 8px;
+  border-radius: 8px;
 }
 
 .budget-item:hover {
@@ -190,11 +200,13 @@
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   transition: all 0.2s ease;
+  padding: 16px;
 }
 
 .account-item:hover,
 .card-item:hover {
   transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* Add smooth transitions for interactive elements */
@@ -222,13 +234,10 @@
   background: linear-gradient(180deg, #5de47b 0%, #4a8fef 100%);
 }
 
-
-
 body {
-    overflow-y: scroll;
-    scrollbar-width: thin;
-    scrollbar-color: #47ce65 transparent;
-    scroll-behavior: smooth;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #47ce65 transparent;
+  scroll-behavior: smooth;
 }
-
 

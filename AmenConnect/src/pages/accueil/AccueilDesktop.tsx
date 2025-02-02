@@ -39,19 +39,17 @@ const AccueilDesktop: React.FC = () => {
   })
 
   const handleCardClick = () => {
-    // Handle card management navigation
     console.log("Navigating to card management...")
   }
 
   const handleAccountClick = (accountId: number) => {
-    // Handle account details navigation
     console.log(`Viewing account ${accountId}...`)
   }
 
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar style={{ "--background": "#181818" } as any}>
+        <IonToolbar className="custom-toolbar">
           <img src="amen_logo.png" alt="Amen Bank Logo" className="navbar-logo" />
           <div className="navbar-links">
             <a href="#" className="navbar-link" onClick={handleCardClick}>
@@ -69,7 +67,7 @@ const AccueilDesktop: React.FC = () => {
           </div>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent className="ion-padding custom-content">
         <div className="dashboard-container">
           <div className="welcome-section">
             <h1 className="welcome-title">Bienvenu, Foulen</h1>
@@ -77,17 +75,17 @@ const AccueilDesktop: React.FC = () => {
           </div>
 
           <div className="stats-grid">
-            <div className="stat-card hover:bg-white/20 transition-colors cursor-pointer">
+            <div className="stat-card">
               <div className="stat-label">Solde Total</div>
               <div className="stat-value">15,230.45 TND</div>
               <div className="stat-change positive">+2.5% depuis le mois dernier</div>
             </div>
-            <div className="stat-card hover:bg-white/20 transition-colors cursor-pointer">
+            <div className="stat-card">
               <div className="stat-label">Dépenses du mois</div>
               <div className="stat-value">3,240.80 TND</div>
               <div className="stat-change negative">-1.8% depuis le mois dernier</div>
             </div>
-            <div className="stat-card hover:bg-white/20 transition-colors cursor-pointer">
+            <div className="stat-card">
               <div className="stat-label">Économies</div>
               <div className="stat-value">2,180.25 TND</div>
               <div className="stat-change positive">+5.2% depuis le mois dernier</div>
@@ -98,17 +96,13 @@ const AccueilDesktop: React.FC = () => {
             <div className="section-card">
               <div className="section-header">
                 <h2 className="section-title">Comptes</h2>
-                <a href="#" className="section-link hover:underline">
+                <a href="#" className="section-link">
                   Voir tout
                 </a>
               </div>
               <div className="accounts-list">
                 {accounts.map((account) => (
-                  <div
-                    key={account.id}
-                    className="account-item hover:bg-white/20 transition-colors cursor-pointer p-4 rounded-lg mb-2"
-                    onClick={() => handleAccountClick(account.id)}
-                  >
+                  <div key={account.id} className="account-item" onClick={() => handleAccountClick(account.id)}>
                     <div className="flex justify-between items-center">
                       <div>
                         <div className="font-medium">{account.name}</div>
@@ -123,18 +117,14 @@ const AccueilDesktop: React.FC = () => {
             <div className="section-card">
               <div className="section-header">
                 <h2 className="section-title">Cartes</h2>
-                <a href="#" className="section-link hover:underline">
+                <a href="#" className="section-link">
                   Gérer les cartes
                 </a>
               </div>
               <div className="cards-list">
                 {cards.map((card) => (
-                  <div
-                    key={card.id}
-                    className="card-item hover:bg-white/20 transition-colors cursor-pointer p-4 rounded-lg mb-2"
-                  >
+                  <div key={card.id} className="card-item">
                     <div className="flex items-center gap-3">
-                      {/* <Card className="w-8 h-8" /> */}
                       <div>
                         <div className="font-medium">{card.type}</div>
                         <div className="text-sm text-gray-400">{card.number}</div>
@@ -149,12 +139,12 @@ const AccueilDesktop: React.FC = () => {
           <div className="budget-section">
             <div className="section-header">
               <h2 className="section-title">Budget</h2>
-              <a href="#" className="section-link hover:underline">
+              <a href="#" className="section-link">
                 Voir les détails
               </a>
             </div>
 
-            {Object.entries(budgetData).map(([category, data], index) => {
+            {Object.entries(budgetData).map(([category, data]) => {
               const colors = {
                 food: "#47ce65",
                 transport: "#ffcc00",
@@ -168,10 +158,7 @@ const AccueilDesktop: React.FC = () => {
               }
 
               return (
-                <div
-                  key={category}
-                  className="budget-item hover:bg-white/20 transition-colors cursor-pointer rounded-lg p-2"
-                >
+                <div key={category} className="budget-item">
                   <div className="budget-item-header">
                     <div className="budget-item-label">
                       <span
