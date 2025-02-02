@@ -53,16 +53,19 @@ const AccueilDesktop: React.FC = () => {
           <img src="amen_logo.png" alt="Amen Bank Logo" className="navbar-logo" />
           <div className="navbar-links">
             <a href="#" className="navbar-link" onClick={handleCardClick}>
+              Accueil
+            </a>
+            <a href="#" className="navbar-link">
+              Comptes
+            </a>
+            <a href="#" className="navbar-link">
+              Chat
+            </a>
+            <a href="#" className="navbar-link">
+              Virements
+            </a>
+            <a href="#" className="navbar-link">
               Cartes
-            </a>
-            <a href="#" className="navbar-link">
-              Transactions
-            </a>
-            <a href="#" className="navbar-link">
-              Paramètres
-            </a>
-            <a href="#" className="navbar-link">
-              Profil
             </a>
           </div>
         </IonToolbar>
