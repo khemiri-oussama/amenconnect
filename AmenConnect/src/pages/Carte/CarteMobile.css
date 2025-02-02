@@ -1,0 +1,203 @@
+/* Global Variables */
+:root {
+  --primary-green: #47ce65;
+  --background-dark: #1e1e1e;
+  --card-background: rgba(255, 255, 255, 0.1);
+  --text-gray: rgba(255, 255, 255, 0.6);
+  --card-gradient: linear-gradient(135deg, #0396ff 0%, #0d47a1 100%);
+}
+
+/* Content Styles */
+ion-content {
+  --background: var(--background-dark);
+  --padding-bottom: 70px;
+}
+
+/* Status Bar */
+.status-bar {
+  height: 44px;
+  background: transparent;
+}
+
+/* Page Title */
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  margin: 10px 0 20px;
+}
+
+/* Credit Card Display */
+.card-display {
+  margin-bottom: 24px;
+  perspective: 1000px;
+}
+
+.credit-card {
+  background: var(--card-gradient);
+  border-radius: 16px;
+  padding: 24px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.card-body {
+  margin: 20px 0;
+}
+
+.chip {
+  width: 45px;
+  height: 34px;
+  background: #ffd700;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.card-number {
+  color: white;
+  font-size: 18px;
+  font-family: monospace;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.card-holder {
+  color: white;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  color: white;
+}
+
+.expiry {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.bank-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bank-name {
+  color: var(--primary-green);
+  font-size: 14px;
+}
+
+.logo-circle {
+  width: 24px;
+  height: 24px;
+  background: var(--primary-green);
+  border-radius: 50%;
+}
+
+/* Segment Control */
+.custom-segment {
+  background: var(--card-background);
+  border-radius: 16px;
+  --background: transparent;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+ion-segment-button {
+  --background-checked: transparent;
+  --color-checked: white;
+  --color: var(--text-gray);
+  --indicator-color: transparent;
+  min-height: 40px;
+}
+
+/* Card Details Section */
+.card-details {
+  display: flow-root;
+  padding-top: 16px;
+}
+
+.card-details h2 {
+  color: white;
+  font-size: 18px;
+  margin-bottom: 24px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-label {
+  color: var(--text-gray);
+  font-size: 14px;
+}
+
+.detail-value {
+  color: white;
+  font-size: 14px;
+}
+
+/* Bottom Navigation */
+.bottom-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  background: var(--background-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+}
+
+.tab-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: var(--text-gray);
+}
+
+.tab-button.active {
+  color: var(--primary-green);
+}
+
+.tab-button ion-icon {
+  font-size: 24px;
+}
+
+.tab-button span {
+  font-size: 12px;
+}
+
+/* iOS Specific Styles */
+.ios .status-bar {
+  height: 50px;
+}
+
+/* Android Specific Styles */
+.md .status-bar {
+  height: 24px;
+}
+
