@@ -78,7 +78,7 @@ const Accueil: React.FC = () => {
             <IonIcon icon={walletOutline} />
             <IonLabel>Compte</IonLabel>
           </button>
-          <button className="tab-button">
+          <button className="tab-button" onClick={() => history.push('/ChatBot')}>
             <IonIcon icon={chatbubbleOutline} />
             <IonLabel>Chat</IonLabel>
           </button>
