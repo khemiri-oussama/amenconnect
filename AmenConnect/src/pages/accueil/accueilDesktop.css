@@ -1,7 +1,8 @@
 /* Navbar styles */
 .navbar-logo {
-  height: 24px; /* Make the logo smaller */
-  margin-left: 16px;
+  height: 40px; /* Make the logo smaller */
+  margin-top: 10px;
+  margin-left: 25px;
 }
 
 .navbar-links {
