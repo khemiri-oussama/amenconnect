@@ -99,7 +99,7 @@ const CardMobile: React.FC = () => {
             <IonIcon icon={walletOutline} />
             <span>Compte</span>
           </button>
-          <button className="tab-button">
+          <button className="tab-button" onClick={() => history.push('/ChatBot')}>
             <IonIcon icon={chatbubbleOutline} />
             <span>Chat</span>
           </button>
