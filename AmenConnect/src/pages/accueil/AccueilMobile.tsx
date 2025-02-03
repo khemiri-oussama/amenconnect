@@ -27,7 +27,7 @@ const Accueil: React.FC = () => {
     setShowBalance(!showBalance)
   }
 
-  return (
+  return(
     <IonPage>
       <IonContent fullscreen className="ion-padding custom-content">
         {/* Profile Header */}
@@ -37,7 +37,7 @@ const Accueil: React.FC = () => {
             <h1 className="username">Foulen Ben Foulen</h1>
           </div>
           <div className="header-actions">
-            <button className="notification-button ion-activatable" onClick={() => history.push("/notifications")}>
+            <button className="notification-button ion-activatable">
               <IonIcon icon={notificationsOutline} />
               {notificationCount > 0 && <span className="notification-badge">{notificationCount}</span>}
               <IonRippleEffect />
