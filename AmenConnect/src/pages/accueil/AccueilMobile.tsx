@@ -26,10 +26,6 @@ const Accueil: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader className="ion-no-border">
-        <div className="status-bar"></div>
-      </IonHeader>
-
       <IonContent fullscreen className="ion-padding custom-content">
         {/* Profile Header */}
         <div className="profile-header">
@@ -51,10 +47,10 @@ const Accueil: React.FC = () => {
         </div>
 
         {/* Account Card */}
-        <div className="account-card ion-activatable" onClick={() => history.push("/compte")}>
+        <div className="account-card ion-activatable" >
           <div className="account-header">
             <h2>Compte Epargne</h2>
-            <IonIcon icon={statsChartOutline} className="stats-icon" />
+            <IonIcon icon={statsChartOutline} className="stats-icon" onClick={() => history.push("/compte")}/>
           </div>
           <div className="account-details">
             <div>
