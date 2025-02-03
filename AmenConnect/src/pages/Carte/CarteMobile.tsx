@@ -1,7 +1,7 @@
 import type React from "react"
 import { useState } from "react"
 import { useHistory } from 'react-router-dom';
-import { IonContent, IonPage, IonIcon, IonSegment, IonSegmentButton, IonLabel } from "@ionic/react"
+import { IonContent, IonPage, IonIcon, IonSegment, IonSegmentButton, IonLabel,IonImg } from "@ionic/react"
 import { homeOutline, walletOutline, chatbubbleOutline, cardOutline, arrowForward } from "ionicons/icons"
 import "./CarteMobile.css"
 
@@ -22,7 +22,7 @@ const CardMobile: React.FC = () => {
               <span className="card-type">EL AMEN WHITE EMV</span>
             </div>
             <div className="card-body">
-              <div className="chip"></div>
+            <IonImg src="../puce.png" className="chip"/>
               <div className="card-number">1234 •••• •••• 1234</div>
               <div className="card-holder">Foulen ben foulen</div>
             </div>
@@ -32,8 +32,7 @@ const CardMobile: React.FC = () => {
                 <span>01/28</span>
               </div>
               <div className="bank-logo">
-                <span className="bank-name">AMEN BANK</span>
-                <div className="logo-circle"></div>
+                <IonImg src="../amen_logo.png" className="bank-name"/>
               </div>
             </div>
           </div>
