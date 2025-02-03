@@ -1,31 +1,34 @@
 import type React from "react"
-import { IonToolbar } from "@ionic/react"
+import { IonToolbar, IonRouterLink, useIonRouter } from "@ionic/react"
 import "./Navbar.css"
 
 const Navbar: React.FC = () => {
+  const router = useIonRouter()
+
   const handleCardClick = () => {
     console.log("Navigating to card management...")
+    router.push("/cards")
   }
 
   return (
     <IonToolbar className="custom-toolbar">
       <img src="amen_logo.png" alt="Amen Bank Logo" className="navbar-logo" />
       <div className="navbar-links">
-        <a href="#" className="navbar-link" onClick={handleCardClick}>
+        <IonRouterLink routerLink="/accueil" className="navbar-link">
           Accueil
-        </a>
-        <a href="#" className="navbar-link">
+        </IonRouterLink>
+        <IonRouterLink routerLink="/compte" className="navbar-link">
           Comptes
-        </a>
-        <a href="#" className="navbar-link">
+        </IonRouterLink>
+        <IonRouterLink routerLink="/chatBot" className="navbar-link">
           Chat
-        </a>
-        <a href="#" className="navbar-link">
+        </IonRouterLink>
+        <IonRouterLink routerLink="/transfers" className="navbar-link">
           Virements
-        </a>
-        <a href="#" className="navbar-link">
+        </IonRouterLink>
+        <IonRouterLink routerLink="/carte" className="navbar-link" onClick={handleCardClick}>
           Cartes
-        </a>
+        </IonRouterLink>
       </div>
     </IonToolbar>
   )
