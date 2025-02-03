@@ -57,7 +57,6 @@ ion-content {
 .chip {
   width: 45px;
   height: 34px;
-  background: #ffd700;
   border-radius: 6px;
   margin-bottom: 20px;
 }
@@ -90,22 +89,15 @@ ion-content {
   font-size: 12px;
 }
 
-.bank-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
-.bank-name {
-  color: var(--primary-green);
-  font-size: 14px;
-}
 
-.logo-circle {
-  width: 24px;
-  height: 24px;
-  background: var(--primary-green);
-  border-radius: 50%;
+
+
+.bank-name{
+  display: flow;
+  width: 50%;
+  height: 50%;
+  margin-left: 50%;
 }
 
 /* Segment Control */
