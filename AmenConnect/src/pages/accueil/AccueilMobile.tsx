@@ -51,7 +51,7 @@ const Accueil: React.FC = () => {
         </div>
 
         {/* Account Card */}
-        <div className="account-card ion-activatable">
+        <div className="account-card">
           <div className="account-header">
             <h2>Compte Epargne</h2>
             <IonIcon icon={statsChartOutline} className="stats-icon" onClick={() => history.push("/compte")} />
@@ -80,7 +80,7 @@ const Accueil: React.FC = () => {
               <IonRippleEffect />
             </button>
           </div>
-          <div className="payment-card ion-activatable" onClick={() => history.push("/carte")}>
+          <div className="payment-card " onClick={() => history.push("/carte")}>
             <p className="card-label">Carte de paiement</p>
             <div className="card-details">
               <IonIcon icon={cardOutline} className="card-icon" />
@@ -103,7 +103,7 @@ const Accueil: React.FC = () => {
               <IonRippleEffect />
             </button>
           </div>
-          <div className="budget-card ion-activatable">
+          <div className="budget-card ">
             <h3>Dépenses ce mois</h3>
             <div className="budget-progress">
               <div className="progress-bar" style={{ width: "70%" }}></div>
