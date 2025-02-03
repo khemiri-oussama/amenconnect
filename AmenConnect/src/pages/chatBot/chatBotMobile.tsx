@@ -1,82 +1,148 @@
 import type React from "react"
-import { IonContent, IonPage, IonIcon, IonFooter, IonToolbar, IonInput } from "@ionic/react"
-import { homeOutline, walletOutline, chatbubbleOutline, cardOutline, arrowForward, sendOutline } from "ionicons/icons"
-import "./chatBotMobile.css"
+import { useState, useRef, useEffect } from "react"
+import {
+  IonContent,
+  IonPage,
+  IonIcon,
+  IonFooter,
+  IonToolbar,
+  IonInput,
+  IonRippleEffect,
+  IonHeader,
+  IonButtons,
+  IonBackButton,
+  IonTitle,
+} from "@ionic/react"
+import { sendOutline, chevronBackOutline } from "ionicons/icons"
 import { useHistory } from "react-router-dom"
+import { motion, AnimatePresence } from "framer-motion"
+import "./chatBotMobile.css"
+
+interface Message {
+  text: string
+  isUser: boolean
+}
 
 const ChatMobile: React.FC = () => {
-    const history = useHistory()
+  const history = useHistory()
+  const [messages, setMessages] = useState<Message[]>([
+    { text: "Bonjour", isUser: true },
+    { text: "Bonjour ! Comment puis-je vous aider aujourd'hui ?", isUser: false },
+    { text: "Quel est mon solde actuel ?", isUser: true },
+    { text: "Votre solde est de 2 500 dt.\nVous souhaitez faire autre chose ?", isUser: false },
+  ])
+  const [inputMessage, setInputMessage] = useState("")
+  const contentRef = useRef<HTMLIonContentElement>(null)
+
+  const quickReplies = [
+    "Comment faire un virement ?",
+    "Quel est mon solde actuel ?",
+    "Je veux un crédit",
+    "Bloquer ma carte",
+    "Changer mon code PIN",
+    "Contacter un conseiller",
+  ]
+
+  useEffect(() => {
+    scrollToBottom()
+  }, []) // Removed unnecessary dependency 'messages'
+
+  const scrollToBottom = () => {
+    if (contentRef.current) {
+      contentRef.current.scrollToBottom(300)
+    }
+  }
+
+  const handleSendMessage = () => {
+    if (inputMessage.trim()) {
+      setMessages([...messages, { text: inputMessage, isUser: true }])
+      setInputMessage("")
+      // Simulate assistant response
+      setTimeout(() => {
+        setMessages((prev) => [
+          ...prev,
+          { text: "Je comprends votre demande. Comment puis-je vous aider davantage ?", isUser: false },
+        ])
+      }, 1000)
+    }
+  }
+
+  const handleQuickReply = (reply: string) => {
+    setMessages([...messages, { text: reply, isUser: true }])
+    // Simulate assistant response
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        { text: "Merci pour votre question. Je vais vous aider avec cela.", isUser: false },
+      ])
+    }, 1000)
+  }
+
   return (
-    <IonPage>
-      <IonContent fullscreen className="chat-content">
-        <div className="status-bar"></div>
-
-        {/* Chat Messages */}
+    <IonPage className="chat-page">
+      <IonHeader className="chat-header">
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton icon={chevronBackOutline} text="" className="custom-back-button" defaultHref="/accueil" />
+          </IonButtons>
+          <IonTitle>Assistant virtuel</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent ref={contentRef} fullscreen className="chat-content">
         <div className="chat-container">
-          <div className="message-group">
-            <div className="message user">Bonjour</div>
-          </div>
-
-          <div className="message-group">
-            <div className="message assistant">Bonjour ! Comment puis-je vous aider aujourd'hui ?</div>
-          </div>
-
-          <div className="message-group">
-            <div className="message user">Quel est mon solde actuel ?</div>
-          </div>
-
-          <div className="message-group">
-            <div className="message assistant">
-              Votre solde est de 2 500 dt.
-              <br />
-              Vous souhaitez faire autre chose ?
-            </div>
-          </div>
-
-          {/* Quick Reply Buttons */}
-          <div className="quick-replies">
-            <button className="quick-reply-btn">comment faire un virement ?</button>
-            <button className="quick-reply-btn">Quel est mon solde actuel ?</button>
-            <button className="quick-reply-btn">Je veux un crédit</button>
-          </div>
-        </div>
-
-        {/* Message Input */}
-        <IonFooter className="chat-footer">
-          <IonToolbar>
-            <div className="input-container">
-              <IonInput placeholder="Message" className="message-input" />
-              <button className="send-button">
-                <IonIcon icon={sendOutline} />
-              </button>
-            </div>
-          </IonToolbar>
-        </IonFooter>
-
-        {/* Bottom Navigation */}
-        <div className="bottom-tabs">
-          <button className="tab-button" onClick={() => history.push('/accueil')}>
-            <IonIcon icon={homeOutline} />
-            <span>Accueil</span>
-          </button>
-          <button className="tab-button" onClick={() => history.push('/compte')}>
-            <IonIcon icon={walletOutline} />
-            <span>Compte</span>
-          </button>
-          <button className="tab-button active">
-            <IonIcon icon={chatbubbleOutline} />
-            <span>Chat</span>
-          </button>
-          <button className="tab-button" onClick={() => history.push('/Carte')}>
-            <IonIcon icon={cardOutline} />
-            <span>Carte</span>
-          </button>
-          <button className="tab-button">
-            <IonIcon icon={arrowForward} />
-            <span>Virements</span>
-          </button>
+          <AnimatePresence>
+            {messages.map((message, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className={`message-group ${message.isUser ? "user" : "assistant"}`}
+              >
+                <div className="message">{message.text}</div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </IonContent>
+
+      <IonFooter className="chat-footer">
+        <div className="quick-replies-container">
+          <div className="quick-replies">
+            {quickReplies.map((reply, index) => (
+              <motion.button
+                key={index}
+                className="quick-reply-btn ion-activatable"
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleQuickReply(reply)}
+              >
+                {reply}
+                <IonRippleEffect />
+              </motion.button>
+            ))}
+          </div>
+        </div>
+        <IonToolbar>
+          <div className="input-container">
+            <IonInput
+              value={inputMessage}
+              onIonChange={(e) => setInputMessage(e.detail.value!)}
+              placeholder="Tapez votre message..."
+              className="message-input"
+              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+            />
+            <motion.button
+              className="send-button ion-activatable"
+              whileTap={{ scale: 0.9 }}
+              onClick={handleSendMessage}
+            >
+              <IonIcon icon={sendOutline} />
+              <IonRippleEffect />
+            </motion.button>
+          </div>
+        </IonToolbar>
+      </IonFooter>
     </IonPage>
   )
 }
