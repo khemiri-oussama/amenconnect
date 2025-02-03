@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { IonContent, IonHeader, IonPage, IonIcon, IonLabel, IonRippleEffect } from "@ionic/react"
+import type React from "react"
+import { useState } from "react"
+import { IonContent, IonPage, IonIcon, IonLabel, IonRippleEffect } from "@ionic/react"
 import {
   homeOutline,
   walletOutline,
@@ -14,11 +15,13 @@ import {
 } from "ionicons/icons"
 import { useHistory } from "react-router-dom"
 import "./AccueilMobile.css"
+import { UserMenu } from "./UserMenu"
 
 const Accueil: React.FC = () => {
   const history = useHistory()
   const [showBalance, setShowBalance] = useState(true)
   const [notificationCount, setNotificationCount] = useState(3)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const toggleBalance = () => {
     setShowBalance(!showBalance)
@@ -39,18 +42,19 @@ const Accueil: React.FC = () => {
               {notificationCount > 0 && <span className="notification-badge">{notificationCount}</span>}
               <IonRippleEffect />
             </button>
-            <button className="profile-button ion-activatable" onClick={() => history.push("/profile")}>
+            <button className="profile-button ion-activatable" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               <IonIcon icon={personOutline} />
               <IonRippleEffect />
             </button>
+            <UserMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
           </div>
         </div>
 
         {/* Account Card */}
-        <div className="account-card ion-activatable" >
+        <div className="account-card ion-activatable">
           <div className="account-header">
             <h2>Compte Epargne</h2>
-            <IonIcon icon={statsChartOutline} className="stats-icon" onClick={() => history.push("/compte")}/>
+            <IonIcon icon={statsChartOutline} className="stats-icon" onClick={() => history.push("/compte")} />
           </div>
           <div className="account-details">
             <div>
@@ -102,7 +106,7 @@ const Accueil: React.FC = () => {
           <div className="budget-card ion-activatable">
             <h3>Dépenses ce mois</h3>
             <div className="budget-progress">
-              <div className="progress-bar" style={{ width: '70%' }}></div>
+              <div className="progress-bar" style={{ width: "70%" }}></div>
             </div>
             <div className="budget-details">
               <p>1,400 TND / 2,000 TND</p>
@@ -146,3 +150,4 @@ const Accueil: React.FC = () => {
 }
 
 export default Accueil
+
