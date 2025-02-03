@@ -1,6 +1,7 @@
 import type React from "react"
-import { IonContent, IonHeader, IonPage, IonToolbar } from "@ionic/react"
+import { IonContent, IonHeader, IonPage } from "@ionic/react"
 import { useState } from "react"
+import Navbar from "../../components/Navbar"
 import "./accueilDesktop.css"
 
 interface Account {
@@ -38,10 +39,6 @@ const AccueilDesktop: React.FC = () => {
     leisure: { current: 150, max: 200 },
   })
 
-  const handleCardClick = () => {
-    console.log("Navigating to card management...")
-  }
-
   const handleAccountClick = (accountId: number) => {
     console.log(`Viewing account ${accountId}...`)
   }
@@ -49,26 +46,7 @@ const AccueilDesktop: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar className="custom-toolbar">
-          <img src="amen_logo.png" alt="Amen Bank Logo" className="navbar-logo" />
-          <div className="navbar-links">
-            <a href="#" className="navbar-link" onClick={handleCardClick}>
-              Accueil
-            </a>
-            <a href="#" className="navbar-link">
-              Comptes
-            </a>
-            <a href="#" className="navbar-link">
-              Chat
-            </a>
-            <a href="#" className="navbar-link">
-              Virements
-            </a>
-            <a href="#" className="navbar-link">
-              Cartes
-            </a>
-          </div>
-        </IonToolbar>
+        <Navbar />
       </IonHeader>
       <IonContent className="ion-padding custom-content">
         <div className="dashboard-container">

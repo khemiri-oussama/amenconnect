@@ -1,0 +1,31 @@
+.custom-toolbar {
+    --background: #181818;
+  }
+  
+  .navbar-logo {
+    height: 40px;
+    margin-top: 10px;
+    margin-left: 25px;
+  }
+  
+  .navbar-links {
+    display: flex;
+    gap: 24px;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .navbar-link {
+    color: #a0a0a0;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s ease;
+  }
+  
+  .navbar-link:hover {
+    color: #ffffff;
+  }
+  
+  
