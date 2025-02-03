@@ -28,7 +28,7 @@ const CardMobile: React.FC = () => {
             </div>
             <div className="card-footer">
               <div className="expiry">
-                <span>Expire à fin</span>
+                <span>Expire à </span>
                 <span>01/28</span>
               </div>
               <div className="bank-logo">
