@@ -1,200 +1,361 @@
 /* Global Styles */
 :root {
-    --primary-green: #47ce65;
-    --background-dark: #1e1e1e;
-    --card-background: rgba(255, 255, 255, 0.1);
-    --text-gray: rgba(255, 255, 255, 0.6);
+  --primary-green: #47ce65;
+  --background-dark: #1e1e1e;
+  --card-background: rgba(255, 255, 255, 0.1);
+  --text-gray: rgba(255, 255, 255, 0.6);
+  --accent-blue: #3b82f6;
+}
+
+/* Content Styles */
+.custom-content {
+  --background: linear-gradient(to bottom, #1a1a1a, var(--background-dark));
+  --padding-top: 0;
+  --padding-bottom: 80px;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.custom-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.custom-content {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.content-wrapper {
+  padding: 16px;
+  padding-bottom: 80px; /* Adjust based on your bottom tabs height */
+}
+
+/* Profile Header */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  animation: fadeIn 0.5s ease-out;
+  background: var(--card-background);
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.greeting {
+  color: var(--text-gray);
+  margin: 0;
+  font-size: 14px;
+}
+
+.username {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
+.header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.profile-button,
+.notification-button {
+  background: transparent;
+  color: white;
+  padding: 8px;
+  font-size: 24px;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--primary-green);
+  color: var(--background-dark);
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+/* Account Card */
+.account-card {
+  background: var(--card-background);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: slideIn 0.5s ease-out;
+}
+
+.account-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 10px rgba(71, 206, 101, 0.3);
+}
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.stats-icon {
+  color: var(--primary-green);
+  font-size: 24px;
+}
+
+.account-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.balance-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.balance {
+  font-size: 28px;
+  font-family: monospace;
+  color: var(--primary-green);
+  margin: 0 0 8px 0;
+}
+
+.toggle-balance {
+  background: transparent;
+  color: var(--text-gray);
+  border: none;
+  padding: 0;
+  font-size: 20px;
+}
+
+.account-number,
+.expiry-date {
+  color: var(--text-gray);
+  margin: 0;
+}
+
+/* Section Styles */
+.section {
+  margin-bottom: 24px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-header h2 {
+  font-size: 20px;
+  margin: 0;
+  color: white;
+}
+
+.view-all {
+  background: transparent;
+  color: var(--text-gray);
+  position: relative;
+  overflow: hidden;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: color 0.3s ease;
+}
+
+.view-all:active {
+  color: var(--primary-green);
+}
+
+/* Payment Card */
+.payment-card {
+  background: var(--card-background);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.payment-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 10px rgba(71, 206, 101, 0.3);
+}
+
+.card-label {
+  color: var(--text-gray);
+  margin: 0 0 8px 0;
+}
+
+.card-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-icon {
+  color: var(--primary-green);
+  font-size: 24px;
+}
+
+.card-info {
+  flex: 1;
+}
+
+.card-name {
+  color: white;
+  margin: 0;
+  font-weight: 500;
+}
+
+.card-number {
+  color: var(--text-gray);
+  margin: 0;
+}
+
+.card-expiry {
+  color: var(--accent-blue);
+  margin: 0;
+}
+
+/* Budget Card */
+.budget-card {
+  background: var(--card-background);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.budget-card h3 {
+  color: white;
+  margin: 0 0 16px 0;
+}
+
+.budget-progress {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary-green);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.budget-details {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-gray);
+}
+
+.budget-remaining {
+  color: var(--accent-blue);
+}
+
+/* Bottom Navigation */
+.bottom-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  background: var(--background-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 24px;
+  z-index: 1000;
+}
+
+.tab-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  color: var(--text-gray);
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.tab-button.active {
+  color: var(--primary-green);
+}
+
+.tab-button ion-icon {
+  font-size: 24px;
+}
+
+.tab-button ion-label {
+  font-size: 12px;
+}
+
+/* iOS Specific Styles */
+.ios .status-bar {
+  height: 20px;
+}
+
+/* Android Specific Styles */
+.md .status-bar {
+  height: 24px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  
-  
-  /* Content Styles */
-  ion-content {
-    --background: var(--background-dark);
-    --padding-top: 0;
-    --padding-bottom: 80px;
+  to {
+    opacity: 1;
   }
-  
-  /* Profile Header */
-  .profile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
   }
-  
-  .greeting {
-    color: var(--text-gray);
-    margin: 0;
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
-  
+}
+
+/* Responsive adjustments */
+@media (max-width: 360px) {
   .username {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0;
-    color: white;
-  }
-  
-  .profile-button {
-    background: transparent;
-    color: white;
-    padding: 8px;
-    font-size: 24px;
-  }
-  
-  /* Account Card */
-  .account-card {
-    background: var(--card-background);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 24px;
-  }
-  
-  .account-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
-  }
-  
-  .stats-icon {
-    color: var(--primary-green);
-    font-size: 24px;
-  }
-  
-  .account-details {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-  
-  .balance {
-    font-size: 28px;
-    font-family: monospace;
-    color: var(--primary-green);
-    margin: 0 0 8px 0;
-  }
-  
-  .account-number,
-  .expiry-date {
-    color: var(--text-gray);
-    margin: 0;
-  }
-  
-  /* Section Styles */
-  .section {
-    margin-bottom: 24px;
-  }
-  
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-  
-  .section-header h2 {
     font-size: 20px;
-    margin: 0;
-    color: white;
   }
-  
-  .view-all {
-    background: transparent;
-    color: var(--text-gray);
-  }
-  
-  /* Payment Card */
-  .payment-card {
-    background: var(--card-background);
-    border-radius: 16px;
-    padding: 20px;
-  }
-  
-  .card-label {
-    color: var(--text-gray);
-    margin: 0 0 8px 0;
-  }
-  
-  .card-details {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .card-icon {
-    color: var(--primary-green);
+
+  .balance {
     font-size: 24px;
   }
-  
-  .card-info {
-    flex: 1;
+
+  .section-header h2 {
+    font-size: 18px;
   }
-  
+
   .card-name {
-    color: white;
-    margin: 0;
-    font-weight: 500;
+    font-size: 14px;
   }
-  
+
   .card-number {
-    color: var(--text-gray);
-    margin: 0;
-  }
-  
-  .card-expiry {
-    color: #3b82f6;
-    margin: 0;
-  }
-  
-  /* Budget Card */
-  .budget-card {
-    background: var(--card-background);
-    border-radius: 16px;
-    height: 160px;
-  }
-  
-  /* Bottom Navigation */
-  .bottom-tabs {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    background: var(--background-dark);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 16px 24px;
-  }
-  
-  .tab-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    background: transparent;
-    color: var(--text-gray);
-  }
-  
-  .tab-button.active {
-    color: var(--primary-green);
-  }
-  
-  .tab-button ion-icon {
-    font-size: 24px;
-  }
-  
-  .tab-button ion-label {
     font-size: 12px;
   }
-  
-  /* iOS Specific Styles */
-  .ios .status-bar {
-    height: 1px;
-  }
-  
-  /* Android Specific Styles */
-  .md .status-bar {
-    height: 24px;
-  }
-  
-  
+}
+
