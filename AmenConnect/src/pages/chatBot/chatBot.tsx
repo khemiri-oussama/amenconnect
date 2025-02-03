@@ -1,6 +1,8 @@
 import type React from "react"
 import { isPlatform } from "@ionic/react"
 import ChatBotMobile from "./chatBotMobile"
+import ChatBotDesktop from "./chatBotDesktop"
+import ChatBotKiosk from "./chatBotKiosk"
 
 import { useEffect, useState } from "react"
 
@@ -32,9 +34,13 @@ const ChatBot: React.FC = () => {
 
   return (
     <>
-    
-    return <>{isMobile ? <ChatBotMobile /> : <div>Interface non mobile</div>}</>;
-
+      {isMobile ? (
+        <ChatBotMobile />
+      ) : isBorneInteractive ? (
+        <ChatBotKiosk />
+      ) : (
+        <ChatBotDesktop />
+      )}
     </>
   )
 }
