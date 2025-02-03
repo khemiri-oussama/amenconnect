@@ -27,7 +27,7 @@ const Accueil: React.FC = () => {
     setShowBalance(!showBalance)
   }
 
-  return(
+  return (
     <IonPage>
       <IonContent fullscreen className="ion-padding custom-content">
         {/* Profile Header */}
@@ -37,7 +37,7 @@ const Accueil: React.FC = () => {
             <h1 className="username">Foulen Ben Foulen</h1>
           </div>
           <div className="header-actions">
-            <button className="notification-button ion-activatable">
+            <button className="notification-button ion-activatable" onClick={() => history.push("/notifications")}>
               <IonIcon icon={notificationsOutline} />
               {notificationCount > 0 && <span className="notification-badge">{notificationCount}</span>}
               <IonRippleEffect />
@@ -51,7 +51,7 @@ const Accueil: React.FC = () => {
         </div>
 
         {/* Account Card */}
-        <div className="account-card">
+        <div className="account-card ">
           <div className="account-header">
             <h2>Compte Epargne</h2>
             <IonIcon icon={statsChartOutline} className="stats-icon" onClick={() => history.push("/compte")} />
@@ -59,7 +59,7 @@ const Accueil: React.FC = () => {
           <div className="account-details">
             <div>
               <div className="balance-container">
-                <p className="balance">{showBalance ? "0.000 TND" : "••••• TND"}</p>
+                <p className="balance">{showBalance ? "450.0 TND" : "••••• TND"}</p>
                 <button className="toggle-balance" onClick={toggleBalance}>
                   <IonIcon icon={showBalance ? eyeOffOutline : eyeOutline} />
                 </button>

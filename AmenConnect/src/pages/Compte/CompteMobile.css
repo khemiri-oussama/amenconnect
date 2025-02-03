@@ -119,7 +119,9 @@
     --placeholder-color: var(--text-gray);
     --icon-color: var(--text-gray);
     --border-radius: 12px;
+    margin-top: -25px;
     padding: 0;
+    margin-bottom: 80px;
   }
   
   /* Bottom Navigation */

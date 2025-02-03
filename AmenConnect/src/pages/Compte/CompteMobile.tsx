@@ -39,7 +39,7 @@ const ComptePage: React.FC = () => {
           </div>
           <div className="account-details">
             <div>
-              <h2 className="balance">450.000 TND</h2>
+              <h2 className="balance">450.00 TND</h2>
               <p className="account-number">12345678987</p>
             </div>
             <span className="expiry-date">20/01/2025</span>
