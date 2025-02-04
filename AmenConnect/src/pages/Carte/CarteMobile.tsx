@@ -9,24 +9,18 @@ import {
   IonSegmentButton,
   IonLabel,
   IonImg,
-  IonRippleEffect,
 } from "@ionic/react"
 import {
-  homeOutline,
-  walletOutline,
-  chatbubbleOutline,
-  cardOutline,
-  arrowForward,
   eyeOutline,
   eyeOffOutline,
 } from "ionicons/icons"
 import { motion, AnimatePresence } from "framer-motion"
 import "./CarteMobile.css"
+import NavMobile from "../../components/NavMobile"
 
 const CarteMobile: React.FC = () => {
   const [selectedSegment, setSelectedSegment] = useState<string>("details")
   const [isCardNumberVisible, setIsCardNumberVisible] = useState(false)
-  const history = useHistory()
 
   const toggleCardNumber = () => {
     setIsCardNumberVisible(!isCardNumberVisible)
@@ -179,28 +173,8 @@ const CarteMobile: React.FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Bottom Navigation */}
-        <div className="bottom-tabs">
-          {[
-            { icon: homeOutline, label: "Accueil", path: "/accueil" },
-            { icon: walletOutline, label: "Compte", path: "/compte" },
-            { icon: chatbubbleOutline, label: "Chat", path: "/ChatBot" },
-            { icon: cardOutline, label: "Carte", path: "/carte", active: true },
-            { icon: arrowForward, label: "Virements", path: "/virements" },
-          ].map((tab, index) => (
-            <button
-              key={index}
-              className={`tab-button ${tab.active ? "active" : ""}`}
-              onClick={() => tab.path && history.push(tab.path)}
-            >
-              <IonIcon icon={tab.icon} />
-              <span>{tab.label}</span>
-              <IonRippleEffect />
-            </button>
-          ))}
-        </div>
       </IonContent>
+      <NavMobile currentPage="carte" />
     </IonPage>
   )
 }

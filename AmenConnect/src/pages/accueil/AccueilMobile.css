@@ -267,44 +267,6 @@
   color: var(--accent-blue);
 }
 
-/* Bottom Navigation */
-.bottom-tabs {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  background: var(--background-dark);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 16px 24px;
-  z-index: 1000;
-}
-
-.tab-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  background: transparent;
-  color: var(--text-gray);
-  position: relative;
-  overflow: hidden;
-  transition: color 0.3s ease;
-}
-
-.tab-button.active {
-  color: var(--primary-green);
-}
-
-.tab-button ion-icon {
-  font-size: 24px;
-}
-
-.tab-button ion-label {
-  font-size: 12px;
-}
-
 /* iOS Specific Styles */
 .ios .status-bar {
   height: 20px;
