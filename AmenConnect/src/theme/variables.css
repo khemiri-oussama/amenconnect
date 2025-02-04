@@ -1,3 +1,14 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
-  
+.status-bar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4rem; /* Adjust based on your design */
+    background: rgba(0, 0, 0, 0.1); /* Subtle transparency */
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    pointer-events: none;
+    transition: background 0.3s ease-in-out;
+  }
