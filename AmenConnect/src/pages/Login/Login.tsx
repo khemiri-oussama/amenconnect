@@ -1,11 +1,11 @@
 import type React from "react"
 import { isPlatform } from "@ionic/react"
-import HomeMobile from "./HomeMobile"
-import HomeDesktop from "./HomeDesktop"
-import HomeKiosk from "./HomeKiosk"
+import LoginMobile from "./LoginMobile"
+import LoginDesktop from "./LoginDesktop"
+import LoginKiosk from "./LoginKiosk"
 import { useEffect, useState } from "react"
 
-const Home: React.FC = () => {
+const Login: React.FC = () => {
   const [isPortrait, setIsPortrait] = useState(window.matchMedia("(orientation: portrait)").matches)
   const [isTouchable, setIsTouchable] = useState(false)
   const isMobile = isPlatform("mobile")
@@ -34,14 +34,14 @@ const Home: React.FC = () => {
   return (
     <>
       {isMobile ? (
-        <HomeMobile />
+        <LoginMobile />
       ) : isBorneInteractive ? (
-        <HomeKiosk />
+        <LoginKiosk />
       ) : (
-        <HomeDesktop />
+        <LoginDesktop />
       )}
     </>
   )
 }
 
-export default Home
+export default Login
