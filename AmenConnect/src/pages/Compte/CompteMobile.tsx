@@ -2,7 +2,7 @@ import type React from "react"
 import { useState } from "react"
 import { useHistory } from "react-router-dom"
 import { IonContent, IonPage, IonIcon, IonSearchbar, IonSegment, IonSegmentButton, IonLabel } from "@ionic/react"
-import { homeOutline, walletOutline, chatbubbleOutline, cardOutline, arrowForward, statsChartOutline } from "ionicons/icons"
+import { statsChartOutline } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from "recharts";
 
 import "./CompteMobile.css"
