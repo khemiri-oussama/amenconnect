@@ -1,4 +1,5 @@
 import type React from "react"
+import { useEffect, useRef } from "react"
 import {
   IonContent,
   IonPage,
@@ -28,6 +29,7 @@ import "./HomeDesktop.css"
 
 const HomeDesktop: React.FC = () => {
   const history = useHistory()
+  const contentRef = useRef<HTMLIonContentElement>(null)
 
   const handleLogin = () => {
     history.push("/login")
@@ -37,9 +39,37 @@ const HomeDesktop: React.FC = () => {
     // Implement guest mode logic here
   }
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollElement = contentRef.current?.shadowRoot?.querySelector(".inner-scroll")
+      if (scrollElement) {
+        const scrollPosition = scrollElement.scrollTop
+        const windowHeight = window.innerHeight
+
+        document.querySelectorAll(".fade-in-section").forEach((element) => {
+          const rect = (element as HTMLElement).getBoundingClientRect()
+          const elementTop = rect.top + scrollPosition
+          const elementVisible = 150
+
+          if (elementTop < scrollPosition + windowHeight - elementVisible) {
+            element.classList.add("is-visible")
+          } else {
+            element.classList.remove("is-visible")
+          }
+        })
+      }
+    }
+
+    contentRef.current?.addEventListener("ionScroll", handleScroll)
+
+    return () => {
+      contentRef.current?.removeEventListener("ionScroll", handleScroll)
+    }
+  }, [])
+
   return (
     <IonPage>
-      <IonContent className="home-desktop-container" fullscreen>
+      <IonContent ref={contentRef} className="home-desktop-container" fullscreen scrollEvents={true}>
         {/* Background Elements */}
         <div className="home-desktop-background">
           <div className="home-desktop-gradient-1"></div>
@@ -49,7 +79,7 @@ const HomeDesktop: React.FC = () => {
 
         {/* Main Content */}
         <div className="home-desktop-content">
-          <header className="home-desktop-header">
+          <header className="home-desktop-header fade-in-section">
             <IonImg src="amen_logo.png" alt="Amen Bank Logo" className="home-desktop-logo-image" />
             <nav className="home-desktop-nav">
               <IonButton fill="clear" className="home-desktop-nav-button">
@@ -64,7 +94,7 @@ const HomeDesktop: React.FC = () => {
           </header>
 
           <main className="home-desktop-main">
-            <div className="home-desktop-hero">
+            <div className="home-desktop-hero fade-in-section">
               <div className="home-desktop-text">
                 <h1 className="home-desktop-title">Bienvenue chez Amen Bank</h1>
                 <p className="home-desktop-subtitle">Votre partenaire financier de confiance pour un avenir prospère</p>
@@ -82,7 +112,7 @@ const HomeDesktop: React.FC = () => {
             </div>
 
             {/* Application Features */}
-            <section className="home-desktop-features">
+            <section className="home-desktop-features fade-in-section">
               <h2 className="home-desktop-features-title">Découvrez nos services bancaires innovants</h2>
               <div className="home-desktop-features-grid">
                 <IonCard className="home-desktop-feature-card">
@@ -137,7 +167,7 @@ const HomeDesktop: React.FC = () => {
             </section>
 
             {/* Additional Services */}
-            <section className="home-desktop-services">
+            <section className="home-desktop-services fade-in-section">
               <h2 className="home-desktop-services-title">Nos Services Bancaires</h2>
               <div className="home-desktop-services-grid">
                 <div className="home-desktop-service">
@@ -159,7 +189,7 @@ const HomeDesktop: React.FC = () => {
             </section>
           </main>
 
-          <footer className="home-desktop-footer">
+          <footer className="home-desktop-footer fade-in-section">
             <div className="home-desktop-footer-content">
               <div className="home-desktop-footer-section">
                 <h3>À Propos</h3>
