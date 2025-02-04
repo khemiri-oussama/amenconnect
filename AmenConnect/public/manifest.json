@@ -1,6 +1,6 @@
 {
-  "short_name": "Ionic App",
-  "name": "My Ionic App",
+  "short_name": "AmenConnect",
+  "name": "AmenBank Connect",
   "icons": [
     {
       "src": "assets/icon/favicon.png",
@@ -8,7 +8,7 @@
       "type": "image/x-icon"
     },
     {
-      "src": "assets/icon/icon.png",
+      "src": "assets/icon/favicon.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
