@@ -26,41 +26,6 @@ const AccueilMobile: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen className="ion-padding custom-content">
-<<<<<<< HEAD
-        {/* Profile Header */}
-        <div className="profile-header">
-          <div>
-            <p className="greeting">Bonjour,</p>
-            <h1 className="username">Foulen Ben Foulen</h1>
-          </div>
-          <div className="header-actions">
-            <button className="notification-button ion-activatable" onClick={() => history.push("/notifications")}>
-              <IonIcon icon={notificationsOutline} />
-              {notificationCount > 0 && <span className="notification-badge">{notificationCount}</span>}
-              <IonRippleEffect />
-            </button>
-            <button className="profile-button ion-activatable" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              <IonIcon icon={personOutline} />
-              <IonRippleEffect />
-            </button>
-            <UserMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-          </div>
-        </div>
-
-        {/* Account Card */}
-        <div className="account-card ">
-          <div className="account-header">
-            <h2>Compte Epargne</h2>
-            <IonIcon icon={statsChartOutline} className="stats-icon" onClick={() => history.push("/compte")} />
-          </div>
-          <div className="account-details">
-            <div>
-              <div className="balance-container">
-                <p className="balance">{showBalance ? "450.0 TND" : "••••• TND"}</p>
-                <button className="toggle-balance" onClick={toggleBalance}>
-                  <IonIcon icon={showBalance ? eyeOffOutline : eyeOutline} />
-                </button>
-=======
         <div className="content-wrapper">
           {/* Profile Header */}
           <div className="profile-header">
@@ -96,7 +61,6 @@ const AccueilMobile: React.FC = () => {
                   </button>
                 </div>
                 <p className="account-number">12345678987</p>
->>>>>>> refs/remotes/origin/main
               </div>
               <p className="expiry-date">20/01/2025</p>
             </div>
@@ -155,4 +119,3 @@ const AccueilMobile: React.FC = () => {
 }
 
 export default AccueilMobile
-
