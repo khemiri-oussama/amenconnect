@@ -1,7 +1,29 @@
 import type React from "react"
-import { IonContent, IonPage, IonButton, IonImg, IonIcon } from "@ionic/react"
+import {
+  IonContent,
+  IonPage,
+  IonButton,
+  IonImg,
+  IonIcon,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+} from "@ionic/react"
 import { useHistory } from "react-router-dom"
-import { logInOutline, personOutline, helpCircleOutline, languageOutline } from "ionicons/icons"
+import {
+  logInOutline,
+  personOutline,
+  helpCircleOutline,
+  languageOutline,
+  phonePortraitOutline,
+  desktopOutline,
+  chatbubbleEllipsesOutline,
+  shieldCheckmarkOutline,
+  cardOutline,
+  cashOutline,
+  trendingUpOutline,
+} from "ionicons/icons"
 import "./HomeDesktop.css"
 
 const HomeDesktop: React.FC = () => {
@@ -42,33 +64,128 @@ const HomeDesktop: React.FC = () => {
           </header>
 
           <main className="home-desktop-main">
-            <div className="home-desktop-text">
-              <h1 className="home-desktop-title">Bienvenue chez Amen Bank</h1>
-              <p className="home-desktop-subtitle">Votre partenaire financier de confiance</p>
+            <div className="home-desktop-hero">
+              <div className="home-desktop-text">
+                <h1 className="home-desktop-title">Bienvenue chez Amen Bank</h1>
+                <p className="home-desktop-subtitle">Votre partenaire financier de confiance pour un avenir prospère</p>
+              </div>
+              <div className="home-desktop-buttons">
+                <IonButton expand="block" className="home-desktop-connect-button" onClick={handleLogin}>
+                  <IonIcon icon={logInOutline} slot="start" />
+                  Se Connecter
+                </IonButton>
+                <IonButton expand="block" className="home-desktop-guest-button" onClick={handleGuestMode}>
+                  <IonIcon icon={personOutline} slot="start" />
+                  Mode Invité
+                </IonButton>
+              </div>
             </div>
-            <div className="home-desktop-buttons">
-              <IonButton expand="block" className="home-desktop-connect-button" onClick={handleLogin}>
-                <IonIcon icon={logInOutline} slot="start" />
-                Se Connecter
-              </IonButton>
-              <IonButton expand="block" className="home-desktop-guest-button" onClick={handleGuestMode}>
-                <IonIcon icon={personOutline} slot="start" />
-                Mode Invité
-              </IonButton>
-            </div>
+
+            {/* Application Features */}
+            <section className="home-desktop-features">
+              <h2 className="home-desktop-features-title">Découvrez nos services bancaires innovants</h2>
+              <div className="home-desktop-features-grid">
+                <IonCard className="home-desktop-feature-card">
+                  <IonCardHeader>
+                    <IonIcon icon={phonePortraitOutline} className="home-desktop-feature-icon" />
+                    <IonCardTitle>Application Hybride</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <p>
+                      Accédez à vos comptes sur mobile, web et totems interactifs. Une expérience bancaire unifiée, où
+                      que vous soyez.
+                    </p>
+                  </IonCardContent>
+                </IonCard>
+                <IonCard className="home-desktop-feature-card">
+                  <IonCardHeader>
+                    <IonIcon icon={chatbubbleEllipsesOutline} className="home-desktop-feature-icon" />
+                    <IonCardTitle>Chatbot Intelligent</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <p>
+                      Assistance instantanée 24/7 pour répondre à vos questions. Notre chatbot utilise l'IA pour vous
+                      offrir un support personnalisé.
+                    </p>
+                  </IonCardContent>
+                </IonCard>
+                <IonCard className="home-desktop-feature-card">
+                  <IonCardHeader>
+                    <IonIcon icon={desktopOutline} className="home-desktop-feature-icon" />
+                    <IonCardTitle>Gestion des Comptes</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <p>
+                      Consultez vos soldes, effectuez des virements et gérez vos finances en toute simplicité avec notre
+                      interface intuitive.
+                    </p>
+                  </IonCardContent>
+                </IonCard>
+                <IonCard className="home-desktop-feature-card">
+                  <IonCardHeader>
+                    <IonIcon icon={shieldCheckmarkOutline} className="home-desktop-feature-icon" />
+                    <IonCardTitle>Sécurité Renforcée</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <p>
+                      Profitez d'une protection avancée avec notre authentification à deux facteurs et nos systèmes de
+                      cryptage de pointe.
+                    </p>
+                  </IonCardContent>
+                </IonCard>
+              </div>
+            </section>
+
+            {/* Additional Services */}
+            <section className="home-desktop-services">
+              <h2 className="home-desktop-services-title">Nos Services Bancaires</h2>
+              <div className="home-desktop-services-grid">
+                <div className="home-desktop-service">
+                  <IonIcon icon={cardOutline} className="home-desktop-service-icon" />
+                  <h3>Cartes Bancaires</h3>
+                  <p>Découvrez notre gamme de cartes adaptées à vos besoins</p>
+                </div>
+                <div className="home-desktop-service">
+                  <IonIcon icon={cashOutline} className="home-desktop-service-icon" />
+                  <h3>Prêts et Crédits</h3>
+                  <p>Des solutions de financement sur mesure pour vos projets</p>
+                </div>
+                <div className="home-desktop-service">
+                  <IonIcon icon={trendingUpOutline} className="home-desktop-service-icon" />
+                  <h3>Investissements</h3>
+                  <p>Faites fructifier votre patrimoine avec nos conseils experts</p>
+                </div>
+              </div>
+            </section>
           </main>
 
           <footer className="home-desktop-footer">
-            <div className="home-desktop-features">
-              <div className="home-desktop-feature">
-                <IonIcon icon={helpCircleOutline} className="home-desktop-feature-icon" />
-                <h3>Support 24/7</h3>
-                <p>Assistance disponible à tout moment</p>
+            <div className="home-desktop-footer-content">
+              <div className="home-desktop-footer-section">
+                <h3>À Propos</h3>
+                <p>
+                  Amen Bank, votre partenaire financier depuis 1967, s'engage à vous offrir des services bancaires
+                  innovants et sécurisés.
+                </p>
               </div>
-              <div className="home-desktop-feature">
-                <IonIcon icon={languageOutline} className="home-desktop-feature-icon" />
-                <h3>Multi-langues</h3>
-                <p>Services disponibles en plusieurs langues</p>
+              <div className="home-desktop-footer-section">
+                <h3>Contactez-nous</h3>
+                <p>Email: contact@amenbank.com</p>
+                <p>Téléphone: +216 71 148 000</p>
+              </div>
+              <div className="home-desktop-footer-section">
+                <h3>Liens Rapides</h3>
+                <ul>
+                  <li>
+                    <a href="#">Nos Agences</a>
+                  </li>
+                  <li>
+                    <a href="#">Carrières</a>
+                  </li>
+                  <li>
+                    <a href="#">Mentions Légales</a>
+                  </li>
+                </ul>
               </div>
             </div>
             <p className="home-desktop-copyright">© 2025 Amen Bank. Tous droits réservés.</p>
