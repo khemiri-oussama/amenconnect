@@ -10,16 +10,13 @@ interface NavMobileProps {
 
 const NavMobile: React.FC<NavMobileProps> = ({ currentPage }) => {
   const history = useHistory()
-  const router = useIonRouter()
-
-  const handleCardClick = () => {
-    console.log("Navigating to card management...")
-    router.push("/cards")
-  }
 
   return (
     <div className="bottom-tabs">
-      <button className={`tab-button ion-activatable ${currentPage === "home" ? "active" : ""}`}>
+      <button 
+        className={`tab-button ion-activatable ${currentPage === "accueil" ? "active" : ""}`}
+        onClick={() => history.push("/accueil")}
+        >
         <IonIcon icon={homeOutline} />
         <IonLabel>Accueil</IonLabel>
         <IonRippleEffect />

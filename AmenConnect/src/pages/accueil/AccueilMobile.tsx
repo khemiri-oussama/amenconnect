@@ -113,7 +113,7 @@ const AccueilMobile: React.FC = () => {
           </div>
         </div>
       </IonContent>
-      <NavMobile currentPage="home" />
+      <NavMobile currentPage="accueil" />
     </IonPage>
   )
 }
