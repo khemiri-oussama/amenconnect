@@ -146,6 +146,12 @@ ion-content {
   opacity: 0.8;
 }
 
+.card-details {
+  align-items: stretch;
+  flex-direction: column;
+  
+}
+
 /* Segment Control */
 .custom-segment {
   background: var(--card-background);
