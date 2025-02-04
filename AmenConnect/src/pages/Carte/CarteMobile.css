@@ -1,10 +1,10 @@
 /* Global Variables */
 :root {
   --primary-green: #47ce65;
-  --background-dark: #1e1e1e;
-  --card-background: rgba(255, 255, 255, 0.1);
+  --background-dark: #121212;
+  --card-background: rgba(255, 255, 255, 0.05);
   --text-gray: rgba(255, 255, 255, 0.6);
-  --card-gradient: linear-gradient(135deg, #0396ff 0%, #0d47a1 100%);
+  --card-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
 }
 
 /* Content Styles */
@@ -21,15 +21,16 @@ ion-content {
 
 /* Page Title */
 .page-title {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
   color: white;
-  margin: 10px 0 20px;
+  margin: 20px 0 30px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Credit Card Display */
 .card-display {
-  margin-bottom: 24px;
+  margin-bottom: 30px;
   perspective: 1000px;
 }
 
@@ -37,17 +38,60 @@ ion-content {
   background: var(--card-gradient);
   border-radius: 16px;
   padding: 24px;
-  min-height: 200px;
+  height: 220px;
+  width: 360px;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.credit-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+  transform: rotate(30deg);
+}
+
+.credit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-type {
   color: white;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.toggle-visibility {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.toggle-visibility:hover {
+  opacity: 0.8;
 }
 
 .card-body {
@@ -55,24 +99,28 @@ ion-content {
 }
 
 .chip {
-  width: 45px;
-  height: 34px;
+  width: 50px;
+  height: 38px;
   border-radius: 6px;
   margin-bottom: 20px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .card-number {
   color: white;
-  font-size: 18px;
-  font-family: monospace;
+  font-size: 22px;
+  font-family: "Courier New", monospace;
   letter-spacing: 2px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .card-holder {
   color: white;
-  font-size: 14px;
+  font-size: 16px;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
 }
 
 .card-footer {
@@ -86,18 +134,16 @@ ion-content {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
-
-
-
-
-.bank-name{
+.bank-name {
   display: flow;
-  width: 50%;
-  height: 50%;
-  margin-left: 50%;
+  width: 60%;
+  height: 60%;
+  margin-left: 40%;
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
 }
 
 /* Segment Control */
@@ -106,45 +152,118 @@ ion-content {
   border-radius: 16px;
   --background: transparent;
   padding: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 ion-segment-button {
-  --background-checked: transparent;
+  --background-checked: rgba(255, 255, 255, 0.1);
   --color-checked: white;
   --color: var(--text-gray);
-  --indicator-color: transparent;
-  min-height: 40px;
+  --indicator-color: var(--primary-green);
+  min-height: 36px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+}
+
+ion-segment-button:hover {
+  --color: white;
 }
 
 /* Card Details Section */
-.card-details {
-  display: flow-root;
-  padding-top: 16px;
+.card-details,
+.card-encours,
+.card-operations {
+  background: var(--card-background);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.card-details h2 {
+.card-details h2,
+.card-encours h2,
+.card-operations h2 {
   color: white;
-  font-size: 18px;
-  margin-bottom: 24px;
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
 }
 
 .detail-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
+  flex-direction: column;
+  padding: 12px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .detail-label {
   color: var(--text-gray);
   font-size: 14px;
+  margin-bottom: 4px;
 }
 
 .detail-value {
   color: white;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.encours-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.encours-amount span {
+  color: var(--text-gray);
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.encours-amount .amount {
+  color: var(--primary-green);
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.operation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.operation-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.operation-date {
+  font-size: 12px;
+  color: var(--text-gray);
+  margin-bottom: 4px;
+}
+
+.operation-description {
   font-size: 14px;
+  color: white;
+}
+
+.operation-amount {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.operation-amount.negative {
+  color: #ff4d4d;
+}
+
+.operation-amount.positive {
+  color: var(--primary-green);
 }
 
 /* Bottom Navigation */
@@ -155,10 +274,12 @@ ion-segment-button {
   right: 0;
   display: flex;
   justify-content: space-between;
-  background: var(--background-dark);
+  background: rgba(18, 18, 18, 0.95);
+  backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 12px 24px;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  padding: 10px 20px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .tab-button {
@@ -169,10 +290,17 @@ ion-segment-button {
   background: transparent;
   border: none;
   color: var(--text-gray);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .tab-button.active {
   color: var(--primary-green);
+}
+
+.tab-button:hover {
+  color: white;
 }
 
 .tab-button ion-icon {
@@ -180,7 +308,8 @@ ion-segment-button {
 }
 
 .tab-button span {
-  font-size: 12px;
+  font-size: 10px;
+  font-weight: 500;
 }
 
 /* iOS Specific Styles */
@@ -191,5 +320,83 @@ ion-segment-button {
 /* Android Specific Styles */
 .md .status-bar {
   height: 24px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.5s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 24px;
+  }
+
+  .credit-card {
+    padding: 20px;
+    height: 200px;
+    width: 320px;
+  }
+
+  .card-number {
+    font-size: 18px;
+  }
+
+  .card-holder {
+    font-size: 14px;
+  }
+
+  .custom-segment {
+    margin-bottom: 15px;
+  }
+
+  .card-details,
+  .card-encours,
+  .card-operations {
+    padding: 15px;
+  }
+
+  .card-details h2,
+  .card-encours h2,
+  .card-operations h2 {
+    font-size: 18px;
+  }
+
+  .detail-label {
+    font-size: 13px;
+  }
+
+  .detail-value {
+    font-size: 15px;
+  }
+
+  .encours-amount .amount {
+    font-size: 28px;
+  }
 }
 
