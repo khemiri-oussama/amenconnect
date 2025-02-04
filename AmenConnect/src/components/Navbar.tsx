@@ -12,7 +12,9 @@ const Navbar: React.FC = () => {
 
   return (
     <IonToolbar className="custom-toolbar">
+      <IonRouterLink routerLink="/accueil" className="s">
       <img src="amen_logo.png" alt="Amen Bank Logo" className="navbar-logo" />
+      </IonRouterLink>
       <div className="navbar-links">
         <IonRouterLink routerLink="/accueil" className="navbar-link">
           Accueil

@@ -2,11 +2,11 @@ import type React from "react"
 import { useState } from "react"
 import { useHistory } from "react-router-dom"
 import { IonContent, IonPage, IonIcon, IonSearchbar, IonSegment, IonSegmentButton, IonLabel } from "@ionic/react"
-import { homeOutline, walletOutline, chatbubbleOutline, cardOutline, arrowForward, statsChartOutline } from "ionicons/icons"
+import { statsChartOutline } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from "recharts";
 
 import "./CompteMobile.css"
-
+import NavMobile from "../../components/NavMobile"
 const chartData = [
   { month: "Jan", income: 2, expenses: 1 },
   { month: "Feb", income: 4, expenses: 2 },
@@ -130,31 +130,8 @@ const ComptePage: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* Bottom Navigation */}
-        <div className="bottom-tabs">
-          <button className="tab-button" onClick={() => history.push("/accueil")}>
-            <IonIcon icon={homeOutline} />
-            <span>Accueil</span>
-          </button>
-          <button className="tab-button active">
-            <IonIcon icon={walletOutline} />
-            <span>Compte</span>
-          </button>
-          <button className="tab-button" onClick={() => history.push('/ChatBot')}>
-            <IonIcon icon={chatbubbleOutline} />
-            <span>Chat</span>
-          </button>
-          <button className="tab-button" onClick={() => history.push("/Carte")}>
-            <IonIcon icon={cardOutline} />
-            <span>Carte</span>
-          </button>
-          <button className="tab-button">
-            <IonIcon icon={arrowForward} />
-            <span>Virements</span>
-          </button>
-        </div>
       </IonContent>
+      <NavMobile currentPage="compte" />
     </IonPage>
   )
 }
