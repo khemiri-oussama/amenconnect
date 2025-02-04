@@ -7,7 +7,7 @@ import Accueil from './pages/accueil/accueil';
 import Compte from './pages/Compte/Compte';
 import Carte from './pages/Carte/Carte';
 import ChatBot from './pages/chatBot/chatBot';
-
+import Login from './pages/Login/Login';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -75,9 +75,10 @@ const App: React.FC = () => {
           <Route exact path="/otp" component={Otp} />
           <Route exact path="/accueil" component={Accueil} />
           <Route exact path="/compte" component={Compte} />
-          <Route exact path="/Carte" component={Carte} />
+          <Route exact path="/carte" component={Carte} />
           <Route exact path="/chatBot" component={ChatBot} />
-          <Route exact path="/" render={() => <Redirect to="/home" />} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/" render={() => <Redirect to="/Home" />} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
