@@ -1,10 +1,10 @@
 {
   "images" : [
     {
-      "filename" : "AppIcon-512@2x.png",
+      "filename" : "/icons/apple-touch-icon.png",
       "idiom" : "universal",
       "platform" : "ios",
-      "size" : "1024x1024"
+      "size" : "512x512"
     }
   ],
   "info" : {
