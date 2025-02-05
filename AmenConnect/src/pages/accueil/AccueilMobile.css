@@ -75,7 +75,7 @@
 
 .notification-badge-mobile {
   position: absolute;
-  top: 0;
+  top: 9px;
   right: 0;
   background: var(--primary-green);
   color: var(--background-dark);
