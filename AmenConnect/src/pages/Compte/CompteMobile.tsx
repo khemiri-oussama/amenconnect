@@ -1,6 +1,5 @@
 import type React from "react"
-import { useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useState, useEffect } from "react"
 import {
   IonContent,
   IonPage,
@@ -30,12 +29,20 @@ const chartData = [
 ]
 
 const CompteMobile: React.FC = () => {
-  const history = useHistory()
+  const [today, setToday] = useState<string>('');
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('fr-FR'); // Format as desired
+    setToday(formattedDate);
+  }, []);
+ 
   const [selectedSegment, setSelectedSegment] = useState<string>("operations")
 
   const handleSegmentChange = (e: CustomEvent) => {
     setSelectedSegment(e.detail.value)
   }
+  
 
   return (
     <IonPage>
@@ -64,10 +71,10 @@ const CompteMobile: React.FC = () => {
           </div>
           <div className="account-details">
             <div>
-              <h2 className="balance">450.00 TND</h2>
+              <h2 className="balance">450.0 TND</h2>
               <p className="account-number">12345678987</p>
             </div>
-            <span className="expiry-date">20/01/2025</span>
+            <span className="expiry-date">{today}</span>
           </div>
         </motion.div>
 
@@ -140,7 +147,7 @@ const CompteMobile: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <h3>Opérations</h3>
-            <p className="last-update">Dernière mise à jour: 21/01/2025</p>
+            <p className="last-update">Dernière mise à jour: {today}</p>
             <IonSearchbar placeholder="Rechercher" className="custom-searchbar" mode="ios"></IonSearchbar>
           </motion.div>
         )}
@@ -155,7 +162,7 @@ const CompteMobile: React.FC = () => {
           >
             <h2>Information du compte</h2>
 
-            {[
+            {[ 
               { label: "RIB", value: "07098050012167474684" },
               { label: "Numéro du compte", value: "12345678321" },
               { label: "IBAN", value: "TN5907098050012167474684" },
@@ -183,4 +190,3 @@ const CompteMobile: React.FC = () => {
 }
 
 export default CompteMobile
-
