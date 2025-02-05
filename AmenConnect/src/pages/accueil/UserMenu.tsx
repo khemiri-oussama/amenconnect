@@ -33,7 +33,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
           <IonIcon icon={personOutline} />
           Profil
         </button>
-        <button className="menu-item" onClick={() => handleNavigation("/security-settings")}>
+        <button className="menu-item" onClick={() => handleNavigation("/SecuritySettingsMobile")}>
           <IonIcon icon={shieldOutline} />
           Paramètres de sécurité
         </button>
