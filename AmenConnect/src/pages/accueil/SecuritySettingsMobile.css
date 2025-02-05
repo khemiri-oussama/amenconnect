@@ -1,0 +1,84 @@
+.security-settings-content {
+  --background: linear-gradient(to bottom, #1a1a1a, var(--background-dark));
+  --padding-top: 16px;
+  --padding-bottom: 80px;
+}
+
+.security-settings-list {
+  background: var(--card-background);
+  border-radius: 16px;
+  margin: 16px;
+  padding: 16px 0;
+}
+
+.security-settings-list ion-item {
+  --background: transparent;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+}
+
+.security-settings-list ion-icon {
+  color: var(--primary-green);
+  font-size: 24px;
+  margin-right: 16px;
+}
+
+.security-settings-list ion-label {
+  color: white;
+}
+
+.security-settings-list ion-toggle {
+  --background: rgba(255, 255, 255, 0.1);
+  --background-checked: var(--primary-green);
+  --handle-background: white;
+}
+
+.change-password-container {
+  padding: 16px;
+}
+
+.change-password-container ion-button {
+  --background: var(--primary-green);
+  --color: var(--background-dark);
+  font-weight: bold;
+}
+
+.change-password-modal {
+  --background: var(--background-dark);
+  --padding-top: 24px;
+  --padding-bottom: 24px;
+  --padding-start: 24px;
+  --padding-end: 24px;
+}
+
+.change-password-modal h2 {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 24px;
+}
+
+.change-password-modal ion-list {
+  background: transparent;
+}
+
+.change-password-modal ion-item {
+  --background: transparent;
+  --border-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 16px;
+}
+
+.change-password-modal ion-label {
+  color: var(--text-gray);
+}
+
+.change-password-modal ion-input {
+  color: white;
+}
+
+.change-password-modal ion-button {
+  margin-top: 24px;
+}
+
