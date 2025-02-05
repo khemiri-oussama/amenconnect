@@ -16,29 +16,26 @@
     --padding-end: env(safe-area-inset-right);
   }
   
-  .otp-mobile-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 100%;
-    padding: 2rem;
-    position: relative;
+  .otp-mobile-grid {
+    height: 100%;
   }
   
-  .otp-mobile-logo-container {
-    text-align: center;
-    margin-bottom: 2rem;
+  .otp-mobile-logo-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2rem;
   }
   
   .otp-mobile-logo {
     width: 150px;
     height: auto;
-    margin: 0 auto;
   }
   
-  .otp-mobile-form-container {
-    background: transparent;
-    border-radius: 24px;
+  .otp-mobile-form-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 2rem;
   }
   
@@ -87,18 +84,11 @@
     align-items: center;
   }
   
-  .otp-mobile-input-icon {
-    position: absolute;
-    left: 1rem;
-    color: var(--primary-color);
-    font-size: 1.2rem;
-  }
-  
   .otp-mobile-inputs {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-left: 3rem;
+    gap: 8px; /* Add gap between inputs */
   }
   
   .otp-mobile-input {
@@ -114,7 +104,8 @@
     --border-style: solid;
     --border-width: 1px;
     font-size: 1rem;
-    width: 40px;
+    width: 100%; /* Change from fixed width to 100% */
+    max-width: 50px; /* Add max-width to limit input size */
     height: 50px;
     text-align: center;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -206,6 +197,20 @@
     }
     100% {
       transform: translateY(-20px) scale(1.1);
+    }
+  }
+  
+  /* Add responsive styles */
+  @media (min-width: 768px) {
+    .otp-mobile-form-col {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+  }
+  
+  @media (min-height: 700px) {
+    .otp-mobile-logo-col {
+      padding-top: 4rem;
     }
   }
   
