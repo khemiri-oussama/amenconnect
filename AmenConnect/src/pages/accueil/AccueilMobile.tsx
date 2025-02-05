@@ -1,5 +1,5 @@
 import type React from "react"
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { IonContent, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
 import {
   cardOutline,
@@ -19,7 +19,13 @@ const AccueilMobile: React.FC = () => {
   const [showBalance, setShowBalance] = useState(true)
   const [notificationCount, setNotificationCount] = useState(3)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [today, setToday] = useState<string>('');
 
+  useEffect(() => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('fr-FR'); // Format as desired
+    setToday(formattedDate);
+  }, []);
   const toggleBalance = () => {
     setShowBalance(!showBalance)
   }
@@ -72,7 +78,7 @@ const AccueilMobile: React.FC = () => {
                 </div>
                 <p className="account-number-mobile">12345678987</p>
               </div>
-              <p className="expiry-date-mobile">20/01/2025</p>
+              <p className="expiry-date-mobile">{today}</p>
             </div>
             <IonRippleEffect />
           </div>
