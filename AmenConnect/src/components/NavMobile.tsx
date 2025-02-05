@@ -12,6 +12,7 @@ const NavMobile: React.FC<NavMobileProps> = ({ currentPage }) => {
   const history = useHistory()
 
   return (
+  
     <div className="bottom-tabs">
       <button 
         className={`tab-button ion-activatable ${currentPage === "accueil" ? "active" : ""}`}
