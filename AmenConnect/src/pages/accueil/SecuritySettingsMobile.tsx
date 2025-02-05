@@ -1,5 +1,4 @@
-import type React from "react"
-import { useState } from "react"
+import React, { useState } from "react";
 import {
   IonContent,
   IonPage,
@@ -16,7 +15,7 @@ import {
   IonTitle,
   IonModal,
   IonInput,
-} from "@ionic/react"
+} from "@ionic/react";
 import {
   lockClosedOutline,
   fingerPrintOutline,
@@ -24,9 +23,9 @@ import {
   eyeOutline,
   eyeOffOutline,
   saveOutline,
-} from "ionicons/icons"
-import "./SecuritySettingsMobile.css"
-import NavMobile from "../../components/NavMobile"
+} from "ionicons/icons";
+import "./SecuritySettingsMobile.css";
+import NavMobile from "../../components/NavMobile";
 
 const SecuritySettingsMobile: React.FC = () => {
   const [securitySettings, setSecuritySettings] = useState({
@@ -34,29 +33,28 @@ const SecuritySettingsMobile: React.FC = () => {
     biometricLogin: false,
     loginNotifications: true,
     hideBalance: false,
-  })
+  });
 
-  const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
-  })
+  });
 
-  const handleToggle = (setting: string) => {
-    setSecuritySettings((prevState) => ({ ...prevState, [setting]: !prevState[setting] }))
-  }
+  const handleToggle = (setting: keyof typeof securitySettings) => {
+    setSecuritySettings((prevState) => ({ ...prevState, [setting]: !prevState[setting] }));
+  };
 
-  const handlePasswordChange = (field: string, value: string) => {
-    setPasswordForm((prevState) => ({ ...prevState, [field]: value }))
-  }
+  const handlePasswordChange = (field: keyof typeof passwordForm, value: string) => {
+    setPasswordForm((prevState) => ({ ...prevState, [field]: value }));
+  };
 
   const handleSavePassword = () => {
-    // Here you would typically send the new password to your backend
-    console.log("Saving new password:", passwordForm)
-    setIsChangingPassword(false)
-    setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" })
-  }
+    console.log("Saving new password:", passwordForm);
+    setIsChangingPassword(false);
+    setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+  };
 
   return (
     <IonPage>
@@ -83,10 +81,7 @@ const SecuritySettingsMobile: React.FC = () => {
           <IonItem>
             <IonIcon icon={notificationsOutline} slot="start" />
             <IonLabel>Notifications de connexion</IonLabel>
-            <IonToggle
-              checked={securitySettings.loginNotifications}
-              onIonChange={() => handleToggle("loginNotifications")}
-            />
+            <IonToggle checked={securitySettings.loginNotifications} onIonChange={() => handleToggle("loginNotifications")} />
           </IonItem>
           <IonItem>
             <IonIcon icon={securitySettings.hideBalance ? eyeOffOutline : eyeOutline} slot="start" />
@@ -110,7 +105,7 @@ const SecuritySettingsMobile: React.FC = () => {
                 <IonInput
                   type="password"
                   value={passwordForm.currentPassword}
-                  onIonChange={(e) => handlePasswordChange("currentPassword", e.detail.value!)}
+                  onIonInput={(e) => handlePasswordChange("currentPassword", e.detail.value || "")}
                 />
               </IonItem>
               <IonItem>
@@ -118,7 +113,7 @@ const SecuritySettingsMobile: React.FC = () => {
                 <IonInput
                   type="password"
                   value={passwordForm.newPassword}
-                  onIonChange={(e) => handlePasswordChange("newPassword", e.detail.value!)}
+                  onIonInput={(e) => handlePasswordChange("newPassword", e.detail.value || "")}
                 />
               </IonItem>
               <IonItem>
@@ -126,7 +121,7 @@ const SecuritySettingsMobile: React.FC = () => {
                 <IonInput
                   type="password"
                   value={passwordForm.confirmPassword}
-                  onIonChange={(e) => handlePasswordChange("confirmPassword", e.detail.value!)}
+                  onIonInput={(e) => handlePasswordChange("confirmPassword", e.detail.value || "")}
                 />
               </IonItem>
             </IonList>
@@ -142,8 +137,7 @@ const SecuritySettingsMobile: React.FC = () => {
       </IonContent>
       <NavMobile currentPage="security-settings" />
     </IonPage>
-  )
-}
+  );
+};
 
-export default SecuritySettingsMobile
-
+export default SecuritySettingsMobile;
