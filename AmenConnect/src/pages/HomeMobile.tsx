@@ -42,7 +42,33 @@ const HomeMobile: React.FC = () => {
     // Implement guest mode logic here
   }
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollElement = contentRef.current?.shadowRoot?.querySelector(".inner-scroll")
+      if (scrollElement) {
+        const scrollPosition = scrollElement.scrollTop
+        const windowHeight = window.innerHeight
 
+        document.querySelectorAll(".fade-in-section").forEach((element) => {
+          const rect = (element as HTMLElement).getBoundingClientRect()
+          const elementTop = rect.top + scrollPosition
+          const elementVisible = 150
+
+          if (elementTop < scrollPosition + windowHeight - elementVisible) {
+            element.classList.add("is-visible")
+          } else {
+            element.classList.remove("is-visible")
+          }
+        })
+      }
+    }
+
+    contentRef.current?.addEventListener("ionScroll", handleScroll)
+
+    return () => {
+      contentRef.current?.removeEventListener("ionScroll", handleScroll)
+    }
+  }, [])
 
   return (
     <IonPage>
@@ -77,7 +103,7 @@ const HomeMobile: React.FC = () => {
             </div>
 
             {/* Application Features */}
-            <section className="home-mobile-features">
+            <section className="home-mobile-features fade-in-section">
               <h2 className="home-mobile-section-title">Nos Services Innovants</h2>
               <IonCard className="home-mobile-feature-card">
                 <IonCardHeader>
@@ -103,7 +129,7 @@ const HomeMobile: React.FC = () => {
             </section>
 
             {/* Additional Services */}
-            <section className="home-mobile-services">
+            <section className="home-mobile-services fade-in-section">
               <h2 className="home-mobile-section-title">Nos Services Bancaires</h2>
               <div className="home-mobile-services-grid">
                 <div className="home-mobile-service">
@@ -122,7 +148,7 @@ const HomeMobile: React.FC = () => {
             </section>
           </main>
 
-          <footer className="home-mobile-footer">
+          <footer className="home-mobile-footer fade-in-section">
             <p>© 2025 Amen Bank. Tous droits réservés.</p>
           </footer>
         </div>
