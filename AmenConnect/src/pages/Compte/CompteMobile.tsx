@@ -1,12 +1,25 @@
 import type React from "react"
 import { useState } from "react"
 import { useHistory } from "react-router-dom"
-import { IonContent, IonPage, IonIcon, IonSearchbar, IonSegment, IonSegmentButton, IonLabel } from "@ionic/react"
-import { statsChartOutline } from "ionicons/icons"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from "recharts";
+import {
+  IonContent,
+  IonPage,
+  IonIcon,
+  IonSearchbar,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
+  IonFab,
+  IonFabButton,
+  IonRippleEffect,
+} from "@ionic/react"
+import { statsChartOutline, addOutline } from "ionicons/icons"
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
+import { motion } from "framer-motion"
 
 import "./CompteMobile.css"
 import NavMobile from "../../components/NavMobile"
+
 const chartData = [
   { month: "Jan", income: 2, expenses: 1 },
   { month: "Feb", income: 4, expenses: 2 },
@@ -16,7 +29,7 @@ const chartData = [
   { month: "Jun", income: 6, expenses: 4 },
 ]
 
-const ComptePage: React.FC = () => {
+const CompteMobile: React.FC = () => {
   const history = useHistory()
   const [selectedSegment, setSelectedSegment] = useState<string>("operations")
 
@@ -29,10 +42,22 @@ const ComptePage: React.FC = () => {
       <IonContent fullscreen className="ion-padding-horizontal">
         <div className="status-bar"></div>
 
-        <h1 className="page-title">Mes comptes</h1>
+        <motion.h1
+          className="page-title"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Mes comptes
+        </motion.h1>
 
         {/* Account Card */}
-        <div className="account-card">
+        <motion.div
+          className="account-card"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="account-header">
             <span>Compte Epargne</span>
             <IonIcon icon={statsChartOutline} className="stats-icon" />
@@ -44,29 +69,50 @@ const ComptePage: React.FC = () => {
             </div>
             <span className="expiry-date">20/01/2025</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Chart */}
         {selectedSegment === "operations" && (
-          <div className="chart-container">
-            <AreaChart width={340} height={150} data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-              <defs>
-                <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#47ce65" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#47ce65" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#ff4961" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#ff4961" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-              <XAxis dataKey="month" stroke="rgba(255,255,255,0.3)" />
-              <YAxis stroke="rgba(255,255,255,0.3)" />
-              <Area type="monotone" dataKey="expenses" stackId="1" stroke="#ff4961" fill="url(#colorExpenses)" />
-              <Area type="monotone" dataKey="income" stackId="1" stroke="#47ce65" fill="url(#colorIncome)" />
-            </AreaChart>
-          </div>
+          <motion.div
+            className="chart-container"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#4CAF50" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#FF5722" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#FF5722" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
+                <YAxis stroke="rgba(255,255,255,0.5)" />
+                <Area
+                  type="monotone"
+                  dataKey="expenses"
+                  stackId="1"
+                  stroke="#FF5722"
+                  fillOpacity={1}
+                  fill="url(#colorExpenses)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="income"
+                  stackId="1"
+                  stroke="#4CAF50"
+                  fillOpacity={1}
+                  fill="url(#colorIncome)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </motion.div>
         )}
 
         {/* Segments */}
@@ -87,48 +133,48 @@ const ComptePage: React.FC = () => {
 
         {/* Operations Section */}
         {selectedSegment === "operations" && (
-          <div className="operations-section">
+          <motion.div
+            className="operations-section"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
             <h3>Opérations</h3>
             <p className="last-update">Dernière mise à jour: 21/01/2025</p>
             <IonSearchbar placeholder="Rechercher" className="custom-searchbar" mode="ios"></IonSearchbar>
-          </div>
+          </motion.div>
         )}
 
         {/* Account Information Section */}
         {selectedSegment === "infos" && (
-          <div className="account-info-section">
+          <motion.div
+            className="account-info-section"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
             <h2>Information du compte</h2>
 
-            <div className="info-item">
-              <span className="info-label">RIB</span>
-              <span className="info-value">07098050012167474684</span>
-            </div>
-
-            <div className="info-item">
-              <span className="info-label">Numéro du compte</span>
-              <span className="info-value">12345678321</span>
-            </div>
-
-            <div className="info-item">
-              <span className="info-label">IBAN</span>
-              <span className="info-value">TN5907098050012167474684</span>
-            </div>
-
-            <div className="info-item">
-              <span className="info-label">Référence agence</span>
-              <span className="info-value">TN5907098050012167474684</span>
-            </div>
-
-            <div className="info-item">
-              <span className="info-label">Solde du compte</span>
-              <span className="info-value">40.0</span>
-            </div>
-
-            <div className="info-item">
-              <span className="info-label">Date de création</span>
-              <span className="info-value">22/01/2025</span>
-            </div>
-          </div>
+            {[
+              { label: "RIB", value: "07098050012167474684" },
+              { label: "Numéro du compte", value: "12345678321" },
+              { label: "IBAN", value: "TN5907098050012167474684" },
+              { label: "Référence agence", value: "TN5907098050012167474684" },
+              { label: "Solde du compte", value: "40.0" },
+              { label: "Date de création", value: "22/01/2025" },
+            ].map((item, index) => (
+              <motion.div
+                key={item.label}
+                className="info-item"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+              >
+                <span className="info-label">{item.label}</span>
+                <span className="info-value">{item.value}</span>
+              </motion.div>
+            ))}
+          </motion.div>
         )}
       </IonContent>
       <NavMobile currentPage="compte" />
@@ -136,5 +182,5 @@ const ComptePage: React.FC = () => {
   )
 }
 
-export default ComptePage
+export default CompteMobile
 
