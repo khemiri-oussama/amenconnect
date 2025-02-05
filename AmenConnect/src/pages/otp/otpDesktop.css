@@ -32,13 +32,3 @@
     color: #4caf50;
   }
 
-  @media (max-width: 380px) {
-    .otp-input {
-      height: 40px;
-      width: 40px;
-    }
-  
-    .content-wrapper {
-      padding: 1.5rem;
-    }
-  }

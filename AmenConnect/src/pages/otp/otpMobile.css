@@ -1,0 +1,212 @@
+:root {
+    --primary-color: #2fff59;
+    --primary-color-rgb: 47, 255, 89;
+    --background-color: #1a1a1a;
+    --text-color: #ffffff;
+    --text-color-muted: #a0a0a0;
+    --input-background: rgba(255, 255, 255, 0.05);
+    --input-border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .otp-mobile-container {
+    --background: var(--background-color);
+    --padding-top: env(safe-area-inset-top);
+    --padding-bottom: env(safe-area-inset-bottom);
+    --padding-start: env(safe-area-inset-left);
+    --padding-end: env(safe-area-inset-right);
+  }
+  
+  .otp-mobile-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100%;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  .otp-mobile-logo-container {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .otp-mobile-logo {
+    width: 150px;
+    height: auto;
+    margin: 0 auto;
+  }
+  
+  .otp-mobile-form-container {
+    background: transparent;
+    border-radius: 24px;
+    padding: 2rem;
+  }
+  
+  .otp-mobile-title {
+    color: var(--text-color);
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.5px;
+  }
+  
+  .otp-mobile-subtitle {
+    color: var(--text-color-muted);
+    margin-bottom: 2.5rem;
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+  
+  .otp-mobile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .otp-mobile-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .otp-mobile-input-label {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .otp-mobile-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .otp-mobile-input-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+  }
+  
+  .otp-mobile-inputs {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-left: 3rem;
+  }
+  
+  .otp-mobile-input {
+    --background: var(--input-background);
+    --color: var(--text-color);
+    --placeholder-color: rgba(255, 255, 255, 0.3);
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    --padding-top: 1rem;
+    --padding-bottom: 1rem;
+    --border-radius: 12px;
+    --border-color: var(--input-border-color);
+    --border-style: solid;
+    --border-width: 1px;
+    font-size: 1rem;
+    width: 40px;
+    height: 50px;
+    text-align: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .otp-mobile-input:focus {
+    --border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+  }
+  
+  .otp-mobile-resend {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .otp-mobile-resend a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+  }
+  
+  .otp-mobile-resend a:active {
+    opacity: 0.7;
+  }
+  
+  .otp-mobile-button {
+    --background: var(--primary-color);
+    --background-hover: rgba(var(--primary-color-rgb), 0.9);
+    --background-activated: rgba(var(--primary-color-rgb), 0.8);
+    --color: var(--background-color);
+    --border-radius: 12px;
+    --padding-top: 1rem;
+    --padding-bottom: 1rem;
+    margin-top: 1.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .otp-mobile-button:active {
+    transform: translateY(2px);
+    box-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.5);
+  }
+  
+  /* Add a more interesting gradient background */
+  .otp-mobile-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(var(--primary-color-rgb), 0.1) 0%,
+      rgba(var(--primary-color-rgb), 0.05) 25%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(var(--primary-color-rgb), 0.05) 75%,
+      rgba(var(--primary-color-rgb), 0.1) 100%
+    );
+    pointer-events: none;
+  }
+  
+  /* Add floating shapes */
+  .otp-mobile-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 10% 20%, rgba(var(--primary-color-rgb), 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 90% 80%, rgba(var(--primary-color-rgb), 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 50% 50%, rgba(var(--primary-color-rgb), 0.05) 0%, transparent 30%);
+    opacity: 0.5;
+    pointer-events: none;
+    animation: floatingShapes 15s infinite alternate;
+  }
+  
+  @keyframes floatingShapes {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    100% {
+      transform: translateY(-20px) scale(1.1);
+    }
+  }
+  
+  
