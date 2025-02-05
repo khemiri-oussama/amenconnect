@@ -85,7 +85,7 @@ const ChatMobile: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton icon={chevronBackOutline} text="" className="custom-back-button" defaultHref="/accueil" />
           </IonButtons>
-          <IonTitle>Assistant virtuel</IonTitle>
+          <IonTitle>AMEN Ai</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent ref={contentRef} fullscreen className="chat-content">
