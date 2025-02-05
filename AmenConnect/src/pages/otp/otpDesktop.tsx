@@ -10,7 +10,7 @@ import {
   import { useState, useRef } from 'react';
   import { useHistory } from 'react-router-dom';
   
-  import './otp.css';
+  import './otpDesktop.css';
   
   export default function LoginPage() {
     const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
