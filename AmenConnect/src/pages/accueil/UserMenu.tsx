@@ -4,8 +4,9 @@ import {
   shieldOutline,
   helpCircleOutline,
   mailOutline,
-  informationCircleOutline,
+  logOutOutline,
   globeOutline,
+  informationCircleOutline
 } from "ionicons/icons"
 import type React from "react"
 import { useHistory } from "react-router-dom"
@@ -48,10 +49,6 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
         <button className="menu-item" onClick={() => handleNavigation("/about")}>
           <IonIcon icon={informationCircleOutline} />A propos
         </button>
-        <button className="menu-item" onClick={() => handleNavigation("/information")}>
-          <IonIcon icon={informationCircleOutline} />
-          Informations
-        </button>
         <button className="menu-item" onClick={() => window.open("https://www.amenbank.com.tn", "_blank")}>
           <IonIcon icon={globeOutline} />
           Visiter le site AMEN BANK
@@ -59,6 +56,9 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
         <button className="menu-item" onClick={() => window.open("https://www.amennet.com.tn", "_blank")}>
           <IonIcon icon={globeOutline} />
           Visiter le site @mennet
+        </button>
+        <button className="menu-item" onClick={() => handleNavigation("/home")}>
+          <IonIcon icon={logOutOutline} /> Déconnecter
         </button>
       </div>
     </>
