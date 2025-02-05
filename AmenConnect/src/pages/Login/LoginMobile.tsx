@@ -8,9 +8,6 @@ import {
   IonText,
   IonLabel,
   IonImg,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
 } from "@ionic/react"
 import { useHistory } from "react-router-dom"
 import "./LoginMobile.css"
