@@ -1,10 +1,8 @@
 import type React from "react"
 import { useState } from "react"
 import { IonContent, IonPage, IonIcon, IonSearchbar, IonLabel, IonSegment, IonSegmentButton } from "@ionic/react"
-import {
-  cashOutline,
-  businessOutline,
-} from "ionicons/icons"
+import { SegmentCustomEvent } from '@ionic/react';
+import { cashOutline, businessOutline } from "ionicons/icons"
 import { useHistory } from "react-router-dom"
 import "./virementMobile.css"
 import NavMobile from "../../components/NavMobile"
@@ -12,6 +10,11 @@ import NavMobile from "../../components/NavMobile"
 const VirementsMobile: React.FC = () => {
   const history = useHistory()
   const [selectedSegment, setSelectedSegment] = useState("historique")
+
+  // ✅ Properly typed onIonChange handler
+  const handleSegmentChange = (event: SegmentCustomEvent) => {
+    setSelectedSegment(String(event.detail.value ?? "historique"));    // ✅ Ensures a fallback value
+  }
 
   return (
     <IonPage>
@@ -38,11 +41,7 @@ const VirementsMobile: React.FC = () => {
         </div>
 
         {/* Segments */}
-        <IonSegment
-          value={selectedSegment}
-          onIonChange={(e) => setSelectedSegment(e.detail.value!)}
-          className="custom-segment"
-        >
+        <IonSegment value={selectedSegment} onIonChange={handleSegmentChange} className="custom-segment">
           <IonSegmentButton value="historique">
             <IonLabel>Historique</IonLabel>
           </IonSegmentButton>
@@ -67,4 +66,3 @@ const VirementsMobile: React.FC = () => {
 }
 
 export default VirementsMobile
-
