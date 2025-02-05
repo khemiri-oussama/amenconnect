@@ -1,0 +1,179 @@
+/* Global Variables */
+:root {
+    --background-dark: #1e1e1e;
+    --card-background: rgba(255, 255, 255, 0.1);
+    --text-gray: rgba(255, 255, 255, 0.6);
+    --primary-green: #47ce65;
+  }
+  
+  /* Dark Theme */
+  .dark-theme {
+    --background: var(--background-dark);
+    --ion-background-color: var(--background-dark);
+    --ion-text-color: white;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-bottom: 80px;
+  }
+  
+  /* Status Bar */
+  .status-bar {
+    height: 44px;
+    background: transparent;
+  }
+  
+  /* Page Title */
+  .page-title {
+    font-size: 32px;
+    font-weight: 600;
+    color: white;
+    margin: 20px 0 24px;
+  }
+  
+  /* Transfer Options */
+  .transfer-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .transfer-card {
+    background: var(--card-background);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    border: none;
+    color: white;
+    min-height: 160px;
+  }
+  
+  .transfer-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .transfer-icon ion-icon {
+    font-size: 24px;
+    color: white;
+  }
+  
+  .transfer-card p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  /* Custom Segment */
+  .custom-segment {
+    background: var(--card-background);
+    border-radius: 24px;
+    --background: transparent;
+    padding: 4px;
+    margin-bottom: 24px;
+  }
+  
+  ion-segment-button {
+    --background-checked: rgba(255, 255, 255, 0.1);
+    --color-checked: white;
+    --color: var(--text-gray);
+    --indicator-color: transparent;
+    --border-radius: 20px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 14px;
+  }
+  
+  /* History Section */
+  .history-section {
+    margin-top: 24px;
+  }
+  
+  .history-section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 16px;
+  }
+  
+  /* Custom Searchbar */
+  .custom-searchbar {
+    --background: var(--card-background);
+    --color: white;
+    --placeholder-color: var(--text-gray);
+    --icon-color: var(--text-gray);
+    --border-radius: 12px;
+    --box-shadow: none;
+    --placeholder-opacity: 1;
+    padding: 0;
+    margin-bottom: 16px;
+  }
+  
+  /* Bottom Navigation */
+  .bottom-tabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    background: var(--background-dark);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 24px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 1000;
+  }
+  
+  .tab-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+  }
+  
+  .tab-button.active {
+    color: var(--primary-green);
+  }
+  
+  .tab-button ion-icon {
+    font-size: 24px;
+  }
+  
+  .tab-button span {
+    font-size: 12px;
+  }
+  
+  /* iOS Specific Styles */
+  .ios .status-bar {
+    height: 50px;
+  }
+  
+  /* Android Specific Styles */
+  .md .status-bar {
+    height: 24px;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 360px) {
+    .transfer-options {
+      grid-template-columns: 1fr;
+    }
+  
+    .transfer-card {
+      min-height: 120px;
+    }
+  }
+  
+  
