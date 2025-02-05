@@ -79,7 +79,7 @@ const HomeDesktop: React.FC = () => {
 
         {/* Main Content */}
         <div className="home-desktop-content">
-          <header className="home-desktop-header fade-in-section">
+          <header className="home-desktop-header">
             <IonImg src="amen_logo.png" alt="Amen Bank Logo" className="home-desktop-logo-image" />
             <nav className="home-desktop-nav">
               <IonButton fill="clear" className="home-desktop-nav-button">
@@ -94,7 +94,7 @@ const HomeDesktop: React.FC = () => {
           </header>
 
           <main className="home-desktop-main">
-            <div className="home-desktop-hero fade-in-section">
+            <div className="home-desktop-hero">
               <div className="home-desktop-text">
                 <h1 className="home-desktop-title">Bienvenue chez Amen Bank</h1>
                 <p className="home-desktop-subtitle">Votre partenaire financier de confiance pour un avenir prospère</p>
