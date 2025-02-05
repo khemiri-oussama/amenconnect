@@ -12,10 +12,12 @@ import {
     IonCol,
   } from "@ionic/react"
   import { useRef, useState } from "react"
+  import { useHistory } from "react-router-dom"
   import "./otpMobile.css"
   
   const OtpMobile: React.FC = () => {
     const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
+    const history = useHistory()
     const inputRefs = useRef<HTMLIonInputElement[]>(Array(6).fill(null))
   
     const handleOtpChange = (index: number, value: string) => {
@@ -38,7 +40,7 @@ import {
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault()
       const otpCode = otp.join("")
-      // Handle OTP submission here
+      history.push("/accueil")
       console.log("OTP:", otpCode)
     }
   
