@@ -14,7 +14,7 @@ import "./AccueilMobile.css"
 import { UserMenu } from "./UserMenu"
 import NavMobile from "../../components/NavMobile"
 
-const AccueilMobilePage: React.FC = () => {
+const AccueilMobile: React.FC = () => {
   const history = useHistory()
   const [showBalance, setShowBalance] = useState(true)
   const [notificationCount, setNotificationCount] = useState(3)
@@ -136,5 +136,5 @@ const AccueilMobilePage: React.FC = () => {
   )
 }
 
-export default AccueilMobilePage
+export default AccueilMobile
 
