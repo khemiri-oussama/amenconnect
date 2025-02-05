@@ -318,7 +318,7 @@
 }
 
 /* User Menu Styles */
-.menu-backdrop-mobile {
+.menu-backdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -328,8 +328,7 @@
   z-index: 1000;
   animation: fadeIn 0.2s ease-out;
 }
-
-.user-menu-mobile {
+.user-menu {
   position: absolute;
   top: 70px;
   right: 16px;
@@ -342,7 +341,7 @@
   animation: slideIn 0.2s ease-out;
 }
 
-.menu-item-mobile {
+.menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -355,14 +354,15 @@
   transition: background-color 0.2s ease;
 }
 
-.menu-item-mobile:hover {
+.menu-item:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.menu-item-mobile ion-icon {
+.menu-item ion-icon {
   font-size: 20px;
   color: var(--text-gray);
 }
+
 
 .safe-area-padding {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
