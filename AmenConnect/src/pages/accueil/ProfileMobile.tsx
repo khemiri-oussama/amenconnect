@@ -94,8 +94,7 @@ const ProfileMobile: React.FC = () => {
             <IonInput
               value={userInfo.password}
               type="password"
-              onIonChange={(e) => handleChange("password", e.detail.value!)}
-              readonly={!isEditing}
+              readonly={true}
             />
           </IonItem>
           <IonItem>
