@@ -9,6 +9,7 @@ import Carte from './pages/Carte/Carte';
 import ChatBot from './pages/chatBot/chatBot';
 import Login from './pages/Login/Login';
 import virement from './pages/virement/virement'
+import ProfileMobile from './pages/accueil/ProfileMobile';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -80,6 +81,8 @@ const App: React.FC = () => {
           <Route exact path="/chatBot" component={ChatBot} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/virement" component={virement} />
+          <Route path="/accueil" component={Accueil} />
+          <Route path="/profile" component={ProfileMobile} />
           <Route exact path="/" render={() => <Redirect to="/Home" />} />
         </IonRouterOutlet>
       </IonReactRouter>
