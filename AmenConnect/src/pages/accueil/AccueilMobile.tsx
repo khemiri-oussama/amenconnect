@@ -65,7 +65,7 @@ const AccueilMobile: React.FC = () => {
             <div className="account-details-mobile">
               <div>
                 <div className="balance-container-mobile">
-                  <p className="balance-mobile">{showBalance ? "0.000 TND" : "••••• TND"}</p>
+                  <p className="balance-mobile">{showBalance ? "450.0 TND" : "••••• TND"}</p>
                   <IonButton fill="clear" className="toggle-balance-mobile" onClick={toggleBalance}>
                     <IonIcon icon={showBalance ? eyeOffOutline : eyeOutline} />
                   </IonButton>

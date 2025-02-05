@@ -45,7 +45,9 @@ const NavMobile: React.FC<NavMobileProps> = ({ currentPage }) => {
         <IonLabel>Carte</IonLabel>
         <IonRippleEffect />
       </button>
-      <button className={`tab-button ion-activatable ${currentPage === "virements" ? "active" : ""}`}>
+      <button className={`tab-button ion-activatable ${currentPage === "virements" ? "active" : ""}`}
+      onClick={() => history.push("/virement")}
+      >
         <IonIcon icon={arrowForward} />
         <IonLabel>Virements</IonLabel>
         <IonRippleEffect />
