@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="color-scheme" content="light dark" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
@@ -15,7 +15,7 @@
     <!-- Open Graph (for social media sharing) -->
     <meta property="og:title" content="AmenConnect - Secure Banking" />
     <meta property="og:description" content="Experience seamless and secure banking with AmenConnect." />
-    <meta property="og:image" content="./icons/favicon.png" />
+    <meta property="og:image" content="/icons/favicon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="" />
 
@@ -26,28 +26,29 @@
 
     <!-- Apple PWA Support -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="AmenConnect" />
+    <meta name="apple-mobile-web-app-title" content="Amen Connect" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    
-    <!-- Apple Touch Icons (for Home Screen) -->
-    <link rel="apple-touch-icon" sizes="180x180" href="./icons/favicon-828x1792.png" />
 
-    <!-- Apple favicon Screens (for different iPhone/iPad sizes) -->
-    <link rel="apple-touch-startup-image" href="./icons/favicon-640x1136.png" media="(device-width: 320px) and (device-height: 568px)" />
-    <link rel="apple-touch-startup-image" href="./icons/favicon-750x1334.png" media="(device-width: 375px) and (device-height: 667px)" />
-    <link rel="apple-touch-startup-image" href="./icons/favicon-1125x2436.png" media="(device-width: 375px) and (device-height: 812px)" />
-    <link rel="apple-touch-startup-image" href="./icons/favicon-828x1792.png" media="(device-width: 414px) and (device-height: 896px)" />
-    <link rel="apple-touch-startup-image" href="./icons/favicon.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
+    <!-- ✅ Apple Touch Icons (For Home Screen) -->
+  <!-- Apple Touch Icon (For Home Screen) -->
+<link rel="apple-touch-icon" sizes="512x512" href="/icons/apple-touch-icon.png" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="./icons/favicon.png" />
+<!-- Startup Screens (Fix paths to public/icons/) -->
+<link rel="apple-touch-startup-image" href="/icons/favicon-640x1136.png" media="(device-width: 320px) and (device-height: 568px)" />
+<link rel="apple-touch-startup-image" href="/icons/favicon-750x1334.png" media="(device-width: 375px) and (device-height: 667px)" />
+<link rel="apple-touch-startup-image" href="/icons/favicon-1125x2436.png" media="(device-width: 375px) and (device-height: 812px)" />
+<link rel="apple-touch-startup-image" href="/icons/favicon-828x1792.png" media="(device-width: 414px) and (device-height: 896px)" />
+
+
+    <!-- ✅ Favicon -->
+    <link rel="icon" type="image/png" href="/icons/favicon.png" />
 
     <!-- Preload Important Resources -->
     <link rel="preload" as="script" href="/src/main.tsx" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
 
-    <!-- Security Headers -->
+    <!-- ✅ Security Headers -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; 
       script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; 
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
@@ -56,7 +57,7 @@
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-    <!-- Lazy Load Non-Critical Scripts -->
+    <!-- ✅ Lazy Load Non-Critical Scripts -->
     <script type="module" defer src="/src/main.tsx"></script>
   </head>
   <body>
