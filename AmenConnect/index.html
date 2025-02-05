@@ -10,42 +10,49 @@
     <title>AmenConnect</title>
     <meta name="description" content="A fast, modern, and highly optimized Ionic PWA built with React." />
     <meta name="keywords" content="Ionic, PWA, React, Progressive Web App, Mobile App" />
-    <meta name="author" content="Your Name or Company" />
+    <meta name="author" content="Amen Bank" />
 
     <!-- Open Graph (for social media sharing) -->
-    <meta property="og:title" content="Ionic PWA App" />
-    <meta property="og:description" content="Experience the power of Ionic with a super-fast PWA." />
-    <meta property="og:image" content="/assets/social-preview.png" />
+    <meta property="og:title" content="AmenConnect - Secure Banking" />
+    <meta property="og:description" content="Experience seamless and secure banking with AmenConnect." />
+    <meta property="og:image" content="./icons/favicon.png" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://yourwebsite.com" />
+    <meta property="og:url" content="" />
 
     <!-- PWA Manifest & Theme -->
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#004a99" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
 
     <!-- Apple PWA Support -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Ionic PWA" />
+    <meta name="apple-mobile-web-app-title" content="AmenConnect" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
-    <link rel="apple-touch-startup-image" href="/icons/splash-screen.png" />
     
-    <!-- Additional Apple Splash Screens -->
-    <link rel="apple-touch-startup-image" href="/icons/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px)" />
-    <link rel="apple-touch-startup-image" href="/icons/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px)" />
-    <link rel="apple-touch-startup-image" href="/icons/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px)" />
+    <!-- Apple Touch Icons (for Home Screen) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./icons/favicon-828x1792.png" />
+
+    <!-- Apple favicon Screens (for different iPhone/iPad sizes) -->
+    <link rel="apple-touch-startup-image" href="./icons/favicon-640x1136.png" media="(device-width: 320px) and (device-height: 568px)" />
+    <link rel="apple-touch-startup-image" href="./icons/favicon-750x1334.png" media="(device-width: 375px) and (device-height: 667px)" />
+    <link rel="apple-touch-startup-image" href="./icons/favicon-1125x2436.png" media="(device-width: 375px) and (device-height: 812px)" />
+    <link rel="apple-touch-startup-image" href="./icons/favicon-828x1792.png" media="(device-width: 414px) and (device-height: 896px)" />
+    <link rel="apple-touch-startup-image" href="./icons/favicon.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/png" href="./icons/favicon.png" />
 
     <!-- Preload Important Resources -->
     <link rel="preload" as="script" href="/src/main.tsx" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
-    
+
     <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; 
+      script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; 
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
+      font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+      img-src 'self' data: https://yourwebsite.com;" />
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
