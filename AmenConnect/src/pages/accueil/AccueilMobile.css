@@ -8,30 +8,30 @@
 }
 
 /* Content Styles */
-.custom-content {
+.custom-content-mobile {
   --background: linear-gradient(to bottom, #1a1a1a, var(--background-dark));
   --padding-top: 0;
   --padding-bottom: 80px;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.custom-content::-webkit-scrollbar {
+.custom-content-mobile::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.custom-content {
+.custom-content-mobile {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
 
-.content-wrapper {
+.content-wrapper-mobile {
   padding: 16px;
   padding-bottom: 80px; /* Adjust based on your bottom tabs height */
 }
 
 /* Profile Header */
-.profile-header {
+.profile-header-mobile {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -42,35 +42,38 @@
   border-radius: 16px;
 }
 
-.greeting {
+.greeting-mobile {
   color: var(--text-gray);
   margin: 0;
   font-size: 14px;
 }
 
-.username {
+.username-mobile {
   font-size: 24px;
   font-weight: 600;
   margin: 0;
   color: white;
 }
 
-.header-actions {
+.header-actions-mobile {
   display: flex;
   gap: 16px;
 }
 
-.profile-button,
-.notification-button {
-  background: transparent;
-  color: white;
-  padding: 8px;
+.profile-button-mobile,
+.notification-button-mobile {
+  --background: transparent;
+  --color: white;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
   font-size: 24px;
   position: relative;
   overflow: hidden;
 }
 
-.notification-badge {
+.notification-badge-mobile {
   position: absolute;
   top: 0;
   right: 0;
@@ -82,7 +85,7 @@
 }
 
 /* Account Card */
-.account-card {
+.account-card-mobile {
   background: var(--card-background);
   border-radius: 16px;
   padding: 20px;
@@ -93,91 +96,94 @@
   animation: slideIn 0.5s ease-out;
 }
 
-.account-card:active {
+.account-card-mobile:active {
   transform: scale(0.98);
   box-shadow: 0 0 10px rgba(71, 206, 101, 0.3);
 }
 
-.account-header {
+.account-header-mobile {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 16px;
 }
 
-.stats-icon {
+.stats-icon-mobile {
   color: var(--primary-green);
   font-size: 24px;
 }
 
-.account-details {
+.account-details-mobile {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
 }
 
-.balance-container {
+.balance-container-mobile {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.balance {
+.balance-mobile {
   font-size: 28px;
   font-family: monospace;
   color: var(--primary-green);
   margin: 0 0 8px 0;
 }
 
-.toggle-balance {
-  background: transparent;
-  color: var(--text-gray);
-  border: none;
-  padding: 0;
+.toggle-balance-mobile {
+  --background: transparent;
+  --color: var(--text-gray);
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
   font-size: 20px;
 }
 
-.account-number,
-.expiry-date {
+.account-number-mobile,
+.expiry-date-mobile {
   color: var(--text-gray);
   margin: 0;
 }
 
 /* Section Styles */
-.section {
+.section-mobile {
   margin-bottom: 24px;
   animation: fadeIn 0.5s ease-out;
 }
 
-.section-header {
+.section-header-mobile {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.section-header h2 {
+.section-header-mobile h2 {
   font-size: 20px;
   margin: 0;
   color: white;
 }
 
-.view-all {
-  background: transparent;
-  color: var(--text-gray);
+.view-all-mobile {
+  --background: transparent;
+  --color: var(--text-gray);
   position: relative;
   overflow: hidden;
-  padding: 8px 12px;
-  border-radius: 8px;
+  --padding-start: 8px;
+  --padding-end: 12px;
+  --border-radius: 8px;
   transition: color 0.3s ease;
 }
 
-.view-all:active {
-  color: var(--primary-green);
+.view-all-mobile:active {
+  --color: var(--primary-green);
 }
 
 /* Payment Card */
-.payment-card {
+.payment-card-mobile {
   background: var(--card-background);
   border-radius: 16px;
   padding: 20px;
@@ -186,49 +192,49 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.payment-card:active {
+.payment-card-mobile:active {
   transform: scale(0.98);
   box-shadow: 0 0 10px rgba(71, 206, 101, 0.3);
 }
 
-.card-label {
+.card-label-mobile {
   color: var(--text-gray);
   margin: 0 0 8px 0;
 }
 
-.card-details {
+.card-details-mobile {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.card-icon {
+.card-icon-mobile {
   color: var(--primary-green);
   font-size: 24px;
 }
 
-.card-info {
+.card-info-mobile {
   flex: 1;
 }
 
-.card-name {
+.card-name-mobile {
   color: white;
   margin: 0;
   font-weight: 500;
 }
 
-.card-number {
+.card-number-mobile {
   color: var(--text-gray);
   margin: 0;
 }
 
-.card-expiry {
+.card-expiry-mobile {
   color: var(--accent-blue);
   margin: 0;
 }
 
 /* Budget Card */
-.budget-card {
+.budget-card-mobile {
   background: var(--card-background);
   border-radius: 16px;
   padding: 20px;
@@ -237,12 +243,12 @@
   margin-top: -20px;
 }
 
-.budget-card h3 {
+.budget-card-mobile h3 {
   color: white;
   margin: 0 0 16px 0;
 }
 
-.budget-progress {
+.budget-progress-mobile {
   height: 8px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
@@ -250,69 +256,21 @@
   margin-bottom: 12px;
 }
 
-.progress-bar {
+.progress-bar-mobile {
   height: 100%;
   background: var(--primary-green);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
 
-.budget-details {
+.budget-details-mobile {
   display: flex;
   justify-content: space-between;
   color: var(--text-gray);
 }
 
-.budget-remaining {
+.budget-remaining-mobile {
   color: var(--accent-blue);
-}
-
-/* Bottom Navigation */
-.bottom-tabs {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  background: var(--background-dark);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 16px 24px;
-  z-index: 1000;
-}
-
-.tab-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  background: transparent;
-  color: var(--text-gray);
-  position: relative;
-  overflow: hidden;
-  transition: color 0.3s ease;
-}
-
-.tab-button.active {
-  color: var(--primary-green);
-}
-
-.tab-button ion-icon {
-  font-size: 24px;
-}
-
-.tab-button ion-label {
-  font-size: 12px;
-}
-
-/* iOS Specific Styles */
-.ios .status-bar {
-  height: 20px;
-}
-
-/* Android Specific Styles */
-.md .status-bar {
-  height: 24px;
 }
 
 /* Animations */
@@ -338,29 +296,29 @@
 
 /* Responsive adjustments */
 @media (max-width: 360px) {
-  .username {
+  .username-mobile {
     font-size: 20px;
   }
 
-  .balance {
+  .balance-mobile {
     font-size: 24px;
   }
 
-  .section-header h2 {
+  .section-header-mobile h2 {
     font-size: 18px;
   }
 
-  .card-name {
+  .card-name-mobile {
     font-size: 14px;
   }
 
-  .card-number {
+  .card-number-mobile {
     font-size: 12px;
   }
 }
 
 /* User Menu Styles */
-.menu-backdrop {
+.menu-backdrop-mobile {
   position: fixed;
   top: 0;
   left: 0;
@@ -371,7 +329,7 @@
   animation: fadeIn 0.2s ease-out;
 }
 
-.user-menu {
+.user-menu-mobile {
   position: absolute;
   top: 70px;
   right: 16px;
@@ -384,7 +342,7 @@
   animation: slideIn 0.2s ease-out;
 }
 
-.menu-item {
+.menu-item-mobile {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -397,12 +355,28 @@
   transition: background-color 0.2s ease;
 }
 
-.menu-item:hover {
+.menu-item-mobile:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.menu-item ion-icon {
+.menu-item-mobile ion-icon {
   font-size: 20px;
   color: var(--text-gray);
 }
 
+.safe-area-padding {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Adjust the existing custom-content-mobile class */
+.custom-content-mobile {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+.content-wrapper-mobile {
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
