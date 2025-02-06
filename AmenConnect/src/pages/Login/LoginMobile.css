@@ -217,4 +217,21 @@
     transform: translateY(-20px) scale(1.1);
   }
 }
+.login-mobile-password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.login-mobile-password-toggle:active {
+  opacity: 1;
+}
 
