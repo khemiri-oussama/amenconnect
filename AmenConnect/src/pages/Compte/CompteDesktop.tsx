@@ -8,9 +8,17 @@ import {
   IonCardContent,
   IonButton,
   IonIcon,
+  IonBadge,
 } from "@ionic/react"
-import { walletOutline, repeatOutline, analyticsOutline, cardOutline } from "ionicons/icons"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
+import {
+  walletOutline,
+  repeatOutline,
+  analyticsOutline,
+  cardOutline,
+  trendingUpOutline,
+  trendingDownOutline,
+} from "ionicons/icons"
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts"
 import Navbar from "../../components/Navbar"
 import "./CompteDesktop.css"
 
@@ -22,6 +30,12 @@ const CompteDesktop: React.FC = () => {
     { name: "Apr", revenus: 81, depenses: 69 },
     { name: "May", revenus: 56, depenses: 36 },
     { name: "Jun", revenus: 85, depenses: 47 },
+  ]
+
+  const operations = [
+    { id: 1, type: "credit", amount: 500, description: "Dépôt", date: "2025-01-20" },
+    { id: 2, type: "debit", amount: 75.5, description: "Achat en ligne", date: "2025-01-19" },
+    { id: 3, type: "credit", amount: 1200, description: "Salaire", date: "2025-01-15" },
   ]
 
   return (
@@ -39,6 +53,10 @@ const CompteDesktop: React.FC = () => {
               <IonCardContent>
                 <div className="balance">15,230.45 TND</div>
                 <div className="account-number">12345678987</div>
+                <div className="balance-change">
+                  <IonIcon icon={trendingUpOutline} />
+                  <span>+2.5% ce mois</span>
+                </div>
               </IonCardContent>
             </IonCard>
 
@@ -61,6 +79,7 @@ const CompteDesktop: React.FC = () => {
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                       <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} />
                       <YAxis stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} />
+                      <Tooltip contentStyle={{ background: "rgba(0,0,0,0.8)", border: "none" }} />
                       <Area
                         type="monotone"
                         dataKey="revenus"
@@ -125,9 +144,22 @@ const CompteDesktop: React.FC = () => {
               </IonCardHeader>
               <IonCardContent>
                 <div className="operations-list">
-                  <div className="operation-placeholder"></div>
-                  <div className="operation-placeholder"></div>
-                  <div className="operation-placeholder"></div>
+                  {operations.map((op) => (
+                    <div key={op.id} className="operation-item">
+                      <div className="operation-icon">
+                        <IonIcon icon={op.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+                      </div>
+                      <div className="operation-details">
+                        <span className="operation-description">{op.description}</span>
+                        <span className="operation-date">{op.date}</span>
+                      </div>
+                      <div className="operation-amount">
+                        <IonBadge color={op.type === "credit" ? "success" : "danger"}>
+                          {op.type === "credit" ? "+" : "-"} {op.amount} TND
+                        </IonBadge>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </IonCardContent>
             </IonCard>

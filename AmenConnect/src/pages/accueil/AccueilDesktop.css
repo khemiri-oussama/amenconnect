@@ -1,0 +1,471 @@
+:root {
+  --color-background: linear-gradient(180deg, rgba(30, 30, 30, 0.95) 0%, rgba(24, 24, 24, 0.98) 100%);
+  --color-text: #ffffff;
+  --color-text-secondary: #878787;
+  --color-card-bg: rgba(255, 255, 255, 0.1);
+  --color-card-hover: rgba(255, 255, 255, 0.15);
+  --color-positive: #47ce65;
+  --color-negative: #ff2b2b;
+  --color-link: #2eb851;
+  --color-link-hover: #47ce65;
+  --color-food: #47ce65;
+  --color-transport: #ffcc00;
+  --color-leisure: #346fce;
+  --color-shopping: #f472b6;
+  --color-utilities: #60a5fa;
+  --transition-speed: 0.3s;
+}
+
+.custom-content {
+  --background: var(--color-background);
+}
+
+.dashboard-container {
+  padding: 24px;
+  min-height: 100vh;
+  color: var(--color-text);
+}
+
+.welcome-section {
+  margin-bottom: 32px;
+  animation: fadeInDown 0.5s ease-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcome-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.welcome-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 18px;
+}
+
+.welcome-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.notification-button,
+.profile-button {
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.stat-card {
+  background: var(--color-card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all var(--transition-speed) ease;
+  display: flex;
+  align-items: center;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  background: var(--color-card-hover);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  font-size: 36px;
+  margin-right: 16px;
+  color: var(--color-link);
+}
+
+.stat-content {
+  flex-grow: 1;
+}
+
+.stat-label {
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.stat-change {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.stat-change ion-icon {
+  margin-right: 4px;
+}
+
+.stat-change.positive {
+  color: var(--color-positive);
+}
+
+.stat-change.negative {
+  color: var(--color-negative);
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+  animation: fadeInUp 0.5s ease-out 0.2s both;
+}
+
+.section-card {
+  background: var(--color-card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all var(--transition-speed) ease;
+}
+
+.section-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.section-title ion-icon {
+  margin-right: 8px;
+  font-size: 24px;
+}
+
+.section-link {
+  color: var(--color-link);
+  text-decoration: none;
+  font-size: 16px;
+  transition: all var(--transition-speed) ease;
+  display: flex;
+  align-items: center;
+}
+
+.section-link:hover {
+  color: var(--color-link-hover);
+}
+
+.section-link ion-icon {
+  margin-right: 4px;
+}
+
+.accounts-section,
+.budget-section {
+  grid-column: span 1;
+}
+
+.chart-section {
+  grid-column: span 2;
+}
+
+.accounts-list,
+.cards-list,
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-item,
+.card-item,
+.transaction-item {
+  background: var(--color-card-bg);
+  border-radius: 12px;
+  transition: all var(--transition-speed) ease;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.account-item:hover,
+.card-item:hover,
+.transaction-item:hover {
+  transform: translateY(-3px);
+  background: var(--color-card-hover);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.account-icon,
+.card-icon,
+.transaction-icon {
+  font-size: 24px;
+  margin-right: 16px;
+  color: var(--color-link);
+}
+
+.account-details,
+.card-details,
+.transaction-details {
+  flex-grow: 1;
+}
+
+.account-name,
+.card-type,
+.transaction-description {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.account-type,
+.card-number,
+.transaction-date {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.account-balance,
+.transaction-amount {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.account-balance {
+  color: var(--color-positive);
+}
+
+.transaction-amount.credit {
+  color: var(--color-positive);
+}
+
+.transaction-amount.debit {
+  color: var(--color-negative);
+}
+
+.card-expiry {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+.budget-item {
+  margin-bottom: 24px;
+  transition: all var(--transition-speed) ease;
+  padding: 16px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.budget-item:hover {
+  background: var(--color-card-hover);
+}
+
+.budget-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.budget-item-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.budget-item-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.budget-item-amount {
+  font-weight: 500;
+}
+
+.budget-progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.budget-progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.chart-container {
+  height: 300px;
+}
+
+.quick-actions-section {
+  margin-top: 32px;
+  animation: fadeInUp 0.5s ease-out 0.4s both;
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.quick-action-button {
+  --background: var(--color-card-bg);
+  --background-hover: var(--color-card-hover);
+  --color: var(--color-text);
+  height: 60px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all var(--transition-speed) ease;
+}
+
+.quick-action-button:hover {
+  --background: var(--color-card-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .main-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chart-section {
+    grid-column: span 2;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid,
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-section {
+    grid-column: span 1;
+  }
+
+  .welcome-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .welcome-actions {
+    margin-top: 16px;
+  }
+
+  .welcome-title {
+    font-size: 28px;
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-link);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-link-hover);
+}
+
+/* Improve accessibility */
+.section-link:focus,
+.account-item:focus,
+.card-item:focus,
+.budget-item:focus,
+.transaction-item:focus,
+.quick-action-button:focus {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+/* Add subtle hover effects */
+.section-link:hover,
+.account-item:hover,
+.card-item:hover,
+.budget-item:hover,
+.transaction-item:hover,
+.quick-action-button:hover {
+  cursor: pointer;
+}
+
+/* Add ripple effect */
+ion-ripple-effect {
+  color: rgba(255, 255, 255, 0.1);
+}
+
