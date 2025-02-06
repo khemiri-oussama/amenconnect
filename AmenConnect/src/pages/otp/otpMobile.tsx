@@ -17,42 +17,41 @@ import "./otpMobile.css";
 
 const OtpMobile: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
+  const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
   const history = useHistory();
-  const inputRefs = useRef<(HTMLIonInputElement | null)[]>(Array(6).fill(null));
+
+  useEffect(() => {
+    // Focus the first input when the page loads
+    if (inputRefs.current[0]) {
+      setTimeout(() => inputRefs.current[0]?.setFocus(), 100);
+    }
+  }, []);
 
   const handleOtpChange = (index: number, value: string) => {
-    if (value.length <= 1 && /^[0-9]$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
+    if (!/^\d?$/.test(value)) return; // Allow only one digit
 
-      // Move focus to the next input field
-      if (value.length === 1 && index < 5) {
-        inputRefs.current[index + 1]?.setFocus();
-      }
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Move to the next input field if a digit is entered
+    if (value && index < 5) {
+      setTimeout(() => inputRefs.current[index + 1]?.setFocus(), 100);
     }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLIonInputElement>) => {
     if (e.key === "Backspace" && index > 0 && otp[index] === "") {
-      // Move focus to the previous input when Backspace is pressed and the current input is empty
-      setTimeout(() => {
-        inputRefs.current[index - 1]?.setFocus();
-      }, 0);
+      setTimeout(() => inputRefs.current[index - 1]?.setFocus(), 100);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const otpCode = otp.join("");
-    history.push("/accueil");
     console.log("OTP:", otpCode);
+    history.push("/accueil");
   };
-
-  useEffect(() => {
-    // Focus on the first input when the component is mounted
-    inputRefs.current[0]?.setFocus();
-  }, []);
 
   return (
     <IonPage>
@@ -76,12 +75,12 @@ const OtpMobile: React.FC = () => {
                       {[...Array(6)].map((_, index) => (
                         <IonInput
                           key={index}
-                          type="tel" // Using type="tel" for numeric input
+                          type="tel"
                           inputmode="numeric"
                           pattern="[0-9]*"
                           maxlength={1}
                           value={otp[index]}
-                          onIonChange={(e) => handleOtpChange(index, e.detail.value!)}
+                          onIonInput={(e) => handleOtpChange(index, e.detail.value!)}
                           onKeyDown={(e) => handleKeyDown(index, e)}
                           ref={(el) => (inputRefs.current[index] = el)}
                           className="otp-mobile-input"
