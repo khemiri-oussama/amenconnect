@@ -27,6 +27,8 @@ const LoginMobile: React.FC = () => {
     history.push("/otp")
   }
 
+  console.log("Password visibility:", showPassword)
+
   return (
     <IonPage>
       <IonContent className="login-mobile-container" fullscreen>
@@ -69,7 +71,7 @@ const LoginMobile: React.FC = () => {
                   <IonIcon
                     icon={showPassword ? eyeOffOutline : eyeOutline}
                     className="login-mobile-password-toggle"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => setShowPassword((prev) => !prev)}
                   />
                 </div>
               </div>
