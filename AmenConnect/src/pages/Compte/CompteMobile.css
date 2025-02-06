@@ -19,12 +19,22 @@ ion-content {
   background: transparent;
 }
 
+/* iOS Specific Styles */
+.ios .status-bar {
+  height: 50px;
+}
+
+/* Android Specific Styles */
+.md .status-bar {
+  height: 24px;
+}
+
 /* Page Title */
 .page-title {
   font-size: 28px;
   font-weight: 700;
   color: white;
-  margin: 20px 0 30px;
+  margin: 60px 0 30px; /* Updated margin-top */
 }
 
 /* Account Card */
@@ -132,8 +142,6 @@ ion-segment-button {
   --placeholder-color: var(--text-gray);
   --icon-color: var(--text-gray);
   --border-radius: 12px;
-  margin-top: 16px;
-  padding: 0;
 }
 
 /* Account Info Section */
@@ -181,13 +189,63 @@ ion-segment-button {
   transform: translateY(-2px);
 }
 
-/* iOS Specific Styles */
-.ios .status-bar {
-  height: 50px;
+/* Fixed bottom navigation */
+.bottom-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--background-dark);
+  z-index: 1000;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Android Specific Styles */
-.md .status-bar {
-  height: 24px;
+/* Adjust content padding */
+ion-content {
+  --padding-bottom: 70px;
+}
+
+/* Ensure content is scrollable */
+.scrollable-content {
+  height: 100%;
+  overflow-y: auto;
+  padding-top: 60px; /* Updated padding-top */
+  padding-bottom: 70px; /* Adjust this value based on your bottom nav height */
+}
+
+/* Add styles for tab buttons */
+.tab-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: var(--text-gray);
+  font-size: 12px;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.tab-button.active {
+  color: var(--primary-green);
+}
+
+.tab-button ion-icon {
+  font-size: 24px;
+  margin-bottom: 2px;
+}
+
+/* Fixed search bar */
+.fixed-searchbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--background-dark);
+  padding: 10px 16px;
 }
 
