@@ -119,19 +119,7 @@
   }
   
   /* Bottom Navigation */
-  .bottom-tabs {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    background: var(--background-dark);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 12px 24px;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom));
-    z-index: 1000;
-  }
+ 
   
   .tab-button {
     display: flex;
