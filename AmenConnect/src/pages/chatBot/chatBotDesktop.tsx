@@ -15,7 +15,7 @@ import { sendOutline, personOutline, menuOutline, chatbubbleEllipsesOutline } fr
 import { motion, AnimatePresence } from "framer-motion"
 import Navbar from "../../components/Navbar"
 import ConversationHistory from "./ConversationHistory"
-import "./chatBotDesktop.css"
+import "./ChatBotDesktop.css"
 
 interface Message {
   id: string

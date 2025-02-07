@@ -20,7 +20,7 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import Navbar from "../../components/Navbar"
 import "./AccueilDesktop.css"
-
+import { useHistory } from "react-router-dom"
 interface Account {
   id: number
   name: string
@@ -44,6 +44,7 @@ interface Transaction {
 }
 
 const AccueilDesktop: React.FC = () => {
+    const history = useHistory()
   const [accounts, setAccounts] = useState<Account[]>([
     { id: 1, name: "Compte Courant", balance: 10230.45, type: "current" },
     { id: 2, name: "Compte Épargne", balance: 5000.0, type: "savings" },
@@ -148,7 +149,7 @@ const AccueilDesktop: React.FC = () => {
           </div>
 
           <div className="main-grid">
-            <div className="section-card accounts-section">
+            <div className="section-card accounts-section" onClick={() => history.push("/Compte")}>
               <div className="section-header">
                 <h2 className="section-title">
                   <IonIcon icon={walletOutline} />
@@ -223,12 +224,12 @@ const AccueilDesktop: React.FC = () => {
                   <IonIcon icon={cardOutline} />
                   Cartes
                 </h2>
-                <a href="#" className="section-link">
-                  <IonIcon icon={settingsOutline} />
+                <a href="../Carte" className="section-link">
+                  <IonIcon icon={settingsOutline} onClick={() => history.push("/carte")}/>
                   Gérer les cartes
                 </a>
               </div>
-              <div className="cards-list">
+              <div className="cards-list" onClick={() => history.push("/carte")}>
                 {cards.map((card) => (
                   <div key={card.id} className="card-item">
                     <IonRippleEffect />
