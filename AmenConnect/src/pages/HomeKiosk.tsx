@@ -8,7 +8,7 @@ const HomeKiosk: React.FC = () => {
           <div className="welcome-container" style={{ backgroundImage: `url(${'./background.png'})` }}>
             <div className="content-wrapper">
               <div className="logo"><IonImg src="favicon.png" alt="Amen Bank Logo" className="img" /></div>
-              <h1 className="welcome-title">Bienvenue!</h1>
+              <h1 className="welcome-kiosk">Bienvenue!</h1>
               <h2 className="banking-question">
                 Quels sont vos besoins
                 <br />
