@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
         <IonRouterLink routerLink="/chatBot" className="navbar-link">
           Chat
         </IonRouterLink>
-        <IonRouterLink routerLink="/transfers" className="navbar-link">
+        <IonRouterLink routerLink="/virement" className="navbar-link">
           Virements
         </IonRouterLink>
         <IonRouterLink routerLink="/carte" className="navbar-link" onClick={handleCardClick}>

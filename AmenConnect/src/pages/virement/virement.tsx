@@ -1,10 +1,12 @@
 import type React from "react"
 import { isPlatform } from "@ionic/react"
-import VirementsMobile from "./virementMobile"
+import VirementMobile from "./virementMobile"
+import VirementDesktop from "./VirementDesktop"
+import VirementKiosk from "./VirementKiosk"
 
 import { useEffect, useState } from "react"
 
-const virement: React.FC = () => {
+const Virement: React.FC = () => {
   const [isPortrait, setIsPortrait] = useState(window.matchMedia("(orientation: portrait)").matches)
   const [isTouchable, setIsTouchable] = useState(false)
   const isMobile = isPlatform("mobile")
@@ -33,14 +35,14 @@ const virement: React.FC = () => {
   return (
     <>
       {isMobile ? (
-        <VirementsMobile />
+        <VirementMobile />
       ) : isBorneInteractive ? (
-        <VirementsMobile />
+        <VirementKiosk />
       ) : (
-        <VirementsMobile />
+        <VirementDesktop />
       )}
     </>
   )
 }
 
-export default virement
+export default Virement
