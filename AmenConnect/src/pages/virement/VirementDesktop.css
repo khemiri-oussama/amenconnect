@@ -1,0 +1,665 @@
+:root {
+    --color-background: linear-gradient(180deg, rgba(30, 30, 30, 0.95) 0%, rgba(24, 24, 24, 0.98) 100%);
+    --color-text: #ffffff;
+    --color-text-secondary: #878787;
+    --color-card-bg: rgba(255, 255, 255, 0.1);
+    --color-card-hover: rgba(255, 255, 255, 0.15);
+    --color-positive: #47ce65;
+    --color-negative: #ff2b2b;
+    --color-link: #2eb851;
+    --color-link-hover: #47ce65;
+    --transition-speed: 0.3s;
+    --border-radius: 16px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .virements-desktop {
+    --background: var(--color-background);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+      "Helvetica Neue", sans-serif;
+  }
+  
+  .desktop-content {
+    --padding-start: 24px;
+    --padding-end: 24px;
+    --padding-top: 24px;
+    --padding-bottom: 24px;
+  }
+  
+  .desktop-layout {
+    display: flex;
+    gap: 24px;
+    color: var(--color-text);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .main-column {
+    flex: 1;
+    max-width: 800px;
+  }
+  
+  .side-column {
+    width: 320px;
+  }
+  
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    background: var(--color-surface);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+  }
+  
+  .page-title {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin: 0;
+    background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .account-summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .account-balance {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-card-bg);
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .account-balance:hover {
+    background: var(--color-card-hover);
+    transform: translateY(-2px);
+  }
+  
+  .account-balance ion-icon {
+    font-size: 24px;
+    color: var(--color-secondary);
+  }
+  
+  .account-balance div {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .account-balance span {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+  
+  .account-balance strong {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .account-details-button {
+    --color: var(--color-link);
+    --color-hover: var(--color-link-hover);
+    font-weight: 500;
+    --border-radius: var(--border-radius);
+    --box-shadow: var(--box-shadow);
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.3px;
+  }
+  
+  .section-title ion-icon {
+    margin-right: 12px;
+    font-size: 24px;
+    color: var(--color-secondary);
+  }
+  
+  .quick-transfer-section,
+  .transfer-options-section,
+  .transfers-history-section,
+  .summary-section,
+  .quick-actions-section,
+  .help-section {
+    background: var(--color-surface);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--box-shadow);
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .quick-transfer-section:hover,
+  .transfer-options-section:hover,
+  .transfers-history-section:hover,
+  .summary-section:hover,
+  .quick-actions-section:hover,
+  .help-section:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .quick-transfer-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-card-hover);
+    border-radius: var(--border-radius);
+    color: var(--color-text);
+    transition: border-color var(--transition-speed) ease;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: var(--color-link);
+  }
+  
+  .submit-button {
+    --background: var(--color-link);
+    --background-hover: var(--color-link-hover);
+    --color: var(--color-text);
+    --border-radius: var(--border-radius);
+    font-weight: 600;
+    margin-top: 16px;
+  }
+  
+  .submit-button:hover {
+    --background: var(--color-link-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(233, 69, 96, 0.3);
+  }
+  
+  .transfer-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  
+  .transfer-card {
+    background: var(--color-card-bg);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    transition: all var(--transition-speed) ease;
+    cursor: pointer;
+    border: none;
+    color: var(--color-text);
+    text-align: center;
+  }
+  
+  .transfer-card:hover {
+    background: var(--color-card-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .transfer-icon {
+    font-size: 32px;
+    color: var(--color-link);
+  }
+  
+  .transfer-text h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .transfer-text p {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .tabs-container {
+    display: flex;
+    background: var(--color-card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  
+  .tab-button {
+    flex: 1;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .tab-button.active {
+    background: var(--color-link);
+    color: var(--color-text);
+  }
+  
+  .tab-button:hover:not(.active) {
+    background: var(--color-card-hover);
+  }
+  
+  .desktop-searchbar {
+    --background: var(--color-card-bg);
+    --color: var(--color-text);
+    --placeholder-color: var(--color-text-secondary);
+    --icon-color: var(--color-text-secondary);
+    --border-radius: var(--border-radius);
+    --box-shadow: none;
+    max-width: 300px;
+    font-size: 14px;
+  }
+  
+  .transfers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .transfer-item {
+    background: var(--color-card-bg);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .transfer-item:hover {
+    background: var(--color-card-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .transfer-info h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .transfer-info p {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+  
+  .transfer-amount {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  
+  .transfer-amount.incoming {
+    color: var(--color-positive);
+  }
+  
+  .transfer-amount.outgoing {
+    color: var(--color-negative);
+  }
+  
+  .view-all-button {
+    margin-top: 16px;
+    text-align: center;
+  }
+  
+  .summary-cards {
+    display: grid;
+    gap: 16px;
+  }
+  
+  .summary-card {
+    background: var(--color-card-bg);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .summary-card ion-icon {
+    font-size: 24px;
+    color: var(--color-link);
+  }
+  
+  .summary-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--color-text-secondary);
+  }
+  
+  .summary-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  
+  .summary-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  
+  .quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .quick-action-button {
+    --background: var(--color-card-bg);
+    --background-hover: var(--color-card-hover);
+    --color: var(--color-text);
+    --border-radius: var(--border-radius);
+    font-size: 14px;
+    font-weight: 500;
+    height: 44px;
+  }
+  
+  .help-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .help-item {
+    background: var(--color-card-bg);
+    border-radius: var(--border-radius);
+    padding: 16px;
+  }
+  
+  .help-item h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .help-item p {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+  }
+  
+  .help-button {
+    align-self: flex-start;
+    --color: var(--color-link);
+    font-weight: 500;
+  }
+  
+  .custom-content {
+    --background: var(--color-background);
+  }
+  
+  .dashboard-container {
+    padding: 24px;
+    min-height: 100vh;
+    color: var(--color-text);
+  }
+  
+  .welcome-section {
+    margin-bottom: 32px;
+    animation: fadeInDown 0.5s ease-out;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .welcome-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .welcome-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 18px;
+  }
+  
+  .welcome-actions {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .notification-button,
+  .profile-button {
+    --padding-start: 16px;
+    --padding-end: 16px;
+  }
+  
+  .main-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+    animation: fadeInUp 0.5s ease-out 0.2s both;
+  }
+  
+  .section-card {
+    background: var(--color-card-bg);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .section-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .quick-transfer-section,
+  .transfer-options-section {
+    grid-column: span 1;
+  }
+  
+  .transfers-history-section {
+    grid-column: span 2;
+  }
+  
+  /* Animations */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .main-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  
+    .transfers-history-section {
+      grid-column: span 2;
+    }
+    .desktop-layout {
+      flex-direction: column;
+    }
+  
+    .main-column,
+    .side-column {
+      max-width: 100%;
+      width: 100%;
+    }
+  
+    .transfer-options {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .main-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .transfers-history-section {
+      grid-column: span 1;
+    }
+    .desktop-content {
+      --padding-start: 16px;
+      --padding-end: 16px;
+      --padding-top: 16px;
+      --padding-bottom: 16px;
+    }
+  
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+  
+    .page-title {
+      font-size: 28px;
+    }
+  
+    .section-title {
+      font-size: 22px;
+    }
+  
+    .quick-transfer-form {
+      flex-direction: column;
+    }
+  
+    .transfer-options {
+      grid-template-columns: 1fr;
+    }
+  
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+  
+    .desktop-searchbar {
+      max-width: 100%;
+    }
+    .welcome-section {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .welcome-actions {
+      margin-top: 16px;
+    }
+  
+    .welcome-title {
+      font-size: 28px;
+    }
+  
+    .transfer-options {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-link);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-link-hover);
+  }
+  
+  /* Improve accessibility */
+  .transfer-card:focus,
+  .tab-button:focus,
+  .desktop-searchbar:focus,
+  .quick-action-button:focus,
+  .help-button:focus {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+  }
+  
+  /* Add ripple effect */
+  ion-ripple-effect {
+    color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Accessibility improvements */
+  
+  /* Add a subtle text shadow for better readability on dark backgrounds */
+  .page-title,
+  .section-title,
+  .transfer-text h3,
+  .tab-button,
+  .transfer-info h3,
+  .transfer-amount,
+  .summary-amount,
+  .summary-text,
+  .help-item h3 {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  
