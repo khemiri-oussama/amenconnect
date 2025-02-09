@@ -102,9 +102,9 @@ const CarteDesktop: React.FC = () => {
   const [isCardLocked, setIsCardLocked] = useState(false)
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("fr-FR", {
+    return new Intl.NumberFormat("tn-TN", {
       style: "currency",
-      currency: "EUR",
+      currency: "TND",
     }).format(amount)
   }
 
@@ -132,13 +132,8 @@ const CarteDesktop: React.FC = () => {
                     </span>
                     <span>
                       <small>Foulen ben foulen</small>
-                      <br />
-                      JOHN DOE
                     </span>
                   </div>
-                </div>
-                <div className="carte-desktop__card-brand">
-                  <img src="/placeholder.svg?height=40&width=40" alt="Logo de la banque" />
                 </div>
               </IonCardContent>
             </IonCard>
@@ -146,17 +141,17 @@ const CarteDesktop: React.FC = () => {
             <div className="carte-desktop__quick-actions">
               <IonButton
                 expand="block"
-                color={isCardLocked ? "danger" : "primary"}
+                color={isCardLocked ? "danger" : "success"}
                 onClick={() => setIsCardLocked(!isCardLocked)}
               >
                 <IonIcon slot="start" icon={lockClosedOutline} />
                 {isCardLocked ? "Débloquer la carte" : "Bloquer la carte"}
               </IonButton>
-              <IonButton expand="block" color="primary">
+              <IonButton expand="block" color="success">
                 <IonIcon slot="start" icon={shieldOutline} />
                 Paramètres de sécurité
               </IonButton>
-              <IonButton expand="block" color="primary">
+              <IonButton expand="block" color="success">
                 <IonIcon slot="start" icon={downloadOutline} />
                 Télécharger le relevé
               </IonButton>
@@ -170,16 +165,16 @@ const CarteDesktop: React.FC = () => {
                 <div className="carte-desktop__limit-item">
                   <div className="carte-desktop__limit-info">
                     <span>Dépenses mensuelles</span>
-                    <span>3 450 € / 5 000 €</span>
+                    <span>3 450 TND / 5 000 TND</span>
                   </div>
-                  <IonProgressBar value={0.69}></IonProgressBar>
+                  <IonProgressBar value={0.69} color="success"></IonProgressBar>
                 </div>
                 <div className="carte-desktop__limit-item">
                   <div className="carte-desktop__limit-info">
                     <span>Retrait DAB</span>
-                    <span>400 € / 1 000 €</span>
+                    <span>400 TND / 1 000 TND</span>
                   </div>
-                  <IonProgressBar value={0.4}></IonProgressBar>
+                  <IonProgressBar value={0.4} color="success"></IonProgressBar>
                 </div>
               </IonCardContent>
             </IonCard>
@@ -189,14 +184,23 @@ const CarteDesktop: React.FC = () => {
             <div className="carte-desktop__tabs">
               <IonButton
                 fill={activeTab === "operations" ? "solid" : "clear"}
+                color="success"
                 onClick={() => setActiveTab("operations")}
               >
                 Opérations
               </IonButton>
-              <IonButton fill={activeTab === "details" ? "solid" : "clear"} onClick={() => setActiveTab("details")}>
+              <IonButton
+                fill={activeTab === "details" ? "solid" : "clear"}
+                color="success"
+                onClick={() => setActiveTab("details")}
+              >
                 Détails
               </IonButton>
-              <IonButton fill={activeTab === "analytics" ? "solid" : "clear"} onClick={() => setActiveTab("analytics")}>
+              <IonButton
+                fill={activeTab === "analytics" ? "solid" : "clear"}
+                color="success"
+                onClick={() => setActiveTab("analytics")}
+              >
                 Analyses
               </IonButton>
             </div>
