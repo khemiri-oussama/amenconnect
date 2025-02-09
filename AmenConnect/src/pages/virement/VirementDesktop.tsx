@@ -1,292 +1,200 @@
-"use client"
-
-import type React from "react"
-import { useState } from "react"
-import { IonContent, IonPage, IonIcon, IonSearchbar, IonRippleEffect, IonButton, IonBadge } from "@ionic/react"
 import {
-  cashOutline,
-  businessOutline,
+  IonContent,
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+  IonButton,
+  IonIcon,
+  IonSegment,
+  IonSegmentButton,
+  IonCard,
+  IonCardContent,
+  IonRadioGroup,
+  IonRadio,
+  IonBadge,
+} from "@ionic/react"
+import {
+  arrowForward,
+  arrowBack,
+  timeOutline,
   documentTextOutline,
-  checkmarkCircleOutline,
-  arrowForwardOutline,
-  repeatOutline,
-  timerOutline,
-  helpCircleOutline,
-  alertCircleOutline,
-  trendingUpOutline,
-  walletOutline,
-  peopleOutline,
-  settingsOutline,
-  eyeOutline,
+  chatbubbleOutline,
+  downloadOutline,
 } from "ionicons/icons"
-import { useHistory } from "react-router-dom"
 import "./VirementDesktop.css"
 import Navbar from "../../components/Navbar"
-
 const VirementsDesktop: React.FC = () => {
-  const history = useHistory()
-  const [activeTab, setActiveTab] = useState("historique")
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab)
-  }
-
   return (
-    <IonPage className="virements-desktop">
+    <IonPage>
+      <IonHeader>
       <Navbar />
-      <IonContent className="ion-padding virements-desktop-content">
-        <div className="virements-dashboard-container">
-          <div className="virements-welcome-section">
-            <div className="virements-welcome-text">
-              <h1 className="virements-welcome-title">Virements</h1>
-              <p className="virements-welcome-subtitle">Gérez vos transferts d'argent en toute simplicité</p>
-            </div>
-            <div className="virements-welcome-actions">
-              <IonButton fill="clear" className="virements-notification-button">
-                <IonIcon slot="icon-only" icon={alertCircleOutline} />
+      </IonHeader>
+
+      <IonContent className="ion-padding">
+        <h1 className="page-title">Virements</h1>
+
+        <div className="grid-container">
+          {/* Quick Transfer Card */}
+          <IonCard className="quick-transfer-card">
+            <IonCardContent>
+              <h2>Virement Rapide</h2>
+              <div className="form-group">
+                <label>Bénéficiaire</label>
+                <IonSelect placeholder="Choisir Bénéficiaire" interface="popover">
+                  <IonSelectOption value="ben1">Bénéficiaire 1</IonSelectOption>
+                  <IonSelectOption value="ben2">Bénéficiaire 2</IonSelectOption>
+                </IonSelect>
+              </div>
+              <div className="form-group">
+                <label>Montant (TND)</label>
+                <input type="number" className="amount-input" placeholder="0.00" />
+              </div>
+              <IonButton expand="block" className="transfer-button">
+                Effectuer le virement
+                <IonIcon icon={arrowForward} slot="end" />
               </IonButton>
-              <IonButton fill="solid" className="virements-profile-button">
-                Paramètres
-                <IonIcon slot="end" icon={settingsOutline} />
-              </IonButton>
-            </div>
-          </div>
+            </IonCardContent>
+          </IonCard>
 
-          <div className="virements-main-grid">
-            <div className="virements-section-card virements-quick-transfer-section">
-              <div className="virements-section-header">
-                <h2 className="virements-section-title">
-                  <IonIcon icon={cashOutline} />
-                  Virement rapide
-                </h2>
-              </div>
-              <div className="virements-quick-transfer-form">
-                <div className="virements-form-group">
-                  <label htmlFor="beneficiary">Bénéficiaire</label>
-                  <select id="beneficiary" className="virements-form-control">
-                    <option>Choisir un bénéficiaire</option>
-                    <option>Ahmed Ben Ali</option>
-                    <option>Fatma Trabelsi</option>
-                    <option>Mohamed Salah</option>
-                  </select>
-                </div>
-                <div className="virements-form-group">
-                  <label htmlFor="amount">Montant (DT)</label>
-                  <input type="number" id="amount" className="virements-form-control" placeholder="0.00" />
-                </div>
-                <IonButton expand="block" className="virements-submit-button">
-                  Effectuer le virement
-                  <IonIcon slot="end" icon={arrowForwardOutline} />
-                </IonButton>
-              </div>
-            </div>
+          {/* Transaction History Card */}
+          <IonCard className="history-card">
+            <IonCardContent>
+              <IonSegment value="historique">
+                <IonSegmentButton value="historique">
+                  <IonLabel>
+                    Historique <IonBadge>6</IonBadge>
+                  </IonLabel>
+                </IonSegmentButton>
+                <IonSegmentButton value="asigner">
+                  <IonLabel>
+                    Virements à signer <IonBadge>3</IonBadge>
+                  </IonLabel>
+                </IonSegmentButton>
+              </IonSegment>
 
-            <div className="virements-section-card virements-transfer-options-section">
-              <div className="virements-section-header">
-                <h2 className="virements-section-title">
-                  <IonIcon icon={repeatOutline} />
-                  Options de virement
-                </h2>
-              </div>
-              <div className="virements-transfer-options">
-                <button className="virements-transfer-card" onClick={() => history.push("/beneficiary-transfer")}>
-                  <IonRippleEffect />
-                  <div className="virements-transfer-icon">
-                    <IonIcon icon={peopleOutline} />
-                  </div>
-                  <div className="virements-transfer-text">
-                    <h3>Virement vers un bénéficiaire</h3>
-                    <p>Effectuez un virement vers un compte bénéficiaire en toute sécurité</p>
-                  </div>
-                </button>
-
-                <button className="virements-transfer-card" onClick={() => history.push("/account-transfer")}>
-                  <IonRippleEffect />
-                  <div className="virements-transfer-icon">
-                    <IonIcon icon={businessOutline} />
-                  </div>
-                  <div className="virements-transfer-text">
-                    <h3>Virement de compte à compte</h3>
-                    <p>Transférez des fonds entre vos propres comptes instantanément</p>
-                  </div>
-                </button>
-
-                <button className="virements-transfer-card" onClick={() => history.push("/scheduled-transfer")}>
-                  <IonRippleEffect />
-                  <div className="virements-transfer-icon">
-                    <IonIcon icon={timerOutline} />
-                  </div>
-                  <div className="virements-transfer-text">
-                    <h3>Virement programmé</h3>
-                    <p>Planifiez des virements récurrents ou à une date future</p>
-                  </div>
-                </button>
-              </div>
-            </div>
-
-            <div className="virements-section-card virements-transfers-history-section">
-              <div className="virements-section-header">
-                <h2 className="virements-section-title">
-                  <IonIcon icon={documentTextOutline} />
-                  Historique des virements
-                </h2>
-                <IonSearchbar
-                  placeholder="Rechercher un virement"
-                  className="virements-desktop-searchbar"
-                ></IonSearchbar>
-              </div>
-              <div className="virements-tabs-container">
-                <button
-                  className={`virements-tab-button ${activeTab === "historique" ? "active" : ""}`}
-                  onClick={() => handleTabChange("historique")}
-                >
-                  <IonIcon icon={documentTextOutline} />
-                  Historique
-                </button>
-                <button
-                  className={`virements-tab-button ${activeTab === "a-signer" ? "active" : ""}`}
-                  onClick={() => handleTabChange("a-signer")}
-                >
-                  <IonIcon icon={checkmarkCircleOutline} />
-                  Virements à signer
-                  <IonBadge color="danger">2</IonBadge>
-                </button>
-              </div>
-
-              <div className="virements-transfers-list">
-                <div className="virements-transfer-item">
-                  <IonRippleEffect />
-                  <div className="virements-transfer-icon">
-                    <IonIcon icon={arrowForwardOutline} />
-                  </div>
-                  <div className="virements-transfer-info">
+              <IonList className="transaction-list">
+                <IonItem lines="full">
+                  <IonIcon icon={arrowBack} slot="start" className="outgoing" />
+                  <IonLabel>
                     <h3>Virement à Ahmed Ben Ali</h3>
-                    <p>15 juillet 2023 • Compte courant</p>
-                  </div>
-                  <div className="virements-transfer-amount outgoing">-1000 DT</div>
-                </div>
-                <div className="virements-transfer-item">
-                  <IonRippleEffect />
-                  <div className="virements-transfer-icon">
-                    <IonIcon icon={arrowForwardOutline} />
-                  </div>
-                  <div className="virements-transfer-info">
+                    <p>Compte Epargne</p>
+                  </IonLabel>
+                  <div className="transaction-amount outgoing">-1000 DT</div>
+                  <div className="transaction-date">01/02/2025</div>
+                </IonItem>
+
+                <IonItem lines="full">
+                  <IonIcon icon={arrowForward} slot="start" className="incoming" />
+                  <IonLabel>
                     <h3>Virement reçu de Société XYZ</h3>
-                    <p>10 juillet 2023 • Compte épargne</p>
-                  </div>
-                  <div className="virements-transfer-amount incoming">+2500 DT</div>
-                </div>
-                <div className="virements-transfer-item">
-                  <IonRippleEffect />
-                  <div className="virements-transfer-icon">
-                    <IonIcon icon={arrowForwardOutline} />
-                  </div>
-                  <div className="virements-transfer-info">
-                    <h3>Virement à Fatma Trabelsi</h3>
-                    <p>5 juillet 2023 • Compte courant</p>
-                  </div>
-                  <div className="virements-transfer-amount outgoing">-750 DT</div>
-                </div>
-              </div>
-              <div className="virements-view-all-button">
-                <IonButton fill="clear">
-                  Voir tous les virements
-                  <IonIcon slot="end" icon={eyeOutline} />
-                </IonButton>
-              </div>
-            </div>
+                    <p>Compte Courant</p>
+                  </IonLabel>
+                  <div className="transaction-amount incoming">+1850 DT</div>
+                  <div className="transaction-date">01/02/2025</div>
+                </IonItem>
+              </IonList>
+            </IonCardContent>
+          </IonCard>
 
-            <div className="virements-section-card virements-summary-section">
-              <div className="virements-section-header">
-                <h2 className="virements-section-title">
-                  <IonIcon icon={walletOutline} />
-                  Résumé des virements
-                </h2>
-              </div>
-              <div className="virements-summary-cards">
-                <div className="virements-summary-card">
-                  <IonIcon icon={trendingUpOutline} />
-                  <div>
-                    <h3>Total des virements ce mois</h3>
-                    <p className="virements-summary-amount">5,250 DT</p>
-                  </div>
+          {/* Transfer Options Card */}
+          <IonCard className="transfer-options-card">
+            <IonCardContent>
+              <h2>Virement</h2>
+              <div className="options-grid">
+                <div className="option-item">
+                  <IonIcon icon={timeOutline} />
+                  <span>Virement Compte à Compte</span>
                 </div>
-                <div className="virements-summary-card">
-                  <IonIcon icon={repeatOutline} />
-                  <div>
-                    <h3>Nombre de virements</h3>
-                    <p className="virements-summary-amount">12</p>
-                  </div>
-                </div>
-                <div className="virements-summary-card">
-                  <IonIcon icon={timerOutline} />
-                  <div>
-                    <h3>Prochain virement prévu</h3>
-                    <p className="virements-summary-text">Loyer - 800 DT - 01/08/2023</p>
-                  </div>
+                <div className="option-item">
+                  <IonIcon icon={documentTextOutline} />
+                  <span>Virement Permanent</span>
                 </div>
               </div>
-            </div>
 
-            <div className="virements-section-card virements-quick-actions-section">
-              <div className="virements-section-header">
-                <h2 className="virements-section-title">
-                  <IonIcon icon={settingsOutline} />
-                  Actions rapides
-                </h2>
-              </div>
-              <div className="virements-quick-actions">
-                <IonButton expand="block" className="virements-quick-action-button">
-                  <IonIcon slot="start" icon={cashOutline} />
-                  Nouveau virement
-                </IonButton>
-                <IonButton expand="block" className="virements-quick-action-button">
-                  <IonIcon slot="start" icon={repeatOutline} />
-                  Gérer les virements récurrents
-                </IonButton>
-                <IonButton expand="block" className="virements-quick-action-button">
-                  <IonIcon slot="start" icon={documentTextOutline} />
-                  Télécharger le relevé
+              <div className="mass-transfer-section">
+                <h3>Virement de masse</h3>
+                <IonRadioGroup value="standard">
+                  <IonItem>
+                    <IonRadio value="standard">Format Standard</IonRadio>
+                  </IonItem>
+                  <IonItem>
+                    <IonRadio value="afb320">Format AFB320</IonRadio>
+                  </IonItem>
+                  <IonItem>
+                    <IonRadio value="nt112">Format NT 112.15 de 1998</IonRadio>
+                  </IonItem>
+                </IonRadioGroup>
+                <IonButton fill="outline" className="import-button">
+                  Import
+                  <IonIcon icon={downloadOutline} slot="end" />
                 </IonButton>
               </div>
-            </div>
+            </IonCardContent>
+          </IonCard>
 
-            <div className="virements-section-card virements-help-section">
-              <div className="virements-section-header">
-                <h2 className="virements-section-title">
-                  <IonIcon icon={helpCircleOutline} />
-                  Aide et informations
-                </h2>
-              </div>
-              <div className="virements-help-content">
-                <div className="virements-help-item">
-                  <h3>
-                    <IonIcon icon={alertCircleOutline} />
-                    Limites de virement
-                  </h3>
-                  <p>Virement quotidien max : 10,000 DT</p>
-                  <p>Virement mensuel max : 50,000 DT</p>
+          {/* Help Card */}
+          <IonCard className="help-card">
+            <IonCardContent>
+              <h2>Aide et informations</h2>
+              <div className="help-grid">
+                <div className="help-item">
+                  <h3>Limites de virement</h3>
+                  <p>Virement quotidien max: 10,000</p>
+                  <p>Virement mensuel max: 50,000</p>
                 </div>
-                <div className="virements-help-item">
-                  <h3>
-                    <IonIcon icon={timerOutline} />
-                    Délais de traitement
-                  </h3>
-                  <p>Virement interne : Instantané</p>
-                  <p>Virement externe : 1-2 jours ouvrés</p>
+                <div className="help-item">
+                  <h3>Délais de traitement</h3>
+                  <p>Virement interne: Instantané</p>
+                  <p>Virement externe: 1-2 jours ouvrés</p>
                 </div>
-                <IonButton fill="clear" className="virements-help-button">
-                  Centre d'aide
-                  <IonIcon slot="end" icon={arrowForwardOutline} />
-                </IonButton>
               </div>
-            </div>
-          </div>
+              <IonButton expand="block" fill="clear" className="chat-button">
+                <IonIcon icon={chatbubbleOutline} slot="start" />
+                Chat Assistant
+              </IonButton>
+            </IonCardContent>
+          </IonCard>
+
+          {/* Account Details Card */}
+          <IonCard className="account-details-card">
+            <IonCardContent>
+              <div className="details-grid">
+                <div className="detail-item">
+                  <label>RIB</label>
+                  <span>07098050001216747468</span>
+                </div>
+                <div className="detail-item">
+                  <label>IBAN</label>
+                  <span>TN5907098050001216747468</span>
+                </div>
+                <div className="detail-item">
+                  <label>Solde du compte</label>
+                  <span>2580 DT</span>
+                </div>
+                <div className="detail-item">
+                  <label>Date de création</label>
+                  <span>22/01/2025</span>
+                </div>
+              </div>
+              <IonButton expand="block" fill="clear" className="download-button">
+                Télécharger le relevé
+                <IonIcon icon={downloadOutline} slot="end" />
+              </IonButton>
+            </IonCardContent>
+          </IonCard>
         </div>
       </IonContent>
     </IonPage>
   )
 }
+
+
+
 
 export default VirementsDesktop
 
