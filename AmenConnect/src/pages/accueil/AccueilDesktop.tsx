@@ -169,7 +169,7 @@ const AccueilDesktop: React.FC = () => {
                     </div>
                     <div className="account-details">
                       <div className="account-name">{account.name}</div>
-                      <div className="account-type">{account.type === "current" ? "Courant" : "Épargne"}</div>
+                      <div className="account-type">{account.type === "current" ? " Courant" : " Épargne"}</div>
                     </div>
                     <div className="account-balance">{account.balance.toFixed(2)} TND</div>
                   </div>

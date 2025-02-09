@@ -1,407 +1,104 @@
+/* Custom properties for easy theming */
 :root {
-  --color-background: linear-gradient(180deg, rgba(30, 30, 30, 0.95) 0%, rgba(24, 24, 24, 0.98) 100%);
-  --color-text: #ffffff;
-  --color-text-secondary: #878787;
-  --color-card-bg: rgba(255, 255, 255, 0.1);
-  --color-card-hover: rgba(255, 255, 255, 0.15);
-  --color-positive: #47ce65;
-  --color-negative: #ff2b2b;
-  --color-link: #2eb851;
-  --color-link-hover: #47ce65;
-  --transition-speed: 0.3s;
-  --border-radius: 16px;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --ion-background-color: #121212;
+  --ion-background-color-rgb: 18, 18, 18;
+  --ion-text-color: #ffffff;
+  --ion-text-color-rgb: 255, 255, 255;
+  --ion-color-step-50: #1e1e1e;
+  --ion-color-step-100: #2a2a2a;
+  --ion-color-step-150: #363636;
+  --ion-color-step-200: #414141;
+  --ion-color-step-250: #4d4d4d;
+  --ion-color-step-300: #595959;
+  --ion-color-step-350: #656565;
+  --ion-color-step-400: #717171;
+  --ion-color-step-450: #7d7d7d;
+  --ion-color-step-500: #898989;
+  --ion-color-step-550: #949494;
+  --ion-color-step-600: #a0a0a0;
+  --ion-color-step-650: #acacac;
+  --ion-color-step-700: #b8b8b8;
+  --ion-color-step-750: #c4c4c4;
+  --ion-color-step-800: #d0d0d0;
+  --ion-color-step-850: #dbdbdb;
+  --ion-color-step-900: #e7e7e7;
+  --ion-color-step-950: #f3f3f3;
+
+  --ion-card-background: rgba(255, 255, 255, 0.05);
+  --ion-item-background: transparent;
+  --ion-toolbar-background: var(--ion-background-color);
+  --ion-tab-bar-background: var(--ion-background-color);
+
+  --ion-color-primary: #6a64ff;
+  --ion-color-primary-rgb: 106, 100, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #5d58e0;
+  --ion-color-primary-tint: #7974ff;
 }
 
-.virements-desktop {
-  --background: var(--color-background);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-    "Helvetica Neue", sans-serif;
+/* Glassmorphism effect for cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 16px !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-.virements-desktop-content {
-  --padding-start: 24px;
-  --padding-end: 24px;
-  --padding-top: 24px;
-  --padding-bottom: 24px;
+/* Custom styles for components */
+ion-content {
+  --background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
 }
 
-.virements-dashboard-container {
-  padding: 24px;
-  min-height: 100vh;
-  color: var(--color-text);
+ion-toolbar {
+  --background: transparent;
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
-.virements-welcome-section {
-  margin-bottom: 32px;
-  animation: fadeInDown 0.5s ease-out;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+ion-card-title {
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
 }
 
-.virements-welcome-title {
-  font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 8px;
+ion-item {
+  --background: transparent;
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
-.virements-welcome-subtitle {
-  color: var(--color-text-secondary);
-
-  font-size: 18px;
+ion-input {
+  --background: rgba(255, 255, 255, 0.05);
+  --padding-start: 10px;
+  --padding-end: 10px;
+  border-radius: 8px;
 }
 
-.virements-welcome-actions {
-  display: flex;
-  gap: 16px;
-}
-
-.virements-notification-button,
-.virements-profile-button {
-  --padding-start: 16px;
-  --padding-end: 16px;
-}
-
-.virements-main-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-bottom: 32px;
-  animation: fadeInUp 0.5s ease-out 0.2s both;
-}
-
-.virements-section-card {
-  background: var(--color-card-bg);
-  border-radius: var(--border-radius);
-  padding: 24px;
-  transition: all var(--transition-speed) ease;
-}
-
-.virements-section-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.virements-quick-transfer-section,
-.virements-transfer-options-section {
-  grid-column: span 1;
-}
-
-.virements-transfers-history-section {
-  grid-column: span 2;
-}
-
-.virements-section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.virements-section-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  letter-spacing: -0.3px;
-}
-
-.virements-section-title ion-icon {
-  margin-right: 12px;
-  font-size: 24px;
-  color: var(--color-secondary);
-}
-
-.virements-quick-transfer-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.virements-form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.virements-form-group label {
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-}
-
-.virements-form-control {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  background-color: var(--color-card-bg);
-  border: 1px solid var(--color-card-hover);
-  border-radius: var(--border-radius);
-  color: var(--color-text);
-  transition: border-color var(--transition-speed) ease;
-}
-
-.virements-form-control:focus {
-  outline: none;
-  border-color: var(--color-link);
-}
-
-.virements-submit-button {
-  --background: var(--color-link);
-  --background-hover: var(--color-link-hover);
-  --color: var(--color-text);
-  --border-radius: var(--border-radius);
-  font-weight: 600;
-  margin-top: 16px;
-}
-
-.virements-submit-button:hover {
-  --background: var(--color-link-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(233, 69, 96, 0.3);
-}
-
-.virements-transfer-options {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.virements-transfer-card {
-  background: var(--color-card-bg);
-  border-radius: var(--border-radius);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  transition: all var(--transition-speed) ease;
-  cursor: pointer;
-  border: none;
-  color: var(--color-text);
-  text-align: center;
-}
-
-.virements-transfer-card:hover {
-  background: var(--color-card-hover);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-}
-
-.virements-transfer-icon {
-  font-size: 32px;
-  color: var(--color-link);
-}
-
-.virements-transfer-text h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.virements-transfer-text p {
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.virements-tabs-container {
-  display: flex;
-  background: var(--color-card-bg);
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-
-.virements-tab-button {
-  flex: 1;
-  padding: 12px 16px;
-  background: transparent;
-  border: none;
-  color: var(--color-text);
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
-}
-
-.virements-tab-button.active {
-  background: var(--color-link);
-  color: var(--color-text);
-}
-
-.virements-tab-button:hover:not(.active) {
-  background: var(--color-card-hover);
-}
-
-.virements-desktop-searchbar {
-  --background: var(--color-card-bg);
-  --color: var(--color-text);
-  --placeholder-color: var(--color-text-secondary);
-  --icon-color: var(--color-text-secondary);
-  --border-radius: var(--border-radius);
+ion-button {
   --box-shadow: none;
-  max-width: 300px;
-  font-size: 14px;
-}
-
-.virements-transfers-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.virements-transfer-item {
-  background: var(--color-card-bg);
-  border-radius: var(--border-radius);
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transition: all var(--transition-speed) ease;
-}
-
-.virements-transfer-item:hover {
-  background: var(--color-card-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.virements-transfer-info h3 {
-  font-size: 16px;
   font-weight: 600;
-  margin-bottom: 4px;
 }
 
-.virements-transfer-info p {
-  font-size: 12px;
-  color: var(--color-text-secondary);
+ion-button.button-outline {
+  --border-color: rgba(255, 255, 255, 0.2);
 }
 
-.virements-transfer-amount {
-  font-size: 16px;
-  font-weight: 700;
+ion-segment {
+  --background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 16px;
 }
 
-.virements-transfer-amount.incoming {
-  color: var(--color-positive);
+ion-segment-button {
+  --indicator-color: var(--ion-color-primary);
 }
 
-.virements-transfer-amount.outgoing {
-  color: var(--color-negative);
-}
-
-.virements-view-all-button {
-  margin-top: 16px;
-  text-align: center;
-}
-
-.virements-summary-cards {
-  display: grid;
-  gap: 16px;
-}
-
-.virements-summary-card {
-  background: var(--color-card-bg);
-  border-radius: var(--border-radius);
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.virements-summary-card ion-icon {
-  font-size: 24px;
-  color: var(--color-link);
-}
-
-.virements-summary-card h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: var(--color-text-secondary);
-}
-
-.virements-summary-amount {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.virements-summary-text {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text);
-}
-
-.virements-quick-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.virements-quick-action-button {
-  --background: var(--color-card-bg);
-  --background-hover: var(--color-card-hover);
-  --color: var(--color-text);
-  --border-radius: var(--border-radius);
-  font-size: 14px;
-  font-weight: 500;
-  height: 44px;
-}
-
-.virements-help-content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.virements-help-item {
-  background: var(--color-card-bg);
-  border-radius: var(--border-radius);
-  padding: 16px;
-}
-
-.virements-help-item h3 {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.virements-help-item p {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  margin-bottom: 4px;
-}
-
-.virements-help-button {
-  align-self: flex-start;
-  --color: var(--color-link);
-  font-weight: 500;
+ion-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 /* Animations */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
+@keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -412,116 +109,44 @@
   }
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .virements-main-grid {
-    grid-template-columns: 1fr 1fr;
+ion-card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  ion-grid {
+    padding: 0;
   }
 
-  .virements-transfers-history-section {
-    grid-column: span 2;
-  }
-
-  .virements-transfer-options {
-    grid-template-columns: repeat(2, 1fr);
+  ion-col {
+    padding: 5px;
   }
 }
 
-@media (max-width: 768px) {
-  .virements-main-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .virements-transfers-history-section {
-    grid-column: span 1;
-  }
-
-  .virements-desktop-content {
-    --padding-start: 16px;
-    --padding-end: 16px;
-    --padding-top: 16px;
-    --padding-bottom: 16px;
-  }
-
-  .virements-welcome-section {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .virements-welcome-actions {
-    margin-top: 16px;
-  }
-
-  .virements-welcome-title {
-    font-size: 28px;
-  }
-
-  .virements-section-title {
-    font-size: 22px;
-  }
-
-  .virements-quick-transfer-form {
-    flex-direction: column;
-  }
-
-  .virements-transfer-options {
-    grid-template-columns: 1fr;
-  }
-
-  .virements-section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .virements-desktop-searchbar {
-    max-width: 100%;
-  }
+/* Accessibility improvements */
+ion-button:focus,
+ion-input:focus,
+ion-segment-button:focus {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 2px;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--ion-background-color);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-link);
-  border-radius: 4px;
+  background: var(--ion-color-step-300);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-link-hover);
-}
-
-/* Improve accessibility */
-.virements-transfer-card:focus,
-.virements-tab-button:focus,
-.virements-desktop-searchbar:focus,
-.virements-quick-action-button:focus,
-.virements-help-button:focus {
-  outline: 2px solid var(--color-link);
-  outline-offset: 2px;
-}
-
-/* Add ripple effect */
-ion-ripple-effect {
-  color: rgba(255, 255, 255, 0.1);
-}
-
-/* Accessibility improvements */
-.virements-welcome-title,
-.virements-section-title,
-.virements-transfer-text h3,
-.virements-tab-button,
-.virements-transfer-info h3,
-.virements-transfer-amount,
-.virements-summary-amount,
-.virements-summary-text,
-.virements-help-item h3 {
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  background: var(--ion-color-step-400);
 }
 
