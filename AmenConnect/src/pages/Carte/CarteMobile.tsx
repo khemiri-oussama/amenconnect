@@ -1,6 +1,5 @@
 import type React from "react"
 import { useState } from "react"
-import { useHistory } from "react-router-dom"
 import {
   IonContent,
   IonPage,

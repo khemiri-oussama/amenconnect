@@ -9,7 +9,6 @@ const Home: React.FC = () => {
   const [isPortrait, setIsPortrait] = useState(window.matchMedia("(orientation: portrait)").matches)
   const [isTouchable, setIsTouchable] = useState(false)
   const isMobile = isPlatform("mobile")
-  const isHuaweiTablet = isPlatform("mobile")
   useEffect(() => {
     const handleResize = () => {
       setIsPortrait(window.matchMedia("(orientation: portrait)").matches)
@@ -30,13 +29,10 @@ const Home: React.FC = () => {
   console.log("isPortrait:", isPortrait)
   console.log("isTouchable:", isTouchable)
   console.log("isBorneInteractive:", isBorneInteractive)
-  const isTestingKiosk = isHuaweiTablet; 
 
   return (
     <>
-      {isTestingKiosk ? (
-        <HomeKiosk />
-      ) : isMobile ? (
+      {isMobile ? (
         <HomeMobile />
       ) : isBorneInteractive ? (
         <HomeKiosk />
@@ -45,6 +41,6 @@ const Home: React.FC = () => {
       )}
     </>
   );
-}
+};
 
 export default Home
