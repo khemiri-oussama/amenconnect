@@ -21,7 +21,7 @@
   }
   
   .carte-desktop__credit-card {
-    --background: linear-gradient(135deg, #0066ff 0%, #0033cc 100%);
+    --background: linear-gradient(135deg, #47ce65 0%, #2da04b 100%);
     height: 220px;
     position: relative;
     overflow: hidden;
@@ -95,6 +95,9 @@
   
   .carte-desktop__tabs ion-button {
     --border-radius: 8px;
+    --color: #47ce65;
+    --color-activated: #ffffff;
+    --background-activated: #47ce65;
   }
   
   .carte-desktop__balance-summary {
@@ -213,7 +216,7 @@
   
   .carte-desktop__feature-card ion-icon {
     font-size: 2rem;
-    color: #0066ff;
+    color: #47ce65;
     margin-bottom: 1rem;
   }
   
@@ -225,6 +228,11 @@
     font-size: 0.9rem;
     color: #888;
     line-height: 1.4;
+  }
+  
+  /* New styles for progress bars */
+  ion-progress-bar {
+    --progress-background: #47ce65;
   }
   
   
