@@ -53,7 +53,9 @@ const VirementsDesktop: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-      <Navbar />
+        <IonToolbar>
+        <Navbar />
+        </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
         <IonGrid>

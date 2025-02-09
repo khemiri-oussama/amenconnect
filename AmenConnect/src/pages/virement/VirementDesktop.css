@@ -113,16 +113,6 @@ ion-card {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  ion-grid {
-    padding: 0;
-  }
-
-  ion-col {
-    padding: 5px;
-  }
-}
 
 /* Accessibility improvements */
 ion-button:focus,
@@ -132,21 +122,4 @@ ion-segment-button:focus {
   outline-offset: 2px;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--ion-background-color);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--ion-color-step-300);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--ion-color-step-400);
-}
 
