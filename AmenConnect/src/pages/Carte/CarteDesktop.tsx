@@ -112,7 +112,7 @@ const CarteDesktop: React.FC = () => {
     <IonPage className="carte-desktop">
       <IonHeader>
         <IonToolbar>
-          <Navbar />
+          <Navbar currentPage="carte"/>
         </IonToolbar>
       </IonHeader>
 

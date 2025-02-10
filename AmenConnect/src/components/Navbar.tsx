@@ -1,40 +1,64 @@
 import type React from "react"
-import { IonToolbar, IonRouterLink, useIonRouter } from "@ionic/react"
+import { IonToolbar, IonRippleEffect } from "@ionic/react"
+import { useHistory } from "react-router-dom"
 import "./Navbar.css"
 
-const Navbar: React.FC = () => {
-  const router = useIonRouter()
+interface NavbarProps {
+  currentPage: string
+}
 
-  const handleCardClick = () => {
-    console.log("Navigating to card management...")
-    router.push("/cards")
-  }
+const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
+  const history = useHistory()
 
   return (
     <IonToolbar className="custom-toolbar">
-      <IonRouterLink routerLink="/accueil" className="s">
-      <img src="amen_logo.png" alt="Amen Bank Logo" className="navbar-logo" />
-      </IonRouterLink>
+      <div className="navbar-logo-container" >
+        <img src="amen_logo.png" alt="Amen Bank Logo" className="navbar-logo" onClick={() => history.push("/accueil")}style={{ cursor: "pointer" }} />
+      </div>
+
       <div className="navbar-links">
-        <IonRouterLink routerLink="/accueil" className="navbar-link">
+        <button 
+          className={`navbar-link ion-activatable ${currentPage === "accueil" ? "active" : ""}`} 
+          onClick={() => history.push("/accueil")}
+        >
           Accueil
-        </IonRouterLink>
-        <IonRouterLink routerLink="/compte" className="navbar-link">
+          <IonRippleEffect />
+        </button>
+
+        <button 
+          className={`navbar-link ion-activatable ${currentPage === "compte" ? "active" : ""}`} 
+          onClick={() => history.push("/compte")}
+        >
           Comptes
-        </IonRouterLink>
-        <IonRouterLink routerLink="/chatBot" className="navbar-link">
+          <IonRippleEffect />
+        </button>
+
+        <button 
+          className={`navbar-link ion-activatable ${currentPage === "chat" ? "active" : ""}`} 
+          onClick={() => history.push("/ChatBot")}
+        >
           Chat
-        </IonRouterLink>
-        <IonRouterLink routerLink="/virement" className="navbar-link">
-          Virements
-        </IonRouterLink>
-        <IonRouterLink routerLink="/carte" className="navbar-link" onClick={handleCardClick}>
+          <IonRippleEffect />
+        </button>
+
+        <button 
+          className={`navbar-link ion-activatable ${currentPage === "carte" ? "active" : ""}`} 
+          onClick={() => history.push("/Carte")}
+        >
           Cartes
-        </IonRouterLink>
+          <IonRippleEffect />
+        </button>
+
+        <button 
+          className={`navbar-link ion-activatable ${currentPage === "virements" ? "active" : ""}`} 
+          onClick={() => history.push("/virement")}
+        >
+          Virements
+          <IonRippleEffect />
+        </button>
       </div>
     </IonToolbar>
   )
 }
 
 export default Navbar
-

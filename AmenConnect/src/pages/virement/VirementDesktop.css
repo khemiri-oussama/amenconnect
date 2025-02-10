@@ -1,96 +1,193 @@
 /* Main Layout */
-.main-header {
-  --background: #1e1e1e;
-  padding: 1rem;
+.virements-desktop {
+  --ion-background-color: #1e1e1e;
+  --ion-text-color: #ffffff;
+  font-family: "Roboto", sans-serif;
 }
 
-.bank-logo {
-  height: 40px;
+.virements-desktop.dark-mode {
+  --ion-background-color: #121212;
+  --ion-text-color: #ffffff;
 }
 
-.nav-links {
-  display: flex;
-  gap: 2rem;
+ion-content {
+  --background: linear-gradient(to bottom, var(--ion-background-color), #2a2a2a);
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+ion-card-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+ion-card-subtitle {
+  font-size: 1rem;
   color: #878787;
 }
 
-.nav-links .active {
-  color: #2eb851;
-}
-
-.page-title {
-  color: #ffffff;
-  font-size: 2rem;
+/* Tab Buttons */
+.tab-buttons {
+  display: flex;
+  justify-content: center;
   margin-bottom: 2rem;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1.5rem;
-  padding: 1rem;
-  justify-content: stretch;
-  align-items: stretch;
+ion-chip {
+  --background: rgba(255, 255, 255, 0.1);
+  --color: #ffffff;
+  margin: 0 0.5rem;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
-/* Cards Styling */
+ion-chip.ion-color-primary {
+  --background: #2eb851;
+}
+
+ion-chip:hover {
+  --background: rgba(255, 255, 255, 0.2);
+}
+
+/* Card Styling */
 ion-card {
-  --background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  margin: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+ion-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 ion-card-content {
   padding: 1.5rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
 }
 
-/* Quick Transfer Card */
-.quick-transfer-card {
+/* Account Summary */
+.account-summary ion-card-header {
   background: rgba(46, 184, 81, 0.1);
+  padding: 1.5rem;
 }
 
-.form-group {
-  width: 100%;
-  margin-bottom: 1.5rem;
+.balance {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2eb851;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: baseline;
 }
 
-.form-group label {
+.balance .amount {
+  margin-right: 0.5rem;
+}
+
+.balance .currency {
+  font-size: 1.5rem;
   color: #878787;
-  display: block;
+}
+
+.account-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.account-details div {
+  display: flex;
+  align-items: center;
+}
+
+.account-details ion-icon {
+  margin-right: 0.5rem;
+  color: #878787;
+}
+
+.balance-progress {
   margin-bottom: 0.5rem;
 }
 
-.amount-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #47ce65;
-  border-radius: 8px;
-  background: transparent;
-  color: #ffffff;
-}
-
-.transfer-button {
-  --background: #2eb851;
-  --color: #ffffff;
-  margin-top: 1rem;
-}
-
-/* Transaction History */
-.transaction-list {
-  height: 100%;
+.balance-info {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #878787;
 }
 
-.transaction-list ion-item {
-  --background: transparent;
-  --border-color: rgba(135, 135, 135, 0.2);
+/* Quick Actions */
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.action-button {
+  --color: #2eb851;
+  --background: rgba(46, 184, 81, 0.1);
+  --background-hover: rgba(46, 184, 81, 0.2);
+  --background-activated: rgba(46, 184, 81, 0.3);
+  height: 100%;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.action-button:hover {
+  --background: rgba(46, 184, 81, 0.2);
+}
+
+/* Recent Transactions */
+.transaction-search {
+  margin-bottom: 1rem;
+  --background: rgba(255, 255, 255, 0.05);
+  --color: #ffffff;
+  --placeholder-color: #878787;
+  --icon-color: #878787;
+  --clear-button-color: #878787;
+}
+
+.transaction-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-details {
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.transaction-details h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.transaction-details span {
+  font-size: 0.8rem;
+  color: #878787;
 }
 
 .transaction-amount {
@@ -98,138 +195,156 @@ ion-card-content {
 }
 
 .transaction-amount.incoming {
-  color: #47ce65;
+  color: #2eb851;
 }
 
 .transaction-amount.outgoing {
   color: #da0101;
 }
 
-.transaction-date {
-  color: #878787;
-  font-size: 0.875rem;
+.view-all-button {
+  margin-top: 1rem;
+  --color: #2eb851;
 }
 
-/* Segments */
-ion-segment {
+/* Quick Transfer */
+.quick-transfer-form ion-item {
   --background: transparent;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --highlight-height: 0;
   margin-bottom: 1rem;
 }
 
-ion-segment-button {
-  --color: #878787;
-  --color-checked: #2eb851;
-  --indicator-color: #2eb851;
+.quick-transfer-form ion-label {
+  color: #878787;
 }
 
-/* Transfer Options */
-.options-grid {
-  height: 100%;
-  width: 100%;
+.quick-transfer-form ion-input,
+.quick-transfer-form ion-select {
+  --color: #ffffff;
+}
+
+.transfer-button {
+  --background: #2eb851;
+  --background-activated: #28a247;
+  margin-top: 1rem;
+}
+
+/* Limits Info */
+.limits-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
-.option-item {
+.limit-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: rgba(135, 135, 135, 0.1);
-  border-radius: 8px;
-}
-
-.mass-transfer-section {
-  border-top: 1px solid rgba(135, 135, 135, 0.2);
-  padding-top: 1.5rem;
-}
-
-/* Help Section */
-.help-grid {
-  height: 100%;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.help-item {
-  background: rgba(135, 135, 135, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   padding: 1rem;
   border-radius: 8px;
 }
 
-.help-item h3 {
-  color: #47ce65;
-  margin-bottom: 0.5rem;
+.limit-item ion-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+  color: #2eb851;
 }
 
-/* Account Details */
-.details-grid {
-  height: 100%;
-  width: 100%;
-  display: grid;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.detail-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.detail-item label {
+.limit-item h4 {
+  margin: 0;
+  font-size: 0.9rem;
   color: #878787;
 }
 
-/* Buttons */
-.chat-button,
-.download-button {
-  --color: #47ce65;
+.limit-item span {
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
-/* Radio Buttons */
-ion-radio {
-  --color: #878787;
-  --color-checked: #2eb851;
+.limit-item ion-progress-bar {
+  margin-top: 0.5rem;
 }
 
-/* General Text Colors */
-h2 {
-  color: #ffffff;
-  margin-bottom: 1.5rem;
+.chat-button {
+  --color: #2eb851;
+  margin-top: 1rem;
 }
 
-p {
-  color: #878787;
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+  --background: rgba(255, 255, 255, 0.1);
+  --background-checked: #2eb851;
+  --handle-background: #ffffff;
+  --handle-background-checked: #ffffff;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .grid-container {
+  .dashboard-grid {
     grid-template-columns: 1fr;
-    max-width: 100%;
   }
 
-  .help-grid,
-  .options-grid {
-    grid-template-columns: 1fr;
+  .actions-grid {
+    grid-template-columns: 1fr 1fr;
   }
-  ion-card {
-    width: 100%;
+
+  .limits-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-.quick-transfer-card,
-.history-card,
-.transfer-options-card,
-.help-card,
-.account-details-card {
-  height: 100%;
-  width: 100%;
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-grid > * {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus styles */
+:focus {
+  outline: 2px solid #2eb851;
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(135, 135, 135, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(135, 135, 135, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(135, 135, 135, 0.5);
 }
 
