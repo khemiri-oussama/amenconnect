@@ -1,0 +1,287 @@
+/* Global Variables */
+:root {
+  --background-dark: #1a1a2e;
+  --message-bg-assistant: rgba(255, 255, 255, 0.1);
+  --message-bg-user: #4361ee;
+  --quick-reply-blue: #4361ee;
+  --quick-reply-green: #3cc7a6;
+  --quick-reply-purple: #8338ec;
+  --input-bg: rgba(255, 255, 255, 0.1);
+  --ion-color-primary: #4361ee;
+  --ion-color-light: #f0f0f0;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+/* Page Styles */
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--background-dark);
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.gradient-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  z-index: -1;
+}
+
+/* Top Icons */
+.top-icons {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  z-index: 1000;
+
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.top-icons ion-button {
+  --color: white;
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+.top-icons ion-icon {
+  font-size: 24px;
+}
+
+/* Content Styles */
+.chat-content {
+  --background: transparent;
+  --padding-bottom: 120px;
+  --padding-top: calc(env(safe-area-inset-top) + 60px);
+}
+
+.chat-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  margin: 20px 0;
+  letter-spacing: 0.5px;
+}
+
+/* Chat Container */
+.chat-container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Message Styles */
+.message-group {
+  display: flex;
+  gap: 12px;
+  max-width: 85%;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.message {
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 16px;
+  line-height: 1.5;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.message-group.assistant {
+  align-self: flex-start;
+}
+
+.message-group.assistant .message {
+  background: var(--message-bg-assistant);
+  color: white;
+  border-bottom-left-radius: 4px;
+}
+
+.message-group.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message-group.user .message {
+  background: var(--message-bg-user);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.assistant-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  overflow: hidden;
+  align-self: flex-end;
+}
+
+/* Quick Reply Buttons */
+.quick-replies-container {
+  position: fixed;
+  bottom: 120px;
+  left: -12px;
+  right: 0;
+  padding: 10px 16px;
+  z-index: 1000;
+}
+
+.quick-replies-scroll {
+  
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding-bottom: 5px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.quick-reply-btn {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.quick-reply-blue {
+  background: var(--quick-reply-blue);
+}
+
+.quick-reply-green {
+  background: var(--quick-reply-green);
+}
+
+.quick-reply-purple {
+  background: var(--quick-reply-purple);
+}
+
+/* Chat Footer */
+.chat-footer {
+  --background: transparent;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  margin: 8px 16px;
+  background: var(--input-bg);
+  border-radius: 24px;
+  padding: 4px 4px 4px 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.message-input {
+  --background: transparent;
+  --color: white;
+  --placeholder-color: rgba(255, 255, 255, 0.5);
+  --padding-start: 0;
+  --padding-end: 8px;
+  --placeholder-opacity: 1;
+  font-size: 16px;
+}
+
+.send-button {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --color: var(--ion-color-primary);
+}
+
+.send-button.button-disabled {
+  --opacity: 0.5;
+}
+
+.send-button ion-icon {
+  font-size: 24px;
+}
+
+/* Recent Chats Menu */
+.recent-chats-menu {
+  --width: 280px;
+  --max-width: 280px;
+}
+
+.recent-chats-menu ion-toolbar {
+  --background: var(--background-dark);
+  --color: white;
+}
+
+.recent-chats-menu ion-content {
+  --background: var(--background-dark);
+}
+
+.chat-session-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-session-item ion-label h2 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.chat-session-item ion-label p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+
+.chat-session-item ion-icon {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* iOS Safe Area Support */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .chat-footer {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+
+
+/* Scrollbar Styles */
+.quick-replies-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.quick-replies-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.quick-replies-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
