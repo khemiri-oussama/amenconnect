@@ -41,7 +41,7 @@ const CompteDesktop: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <Navbar />
+        <Navbar currentPage="compte" />
       </IonHeader>
       <IonContent className="ion-padding custom-content">
         <div className="compte-container">

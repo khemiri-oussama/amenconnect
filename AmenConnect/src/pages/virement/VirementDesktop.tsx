@@ -1,200 +1,268 @@
+"use client"
+
+import type React from "react"
+import { useState } from "react"
 import {
   IonContent,
   IonPage,
   IonHeader,
   IonToolbar,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonSelect,
-  IonSelectOption,
+  IonTitle,
   IonButton,
   IonIcon,
-  IonSegment,
-  IonSegmentButton,
   IonCard,
   IonCardContent,
-  IonRadioGroup,
-  IonRadio,
-  IonBadge,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  IonItem,
+  IonLabel,
+  IonAvatar,
+  IonChip,
+  IonSearchbar,
+  IonToggle,
+  IonProgressBar,
+  IonGrid,
+  IonRow,
+  IonCol,
 } from "@ionic/react"
 import {
   arrowForward,
-  arrowBack,
-  timeOutline,
+  addCircleOutline,
+  repeatOutline,
+  searchOutline,
+  trendingUpOutline,
+  walletOutline,
+  alertCircleOutline,
+  moonOutline,
+  sunnyOutline,
+  peopleOutline,
+  cardOutline,
   documentTextOutline,
-  chatbubbleOutline,
-  downloadOutline,
+  chevronForward,
 } from "ionicons/icons"
-import "./VirementDesktop.css"
+import { motion, AnimatePresence } from "framer-motion"
 import Navbar from "../../components/Navbar"
+import "./VirementDesktop.css"
+
 const VirementsDesktop: React.FC = () => {
-  return (
-    <IonPage>
-      <IonHeader>
-      <Navbar />
-      </IonHeader>
+  const [selectedTab, setSelectedTab] = useState<string>("dashboard")
 
-      <IonContent className="ion-padding">
-        <h1 className="page-title">Virements</h1>
 
-        <div className="grid-container">
-          {/* Quick Transfer Card */}
-          <IonCard className="quick-transfer-card">
+  const renderDashboard = () => (
+    <IonGrid className="dashboard-grid">
+      <IonRow>
+        <IonCol size="12" sizeMd="8">
+          <IonCard className="account-summary">
+            <IonCardHeader>
+              <IonCardSubtitle>Solde actuel</IonCardSubtitle>
+              <IonCardTitle className="balance">
+                <span className="amount">2,580.00</span>
+                <span className="currency">DT</span>
+              </IonCardTitle>
+            </IonCardHeader>
             <IonCardContent>
-              <h2>Virement Rapide</h2>
-              <div className="form-group">
-                <label>Bénéficiaire</label>
-                <IonSelect placeholder="Choisir Bénéficiaire" interface="popover">
-                  <IonSelectOption value="ben1">Bénéficiaire 1</IonSelectOption>
-                  <IonSelectOption value="ben2">Bénéficiaire 2</IonSelectOption>
-                </IonSelect>
+              <div className="account-details">
+                <div>
+                  <IonIcon icon={walletOutline} />
+                  <span>RIB: 07098050001216747468</span>
+                </div>
+                <div>
+                  <IonIcon icon={trendingUpOutline} />
+                  <span>+1,250 DT ce mois</span>
+                </div>
               </div>
-              <div className="form-group">
-                <label>Montant (TND)</label>
-                <input type="number" className="amount-input" placeholder="0.00" />
+              <IonProgressBar value={0.7} color="success" className="balance-progress"></IonProgressBar>
+              <div className="balance-info">
+                <span>Solde minimum: 1,000 DT</span>
+                <span>Solde maximum: 3,000 DT</span>
               </div>
-              <IonButton expand="block" className="transfer-button">
-                Effectuer le virement
-                <IonIcon icon={arrowForward} slot="end" />
+            </IonCardContent>
+          </IonCard>
+
+          <IonCard className="recent-transactions">
+            <IonCardHeader>
+              <IonCardTitle>Transactions Récentes</IonCardTitle>
+            </IonCardHeader>
+            <IonCardContent>
+              <IonSearchbar placeholder="Rechercher une transaction" className="transaction-search"></IonSearchbar>
+              <div className="transaction-list">
+                {[...Array(5)].map((_, index) => (
+                  <motion.div
+                    key={index}
+                    className="transaction-item"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <IonAvatar>
+                      <img src={`https://i.pravatar.cc/100?img=${index + 1}`} alt="Avatar" />
+                    </IonAvatar>
+                    <div className="transaction-details">
+                      <h4>{index % 2 === 0 ? "Virement à Ahmed Ben Ali" : "Virement reçu de Société XYZ"}</h4>
+                      <span>{index % 2 === 0 ? "Compte Epargne" : "Compte Courant"}</span>
+                    </div>
+                    <div className={`transaction-amount ${index % 2 === 0 ? "outgoing" : "incoming"}`}>
+                      {index % 2 === 0 ? "-1,000 DT" : "+1,850 DT"}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              <IonButton expand="block" fill="clear" className="view-all-button">
+                Voir Tout l'Historique
+                <IonIcon slot="end" icon={chevronForward} />
               </IonButton>
             </IonCardContent>
           </IonCard>
+        </IonCol>
 
-          {/* Transaction History Card */}
-          <IonCard className="history-card">
+        <IonCol size="12" sizeMd="4">
+          <IonCard className="quick-actions">
+            <IonCardHeader>
+              <IonCardTitle>Actions Rapides</IonCardTitle>
+            </IonCardHeader>
             <IonCardContent>
-              <IonSegment value="historique">
-                <IonSegmentButton value="historique">
-                  <IonLabel>
-                    Historique <IonBadge>6</IonBadge>
-                  </IonLabel>
-                </IonSegmentButton>
-                <IonSegmentButton value="asigner">
-                  <IonLabel>
-                    Virements à signer <IonBadge>3</IonBadge>
-                  </IonLabel>
-                </IonSegmentButton>
-              </IonSegment>
-
-              <IonList className="transaction-list">
-                <IonItem lines="full">
-                  <IonIcon icon={arrowBack} slot="start" className="outgoing" />
-                  <IonLabel>
-                    <h3>Virement à Ahmed Ben Ali</h3>
-                    <p>Compte Epargne</p>
-                  </IonLabel>
-                  <div className="transaction-amount outgoing">-1000 DT</div>
-                  <div className="transaction-date">01/02/2025</div>
-                </IonItem>
-
-                <IonItem lines="full">
-                  <IonIcon icon={arrowForward} slot="start" className="incoming" />
-                  <IonLabel>
-                    <h3>Virement reçu de Société XYZ</h3>
-                    <p>Compte Courant</p>
-                  </IonLabel>
-                  <div className="transaction-amount incoming">+1850 DT</div>
-                  <div className="transaction-date">01/02/2025</div>
-                </IonItem>
-              </IonList>
+              <div className="actions-grid">
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <IonButton fill="clear" className="action-button">
+                    <IonIcon icon={arrowForward} slot="start" />
+                    Nouveau Virement
+                  </IonButton>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <IonButton fill="clear" className="action-button">
+                    <IonIcon icon={repeatOutline} slot="start" />
+                    Virement Permanent
+                  </IonButton>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <IonButton fill="clear" className="action-button">
+                    <IonIcon icon={addCircleOutline} slot="start" />
+                    Ajouter Bénéficiaire
+                  </IonButton>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <IonButton fill="clear" className="action-button">
+                    <IonIcon icon={searchOutline} slot="start" />
+                    Rechercher Virement
+                  </IonButton>
+                </motion.div>
+              </div>
             </IonCardContent>
           </IonCard>
 
-          {/* Transfer Options Card */}
-          <IonCard className="transfer-options-card">
+          <IonCard className="quick-transfer">
+            <IonCardHeader>
+              <IonCardTitle>Virement Rapide</IonCardTitle>
+            </IonCardHeader>
             <IonCardContent>
-              <h2>Virement</h2>
-              <div className="options-grid">
-                <div className="option-item">
-                  <IonIcon icon={timeOutline} />
-                  <span>Virement Compte à Compte</span>
-                </div>
-                <div className="option-item">
-                  <IonIcon icon={documentTextOutline} />
-                  <span>Virement Permanent</span>
-                </div>
-              </div>
-
-              <div className="mass-transfer-section">
-                <h3>Virement de masse</h3>
-                <IonRadioGroup value="standard">
-                  <IonItem>
-                    <IonRadio value="standard">Format Standard</IonRadio>
-                  </IonItem>
-                  <IonItem>
-                    <IonRadio value="afb320">Format AFB320</IonRadio>
-                  </IonItem>
-                  <IonItem>
-                    <IonRadio value="nt112">Format NT 112.15 de 1998</IonRadio>
-                  </IonItem>
-                </IonRadioGroup>
-                <IonButton fill="outline" className="import-button">
-                  Import
-                  <IonIcon icon={downloadOutline} slot="end" />
+              <form className="quick-transfer-form">
+                <IonItem>
+                  <IonLabel position="floating">Bénéficiaire</IonLabel>
+                  <IonSelect interface="popover">
+                    <IonSelectOption value="ben1">Ahmed Ben Ali</IonSelectOption>
+                    <IonSelectOption value="ben2">Société XYZ</IonSelectOption>
+                  </IonSelect>
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="floating">Montant (DT)</IonLabel>
+                  <IonInput type="number" placeholder="0.00" />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="floating">Motif du virement</IonLabel>
+                  <IonInput type="text" placeholder="Ex: Paiement facture" />
+                </IonItem>
+                <IonButton expand="block" className="transfer-button">
+                  Effectuer le Virement
+                  <IonIcon icon={arrowForward} slot="end" />
                 </IonButton>
-              </div>
+              </form>
             </IonCardContent>
           </IonCard>
 
-          {/* Help Card */}
-          <IonCard className="help-card">
+          <IonCard className="limits-info">
+            <IonCardHeader>
+              <IonCardTitle>Limites et Informations</IonCardTitle>
+            </IonCardHeader>
             <IonCardContent>
-              <h2>Aide et informations</h2>
-              <div className="help-grid">
-                <div className="help-item">
-                  <h3>Limites de virement</h3>
-                  <p>Virement quotidien max: 10,000</p>
-                  <p>Virement mensuel max: 50,000</p>
+              <div className="limits-grid">
+                <div className="limit-item">
+                  <IonIcon icon={walletOutline} />
+                  <div>
+                    <h4>Limite Quotidienne</h4>
+                    <span>10,000 DT</span>
+                    <IonProgressBar value={0.5} color="warning"></IonProgressBar>
+                  </div>
                 </div>
-                <div className="help-item">
-                  <h3>Délais de traitement</h3>
-                  <p>Virement interne: Instantané</p>
-                  <p>Virement externe: 1-2 jours ouvrés</p>
+                <div className="limit-item">
+                  <IonIcon icon={alertCircleOutline} />
+                  <div>
+                    <h4>Limite Mensuelle</h4>
+                    <span>50,000 DT</span>
+                    <IonProgressBar value={0.3} color="success"></IonProgressBar>
+                  </div>
                 </div>
               </div>
               <IonButton expand="block" fill="clear" className="chat-button">
-                <IonIcon icon={chatbubbleOutline} slot="start" />
-                Chat Assistant
+                Contacter le Support
               </IonButton>
             </IonCardContent>
           </IonCard>
+        </IonCol>
+      </IonRow>
+    </IonGrid>
+  )
 
-          {/* Account Details Card */}
-          <IonCard className="account-details-card">
-            <IonCardContent>
-              <div className="details-grid">
-                <div className="detail-item">
-                  <label>RIB</label>
-                  <span>07098050001216747468</span>
-                </div>
-                <div className="detail-item">
-                  <label>IBAN</label>
-                  <span>TN5907098050001216747468</span>
-                </div>
-                <div className="detail-item">
-                  <label>Solde du compte</label>
-                  <span>2580 DT</span>
-                </div>
-                <div className="detail-item">
-                  <label>Date de création</label>
-                  <span>22/01/2025</span>
-                </div>
-              </div>
-              <IonButton expand="block" fill="clear" className="download-button">
-                Télécharger le relevé
-                <IonIcon icon={downloadOutline} slot="end" />
-              </IonButton>
-            </IonCardContent>
-          </IonCard>
+  return (
+    <IonPage className={`virements-desktop`}>
+      <IonHeader>
+        <IonToolbar>
+          <Navbar currentPage="virements" />
+        </IonToolbar>
+      </IonHeader>
+
+      <IonContent className="ion-padding">
+        <div className="tab-buttons">
+          <IonChip
+            color={selectedTab === "dashboard" ? "primary" : "medium"}
+            onClick={() => setSelectedTab("dashboard")}
+          >
+            <IonIcon icon={cardOutline} />
+            Tableau de Bord
+          </IonChip>
+          <IonChip color={selectedTab === "history" ? "primary" : "medium"} onClick={() => setSelectedTab("history")}>
+            <IonIcon icon={documentTextOutline} />
+            Historique Complet
+          </IonChip>
+          <IonChip
+            color={selectedTab === "beneficiaries" ? "primary" : "medium"}
+            onClick={() => setSelectedTab("beneficiaries")}
+          >
+            <IonIcon icon={peopleOutline} />
+            Gestion des Bénéficiaires
+          </IonChip>
         </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={selectedTab}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {selectedTab === "dashboard" && renderDashboard()}
+            {selectedTab === "history" && <div>Historique Complet (à implémenter)</div>}
+            {selectedTab === "beneficiaries" && <div>Gestion des Bénéficiaires (à implémenter)</div>}
+          </motion.div>
+        </AnimatePresence>
       </IonContent>
     </IonPage>
   )
 }
-
-
-
 
 export default VirementsDesktop
 

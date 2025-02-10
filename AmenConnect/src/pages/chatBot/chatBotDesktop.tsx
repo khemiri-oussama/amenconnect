@@ -119,7 +119,7 @@ const ChatBotDesktop: React.FC = () => {
 
   return (
     <IonPage className="chat-desktop-page">
-      <Navbar />
+      <Navbar currentPage="chat"/>
       <div className="chat-content-wrapper">
         <div className={`chat-sidebar ${showSidebar ? "show" : ""}`}>
           <ConversationHistory conversations={conversations} />

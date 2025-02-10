@@ -110,7 +110,7 @@ const AccueilDesktop: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <Navbar />
+        <Navbar currentPage="accueil" />
       </IonHeader>
       <IonContent className="ion-padding custom-content">
         <div className="dashboard-container">
