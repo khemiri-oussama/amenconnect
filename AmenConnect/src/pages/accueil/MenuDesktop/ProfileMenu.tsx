@@ -38,7 +38,7 @@ const ProfileMenu: React.FC = () => {
   return (
     <div className="profileD-menu-container" ref={menuRef}>
       <button className="profileD-button" onClick={toggleMenu}>
-        Mon Profil
+        Menu
         <IonIcon icon={chevronDown} />
       </button>
       {isOpen && (
