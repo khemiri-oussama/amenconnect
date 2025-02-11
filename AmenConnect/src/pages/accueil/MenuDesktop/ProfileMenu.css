@@ -1,0 +1,114 @@
+.profileD-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profileD-button {
+  background: var(--color-card-bg);
+  color: var(--color-text);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.profileD-button:hover {
+  background: var(--color-card-hover);
+}
+
+.profileD-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--color-background);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 240px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: fadeInDown 0.3s ease;
+}
+
+.profileD-dropdown-arrow {
+  position: absolute;
+  top: -8px;
+  right: 16px;
+  width: 16px;
+  height: 16px;
+  background: var(--color-background);
+  transform: rotate(45deg);
+}
+
+.profileD-menu-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profileD-menu-list li {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profileD-menu-list li:hover {
+  background-color: var(--color-card-hover);
+}
+
+.profileD-menu-list li a {
+  color: var(--color-text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.profileD-menu-list .dark-mode-toggle {
+  justify-content: space-between;
+}
+
+.dark-mode-switch {
+  --background: var(--color-card-bg);
+  --background-checked: var(--color-link);
+  --handle-background: var(--color-text);
+  --handle-background-checked: var(--color-text);
+}
+
+.logout-item {
+  color: var(--color-negative);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .profileD-dropdown {
+    width: 100%;
+    max-width: 300px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .profileD-dropdown-arrow {
+    right: calc(50% - 8px);
+  }
+}
+
