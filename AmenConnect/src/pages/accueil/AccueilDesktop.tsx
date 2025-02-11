@@ -12,7 +12,6 @@ import {
   eyeOutline,
   settingsOutline,
   notificationsOutline,
-  arrowForwardOutline,
   timeOutline,
   peopleOutline,
   globeOutline,
@@ -21,6 +20,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import Navbar from "../../components/Navbar"
 import "./AccueilDesktop.css"
 import { useHistory } from "react-router-dom"
+import Profile from "../accueil/MenuDesktop/ProfileMenu"
 interface Account {
   id: number
   name: string
@@ -44,7 +44,7 @@ interface Transaction {
 }
 
 const AccueilDesktop: React.FC = () => {
-    const history = useHistory()
+  const history = useHistory()
   const [accounts, setAccounts] = useState<Account[]>([
     { id: 1, name: "Compte Courant", balance: 10230.45, type: "current" },
     { id: 2, name: "Compte Épargne", balance: 5000.0, type: "savings" },
@@ -123,10 +123,7 @@ const AccueilDesktop: React.FC = () => {
               <IonButton fill="clear" className="notification-button">
                 <IonIcon slot="icon-only" icon={notificationsOutline} />
               </IonButton>
-              <IonButton fill="solid" className="profile-button">
-                Mon Profil
-                <IonIcon slot="end" icon={arrowForwardOutline} />
-              </IonButton>
+              <Profile/>
             </div>
           </div>
 
@@ -225,7 +222,7 @@ const AccueilDesktop: React.FC = () => {
                   Cartes
                 </h2>
                 <a href="../Carte" className="section-link">
-                  <IonIcon icon={settingsOutline} onClick={() => history.push("/carte")}/>
+                  <IonIcon icon={settingsOutline} onClick={() => history.push("/carte")} />
                   Gérer les cartes
                 </a>
               </div>

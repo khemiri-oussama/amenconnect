@@ -11,7 +11,7 @@ import {
 } from "ionicons/icons"
 import { useHistory } from "react-router-dom"
 import "./AccueilMobile.css"
-import { UserMenu } from "./UserMenu"
+import { UserMenu } from "./MenuMobile/UserMenu"
 import NavMobile from "../../components/NavMobile"
 
 const AccueilMobile: React.FC = () => {

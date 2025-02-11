@@ -9,8 +9,8 @@ import Carte from './pages/Carte/Carte';
 import ChatBot from './pages/chatBot/chatBot';
 import Login from './pages/Login/Login';
 import virement from './pages/virement/virement'
-import ProfileMobile from './pages/accueil/ProfileMobile';
-import SecuritySettingsMobile from './pages/accueil/SecuritySettingsMobile'
+import ProfileMobile from './pages/accueil/MenuMobile/ProfileMobile';
+import SecuritySettingsMobile from './pages/accueil/MenuMobile/SecuritySettingsMobile'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
