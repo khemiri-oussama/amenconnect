@@ -57,11 +57,11 @@ const ProfileMenu: React.FC = () => {
                 Gérer les paramètres
               </a>
             </li>
-            <li className="dark-mode-toggle">
+             {/*<li className="dark-mode-toggle">
               <IonIcon icon={moonOutline} />
               Mode sombre
               <IonToggle checked={isDarkMode} onIonChange={toggleDarkMode} className="dark-mode-switch" />
-            </li>
+            </li>*/}
             <li className="logout-item" onClick={handleLogout}>
               <IonIcon icon={logOutOutline} />
               Déconnexion
