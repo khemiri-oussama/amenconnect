@@ -48,8 +48,8 @@ import {
         <IonContent className="ion-padding login-container" fullscreen>
           <div className="content-wrapper">
             <div className="login-box">
-              <div className="logo-container">
-                <IonImg src="../amen_logo.png" alt="Logo" className="logo" />
+              <div className="logo-container-otp-desktop">
+                <IonImg src="../amen_logo.png" alt="Logo" className="logo-otp-desktop" />
               </div>
               <div className="form-container">
                 <h1 className="title">Bienvenu</h1>
