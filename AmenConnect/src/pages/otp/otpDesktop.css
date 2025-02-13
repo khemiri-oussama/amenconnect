@@ -31,4 +31,15 @@
   .resend-text:hover {
     color: #4caf50;
   }
-
+  .logo-container-otp-desktop {
+    position: absolute;
+    top: 15%;
+    left: 5rem;
+    transform: translateY(-50%);
+    z-index: 3;
+  }
+  
+  .logo-otp-desktop {
+    width: 250px;
+    height: 250px;
+  }

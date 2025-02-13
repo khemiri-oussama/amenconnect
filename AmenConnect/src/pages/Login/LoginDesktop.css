@@ -35,15 +35,15 @@
     z-index: 1;
   }
   
-  .logo-container {
+  .logo-container-accueil-desktop {
     position: absolute;
-    top: 10%;
+    top: 15%;
     left: 5rem;
     transform: translateY(-50%);
     z-index: 3;
   }
   
-  .logo {
+  .logo-accueil-desktop {
     width: 250px;
     height: 250px;
   }

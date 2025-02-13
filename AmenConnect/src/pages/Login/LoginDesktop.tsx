@@ -20,11 +20,11 @@ export default function LoginPage() {
       <IonContent className="ion-padding login-container" fullscreen>
         <div className="content-wrapper">
           <div className="login-box">
-            <div className="logo-container">
-              <IonImg src="../amen_logo.png" alt="Logo" className="logo" />
+            <div className="logo-container-accueil-desktop">
+              <IonImg src="../amen_logo.png" alt="Logo" className="logo-accueil-desktop" />
             </div>
             <div className="form-container">
-              <h1 className="title">Bienvenu</h1>
+              <h1 className="title-accueil-desktop">Bienvenu</h1>
               <p className="subtitle">Veuillez saisir les détails de votre compte</p>
 
               <form onSubmit={handleLogin} className="login-form">
