@@ -94,7 +94,6 @@ const App: React.FC = () => {
           <Route path="/profile" component={ProfileMobile} />
           <Route path="/SecuritySettingsMobile" component={SecuritySettingsMobile} />
           
-
           <Route path="/Dashboard" component={Dashboard} />
           <Route path="/UserManagement" component={UserManagement} />
           <Route path="/SurveillanceMonitoring" component={SurveillanceMonitoring} />
