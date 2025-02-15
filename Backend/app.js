@@ -9,6 +9,10 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
+const testRoute = require('./routes/test');
+app.use('/api', testRoute);
+
+
 // Exemple de route de test
 app.get('/', (req, res) => {
   res.send('Bienvenue sur le backend sécurisé!');
