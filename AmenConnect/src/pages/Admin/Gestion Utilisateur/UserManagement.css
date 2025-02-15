@@ -1,0 +1,125 @@
+.um-page {
+    --background: #1e1e1e;
+  }
+  
+  .um-toolbar {
+    --background: #2c2c2c;
+    --color: #ffffff;
+  }
+  
+  .um-content {
+    --background: #1e1e1e;
+  }
+  
+  .um-card {
+    --background: #2c2c2c;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+  
+  .um-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .um-card-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+  }
+  
+  .um-card-content {
+    padding: 20px;
+  }
+  
+  .um-tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .um-tabs ion-button {
+    --color: #ffffff;
+    --color-activated: #47ce65;
+    --color-focused: #47ce65;
+  }
+  
+  .um-user-list {
+    margin-top: 20px;
+  }
+  
+  .um-filters {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .um-searchbar {
+    flex-grow: 1;
+    --background: #3a3a3a;
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    margin-right: 10px;
+  }
+  
+  .um-filter-chip {
+    --background: #3a3a3a;
+    --color: #ffffff;
+  }
+  
+  .um-user-items {
+    background: transparent;
+  }
+  
+  .um-user-item {
+    --background: #3a3a3a;
+    --color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .um-user-item ion-label h2 {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  
+  .um-user-item ion-badge {
+    margin-right: 8px;
+  }
+  
+  .um-user-form,
+  .um-reset-form {
+    margin-top: 20px;
+  }
+  
+  .um-form-item {
+    --background: #3a3a3a;
+    --color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .um-submit-btn {
+    margin-top: 20px;
+    --background: #47ce65;
+    --color: #ffffff;
+    font-weight: 600;
+  }
+  
+  /* Adjust the color of inputs and selects */
+  .um-form-item ion-input,
+  .um-form-item ion-select {
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.6);
+  }
+  
+  /* Style for the popover select interface */
+  ion-select-popover {
+    --background: #3a3a3a;
+    --color: #ffffff;
+  }
+  
+  

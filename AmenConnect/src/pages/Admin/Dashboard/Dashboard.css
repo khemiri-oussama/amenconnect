@@ -1,0 +1,117 @@
+/* Dashboard.css */
+
+.dashboard-content {
+    --background: #1e1e1e;
+  }
+  
+  .dashboard-toolbar {
+    --background: #2c2c2c;
+    --color: #ffffff;
+  }
+  
+  .dashboard-card {
+    --background: #2c2c2c;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .dashboard-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  
+  .dashboard-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+  
+  .stat-card ion-card-header,
+  .chart-card ion-card-header,
+  .alert-card ion-card-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .stat-icon,
+  .chart-icon,
+  .alert-icon {
+    font-size: 28px;
+    margin-right: 16px;
+    color: #47ce65;
+  }
+  
+  .dashboard-stat {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #47ce65;
+    text-align: center;
+    margin: 24px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dashboard-chart {
+    height: 250px;
+    background-color: #3a3a3a;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    font-weight: 500;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 16px 0;
+  }
+  
+  .dashboard-alert-list {
+    background: transparent;
+    margin-top: 16px;
+  }
+  
+  .dashboard-alert-item {
+    --background: #3a3a3a;
+    --color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+  }
+  
+  .dashboard-alert-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .dashboard-alert-item ion-icon {
+    color: #eb445a;
+    margin-right: 16px;
+    font-size: 24px;
+  }
+  
+  .dashboard-alert-item ion-badge {
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+  
+  ion-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  ion-card-content {
+    padding: 20px;
+  }
+  
+  .alert-card ion-card-content {
+    padding-top: 0;
+  }
+  
+  

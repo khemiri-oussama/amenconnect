@@ -5,7 +5,7 @@ import { SegmentCustomEvent } from '@ionic/react';
 import { cashOutline, businessOutline } from "ionicons/icons"
 import { useHistory } from "react-router-dom"
 import "./virementMobile.css"
-import NavMobile from "../../components/NavMobile"
+import NavMobile from "../../../components/NavMobile"
 
 const VirementsMobile: React.FC = () => {
   const history = useHistory()

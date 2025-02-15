@@ -45,7 +45,7 @@ import {
   chevronForward,
 } from "ionicons/icons"
 import { motion, AnimatePresence } from "framer-motion"
-import Navbar from "../../components/Navbar"
+import Navbar from "../../../components/Navbar"
 import "./VirementDesktop.css"
 
 const VirementsDesktop: React.FC = () => {

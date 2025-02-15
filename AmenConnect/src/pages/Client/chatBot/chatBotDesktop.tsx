@@ -13,7 +13,7 @@ import {
 } from "@ionic/react"
 import { sendOutline, personOutline, menuOutline, chatbubbleEllipsesOutline } from "ionicons/icons"
 import { motion, AnimatePresence } from "framer-motion"
-import Navbar from "../../components/Navbar"
+import Navbar from "../../../components/Navbar"
 import ConversationHistory from "./ConversationHistory"
 import "./ChatBotDesktop.css"
 

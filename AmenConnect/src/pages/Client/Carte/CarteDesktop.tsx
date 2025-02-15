@@ -30,7 +30,7 @@ import {
   walletOutline,
 } from "ionicons/icons"
 import "./CarteDesktop.css"
-import Navbar from "../../components/Navbar"
+import Navbar from "../../../components/Navbar"
 
 interface Transaction {
   id: string

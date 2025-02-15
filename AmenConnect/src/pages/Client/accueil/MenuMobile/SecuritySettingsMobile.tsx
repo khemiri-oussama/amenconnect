@@ -25,7 +25,7 @@ import {
   saveOutline,
 } from "ionicons/icons";
 import "./SecuritySettingsMobile.css";
-import NavMobile from "../../../components/NavMobile";
+import NavMobile from "../../../../components/NavMobile";
 
 const SecuritySettingsMobile: React.FC = () => {
   const [securitySettings, setSecuritySettings] = useState({

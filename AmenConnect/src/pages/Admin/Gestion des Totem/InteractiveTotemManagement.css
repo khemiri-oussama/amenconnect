@@ -1,0 +1,167 @@
+.itm-page {
+    --background: #1e1e1e;
+  }
+  
+  .itm-content {
+    --background: #1e1e1e;
+  }
+  
+  .itm-card {
+    --background: #2c2c2c;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    margin: 16px 0;
+  }
+  
+  .itm-card-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .itm-card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+  }
+  
+  .itm-card-content {
+    padding: 20px;
+  }
+  
+  .itm-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  
+  .itm-tabs ion-button {
+    --color: #ffffff;
+    --color-activated: #47ce65;
+    --color-focused: #47ce65;
+  }
+  
+  .itm-device-status ion-grid {
+    --ion-grid-padding: 0;
+  }
+  
+  .itm-header-row,
+  .itm-totem-row {
+    background-color: #3a3a3a;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    padding: 12px;
+    align-items: center;
+  }
+  
+  .itm-header-row {
+    font-weight: bold;
+    color: #ffffff;
+  }
+  
+  .itm-totem-row {
+    color: #e0e0e0;
+  }
+  
+  .itm-remote-maintenance ion-item,
+  .itm-incident-log ion-item {
+    --background: #3a3a3a;
+    --color: #ffffff;
+    --border-color: rgba(255, 255, 255, 0.1);
+    margin-bottom: 12px;
+    border-radius: 8px;
+  }
+  
+  .itm-action-button,
+  .itm-save-button {
+    --background: #47ce65;
+    --color: #ffffff;
+    margin-top: 20px;
+  }
+  
+  .itm-progress-card {
+    --background: #3a3a3a;
+    margin-top: 20px;
+  }
+  
+  .itm-incident-item h2 {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .itm-incident-item p {
+    margin: 2px 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+  }
+  
+  /* Improve readability of small text */
+  ion-label,
+  ion-select,
+  ion-badge {
+    --color: #ffffff;
+  }
+  
+  /* Add some animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .itm-card {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  /* Enhance the appearance of badges */
+  ion-badge {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    --padding-top: 4px;
+    --padding-bottom: 4px;
+  }
+  
+  /* Add a subtle transition to buttons */
+  ion-button {
+    transition: opacity 0.3s ease;
+  }
+  
+  ion-button:hover {
+    opacity: 0.9;
+  }
+  
+  /* Style the progress bar */
+  ion-progress-bar {
+    --progress-background: #47ce65;
+    --buffer-background: #505050;
+  }
+  
+  /* Add some padding to the content */
+  ion-content {
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+  }
+  
+  /* Style the modal */
+  ion-modal ion-content {
+    --background: #2c2c2c;
+  }
+  
+  ion-modal ion-toolbar {
+    --background: #3a3a3a;
+    --color: #ffffff;
+  }
+  
+  ion-modal ion-textarea {
+    --background: #3a3a3a;
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  

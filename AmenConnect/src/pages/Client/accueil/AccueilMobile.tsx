@@ -12,7 +12,7 @@ import {
 import { useHistory } from "react-router-dom"
 import "./AccueilMobile.css"
 import { UserMenu } from "./MenuMobile/UserMenu"
-import NavMobile from "../../components/NavMobile"
+import NavMobile from "../../../components/NavMobile"
 
 const AccueilMobile: React.FC = () => {
   const history = useHistory()
