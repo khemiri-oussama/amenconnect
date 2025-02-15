@@ -29,8 +29,7 @@ import "./HomeDesktop.css"
 
 const HomeDesktop: React.FC = () => {
   const history = useHistory()
-  const contentRef = useRef<HTMLIonContentElement>(null)
-
+  const contentRef = useRef<HTMLIonContentElement | null>(null);
   const handleLogin = () => {
     history.push("/login")
   }
