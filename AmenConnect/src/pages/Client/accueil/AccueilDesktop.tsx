@@ -17,10 +17,10 @@ import {
   globeOutline,
 } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import Navbar from "../../components/Navbar"
+import Navbar from "../../../components/Navbar"
 import "./AccueilDesktop.css"
 import { useHistory } from "react-router-dom"
-import Profile from "../accueil/MenuDesktop/ProfileMenu"
+import Profile from "./MenuDesktop/ProfileMenu"
 interface Account {
   id: number
   name: string

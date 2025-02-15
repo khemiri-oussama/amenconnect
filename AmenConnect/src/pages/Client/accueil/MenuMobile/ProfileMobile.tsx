@@ -18,7 +18,7 @@ import {
 } from "@ionic/react"
 import { personCircleOutline, mailOutline, callOutline, lockClosedOutline, saveOutline } from "ionicons/icons"
 import "./ProfileMobile.css"
-import NavMobile from "../../../components/NavMobile"
+import NavMobile from "../../../../components/NavMobile"
 
 const ProfileMobile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false)

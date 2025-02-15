@@ -15,7 +15,7 @@ import {
 } from "ionicons/icons"
 import { motion, AnimatePresence } from "framer-motion"
 import "./CarteMobile.css"
-import NavMobile from "../../components/NavMobile"
+import NavMobile from "../../../components/NavMobile"
 
 const CarteMobile: React.FC = () => {
   const [selectedSegment, setSelectedSegment] = useState<string>("details")

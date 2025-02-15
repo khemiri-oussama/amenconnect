@@ -8,7 +8,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } fro
 import { motion } from "framer-motion"
 
 import "./CompteMobile.css"
-import NavMobile from "../../components/NavMobile"
+import NavMobile from "../../../components/NavMobile"
 
 const chartData = [
   { month: "Jan", income: 2, expenses: 1 },

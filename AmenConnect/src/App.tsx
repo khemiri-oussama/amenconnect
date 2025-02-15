@@ -3,14 +3,22 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Otp from './pages/otp/otp';
-import Accueil from './pages/accueil/accueil';
-import Compte from './pages/Compte/Compte';
-import Carte from './pages/Carte/Carte';
-import ChatBot from './pages/chatBot/chatBot';
+import Accueil from './pages/Client/accueil/accueil';
+import Compte from './pages/Client/Compte/Compte';
+import Carte from './pages/Client/Carte/Carte';
+import ChatBot from './pages/Client/chatBot/chatBot';
 import Login from './pages/Login/Login';
-import virement from './pages/virement/virement'
-import ProfileMobile from './pages/accueil/MenuMobile/ProfileMobile';
-import SecuritySettingsMobile from './pages/accueil/MenuMobile/SecuritySettingsMobile'
+import virement from './pages/Client/virement/virement'
+import ProfileMobile from './pages/Client/accueil/MenuMobile/ProfileMobile';
+import SecuritySettingsMobile from './pages/Client/accueil/MenuMobile/SecuritySettingsMobile'
+
+/*Admin */
+import Dashboard from './pages/Admin/Dashboard/Dashboard';
+import UserManagement from './pages/Admin/Gestion Utilisateur/UserManagement';
+import SurveillanceMonitoring from './pages/Admin/SurveillanceMonitoring/SurveillanceMonitoring';
+import PermissionsManagement from './pages/Admin/Permissions/permissionsManagement';
+import AuthenticationSecurity from './pages/Admin/AuthenticationSecurity/AuthenticationSecurity';
+import InteractiveTotemManagement from './pages/Admin/Gestion des Totem/InteractiveTotemManagement';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -85,6 +93,15 @@ const App: React.FC = () => {
           <Route path="/accueil" component={Accueil} />
           <Route path="/profile" component={ProfileMobile} />
           <Route path="/SecuritySettingsMobile" component={SecuritySettingsMobile} />
+          
+
+          <Route path="/Dashboard" component={Dashboard} />
+          <Route path="/UserManagement" component={UserManagement} />
+          <Route path="/SurveillanceMonitoring" component={SurveillanceMonitoring} />
+          <Route path="/PermissionsManagement" component={PermissionsManagement} />
+          <Route path="/AuthenticationSecurity" component={AuthenticationSecurity} />
+          <Route path="/InteractiveTotemManagement" component={InteractiveTotemManagement} />
+          
           <Route exact path="/" render={() => <Redirect to="/Home" />} />
         </IonRouterOutlet>
       </IonReactRouter>

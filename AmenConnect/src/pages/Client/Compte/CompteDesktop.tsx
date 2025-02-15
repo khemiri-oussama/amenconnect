@@ -19,7 +19,7 @@ import {
   trendingDownOutline,
 } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts"
-import Navbar from "../../components/Navbar"
+import Navbar from "../../../components/Navbar"
 import "./CompteDesktop.css"
 
 const CompteDesktop: React.FC = () => {
