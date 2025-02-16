@@ -1,23 +1,33 @@
-import {
-  IonContent,
-  IonPage,
-  IonInput,
-  IonButton,
-  IonText,
-  IonLabel,
-  IonImg
+import { 
+  IonContent, 
+  IonPage, 
+  IonInput, 
+  IonButton, 
+  IonText, 
+  IonLabel, 
+  IonImg 
 } from '@ionic/react';
 import { useState, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios'; // Import axios for API requests
+import axios from 'axios';
+import { useAuth } from '../../AuthContext';
 import './otpDesktop.css';
+
+// Define the type for the location state that will be passed to this page
+interface LocationState {
+  user: {
+    email: string;
+    // Additional properties if needed
+  };
+}
 
 export default function OtpPage() {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
   const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const history = useHistory();
+  const history = useHistory<LocationState>();
+  const { setIsAuthenticated } = useAuth();
 
   // Get the user data (email) passed from the login page
   const user = history.location.state?.user;
@@ -54,11 +64,12 @@ export default function OtpPage() {
     try {
       const otpCode = otp.join('');
       // Send OTP code and email to the backend for verification
-      const response = await axios.post('/api/auth/verify-otp', { email: user.email, otp: otpCode });
+      const response = await axios.post('/api/auth/verify-otp', { email: user!.email, otp: otpCode });
 
       if (response.data.message === 'OTP verified successfully!') {
         console.log("OTP verified successfully!", response.data);
         localStorage.setItem('token', response.data.token); // Store the token if required
+        setIsAuthenticated(true); // Set user as authenticated
         history.push('/accueil'); // Redirect to the homepage after successful OTP verification
       } else {
         setErrorMessage("Invalid OTP. Please try again.");
