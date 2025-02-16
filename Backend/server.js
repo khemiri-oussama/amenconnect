@@ -20,6 +20,8 @@ app.use(cors());
 const PORT = process.env.PORT || 3000;
 
 // Nodemailer setup
+const nodemailer = require("nodemailer");
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -31,7 +33,24 @@ const transporter = nodemailer.createTransport({
 // Generate OTP
 const generateOTP = () => crypto.randomInt(100000, 999999).toString();
 
-app.post("/api/send-otp", async (req, res) => {
+const sendOTPEmail = async (email, otp) => {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your OTP Code",
+      text: `Your OTP code is: ${otp}`,
+    };
+  
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log("✅ OTP email sent successfully!");
+    } catch (error) {
+      console.error("❌ Failed to send OTP email:", error);
+    }
+  };
+  
+
+  app.post("/api/send-otp", async (req, res) => {
     const { email } = req.body;
   
     const user = await User.findOne({ email });
@@ -47,6 +66,7 @@ app.post("/api/send-otp", async (req, res) => {
   
     res.json({ message: "OTP sent successfully!" });
   });
+  
   
 
 // 🔹 API Route to Verify OTP
