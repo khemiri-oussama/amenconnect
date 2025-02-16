@@ -7,7 +7,9 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     téléphone: { type: String, required: true },
     employeur: { type: String },
-    adresseEmployeur: { type: String }
+    adresseEmployeur: { type: String },
+    otp: { type: String },
+    otpExpires: { type: Date },
 });
 
 // Auto-increment the "id" field manually
