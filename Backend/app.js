@@ -1,22 +1,15 @@
 const express = require('express');
-const helmet = require('helmet');
+const connectDB = require('./config/db');
 const cors = require('cors');
+require('dotenv').config();
+
+const authRoutes = require('./routes/authRoutes'); // ✅ Ensure correct path
 
 const app = express();
-
-const authRoutes = require('./routes/authRoutes'); // Import the auth routes
-const otpRoutes = require("./routes/otpRoutes");
-// Security Middleware
-app.use(helmet());
-app.use(cors());
+connectDB();
 app.use(express.json());
+app.use(cors());
 
-// Use auth routes
-app.use('/api/auth', authRoutes);  // All auth routes will start with /api/auth
-app.use("/api", otpRoutes);
-// Default Route
-app.get('/', (req, res) => {
-  res.send('Bienvenue sureeee le backend sécurisé!');
-});
+app.use('/api/auth', authRoutes); // ✅ Correct route mounting
 
-module.exports = app;
+module.exports = app; // ✅ Ensure `app` is exported
