@@ -8,17 +8,13 @@ import {
   IonImg 
 } from '@ionic/react';
 import { useState, useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../AuthContext';
 import './otpDesktop.css';
 
-// Define the type for the location state that will be passed to this page
-interface LocationState {
-  user: {
-    email: string;
-    // Additional properties if needed
-  };
+interface User {
+  email: string;
 }
 
 export default function OtpPage() {
@@ -26,33 +22,44 @@ export default function OtpPage() {
   const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const history = useHistory<LocationState>();
+  const [user, setUser] = useState<User | null>(null);  // 👈 Stocke l'utilisateur ici
+  const history = useHistory();
+  const location = useLocation<{ user?: User }>();
   const { setIsAuthenticated } = useAuth();
 
-  // Get the user data (email) passed from the login page
-  const user = history.location.state?.user;
-
   useEffect(() => {
-    if (!user) {
-      history.push("/login"); // Redirect to login if no user data is available
+    if (location.state?.user) {
+      setUser(location.state.user);  // 👈 Met à jour l'état local avec l'utilisateur passé en paramètre
+    } else {
+      history.replace("/accueil");
     }
-  }, [user, history]);
+  }, [location.state, history]);
 
   const handleOtpChange = (index: number, value: string) => {
-    if (value.length <= 1 && /^[0-9]*$/.test(value)) {
+    if (/^\d{6}$/.test(value)) {
+      const newOtp = value.split("");
+      setOtp(newOtp);
+      inputRefs.current[5]?.setFocus();
+    } else if (value.length <= 1 && /^[0-9]*$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-
-      if (value && index < 5) {
-        inputRefs.current[index + 1]?.setFocus();
-      }
+      if (value && index < 5) inputRefs.current[index + 1]?.setFocus();
     }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.setFocus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const pastedData = e.clipboardData.getData("Text").trim();
+    if (/^\d{6}$/.test(pastedData)) {
+      const newOtp = pastedData.split("");
+      setOtp(newOtp);
+      inputRefs.current[5]?.setFocus();
     }
   };
 
@@ -63,24 +70,23 @@ export default function OtpPage() {
 
     try {
       const otpCode = otp.join('');
-      // Send OTP code and email to the backend for verification
       const response = await axios.post('/api/auth/verify-otp', { email: user!.email, otp: otpCode });
 
       if (response.data.message === 'OTP verified successfully!') {
-        console.log("OTP verified successfully!", response.data);
-        localStorage.setItem('token', response.data.token); // Store the token if required
-        setIsAuthenticated(true); // Set user as authenticated
-        history.push('/accueil'); // Redirect to the homepage after successful OTP verification
+        console.log("✅ OTP validé ! Redirection en cours...");
+        localStorage.setItem('token', response.data.token);
+        setIsAuthenticated(true);
+        console.log("🔓 Authentification activée !");
+        console.log("➡️ Redirection vers /accueil...");
+        history.replace('/accueil');
+  
       } else {
         setErrorMessage("Invalid OTP. Please try again.");
       }
+      
     } catch (error: any) {
       console.error("OTP verification error:", error);
-      if (error.response && error.response.data && error.response.data.message) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage("An error occurred during OTP verification.");
-      }
+      setErrorMessage(error.response?.data?.message || "An error occurred during OTP verification.");
     } finally {
       setIsLoading(false);
     }
@@ -109,9 +115,10 @@ export default function OtpPage() {
                         maxlength={1}
                         value={otp[index]}
                         onIonInput={(e) => handleOtpChange(index, e.detail.value!)}
+                        onPaste={index === 0 ? handlePaste : undefined}
                         onKeyDown={(e) => handleKeyDown(index, e)}
                         className="otp-input"
-                        ref={(ref) => inputRefs.current[index] = ref}
+                        ref={(ref) => (inputRefs.current[index] = ref)}
                       />
                     ))}
                   </div>
@@ -136,7 +143,6 @@ export default function OtpPage() {
                   {isLoading ? "Vérification..." : "Confirmer"}
                 </IonButton>
               </form>
-
             </div>
           </div>
         </div>
