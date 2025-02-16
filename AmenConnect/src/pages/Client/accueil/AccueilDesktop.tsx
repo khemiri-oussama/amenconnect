@@ -1,5 +1,5 @@
 "use client"
-
+import { useEffect } from "react"
 import type React from "react"
 import { useState, useMemo } from "react"
 import { IonContent, IonHeader, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
@@ -107,6 +107,24 @@ const AccueilDesktop: React.FC = () => {
     </div>
   )
 
+const [prenom, setPrenom] = useState<string>("")
+const [email,setEmail]=useState<string>("")
+const [nom,setNom]=useState<string>("")
+
+useEffect(() => {
+  const userData = localStorage.getItem("user")
+  if (userData) {
+    try {
+      const parsedData = JSON.parse(userData)
+      setPrenom(parsedData.prénom || "Utilisateur")
+      setNom(parsedData.nom || "Foulen")
+      setEmail(parsedData.email || "example@ex.com")
+    } catch (error) {
+      console.error("Erreur lors du parsing du localStorage:", error)
+    }
+  }
+}, [])
+
   return (
     <IonPage>
       <IonHeader>
@@ -116,7 +134,7 @@ const AccueilDesktop: React.FC = () => {
         <div className="dashboard-container">
           <div className="welcome-section">
             <div className="welcome-text">
-              <h1 className="welcome-title">Bienvenu, Foulen</h1>
+              <h1 className="welcome-title">Bienvenu, {prenom}</h1>
               <p className="welcome-subtitle">Voici un aperçu de vos finances</p>
             </div>
             <div className="welcome-actions">
