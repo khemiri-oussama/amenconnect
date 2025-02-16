@@ -1,15 +1,14 @@
 const express = require('express');
-const connectDB = require('./config/db');
 const cors = require('cors');
 require('dotenv').config();
 
-const authRoutes = require('./routes/authRoutes'); // ✅ Ensure correct path
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
-connectDB();
+
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/auth', authRoutes); // ✅ Correct route mounting
+app.use('/api/auth', authRoutes);
 
-module.exports = app; // ✅ Ensure `app` is exported
+module.exports = app;
