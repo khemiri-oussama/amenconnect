@@ -5,10 +5,12 @@ import { useState, useRef, useEffect } from "react"
 import { IonIcon, IonToggle } from "@ionic/react"
 import { personOutline, settingsOutline, moonOutline, logOutOutline, chevronDown } from "ionicons/icons"
 import "./ProfileMenu.css"
+import { useHistory } from "react-router-dom";
 const ProfileMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const history = useHistory();
 
   const toggleMenu = () => setIsOpen(!isOpen)
 
@@ -31,8 +33,9 @@ const ProfileMenu: React.FC = () => {
   }
 
   const handleLogout = () => {
-    // Implement your logout logic here
-    console.log("Logging out...")
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    history.push("/login");
   }
 
   return (
