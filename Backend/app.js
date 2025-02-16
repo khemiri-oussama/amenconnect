@@ -4,16 +4,16 @@ const cors = require('cors');
 
 const app = express();
 
-// Middleware de sécurité et de parsing
+// Security Middleware
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
+// Routes
 const testRoute = require('./routes/test');
 app.use('/api', testRoute);
 
-
-// Exemple de route de test
+// Default Route
 app.get('/', (req, res) => {
   res.send('Bienvenue sur le backend sécurisé!');
 });
