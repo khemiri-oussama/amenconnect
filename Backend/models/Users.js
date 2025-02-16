@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-    id: { type: Number, unique: true }, // Auto-incremented manually
+    id: { type: Number, unique: true }, // Custom id, auto-incremented manually
     nom: { type: String, required: true },
     prénom: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -9,6 +9,9 @@ const UserSchema = new mongoose.Schema({
     employeur: { type: String },
     adresseEmployeur: { type: String }
 });
+
+// Ensure unique `id`
+UserSchema.index({ id: 1 }, { unique: true });
 
 // Auto-increment the "id" field manually
 UserSchema.pre("save", async function (next) {
