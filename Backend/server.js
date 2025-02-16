@@ -19,8 +19,7 @@ app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 
-// Nodemailer setup
-const nodemailer = require("nodemailer");
+
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
