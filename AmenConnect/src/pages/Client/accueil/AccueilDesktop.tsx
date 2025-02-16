@@ -134,7 +134,7 @@ useEffect(() => {
         <div className="dashboard-container">
           <div className="welcome-section">
             <div className="welcome-text">
-              <h1 className="welcome-title">Bienvenu, {prenom}</h1>
+              <h1 className="welcome-title">Bienvenu, {nom} {prenom}</h1>
               <p className="welcome-subtitle">Voici un aperçu de vos finances</p>
             </div>
             <div className="welcome-actions">
