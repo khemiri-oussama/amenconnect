@@ -48,8 +48,15 @@ const sendOTPEmail = async (email, otp) => {
 };
 
 app.post("/api/send-otp", async (req, res) => {
-  const { email } = req.body;
+    const { email } = req.body;
+    console.log("Searching for user with email:", email); // Debugging line
 
+    const user = await User.findOne({ email });
+    if (!user) {
+        console.log("User not found"); // Debugging line
+        return res.status(404).json({ message: "User not found" });
+    }
+    
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
