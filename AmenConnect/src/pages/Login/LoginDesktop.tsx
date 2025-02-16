@@ -21,20 +21,23 @@ export default function LoginPage() {
     try {
       // Sending a POST request to the backend for login
       const response = await axios.post("/api/auth/login", { email, password });
-      console.log("Login successful:", response.data);
+      console.log("Login response:", response.data);
 
       // Assuming the response contains the user data
       const user = response.data.user;
+      if (!user) {
+        throw new Error("No user data returned from API");
+      }
 
       // Store user data in localStorage for further use
       localStorage.setItem("user", JSON.stringify(user));
 
-      // Set the user as authenticated
+      // Optionally set authentication state here if you want to protect further routes
       setIsAuthenticated(true);
 
+      console.log("Redirecting to /otp with user:", user);
       // Redirect to the OTP page and pass the user data (email) as state
       history.push("/otp", { user });
-
     } catch (error: any) {
       console.error("Login error:", error);
       if (error.response && error.response.data && error.response.data.message) {
