@@ -4,14 +4,15 @@ const cors = require('cors');
 
 const app = express();
 
+const authRoutes = require('./routes/authRoutes'); // Import the auth routes
+
 // Security Middleware
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// Routes
-const testRoute = require('./routes/test');
-app.use('/api', testRoute);
+// Use auth routes
+app.use('/api/auth', authRoutes);  // All auth routes will start with /api/auth
 
 // Default Route
 app.get('/', (req, res) => {
