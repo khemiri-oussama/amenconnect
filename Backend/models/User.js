@@ -11,8 +11,8 @@ const userSchema = new mongoose.Schema({
     employeur: { type: String, required: true },
     adresseEmployeur: { type: String, required: true },
     password: { type: String, required: true },
-    otp: { type: String, default: null }, // Field to store OTP
-    otpExpires: { type: Date, default: null } // Field to store OTP expiration time
+    otp: { type: String, default: null },
+    otpExpires: { type: Date, default: null }
 });
 
 userSchema.pre('save', async function (next) {
