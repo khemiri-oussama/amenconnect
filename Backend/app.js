@@ -15,7 +15,7 @@ app.use('/api', testRoute);
 
 // Default Route
 app.get('/', (req, res) => {
-  res.send('Bienvenue sur le backend sécurisé!');
+  res.send('Bienvenue sureeee le backend sécurisé!');
 });
 
 module.exports = app;
