@@ -25,6 +25,11 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
     history.push(path)
     onClose()
   }
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    history.push("/login");
+  }
 
   return (
     <>
@@ -57,7 +62,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
           <IonIcon icon={globeOutline} />
           Visiter le site @mennet
         </button>
-        <button className="menu-item" onClick={() => handleNavigation("/home")}>
+        <button className="menu-item" onClick={() => handleLogout()}>
           <IonIcon icon={logOutOutline} /> Déconnecter
         </button>
       </div>
