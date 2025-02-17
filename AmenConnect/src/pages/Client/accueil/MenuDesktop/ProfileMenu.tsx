@@ -33,9 +33,9 @@ const ProfileMenu: React.FC = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    history.push("/login");
+    sessionStorage.removeItem("token")
+    sessionStorage.removeItem("user")
+    window.location.href = "/login";
   }
 
   return (

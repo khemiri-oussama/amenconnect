@@ -3,32 +3,25 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 
 export interface User {
   email: string;
-  // Add other user properties if needed
 }
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAuthenticated: (value: boolean) => void;
   pendingUser: User | null;
-  setPendingUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setPendingUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    !!localStorage.getItem("token")
+    !!sessionStorage.getItem("token")
   );
   const [pendingUser, setPendingUser] = useState<User | null>(null);
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated, pendingUser, setPendingUser }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, pendingUser, setPendingUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -42,7 +42,7 @@ import './theme/variables.css';
 setupIonicReact();
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated } = useAuth(); 
+  const { isAuthenticated, pendingUser } = useAuth();
 
   useEffect(() => {
     console.log("🔄 Authentication state changed:", isAuthenticated);
@@ -56,7 +56,12 @@ const AppContent: React.FC = () => {
 
         {/* Public routes */}
         <Route exact path="/login" component={Login} />
-        <Route exact path="/otp" component={Otp} />
+                {/* Conditionally render /otp route if pendingUser exists */}
+        <Route
+          exact
+          path="/otp"
+          render={(props) => (pendingUser ? <Otp {...props} /> : <Redirect to="/login" />)}
+        />
 
         {/* Protected routes */}
         <PrivateRoute exact path="/accueil" component={Accueil} isAuthenticated={isAuthenticated} />
