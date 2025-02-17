@@ -28,12 +28,18 @@ export default function OtpPage() {
   const { setIsAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (location.state?.user) {
-      setUser(location.state.user);  // 👈 Met à jour l'état local avec l'utilisateur passé en paramètre
+    const storedUser = localStorage.getItem("user");
+  
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else if (location.state?.user) {
+      setUser(location.state.user);
+      localStorage.setItem("user", JSON.stringify(location.state.user));
     } else {
-      history.replace("/accueil");
+      history.replace("/login"); // Redirect to login instead of accueil
     }
   }, [location.state, history]);
+  
 
   const handleOtpChange = (index: number, value: string) => {
     if (/^\d{6}$/.test(value)) {
@@ -67,19 +73,20 @@ export default function OtpPage() {
     e.preventDefault();
     setErrorMessage("");
     setIsLoading(true);
-
+  
     try {
       const otpCode = otp.join('');
-      const response = await axios.post('/api/auth/verify-otp', { email: user!.email, otp: otpCode });
-
+      const response = await axios.post('/api/auth/verify-otp', { 
+        email: user!.email, 
+        otp: otpCode 
+      });
+  
       if (response.data.message === 'OTP verified successfully!') {
         console.log("✅ OTP validé ! Redirection en cours...");
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('isAuthenticated', "true");  // Save auth state
         setIsAuthenticated(true);
-        console.log("🔓 Authentification activée !");
-        console.log("➡️ Redirection vers /accueil...");
-        history.replace('/accueil');
-  
+        history.replace('/accueil'); // Ensure this is correctly called
       } else {
         setErrorMessage("Invalid OTP. Please try again.");
       }
@@ -91,6 +98,7 @@ export default function OtpPage() {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <IonPage>
