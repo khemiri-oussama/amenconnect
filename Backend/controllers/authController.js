@@ -20,61 +20,97 @@ const generateOTP = () => {
 // Helper function to generate the HTML content for the OTP email
 const generateOTPEmailHTML = (otp) => {
   return `
-    <html>
-      <head>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-          }
-          .container {
-            max-width: 600px;
-            margin: 30px auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          }
-          .header {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-          }
-          .otp {
-            font-size: 32px;
-            color: #4CAF50;
-            text-align: center;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f1f1f1;
-            border-radius: 8px;
-          }
-          .footer {
-            text-align: center;
-            font-size: 14px;
-            color: #999;
-            margin-top: 20px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            OTP Verification Code
-          </div>
-          <div class="otp">
-            ${otp}
-          </div>
-          <p>Use the above OTP code to verify your login.</p>
-          <div class="footer">
-            <p>If you did not request this, please ignore this email.</p>
-          </div>
-        </div>
-      </body>
-    </html>
+    <!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code de Vérification OTP</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      color: #1E1E1E;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo img {
+      width: 150px;
+      height: auto;
+    }
+    .header {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: #121660;
+      margin-bottom: 30px;
+    }
+    .otp-container {
+      background-color: #f8f9fa;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    .otp {
+      font-size: 48px;
+      color: #47CE65;
+      text-align: center;
+      letter-spacing: 8px;
+      font-weight: bold;
+    }
+    .message {
+      text-align: center;
+      font-size: 18px;
+      color: #1E1E1E;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .footer {
+      text-align: center;
+      font-size: 14px;
+      color: #47B3CE;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(71, 179, 206, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://www.amenbank.com.tn/img/logo.jpg" alt="AmenBank">
+    </div>
+    <div class="header">
+      Vérifiez Votre Connexion
+    </div>
+    <div class="otp-container">
+      <div class="otp">
+        ${otp}
+      </div>
+    </div>
+    <div class="message">
+      <p>Utilisez le code à usage unique (OTP) ci-dessus pour vérifier votre connexion.</p>
+      <p>Ce code expirera dans <strong>10 minutes</strong>.</p>
+    </div>
+    <div class="footer">
+      <p>Si vous n'avez pas demandé ce code, veuillez ignorer cet e-mail ou contacter immédiatement notre équipe d'assistance.</p>
+      <p>&copy; 2025 AmenBank. Tous droits réservés.</p>
+    </div>
+  </div>
+</body>
+</html>
   `;
 };
 
