@@ -1,5 +1,4 @@
-import type React from "react"
-import { useState } from "react"
+import React, { useState, useEffect } from "react"; // Ensure React is imported
 import {
   IonContent,
   IonPage,
@@ -15,30 +14,44 @@ import {
   IonButtons,
   IonBackButton,
   IonTitle,
-} from "@ionic/react"
-import { personCircleOutline, mailOutline, callOutline, lockClosedOutline, saveOutline } from "ionicons/icons"
-import "./ProfileMobile.css"
-import NavMobile from "../../../../components/NavMobile"
+} from "@ionic/react";
+import { personCircleOutline, mailOutline, callOutline, lockClosedOutline, saveOutline } from "ionicons/icons";
+import "./ProfileMobile.css";
+import NavMobile from "../../../../components/NavMobile";
 
 const ProfileMobile: React.FC = () => {
-  const [isEditing, setIsEditing] = useState(false)
-  const [userInfo, setUserInfo] = useState({
-    name: "Foulen Ben Foulen",
-    email: "foulen@example.com",
-    phone: "+216 12 345 678",
-    password: "••••••••",
-    twoFactor: false,
-  })
+  // Move useState and useEffect inside the component
+  const [prenom, setPrenom] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [nom, setNom] = useState<string>("");
+  const [fullname, setFullname] = useState<string>("");
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setPrenom(parsedData.prénom || "Utilisateur");
+        setNom(parsedData.nom || "Foulen");
+        setEmail(parsedData.email || "example@ex.com");
+        setFullname(`${parsedData.prénom || "Utilisateur"} ${parsedData.nom || "Foulen"}`);
+      } catch (error) {
+        console.error("Erreur lors du parsing du localStorage:", error);
+      }
+    }
+  }, []);
 
   const handleChange = (field: string, value: string | boolean) => {
-    setUserInfo((prevState) => ({ ...prevState, [field]: value }))
-  }
+    console.log("Saving user info:");
+    // You can update the state here if needed
+  };
 
   const handleSave = () => {
     // Here you would typically send the updated info to your backend
-    console.log("Saving user info:", userInfo)
-    setIsEditing(false)
-  }
+    console.log("Saving user info:");
+    setIsEditing(false);
+  };
 
   return (
     <IonPage>
@@ -58,14 +71,14 @@ const ProfileMobile: React.FC = () => {
           <div className="profile-avatar">
             <IonIcon icon={personCircleOutline} />
           </div>
-          <h1>{userInfo.name}</h1>
+          <h1>{fullname}</h1>
         </div>
         <IonList className="profile-list">
           <IonItem>
             <IonIcon icon={personCircleOutline} slot="start" />
             <IonLabel position="stacked">Nom</IonLabel>
             <IonInput
-              value={userInfo.name}
+              value={fullname}
               onIonChange={(e) => handleChange("name", e.detail.value!)}
               readonly={!isEditing}
             />
@@ -74,7 +87,7 @@ const ProfileMobile: React.FC = () => {
             <IonIcon icon={mailOutline} slot="start" />
             <IonLabel position="stacked">Email</IonLabel>
             <IonInput
-              value={userInfo.email}
+              value={email}
               onIonChange={(e) => handleChange("email", e.detail.value!)}
               readonly={!isEditing}
             />
@@ -83,7 +96,7 @@ const ProfileMobile: React.FC = () => {
             <IonIcon icon={callOutline} slot="start" />
             <IonLabel position="stacked">Téléphone</IonLabel>
             <IonInput
-              value={userInfo.phone}
+              value={"+216 21636657"}
               onIonChange={(e) => handleChange("phone", e.detail.value!)}
               readonly={!isEditing}
             />
@@ -92,7 +105,7 @@ const ProfileMobile: React.FC = () => {
             <IonIcon icon={lockClosedOutline} slot="start" />
             <IonLabel position="stacked">Mot de passe</IonLabel>
             <IonInput
-              value={userInfo.password}
+              value={"••••••••"}
               type="password"
               readonly={true}
             />
@@ -100,7 +113,7 @@ const ProfileMobile: React.FC = () => {
           <IonItem>
             <IonLabel>Authentification à deux facteurs</IonLabel>
             <IonToggle
-              checked={userInfo.twoFactor}
+              checked={false}
               onIonChange={(e) => handleChange("twoFactor", e.detail.checked)}
               disabled={!isEditing}
             />
@@ -117,8 +130,7 @@ const ProfileMobile: React.FC = () => {
       </IonContent>
       <NavMobile currentPage="profile" />
     </IonPage>
-  )
-}
+  );
+};
 
-export default ProfileMobile
-
+export default ProfileMobile;
