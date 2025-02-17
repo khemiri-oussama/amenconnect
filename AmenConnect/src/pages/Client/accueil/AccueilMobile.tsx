@@ -29,7 +29,23 @@ const AccueilMobile: React.FC = () => {
   const toggleBalance = () => {
     setShowBalance(!showBalance)
   }
+const [prenom, setPrenom] = useState<string>("")
+const [email,setEmail]=useState<string>("")
+const [nom,setNom]=useState<string>("")
 
+useEffect(() => {
+  const userData = localStorage.getItem("user")
+  if (userData) {
+    try {
+      const parsedData = JSON.parse(userData)
+      setPrenom(parsedData.prénom || "Utilisateur")
+      setNom(parsedData.nom || "Foulen")
+      setEmail(parsedData.email || "example@ex.com")
+    } catch (error) {
+      console.error("Erreur lors du parsing du localStorage:", error)
+    }
+  }
+}, [])
   return (
     <IonPage>
       <IonContent fullscreen className="custom-content-mobile" scrollY={true} forceOverscroll={true}>
@@ -38,7 +54,7 @@ const AccueilMobile: React.FC = () => {
           <div className="profile-header-mobile">
             <div>
               <p className="greeting-mobile">Bonjour,</p>
-              <h1 className="username-mobile">Foulen Ben Foulen</h1>
+              <h1 className="username-mobile">{prenom} {nom}</h1>
             </div>
             <div className="header-actions-mobile">
               <IonButton

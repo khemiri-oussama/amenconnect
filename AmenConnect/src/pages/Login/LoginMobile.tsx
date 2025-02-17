@@ -13,21 +13,47 @@ import {
 } from "@ionic/react"
 import { useHistory } from "react-router-dom"
 import { eyeOutline, eyeOffOutline, mailOutline, lockClosedOutline } from "ionicons/icons"
+import axios from "axios"
+import { useAuth } from "../../AuthContext"
 import "./LoginMobile.css"
 
 const LoginMobile: React.FC = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const history = useHistory()
+  const { setIsAuthenticated } = useAuth()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Login attempt with:", email)
-    history.push("/otp")
-  }
+    setErrorMessage("")
+    setIsLoading(true)
 
-  console.log("Password visibility:", showPassword)
+    try {
+      const response = await axios.post("/api/auth/login", { email, password })
+      console.log("Login response:", response.data)
+
+      const user = response.data.user
+      if (!user) throw new Error("No user data returned from API")
+
+      localStorage.setItem("user", JSON.stringify(user))
+      setIsAuthenticated(true)
+
+      console.log("Redirecting to /otp with user:", user)
+      history.push("/otp", { user })
+    } catch (error: any) {
+      console.error("Login error:", error)
+      if (error.response?.data?.message) {
+        setErrorMessage(error.response.data.message)
+      } else {
+        setErrorMessage("Une erreur inattendue s'est produite. Veuillez réessayer.")
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <IonPage>
@@ -76,12 +102,18 @@ const LoginMobile: React.FC = () => {
                 </div>
               </div>
 
+              {errorMessage && (
+                <IonText color="danger" className="error-message">
+                  {errorMessage}
+                </IonText>
+              )}
+
               <IonText className="login-mobile-forgot-password">
                 <a href="/forgot-password">Mot De Passe oublié ?</a>
               </IonText>
 
-              <IonButton expand="block" type="submit" className="login-mobile-button ion-activatable">
-                Se Connecter
+              <IonButton expand="block" type="submit" className="login-mobile-button ion-activatable" disabled={isLoading}>
+                {isLoading ? "Chargement..." : "Se Connecter"}
                 <IonRippleEffect />
               </IonButton>
             </form>
@@ -93,4 +125,3 @@ const LoginMobile: React.FC = () => {
 }
 
 export default LoginMobile
-
