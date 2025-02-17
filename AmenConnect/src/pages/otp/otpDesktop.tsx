@@ -1,4 +1,3 @@
-// otpDesktop.tsx
 import {
   IonContent,
   IonPage,
@@ -15,32 +14,24 @@ import { useAuth, User } from "../../AuthContext";
 import "./otpDesktop.css";
 
 export default function OtpPage() {
-  const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
+  const [otp, setOtp] = useState<string>(""); // Store OTP as a string instead of an array
   const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const history = useHistory();
   const { pendingUser, setIsAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (pendingUser) {
-      setUser(pendingUser);
-    } else {
-      // If no pending user is found, redirect to the accueil page
-      history.replace("/accueil");
-    }
+    if (!pendingUser) history.replace("/login");
   }, [pendingUser, history]);
 
   const handleOtpChange = (index: number, value: string) => {
     if (/^\d{6}$/.test(value)) {
-      const newOtp = value.split("");
-      setOtp(newOtp);
+      setOtp(value); // Directly set OTP as a string
       inputRefs.current[5]?.setFocus();
     } else if (value.length <= 1 && /^[0-9]*$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
+      const newOtp = otp.slice(0, index) + value + otp.slice(index + 1);
+      setOtp(newOtp); // Update OTP as a string
       if (value && index < 5) inputRefs.current[index + 1]?.setFocus();
     }
   };
@@ -54,8 +45,7 @@ export default function OtpPage() {
   const handlePaste = (e: React.ClipboardEvent) => {
     const pastedData = e.clipboardData.getData("Text").trim();
     if (/^\d{6}$/.test(pastedData)) {
-      const newOtp = pastedData.split("");
-      setOtp(newOtp);
+      setOtp(pastedData); // Update OTP as a string
       inputRefs.current[5]?.setFocus();
     }
   };
@@ -66,30 +56,17 @@ export default function OtpPage() {
     setIsLoading(true);
 
     try {
-      const otpCode = otp.join("");
       const response = await axios.post("/api/auth/verify-otp", {
-        email: user!.email,
-        otp: otpCode,
+        email: pendingUser!.email,
+        otp,
       });
 
-      if (response.data.message === "OTP verified successfully!") {
-        console.log("✅ OTP validé ! Redirection en cours...");
+      sessionStorage.setItem("token", response.data.token);
+      setIsAuthenticated(true);
 
-        localStorage.setItem("token", response.data.token);
-        setIsAuthenticated(true); // Update authentication state
-
-        console.log("🔓 Authentification activée !");
-        console.log("➡️ Redirection vers /accueil...");
-        history.replace("/accueil");
-      } else {
-        setErrorMessage("Invalid OTP. Please try again.");
-      }
+      history.replace("/accueil");
     } catch (error: any) {
-      console.error("OTP verification error:", error);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "An error occurred during OTP verification."
-      );
+      setErrorMessage(error.response?.data?.message || "Erreur OTP.");
     } finally {
       setIsLoading(false);
     }
@@ -117,14 +94,14 @@ export default function OtpPage() {
                 <div className="input-group">
                   <IonLabel className="input-label">OTP</IonLabel>
                   <div className="otp-inputs">
-                    {otp.map((_, index) => (
+                    {Array.from({ length: 6 }).map((_, index) => (
                       <IonInput
                         key={index}
                         type="text"
                         maxlength={1}
-                        value={otp[index]}
+                        value={otp[index] || ""} // Ensure the correct value
                         onIonInput={(e) =>
-                          handleOtpChange(index, e.detail.value!)
+                          handleOtpChange(index, e.detail.value || "")
                         }
                         onPaste={index === 0 ? handlePaste : undefined}
                         onKeyDown={(e) => handleKeyDown(index, e)}
