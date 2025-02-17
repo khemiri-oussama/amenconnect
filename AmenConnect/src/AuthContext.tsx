@@ -1,20 +1,34 @@
+// AuthContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-// Define a context for authentication
-const AuthContext = createContext<{
+export interface User {
+  email: string;
+  // Add other user properties if needed
+}
+
+interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-} | undefined>(undefined);
+  pendingUser: User | null;
+  setPendingUser: React.Dispatch<React.SetStateAction<User | null>>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
-  children: ReactNode;  // Explicitly define children as ReactNode
+  children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    !!localStorage.getItem("token")
+  );
+  const [pendingUser, setPendingUser] = useState<User | null>(null);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, setIsAuthenticated, pendingUser, setPendingUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
