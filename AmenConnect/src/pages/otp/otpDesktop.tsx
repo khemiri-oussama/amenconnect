@@ -1,39 +1,36 @@
-import { 
-  IonContent, 
-  IonPage, 
-  IonInput, 
-  IonButton, 
-  IonText, 
-  IonLabel, 
-  IonImg 
-} from '@ionic/react';
-import { useState, useRef, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import { useAuth } from '../../AuthContext';
-import './otpDesktop.css';
-
-interface User {
-  email: string;
-}
+// otpDesktop.tsx
+import {
+  IonContent,
+  IonPage,
+  IonInput,
+  IonButton,
+  IonText,
+  IonLabel,
+  IonImg,
+} from "@ionic/react";
+import { useState, useRef, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+import { useAuth, User } from "../../AuthContext";
+import "./otpDesktop.css";
 
 export default function OtpPage() {
-  const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
+  const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState<User | null>(null);  // 👈 Stocke l'utilisateur ici
+  const [user, setUser] = useState<User | null>(null);
   const history = useHistory();
-  const location = useLocation<{ user?: User }>();
-  const { setIsAuthenticated } = useAuth();
+  const { pendingUser, setIsAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (location.state?.user) {
-      setUser(location.state.user);  // 👈 Met à jour l'état local avec l'utilisateur passé en paramètre
+    if (pendingUser) {
+      setUser(pendingUser);
     } else {
+      // If no pending user is found, redirect to the accueil page
       history.replace("/accueil");
     }
-  }, [location.state, history]);
+  }, [pendingUser, history]);
 
   const handleOtpChange = (index: number, value: string) => {
     if (/^\d{6}$/.test(value)) {
@@ -49,7 +46,7 @@ export default function OtpPage() {
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.setFocus();
     }
   };
@@ -67,31 +64,36 @@ export default function OtpPage() {
     e.preventDefault();
     setErrorMessage("");
     setIsLoading(true);
-  
+
     try {
-      const otpCode = otp.join('');
-      const response = await axios.post('/api/auth/verify-otp', { email: user!.email, otp: otpCode });
-  
-      if (response.data.message === 'OTP verified successfully!') {
+      const otpCode = otp.join("");
+      const response = await axios.post("/api/auth/verify-otp", {
+        email: user!.email,
+        otp: otpCode,
+      });
+
+      if (response.data.message === "OTP verified successfully!") {
         console.log("✅ OTP validé ! Redirection en cours...");
-  
-        localStorage.setItem('token', response.data.token);
-        setIsAuthenticated(true); // ✅ Update AuthContext
-  
+
+        localStorage.setItem("token", response.data.token);
+        setIsAuthenticated(true); // Update authentication state
+
         console.log("🔓 Authentification activée !");
         console.log("➡️ Redirection vers /accueil...");
-        history.replace('/accueil');
+        history.replace("/accueil");
       } else {
         setErrorMessage("Invalid OTP. Please try again.");
       }
     } catch (error: any) {
       console.error("OTP verification error:", error);
-      setErrorMessage(error.response?.data?.message || "An error occurred during OTP verification.");
+      setErrorMessage(
+        error.response?.data?.message ||
+          "An error occurred during OTP verification."
+      );
     } finally {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <IonPage>
@@ -99,11 +101,17 @@ export default function OtpPage() {
         <div className="content-wrapper">
           <div className="login-box">
             <div className="logo-container-otp-desktop">
-              <IonImg src="../amen_logo.png" alt="Logo" className="logo-otp-desktop" />
+              <IonImg
+                src="../amen_logo.png"
+                alt="Logo"
+                className="logo-otp-desktop"
+              />
             </div>
             <div className="form-container">
               <h1 className="title">Bienvenu</h1>
-              <p className="subtitle">Veuillez saisir le code OTP envoyé à votre email</p>
+              <p className="subtitle">
+                Veuillez saisir le code OTP envoyé à votre email
+              </p>
 
               <form onSubmit={handleSubmit} className="login-form">
                 <div className="input-group">
@@ -115,7 +123,9 @@ export default function OtpPage() {
                         type="text"
                         maxlength={1}
                         value={otp[index]}
-                        onIonInput={(e) => handleOtpChange(index, e.detail.value!)}
+                        onIonInput={(e) =>
+                          handleOtpChange(index, e.detail.value!)
+                        }
                         onPaste={index === 0 ? handlePaste : undefined}
                         onKeyDown={(e) => handleKeyDown(index, e)}
                         className="otp-input"
@@ -135,8 +145,8 @@ export default function OtpPage() {
                   N'avez-vous pas reçu le code OTP ?
                 </p>
 
-                <IonButton 
-                  expand="block" 
+                <IonButton
+                  expand="block"
                   type="submit"
                   className="login-button"
                   disabled={isLoading}

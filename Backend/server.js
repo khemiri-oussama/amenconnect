@@ -3,6 +3,8 @@ const connectDB = require('./config/db');
 const cors = require('cors');
 require('dotenv').config();
 const app = require('./app'); 
+const helmet = require("helmet");
+app.use(helmet());
 
 // Connect to MongoDB
 connectDB();
