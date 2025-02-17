@@ -81,7 +81,7 @@ const generateOTPEmailHTML = (otp) => {
 // Function to send OTP via email
 const sendOTPEmail = async (email, otp) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: `"AmenConnect" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Your OTP Code',
     html: generateOTPEmailHTML(otp),
