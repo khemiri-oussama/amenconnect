@@ -4,7 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Route, Redirect } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';  
 
-import Home from './pages/Home';  // ✅ Home is now public
+import Home from './pages/Home';
 import Otp from './pages/otp/otp';
 import Accueil from './pages/Client/accueil/accueil';
 import Compte from './pages/Client/Compte/Compte';
@@ -36,7 +36,7 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-import { StatusBar, Style } from '@capacitor/status-bar';
+//import { StatusBar, Style } from '@capacitor/status-bar';
 import './theme/variables.css';
 
 setupIonicReact();
@@ -51,7 +51,7 @@ const AppContent: React.FC = () => {
   return (
     <IonReactRouter>
       <IonRouterOutlet>
-        {/* ✅ Home is now public */}
+        {/* Home is public */}
         <Route exact path="/home" component={Home} />  
 
         {/* Public routes */}
@@ -74,7 +74,6 @@ const AppContent: React.FC = () => {
         <PrivateRoute path="/AuthenticationSecurity" component={AuthenticationSecurity} isAuthenticated={isAuthenticated} />
         <PrivateRoute path="/InteractiveTotemManagement" component={InteractiveTotemManagement} isAuthenticated={isAuthenticated} />
 
-        {/* ✅ Default route now redirects to Home */}
         <Route exact path="/" render={() => <Redirect to="/home" />} />
       </IonRouterOutlet>
     </IonReactRouter>
