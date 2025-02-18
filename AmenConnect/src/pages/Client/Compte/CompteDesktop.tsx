@@ -59,6 +59,17 @@ const CompteDesktop: React.FC = () => {
                 </div>
               </IonCardContent>
             </IonCard>
+            <IonCard className="compte-card">
+              <IonCardHeader>Compte Courant</IonCardHeader>
+              <IonCardContent>
+                <div className="balance">5,230.45 TND</div>
+                <div className="account-number">78945678987</div>
+                <div className="balance-change">
+                  <IonIcon icon={trendingUpOutline} />
+                  <span>+10.5% ce mois</span>
+                </div>
+              </IonCardContent>
+            </IonCard>
 
             <IonCard className="chart-card">
               <IonCardHeader>Aperçu financier</IonCardHeader>
