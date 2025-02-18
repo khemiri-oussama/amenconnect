@@ -222,4 +222,17 @@ exports.resendOTP = async (req, res) => {
     console.error("Resend OTP error:", err)
     res.status(500).json({ message: "Server error." })
   }
+  
 }
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
+    res.json({ message: "Logged out successfully." });
+  } catch (err) {
+    res.status(500).json({ message: "Server error." });
+  }
+};

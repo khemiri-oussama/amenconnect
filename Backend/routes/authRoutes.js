@@ -1,7 +1,7 @@
 // routes/authRoutes.js
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { login, register, verifyOTP, resendOTP } = require('../controllers/authController');
+const { login, register, verifyOTP, resendOTP, logout } = require('../controllers/authController');
 const verifyToken = require('../middleware/auth');
 const rateLimit = require('express-rate-limit');
 
@@ -81,6 +81,7 @@ router.post(
   resendOTP
 );
 
+
 // Protected endpoint: get user profile from token
 router.get('/profile', verifyToken, (req, res) => {
   res.json({
@@ -91,5 +92,5 @@ router.get('/profile', verifyToken, (req, res) => {
     },
   });
 });
-
+router.post("/logout", verifyToken, logout);
 module.exports = router;

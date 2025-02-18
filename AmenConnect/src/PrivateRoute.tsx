@@ -1,6 +1,7 @@
 // PrivateRoute.tsx
 import React from "react";
 import { Route, Redirect, RouteProps } from "react-router-dom";
+
 import { useAuth } from "./AuthContext";
 
 interface PrivateRouteProps extends RouteProps {
@@ -24,20 +25,13 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
     <Route
       {...rest}
       render={(props) => {
-        // For the OTP page, allow access if pendingUser exists.
-        if (props.location.pathname === "/otp" && !pendingUser) {
+        if (authLoading) return <div>Loading...</div>;
+  
+        if (!isAuthenticated && !pendingUser) {
           return <Redirect to="/login" />;
         }
-        return isAuthenticated || pendingUser ? (
-          <Component {...props} />
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: props.location },
-            }}
-          />
-        );
+  
+        return <Component {...props} />;
       }}
     />
   );
