@@ -1,7 +1,8 @@
 // routes/authRoutes.js
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { login, register, verifyOTP } = require('../controllers/authController');
+const { login, register, verifyOTP, resendOTP } = require('../controllers/authController');
+const verifyToken = require('../middleware/auth');
 const rateLimit = require('express-rate-limit');
 
 const router = express.Router();
@@ -32,7 +33,7 @@ const validateRequest = (req, res, next) => {
 router.post(
   '/register',
   [
-    body('identifiant').notEmpty().withMessage('Identifiant is required.'),
+    body('cin').notEmpty().withMessage('CIN is required.'),
     body('nom').notEmpty().withMessage('Nom is required.'),
     body('prénom').notEmpty().withMessage('Prénom is required.'),
     body('email').isEmail().withMessage('Valid email is required.'),
@@ -68,5 +69,27 @@ router.post(
   validateRequest,
   verifyOTP
 );
+
+// Resend OTP route validations
+router.post(
+  '/resend-otp',
+  verifyOTPLimiter,
+  [
+    body('email').isEmail().withMessage('Valid email is required.')
+  ],
+  validateRequest,
+  resendOTP
+);
+
+// Protected endpoint: get user profile from token
+router.get('/profile', verifyToken, (req, res) => {
+  res.json({
+    user: {
+      id: req.user.id,
+      email: req.user.email,
+      // Include other user details as needed
+    },
+  });
+});
 
 module.exports = router;

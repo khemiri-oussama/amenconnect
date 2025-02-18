@@ -167,9 +167,16 @@ exports.verifyOTP = async (req, res) => {
     user.otpExpires = null
     await user.save()
 
+    // Set the JWT in an HTTP-only cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // true if in production (requires HTTPS)
+      maxAge: 3600000, // 1 hour in milliseconds
+      sameSite: 'strict',
+    })
+
     res.json({
       message: "OTP verified successfully!",
-      token,
       user: { id: user._id, email: user.email, nom: user.nom, prénom: user.prénom },
     })
   } catch (err) {
@@ -216,4 +223,3 @@ exports.resendOTP = async (req, res) => {
     res.status(500).json({ message: "Server error." })
   }
 }
-

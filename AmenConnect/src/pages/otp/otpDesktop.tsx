@@ -1,100 +1,98 @@
-"use client"
-
-import type React from "react"
-
-import { IonContent, IonPage, IonInput, IonButton, IonText, IonLabel, IonImg } from "@ionic/react"
-import { useState, useRef, useEffect, useCallback } from "react"
-import { useHistory } from "react-router-dom"
-import axios from "axios"
-import { useAuth } from "../../AuthContext"
-import "./otpDesktop.css"
+import { IonContent, IonPage, IonInput, IonButton, IonText, IonLabel, IonImg } from "@ionic/react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../AuthContext";
+import "./otpDesktop.css";
 
 export default function OtpPage() {
-  const [otp, setOtp] = useState<string>("")
-  const inputRefs = useRef<(HTMLIonInputElement | null)[]>([])
-  const [errorMessage, setErrorMessage] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const history = useHistory()
-  const { pendingUser, setIsAuthenticated } = useAuth()
-  const [countdown, setCountdown] = useState(90)
-  const [canResend, setCanResend] = useState(false)
+  const [otp, setOtp] = useState<string>("");
+  const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
+  const { pendingUser, setIsAuthenticated } = useAuth();
+  const [countdown, setCountdown] = useState(90);
+  const [canResend, setCanResend] = useState(false);
 
   useEffect(() => {
-    if (!pendingUser) history.replace("/login")
-  }, [pendingUser, history])
+    if (!pendingUser) history.replace("/login");
+  }, [pendingUser, history]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout
+    let timer: NodeJS.Timeout;
     if (countdown > 0) {
-      timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
     } else {
-      setCanResend(true)
+      setCanResend(true);
     }
-    return () => clearTimeout(timer)
-  }, [countdown])
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
   const handleOtpChange = (index: number, value: string) => {
     if (/^\d{6}$/.test(value)) {
-      setOtp(value) // Directly set OTP as a string
-      inputRefs.current[5]?.setFocus()
+      setOtp(value); // Directly set OTP as a string
+      inputRefs.current[5]?.setFocus();
     } else if (value.length <= 1 && /^[0-9]*$/.test(value)) {
-      const newOtp = otp.slice(0, index) + value + otp.slice(index + 1)
-      setOtp(newOtp) // Update OTP as a string
-      if (value && index < 5) inputRefs.current[index + 1]?.setFocus()
+      const newOtp = otp.slice(0, index) + value + otp.slice(index + 1);
+      setOtp(newOtp); // Update OTP as a string
+      if (value && index < 5) inputRefs.current[index + 1]?.setFocus();
     }
-  }
+  };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.setFocus()
+      inputRefs.current[index - 1]?.setFocus();
     }
-  }
+  };
 
   const handlePaste = (e: React.ClipboardEvent) => {
-    const pastedData = e.clipboardData.getData("Text").trim()
+    const pastedData = e.clipboardData.getData("Text").trim();
     if (/^\d{6}$/.test(pastedData)) {
-      setOtp(pastedData) // Update OTP as a string
-      inputRefs.current[5]?.setFocus()
+      setOtp(pastedData); // Update OTP as a string
+      inputRefs.current[5]?.setFocus();
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setErrorMessage("")
-    setIsLoading(true)
+    e.preventDefault();
+    setErrorMessage("");
+    setIsLoading(true);
 
     try {
-      const response = await axios.post("/api/auth/verify-otp", {
-        email: pendingUser!.email,
-        otp,
-      })
+      await axios.post(
+        "/api/auth/verify-otp",
+        { email: pendingUser!.email, otp },
+        { withCredentials: true }
+      );
 
-      sessionStorage.setItem("token", response.data.token)
-      setIsAuthenticated(true)
-
-      history.replace("/accueil")
+      // No need to store the token in sessionStorage since it's in an HTTP-only cookie
+      setIsAuthenticated(true);
+      history.replace("/accueil");
     } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Erreur OTP.")
+      setErrorMessage(error.response?.data?.message || "Erreur OTP.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleResend = useCallback(async () => {
-    setErrorMessage("")
-    setIsLoading(true)
+    setErrorMessage("");
+    setIsLoading(true);
     try {
-      await axios.post("/api/auth/resend-otp", {
-        email: pendingUser!.email,
-      })
-      setCountdown(60)
-      setCanResend(false)
+      await axios.post(
+        "/api/auth/resend-otp",
+        { email: pendingUser!.email },
+        { withCredentials: true }
+      );
+      setCountdown(60);
+      setCanResend(false);
     } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Erreur lors de l'envoi de l'OTP.")
+      setErrorMessage(error.response?.data?.message || "Erreur lors de l'envoi de l'OTP.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [pendingUser])
+  }, [pendingUser]);
 
   return (
     <IonPage>
@@ -152,6 +150,5 @@ export default function OtpPage() {
         <div className="blurry-div"></div>
       </IonContent>
     </IonPage>
-  )
+  );
 }
-

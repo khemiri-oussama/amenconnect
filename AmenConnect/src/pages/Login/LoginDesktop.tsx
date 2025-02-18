@@ -26,12 +26,18 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
+      // Include credentials with the request
+      const response = await axios.post(
+        "/api/auth/login",
+        { email, password },
+        { withCredentials: true }
+      );
       const user: User = response.data.user;
 
       if (!user) throw new Error("Aucune donnée utilisateur reçue.");
 
-      sessionStorage.setItem("user", JSON.stringify(user)); // Use sessionStorage
+      // Save user info in sessionStorage (or update your auth context)
+      sessionStorage.setItem("user", JSON.stringify(user));
       setPendingUser(user);
 
       history.replace("/otp");
@@ -84,7 +90,7 @@ export default function LoginPage() {
                 )}
 
                 <IonText className="forgot-password" onClick={() => history.push("/forgotPassword")}>
-                <a style={{cursor: "pointer"}}>Mot De Passe oublier ?</a>
+                  <a style={{ cursor: "pointer" }}>Mot De Passe oublier ?</a>
                 </IonText>
 
                 <IonButton expand="block" type="submit" className="login-button" disabled={isLoading}>
