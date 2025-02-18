@@ -1,3 +1,4 @@
+//App.tsx
 import React, { useEffect } from 'react';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';

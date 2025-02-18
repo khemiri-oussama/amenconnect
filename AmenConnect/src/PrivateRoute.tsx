@@ -1,3 +1,4 @@
+// PrivateRoute.tsx
 import React from "react";
 import { Route, Redirect, RouteProps } from "react-router-dom";
 import { useAuth } from "./AuthContext";
@@ -12,17 +13,21 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
   isAuthenticated,
   ...rest
 }) => {
-  const { pendingUser } = useAuth();  // Access pendingUser from context
+  const { pendingUser, authLoading } = useAuth();
+
+  if (authLoading) {
+    // While authentication is loading, show a loading spinner or placeholder.
+    return <div>Loading...</div>;
+  }
 
   return (
     <Route
       {...rest}
       render={(props) => {
-        // Allow access to /otp route when pendingUser exists, else check for authentication
-        if (props.location.pathname === '/otp' && !pendingUser) {
+        // For the OTP page, allow access if pendingUser exists.
+        if (props.location.pathname === "/otp" && !pendingUser) {
           return <Redirect to="/login" />;
         }
-
         return isAuthenticated || pendingUser ? (
           <Component {...props} />
         ) : (
@@ -37,4 +42,5 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
     />
   );
 };
+
 export default PrivateRoute;
