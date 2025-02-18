@@ -1,3 +1,4 @@
+//MenuDesktop/ProfileMenu.tsx
 "use client"
 
 import type React from "react"
@@ -6,7 +7,11 @@ import { IonIcon, IonToggle } from "@ionic/react"
 import { personOutline, settingsOutline, moonOutline, logOutOutline, chevronDown } from "ionicons/icons"
 import "./ProfileMenu.css"
 import { useHistory } from "react-router-dom";
+import axios from "axios"
+import { useAuth } from "../../../../AuthContext"
+
 const ProfileMenu: React.FC = () => {
+  const { setIsAuthenticated, setPendingUser } = useAuth(); 
   const [isOpen, setIsOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -31,12 +36,24 @@ const ProfileMenu: React.FC = () => {
     setIsDarkMode(!isDarkMode)
     // Implement your dark mode logic here
   }
-
-  const handleLogout = () => {
-    sessionStorage.removeItem("token")
-    sessionStorage.removeItem("user")
-    window.location.href = "/login";
-  }
+  
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/auth/logout", {}, { withCredentials: true });
+  
+      // Ensure auth state resets properly
+      setIsAuthenticated(false);
+      setPendingUser(null);
+  
+      // Force a slight delay for state reset before redirect
+      setTimeout(() => {
+        history.replace("/login");
+      }, 100); 
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+  
 
   return (
     <div className="profileD-menu-container" ref={menuRef}>
