@@ -79,7 +79,7 @@ const sendOTPEmail = async (email, otp) => {
 }
 
 exports.register = async (req, res) => {
-  const { identifiant, nom, prénom, email, téléphone, employeur, adresseEmployeur, password } = req.body;
+  const { cin, nom, prénom, email, téléphone, employeur, adresseEmployeur, password } = req.body;
   try {
     // Check if user already exists
     let user = await User.findOne({ email })
