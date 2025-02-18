@@ -6,16 +6,14 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
 const ipRoutes = require('./routes/ipRoutes');
+const forgotPassword = require ('./routes/forgotPasswordRoutes') 
 
 const app = express();
 
-// Set security-related HTTP headers
 app.use(helmet());
 
-// Parse incoming JSON requests
 app.use(express.json());
 
-// Configure CORS (adjust CLIENT_ORIGIN in your .env file as needed)
 app.use(cors({
   origin: process.env.CLIENT_ORIGIN || 'http://localhost:8200',
   credentials: true,
@@ -23,6 +21,7 @@ app.use(cors({
 
 // Mount routes
 app.use('/api/auth', authRoutes);
+app.use('/api/password', forgotPassword)
 app.use('/api/ip', ipRoutes);
 
 // Centralized error-handling middleware
