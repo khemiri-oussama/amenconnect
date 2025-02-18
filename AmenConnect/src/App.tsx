@@ -6,11 +6,12 @@ import { AuthProvider, useAuth } from './AuthContext';
 
 import Home from './pages/Home';
 import Otp from './pages/otp/otp';
+import Login from './pages/Login/Login';
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
 import Accueil from './pages/Client/accueil/accueil';
 import Compte from './pages/Client/Compte/Compte';
 import Carte from './pages/Client/Carte/Carte';
 import ChatBot from './pages/Client/chatBot/chatBot';
-import Login from './pages/Login/Login';
 import Virement from './pages/Client/virement/virement';
 import ProfileMobile from './pages/Client/accueil/MenuMobile/ProfileMobile';
 import SecuritySettingsMobile from './pages/Client/accueil/MenuMobile/SecuritySettingsMobile';
@@ -51,11 +52,10 @@ const AppContent: React.FC = () => {
   return (
     <IonReactRouter>
       <IonRouterOutlet>
-        {/* Home is public */}
-        <Route exact path="/home" component={Home} />  
-
         {/* Public routes */}
+        <Route exact path="/home" component={Home} />
         <Route exact path="/login" component={Login} />
+        <Route exact path="/ForgotPassword" component={ForgotPassword} />
                 {/* Conditionally render /otp route if pendingUser exists */}
         <Route
           exact
