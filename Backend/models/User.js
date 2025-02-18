@@ -3,16 +3,18 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  identifiant: { type: String, required: true, unique: true },
-  nom: { type: String, required: true },
-  prénom: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  téléphone: { type: String, required: true },
-  employeur: { type: String, required: true },
-  adresseEmployeur: { type: String, required: true },
-  password: { type: String, required: true },
-  otp: { type: String, default: null },
-  otpExpires: { type: Date, default: null }
+    resetPasswordToken: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
+    cin: { type: String, required: true, unique: true },
+    nom: { type: String, required: true },
+    prénom: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    téléphone: { type: String, required: true },
+    employeur: { type: String, required: true },
+    adresseEmployeur: { type: String, required: true },
+    password: { type: String, required: true },
+    otp: { type: String, default: null },
+    otpExpires: { type: Date, default: null }
 });
 
 // Pre-save hook to hash password if modified
