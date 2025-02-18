@@ -112,7 +112,7 @@ const [email,setEmail]=useState<string>("")
 const [nom,setNom]=useState<string>("")
 
 useEffect(() => {
-  const userData = localStorage.getItem("user")
+  const userData = sessionStorage.getItem("user")
   if (userData) {
     try {
       const parsedData = JSON.parse(userData)

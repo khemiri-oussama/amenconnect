@@ -79,8 +79,8 @@ export default function ForgotPasswordPage() {
                   {isLoading ? "Envoi en cours..." : "Réinitialiser le mot de passe"}
                 </IonButton>
 
-                <IonText className="back-to-login">
-                  <a href="/login">Retour à la connexion</a>
+                <IonText className="back-to-login" onClick={() => history.push("/login")}>
+                  <a style={{cursor: "pointer"}}>Retour à la connexion</a>
                 </IonText>
               </form>
             </div>

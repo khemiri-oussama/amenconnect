@@ -84,7 +84,7 @@ export default function LoginPage() {
                 )}
 
                 <IonText className="forgot-password" onClick={() => history.push("/forgotPassword")}>
-                <span style={{color : "#ffffff" ,cursor: "pointer"}}>Mot De Passe oublier ?</span>
+                <a style={{cursor: "pointer"}}>Mot De Passe oublier ?</a>
                 </IonText>
 
                 <IonButton expand="block" type="submit" className="login-button" disabled={isLoading}>
