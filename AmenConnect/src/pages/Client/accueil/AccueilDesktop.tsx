@@ -21,6 +21,7 @@ import Navbar from "../../../components/Navbar"
 import "./AccueilDesktop.css"
 import { useHistory } from "react-router-dom"
 import Profile from "./MenuDesktop/ProfileMenu"
+
 interface Account {
   id: number
   name: string
