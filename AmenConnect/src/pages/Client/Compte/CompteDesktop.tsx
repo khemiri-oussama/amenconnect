@@ -1,4 +1,7 @@
+"use client"
+
 import type React from "react"
+import { useState } from "react"
 import {
   IonContent,
   IonHeader,
@@ -22,7 +25,34 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tool
 import Navbar from "../../../components/Navbar"
 import "./CompteDesktop.css"
 
+const comptes = [
+  {
+    id: 1,
+    name: "Compte Epargne",
+    balance: 15230.45,
+    accountNumber: "12345678987",
+    change: 2.5,
+  },
+  {
+    id: 2,
+    name: "Compte Courant",
+    balance: 5230.45,
+    accountNumber: "78945678987",
+    change: 10.5,
+  },
+]
+
 const CompteDesktop: React.FC = () => {
+  const [selectedCompte, setSelectedCompte] = useState(comptes[0])
+
+  const handleCompteChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedId = Number.parseInt(event.target.value, 10)
+    const newSelectedCompte = comptes.find((compte) => compte.id === selectedId)
+    if (newSelectedCompte) {
+      setSelectedCompte(newSelectedCompte)
+    }
+  }
+
   const chartData = [
     { name: "Jan", revenus: 65, depenses: 28 },
     { name: "Feb", revenus: 59, depenses: 48 },
@@ -47,26 +77,25 @@ const CompteDesktop: React.FC = () => {
         <div className="compte-container">
           <h1 className="page-title">Mes Comptes</h1>
 
+          <div className="compte-selector">
+            <select value={selectedCompte.id} onChange={handleCompteChange}>
+              {comptes.map((compte) => (
+                <option key={compte.id} value={compte.id}>
+                  {compte.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="compte-grid">
-            <IonCard className="compte-card">
-              <IonCardHeader>Compte Epargne</IonCardHeader>
+            <IonCard className="compte-card active">
+              <IonCardHeader>{selectedCompte.name}</IonCardHeader>
               <IonCardContent>
-                <div className="balance">15,230.45 TND</div>
-                <div className="account-number">12345678987</div>
+                <div className="balance">{selectedCompte.balance.toFixed(2)} TND</div>
+                <div className="account-number">{selectedCompte.accountNumber}</div>
                 <div className="balance-change">
                   <IonIcon icon={trendingUpOutline} />
-                  <span>+2.5% ce mois</span>
-                </div>
-              </IonCardContent>
-            </IonCard>
-            <IonCard className="compte-card">
-              <IonCardHeader>Compte Courant</IonCardHeader>
-              <IonCardContent>
-                <div className="balance">5,230.45 TND</div>
-                <div className="account-number">78945678987</div>
-                <div className="balance-change">
-                  <IonIcon icon={trendingUpOutline} />
-                  <span>+10.5% ce mois</span>
+                  <span>+{selectedCompte.change}% ce mois</span>
                 </div>
               </IonCardContent>
             </IonCard>
