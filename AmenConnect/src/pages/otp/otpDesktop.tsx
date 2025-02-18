@@ -1,76 +1,100 @@
-import {
-  IonContent,
-  IonPage,
-  IonInput,
-  IonButton,
-  IonText,
-  IonLabel,
-  IonImg,
-} from "@ionic/react";
-import { useState, useRef, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
-import { useAuth, User } from "../../AuthContext";
-import "./otpDesktop.css";
+"use client"
+
+import type React from "react"
+
+import { IonContent, IonPage, IonInput, IonButton, IonText, IonLabel, IonImg } from "@ionic/react"
+import { useState, useRef, useEffect, useCallback } from "react"
+import { useHistory } from "react-router-dom"
+import axios from "axios"
+import { useAuth } from "../../AuthContext"
+import "./otpDesktop.css"
 
 export default function OtpPage() {
-  const [otp, setOtp] = useState<string>(""); // Store OTP as a string instead of an array
-  const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const history = useHistory();
-  const { pendingUser, setIsAuthenticated } = useAuth();
+  const [otp, setOtp] = useState<string>("")
+  const inputRefs = useRef<(HTMLIonInputElement | null)[]>([])
+  const [errorMessage, setErrorMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const history = useHistory()
+  const { pendingUser, setIsAuthenticated } = useAuth()
+  const [countdown, setCountdown] = useState(90)
+  const [canResend, setCanResend] = useState(false)
 
   useEffect(() => {
-    if (!pendingUser) history.replace("/login");
-  }, [pendingUser, history]);
+    if (!pendingUser) history.replace("/login")
+  }, [pendingUser, history])
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+    } else {
+      setCanResend(true)
+    }
+    return () => clearTimeout(timer)
+  }, [countdown])
 
   const handleOtpChange = (index: number, value: string) => {
     if (/^\d{6}$/.test(value)) {
-      setOtp(value); // Directly set OTP as a string
-      inputRefs.current[5]?.setFocus();
+      setOtp(value) // Directly set OTP as a string
+      inputRefs.current[5]?.setFocus()
     } else if (value.length <= 1 && /^[0-9]*$/.test(value)) {
-      const newOtp = otp.slice(0, index) + value + otp.slice(index + 1);
-      setOtp(newOtp); // Update OTP as a string
-      if (value && index < 5) inputRefs.current[index + 1]?.setFocus();
+      const newOtp = otp.slice(0, index) + value + otp.slice(index + 1)
+      setOtp(newOtp) // Update OTP as a string
+      if (value && index < 5) inputRefs.current[index + 1]?.setFocus()
     }
-  };
+  }
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.setFocus();
+      inputRefs.current[index - 1]?.setFocus()
     }
-  };
+  }
 
   const handlePaste = (e: React.ClipboardEvent) => {
-    const pastedData = e.clipboardData.getData("Text").trim();
+    const pastedData = e.clipboardData.getData("Text").trim()
     if (/^\d{6}$/.test(pastedData)) {
-      setOtp(pastedData); // Update OTP as a string
-      inputRefs.current[5]?.setFocus();
+      setOtp(pastedData) // Update OTP as a string
+      inputRefs.current[5]?.setFocus()
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMessage("");
-    setIsLoading(true);
+    e.preventDefault()
+    setErrorMessage("")
+    setIsLoading(true)
 
     try {
       const response = await axios.post("/api/auth/verify-otp", {
         email: pendingUser!.email,
         otp,
-      });
+      })
 
-      sessionStorage.setItem("token", response.data.token);
-      setIsAuthenticated(true);
+      sessionStorage.setItem("token", response.data.token)
+      setIsAuthenticated(true)
 
-      history.replace("/accueil");
+      history.replace("/accueil")
     } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Erreur OTP.");
+      setErrorMessage(error.response?.data?.message || "Erreur OTP.")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
+
+  const handleResend = useCallback(async () => {
+    setErrorMessage("")
+    setIsLoading(true)
+    try {
+      await axios.post("/api/auth/resend-otp", {
+        email: pendingUser!.email,
+      })
+      setCountdown(60)
+      setCanResend(false)
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || "Erreur lors de l'envoi de l'OTP.")
+    } finally {
+      setIsLoading(false)
+    }
+  }, [pendingUser])
 
   return (
     <IonPage>
@@ -78,17 +102,11 @@ export default function OtpPage() {
         <div className="content-wrapper">
           <div className="login-box">
             <div className="logo-container-otp-desktop">
-              <IonImg
-                src="../amen_logo.png"
-                alt="Logo"
-                className="logo-otp-desktop"
-              />
+              <IonImg src="../amen_logo.png" alt="Logo" className="logo-otp-desktop" />
             </div>
             <div className="form-container">
               <h1 className="title">Bienvenu</h1>
-              <p className="subtitle">
-                Veuillez saisir le code OTP envoyé à votre email
-              </p>
+              <p className="subtitle">Veuillez saisir le code OTP envoyé à votre email</p>
 
               <form onSubmit={handleSubmit} className="login-form">
                 <div className="input-group">
@@ -100,9 +118,7 @@ export default function OtpPage() {
                         type="text"
                         maxlength={1}
                         value={otp[index] || ""} // Ensure the correct value
-                        onIonInput={(e) =>
-                          handleOtpChange(index, e.detail.value || "")
-                        }
+                        onIonInput={(e) => handleOtpChange(index, e.detail.value || "")}
                         onPaste={index === 0 ? handlePaste : undefined}
                         onKeyDown={(e) => handleKeyDown(index, e)}
                         className="otp-input"
@@ -118,16 +134,15 @@ export default function OtpPage() {
                   </IonText>
                 )}
 
-                <p className="resend-text">
-                  N'avez-vous pas reçu le code OTP ?
-                </p>
+                {countdown > 0 ? (
+                  <p className="resend-text">Renvoyer le code dans {countdown} secondes</p>
+                ) : (
+                  <IonButton expand="block" onClick={handleResend} className="resend-button" disabled={isLoading}>
+                    Renvoyer le code OTP
+                  </IonButton>
+                )}
 
-                <IonButton
-                  expand="block"
-                  type="submit"
-                  className="login-button"
-                  disabled={isLoading}
-                >
+                <IonButton expand="block" type="submit" className="login-button" disabled={isLoading || countdown > 0}>
                   {isLoading ? "Vérification..." : "Confirmer"}
                 </IonButton>
               </form>
@@ -137,5 +152,6 @@ export default function OtpPage() {
         <div className="blurry-div"></div>
       </IonContent>
     </IonPage>
-  );
+  )
 }
+
