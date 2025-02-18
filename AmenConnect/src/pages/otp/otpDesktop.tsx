@@ -142,7 +142,7 @@ export default function OtpPage() {
                   </IonButton>
                 )}
 
-                <IonButton expand="block" type="submit" className="login-button" disabled={isLoading || countdown > 0}>
+                <IonButton expand="block" type="submit" className="login-button" disabled={isLoading}>
                   {isLoading ? "Vérification..." : "Confirmer"}
                 </IonButton>
               </form>
