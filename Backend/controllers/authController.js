@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 
-
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
   service: "gmail", // For production, consider using OAuth2 or another secure option
@@ -85,7 +84,6 @@ const generateAccountNumber = () => {
   return Math.floor(100000000 + Math.random() * 900000000).toString();
 };
 
-// Registration endpoint - creates a new user and an associated compte document
 // Available compte types with default values
 const compteTypes = {
   "Compte courant": {
@@ -104,7 +102,8 @@ const compteTypes = {
 
 // **Register New User and Create Accounts**
 exports.register = async (req, res) => {
-  const { cin, nom, prénom, email, téléphone, employeur, adresseEmployeur, password, comptes = ["Compte courant", "Compte épargne"] } = req.body;
+  // Note: expecting "prenom" and "telephone" now instead of "prénom" and "téléphone"
+  const { cin, nom, prenom, email, telephone, employeur, adresseEmployeur, password, comptes = ["Compte courant", "Compte épargne"] } = req.body;
 
   try {
     // Check if the user already exists
@@ -114,7 +113,7 @@ exports.register = async (req, res) => {
     }
 
     // Create and save the new user
-    user = new User({ cin, nom, prénom, email, téléphone, employeur, adresseEmployeur, password });
+    user = new User({ cin, nom, prenom, email, telephone, employeur, adresseEmployeur, password });
     await user.save();
     console.log("User saved:", user);
 
@@ -175,11 +174,8 @@ exports.addCompte = async (req, res) => {
   }
 };
 
-
-
 // Login route (if using Passport's local strategy, this may be handled elsewhere)
 exports.login = async (req, res) => {
-  // This route can be implemented here if needed.
   res.status(200).json({ message: "Login route" });
 };
 
@@ -192,11 +188,13 @@ exports.verifyOTP = async (req, res) => {
       return res.status(400).json({ message: "User not found." });
     }
 
-    if (!user.otpExpires || new Date() > user.otpExpires) {
+    // Check if OTP exists and is not expired
+    if (!user.otp || !user.otp.expires || new Date() > user.otp.expires) {
       return res.status(400).json({ message: "OTP has expired." });
     }
 
-    const isOTPMatch = await bcrypt.compare(otp, user.otp);
+    // Compare provided OTP with stored OTP hash
+    const isOTPMatch = await bcrypt.compare(otp, user.otp.hash);
     if (!isOTPMatch) {
       return res.status(400).json({ message: "Invalid OTP." });
     }
@@ -205,8 +203,7 @@ exports.verifyOTP = async (req, res) => {
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     // Clear OTP data from the user document
-    user.otp = null;
-    user.otpExpires = null;
+    user.otp = { hash: null, expires: null };
     await user.save();
 
     // Set the token as an HTTP-only cookie
@@ -219,7 +216,7 @@ exports.verifyOTP = async (req, res) => {
 
     res.json({
       message: "OTP verified successfully!",
-      user: { id: user._id, email: user.email, nom: user.nom, prénom: user.prénom },
+      user: { id: user._id, email: user.email, nom: user.nom, prenom: user.prenom },
     });
   } catch (err) {
     console.error("OTP verification error:", err);
@@ -239,8 +236,8 @@ exports.resendOTP = async (req, res) => {
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
     const otpHashed = await bcrypt.hash(otpPlain, 10);
 
-    user.otp = otpHashed;
-    user.otpExpires = otpExpires;
+    // Store OTP as an object with hash and expires properties
+    user.otp = { hash: otpHashed, expires: otpExpires };
     await user.save();
 
     try {

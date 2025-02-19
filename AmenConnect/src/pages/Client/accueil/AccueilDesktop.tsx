@@ -53,7 +53,7 @@ const AccueilDesktop: React.FC = () => {
   }
 
   // Derive user details from the Auth Context
-  const prenom = user?.prénom || "Utilisateur"
+  const prenom = user?.prenom || "Utilisateur"
   const nom = user?.nom || "Foulen"
 
   // Sample data for demonstration purposes
