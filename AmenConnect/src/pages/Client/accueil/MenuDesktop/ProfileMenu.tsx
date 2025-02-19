@@ -47,7 +47,7 @@ const ProfileMenu: React.FC = () => {
 
   const openProfileModal = () => {
     setIsProfileModalOpen(true)
-    setIsOpen(false) // Optionally close the menu
+    setIsOpen(false)
   }
 
   return (

@@ -65,8 +65,7 @@ export default function OtpPage() {
         { email: pendingUser!.email, otp },
         { withCredentials: true }
       );
-
-      // No need to store the token in sessionStorage since it's in an HTTP-only cookie
+      
       setIsAuthenticated(true);
       history.replace("/accueil");
     } catch (error: any) {

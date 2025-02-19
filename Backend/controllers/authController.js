@@ -129,15 +129,16 @@ exports.login = async (req, res) => {
       return res.status(500).json({ message: "Error sending OTP email. Please try again later." })
     }
 
+    // Only return a message, no user data here
     res.json({
-      message: "OTP sent successfully to your email! Please enter it to verify.",
-      user: { id: user._id, email: user.email, nom: user.nom, prénom: user.prénom },
+      message: "OTP sent successfully to your email! Please enter it to verify."
     })
   } catch (err) {
     console.error("Login error:", err)
     res.status(500).json({ message: "Server error." })
   }
 }
+
 
 exports.verifyOTP = async (req, res) => {
   const { email, otp } = req.body
@@ -170,8 +171,8 @@ exports.verifyOTP = async (req, res) => {
     // Set the JWT in an HTTP-only cookie
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true if in production (requires HTTPS)
-      maxAge: 3600000, // 1 hour in milliseconds
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 3600000, // 1 hour
       sameSite: 'strict',
     })
 
@@ -184,6 +185,7 @@ exports.verifyOTP = async (req, res) => {
     res.status(500).json({ message: "Server error." })
   }
 }
+
 
 exports.resendOTP = async (req, res) => {
   const { email } = req.body
@@ -214,16 +216,16 @@ exports.resendOTP = async (req, res) => {
       return res.status(500).json({ message: "Error sending OTP email. Please try again later." })
     }
 
+    // Only return a message, no user data here
     res.json({
-      message: "New OTP sent successfully to your email!",
-      user: { id: user._id, email: user.email, nom: user.nom, prénom: user.prénom },
+      message: "New OTP sent successfully to your email!"
     })
   } catch (err) {
     console.error("Resend OTP error:", err)
     res.status(500).json({ message: "Server error." })
   }
-  
 }
+
 exports.logout = async (req, res) => {
   try {
     res.clearCookie("token", {

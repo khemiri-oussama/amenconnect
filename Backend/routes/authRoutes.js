@@ -88,7 +88,7 @@ router.get('/profile', verifyToken, (req, res) => {
     user: {
       id: req.user.id,
       email: req.user.email,
-      // Include other user details as needed
+      
     },
   });
 });
