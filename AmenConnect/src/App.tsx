@@ -17,7 +17,6 @@ import ChatBot from './pages/Client/chatBot/chatBot';
 import Virement from './pages/Client/virement/virement';
 import ProfileMobile from './pages/Client/accueil/MenuMobile/ProfileMobile';
 import SecuritySettingsMobile from './pages/Client/accueil/MenuMobile/SecuritySettingsMobile';
-import ProfileD from "./pages/Client/accueil/MenuDesktop/profileD" //
 // Admin routes
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import UserManagement from './pages/Admin/Gestion Utilisateur/UserManagement';
@@ -73,7 +72,6 @@ const AppContent: React.FC = () => {
         <PrivateRoute exact path="/virement" component={Virement} isAuthenticated={isAuthenticated} />
         <PrivateRoute exact path="/profile" component={ProfileMobile} isAuthenticated={isAuthenticated} />
         <PrivateRoute exact path="/SecuritySettingsMobile" component={SecuritySettingsMobile} isAuthenticated={isAuthenticated} />
-        <PrivateRoute exact path="/profileD" component={ProfileD} isAuthenticated={isAuthenticated} />
         <PrivateRoute path="/Dashboard" component={Dashboard} isAuthenticated={isAuthenticated} />
         <PrivateRoute path="/UserManagement" component={UserManagement} isAuthenticated={isAuthenticated} />
         <PrivateRoute path="/SurveillanceMonitoring" component={SurveillanceMonitoring} isAuthenticated={isAuthenticated} />

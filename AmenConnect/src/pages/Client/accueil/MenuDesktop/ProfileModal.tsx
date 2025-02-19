@@ -39,7 +39,6 @@ interface UserInfo {
   location: string
   occupation: string
   education: string
-  bio: string
 }
 
 interface ProfileModalProps {
@@ -58,7 +57,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     location: "Paris, France",
     occupation: "Développeur Full Stack",
     education: "Master en Informatique, Université de Paris",
-    bio: "Passionné par le développement web et les nouvelles technologies. J'aime créer des applications innovantes qui améliorent la vie des gens.",
   })
 
   useEffect(() => {
@@ -75,12 +73,18 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
 
   const handleAvatarChange = () => {
     // Implement avatar change functionality here
+    console.log("Avatar change functionality to be implemented")
+  }
+
+  const handleEditProfile = () => {
+    // Implement edit profile functionality here
+    console.log("Edit profile functionality to be implemented")
   }
 
   return (
     <IonModal isOpen={isOpen} onDidDismiss={onClose} className="profileD-modal">
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar color="dark">
           <IonTitle>Profil Utilisateur</IonTitle>
           <IonButtons slot="end">
             <IonButton onClick={onClose}>
@@ -89,7 +93,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="ion-padding">
+      <IonContent className="ion-padding" color="dark">
         <div className="profileD-content">
           <div className="profileD-avatar-section">
             <div className="profileD-avatar-container">
@@ -98,71 +102,70 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                 <IonIcon icon={cameraOutline} />
               </IonButton>
             </div>
-            <h2 className="profileD-user-name">{`${userInfo.prénom} ${userInfo.nom}`}</h2>
-            <p className="profileD-user-occupation">{userInfo.occupation}</p>
+            <div className="profileD-user-info">
+              <h2 className="profileD-user-name">{`${userInfo.prénom} ${userInfo.nom}`}</h2>
+              <p className="profileD-user-occupation">{userInfo.occupation}</p>
+            </div>
           </div>
 
-          <div className="profileD-info-section">
-            <h3 className="profileD-section-title">Informations personnelles</h3>
-            <IonList className="profileD-info-list">
-              <IonItem>
-                <IonIcon icon={personOutline} slot="start" />
-                <IonLabel>
-                  <h2>Nom complet</h2>
-                  <p>{`${userInfo.prénom} ${userInfo.nom}`}</p>
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonIcon icon={mailOutline} slot="start" />
-                <IonLabel>
-                  <h2>Email</h2>
-                  <p>{userInfo.email}</p>
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonIcon icon={callOutline} slot="start" />
-                <IonLabel>
-                  <h2>Numéro de téléphone</h2>
-                  <p>{userInfo.phoneNumber}</p>
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonIcon icon={calendarOutline} slot="start" />
-                <IonLabel>
-                  <h2>Date de naissance</h2>
-                  <p>{userInfo.dateOfBirth}</p>
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonIcon icon={locationOutline} slot="start" />
-                <IonLabel>
-                  <h2>Localisation</h2>
-                  <p>{userInfo.location}</p>
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonIcon icon={briefcaseOutline} slot="start" />
-                <IonLabel>
-                  <h2>Profession</h2>
-                  <p>{userInfo.occupation}</p>
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonIcon icon={schoolOutline} slot="start" />
-                <IonLabel>
-                  <h2>Formation</h2>
-                  <p>{userInfo.education}</p>
-                </IonLabel>
-              </IonItem>
-            </IonList>
+          <div className="profileD-main-content">
+            <div className="profileD-info-section">
+              <h3 className="profileD-section-title">Informations personnelles</h3>
+              <IonList className="profileD-info-list">
+                <IonItem>
+                  <IonIcon icon={personOutline} slot="start" color="primary" />
+                  <IonLabel>
+                    <h2>Nom complet</h2>
+                    <p>{`${userInfo.prénom} ${userInfo.nom}`}</p>
+                  </IonLabel>
+                </IonItem>
+                <IonItem>
+                  <IonIcon icon={mailOutline} slot="start" color="primary" />
+                  <IonLabel>
+                    <h2>Email</h2>
+                    <p>{userInfo.email}</p>
+                  </IonLabel>
+                </IonItem>
+                <IonItem>
+                  <IonIcon icon={callOutline} slot="start" color="primary" />
+                  <IonLabel>
+                    <h2>Numéro de téléphone</h2>
+                    <p>{userInfo.phoneNumber}</p>
+                  </IonLabel>
+                </IonItem>
+                <IonItem>
+                  <IonIcon icon={calendarOutline} slot="start" color="primary" />
+                  <IonLabel>
+                    <h2>Date de naissance</h2>
+                    <p>{userInfo.dateOfBirth}</p>
+                  </IonLabel>
+                </IonItem>
+                <IonItem>
+                  <IonIcon icon={locationOutline} slot="start" color="primary" />
+                  <IonLabel>
+                    <h2>Localisation</h2>
+                    <p>{userInfo.location}</p>
+                  </IonLabel>
+                </IonItem>
+                <IonItem>
+                  <IonIcon icon={briefcaseOutline} slot="start" color="primary" />
+                  <IonLabel>
+                    <h2>Profession</h2>
+                    <p>{userInfo.occupation}</p>
+                  </IonLabel>
+                </IonItem>
+                <IonItem>
+                  <IonIcon icon={schoolOutline} slot="start" color="primary" />
+                  <IonLabel>
+                    <h2>Formation</h2>
+                    <p>{userInfo.education}</p>
+                  </IonLabel>
+                </IonItem>
+              </IonList>
+            </div>
           </div>
 
-          <div className="profileD-bio-section">
-            <h3 className="profileD-section-title">Biographie</h3>
-            <p className="profileD-bio-text">{userInfo.bio}</p>
-          </div>
-
-          <IonButton expand="block" className="profileD-edit-button">
+          <IonButton expand="block" className="profileD-edit-button" onClick={handleEditProfile}>
             <IonIcon slot="start" icon={pencilOutline} />
             Modifier le profil
           </IonButton>
