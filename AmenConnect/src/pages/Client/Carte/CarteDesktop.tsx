@@ -1,5 +1,5 @@
 "use client"
-
+import Profile from "../accueil/MenuDesktop/ProfileMenu"
 import type React from "react"
 import { useState } from "react"
 import {
@@ -118,6 +118,7 @@ const CarteDesktop: React.FC = () => {
 
       <IonContent className="carte-desktop__content">
         <div className="carte-desktop__layout">
+        <div className="ProfileVir"><Profile/></div>
           <div className="carte-desktop__left-panel">
             <IonCard className="carte-desktop__credit-card">
               <IonCardContent>

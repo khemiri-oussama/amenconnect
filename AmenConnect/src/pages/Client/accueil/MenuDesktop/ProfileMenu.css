@@ -77,12 +77,12 @@
   justify-content: space-between;
 }
 
-.dark-mode-switch {
+/*.dark-mode-switch {
   --background: var(--color-card-bg);
   --background-checked: var(--color-link);
   --handle-background: var(--color-text);
   --handle-background-checked: var(--color-text);
-}
+}*/
 
 .logout-item {
   color: var(--color-negative);
