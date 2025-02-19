@@ -1,7 +1,6 @@
 // PrivateRoute.tsx
 import React from "react";
 import { Route, Redirect, RouteProps } from "react-router-dom";
-
 import { useAuth } from "./AuthContext";
 
 interface PrivateRouteProps extends RouteProps {
@@ -10,7 +9,7 @@ interface PrivateRouteProps extends RouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, ...rest }) => {
-  const { isAuthenticated, pendingUser, authLoading } = useAuth();
+  const { isAuthenticated, user, authLoading } = useAuth();
 
   if (authLoading) {
     return <div>Loading...</div>;
@@ -20,11 +19,10 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, ...re
     <Route
       {...rest}
       render={(props) => {
-        if (!isAuthenticated && !pendingUser) {
+        if (!isAuthenticated && !user) {
           console.log("Redirecting to login");
           return <Redirect to="/login" />;
         }
-
         return <Component {...props} />;
       }}
     />

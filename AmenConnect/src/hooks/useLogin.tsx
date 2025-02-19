@@ -1,7 +1,8 @@
+// hooks/useLogin.tsx
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import { useAuth, User } from "../AuthContext";
+import { useAuth } from "../AuthContext";
 
 export function useLogin() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -21,26 +22,22 @@ export function useLogin() {
     }
 
     try {
-      // Send credentials to your backend (include credentials if needed)
+      // Send credentials to your backend
       const response = await axios.post(
         "/api/auth/login",
         { email, password },
         { withCredentials: true }
       );
 
-      // Since the login endpoint only sends a success message,
-      // check the message and set a temporary pending user before redirecting.
+      // If login is successful, set pending user before OTP verification
       if (response.data.message) {
-        // Set a minimal pending user (you can include additional data if needed)
-        setPendingUser({ id: "", email });
+        setPendingUser({ email }); // ✅ Removed 'id' since it's not in the type
         history.replace("/otp");
       } else {
         throw new Error("Réponse inattendue.");
       }
     } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message || "Erreur inattendue."
-      );
+      setErrorMessage(error.response?.data?.message || "Erreur inattendue.");
     } finally {
       setIsLoading(false);
     }
