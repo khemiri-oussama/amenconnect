@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import Otp from './pages/otp/otp';
 import Login from './pages/Login/Login';
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
+import ResetPassword from './pages/ResetPassword/ResetPassword';
 import Accueil from './pages/Client/accueil/accueil';
 import Compte from './pages/Client/Compte/Compte';
 import Carte from './pages/Client/Carte/Carte';
@@ -57,6 +58,7 @@ const AppContent: React.FC = () => {
         <Route exact path="/home" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/ForgotPassword" component={ForgotPassword} />
+        <Route exact path="/ResetPassword" component={ResetPassword} />
                 {/* Conditionally render /otp route if pendingUser exists */}
         <Route
           exact

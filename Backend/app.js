@@ -24,7 +24,6 @@ app.use(cors({
 app.use('/api/auth', authRoutes);
 app.use('/api/password', forgotPassword);
 app.use('/api/ip', ipRoutes);
-
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
