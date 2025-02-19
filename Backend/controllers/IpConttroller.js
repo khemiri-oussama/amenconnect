@@ -8,7 +8,7 @@ const detectIP = (req, res, next) => {
   if (clientIP === "::1") clientIP = "127.0.0.1";
   if (clientIP.includes("::ffff:")) clientIP = clientIP.split("::ffff:")[1];
 
-  console.log("Client IP:", clientIP);
+ 
   req.clientIP = clientIP; // Store in request object
 
   next();

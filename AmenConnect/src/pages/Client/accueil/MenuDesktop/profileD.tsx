@@ -47,7 +47,7 @@ const ProfileD: React.FC<ProfileDProps> = ({ onClose }) => {
 
   const handleAvatarChange = () => {
     // Implement avatar change functionality here
-    console.log("Changing avatar...")
+    
   }
 
   return (
