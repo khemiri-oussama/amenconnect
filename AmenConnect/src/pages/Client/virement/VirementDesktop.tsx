@@ -47,7 +47,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion"
 import Navbar from "../../../components/Navbar"
 import "./VirementDesktop.css"
-
+import Profile from "../accueil/MenuDesktop/ProfileMenu"
 const VirementsDesktop: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<string>("dashboard")
 
@@ -158,6 +158,7 @@ const VirementsDesktop: React.FC = () => {
             <IonCardHeader>
               <IonCardTitle>Virement Rapide</IonCardTitle>
             </IonCardHeader>
+            
             <IonCardContent>
               <form className="quick-transfer-form">
                 <IonItem>
@@ -223,9 +224,10 @@ const VirementsDesktop: React.FC = () => {
           <Navbar currentPage="virements" />
         </IonToolbar>
       </IonHeader>
-
+      
       <IonContent className="ion-padding">
-        <div className="tab-buttons">
+      
+        <div className="tab-buttons" >
           <IonChip
             color={selectedTab === "dashboard" ? "primary" : "medium"}
             onClick={() => setSelectedTab("dashboard")}
@@ -244,6 +246,8 @@ const VirementsDesktop: React.FC = () => {
             <IonIcon icon={peopleOutline} />
             Gestion des Bénéficiaires
           </IonChip>
+          
+          <div className="ProfileV"><Profile/></div>
         </div>
 
         <AnimatePresence mode="wait">
@@ -260,6 +264,7 @@ const VirementsDesktop: React.FC = () => {
           </motion.div>
         </AnimatePresence>
       </IonContent>
+      
     </IonPage>
   )
 }

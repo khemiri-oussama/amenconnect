@@ -21,6 +21,7 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts"
 import Navbar from "../../../components/Navbar"
 import "./CompteDesktop.css"
+import Profile from "../accueil/MenuDesktop/ProfileMenu"
 
 const CompteDesktop: React.FC = () => {
   const chartData = [
@@ -45,8 +46,9 @@ const CompteDesktop: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding custom-content">
         <div className="compte-container">
-          <h1 className="page-title">Mes Comptes</h1>
-
+        
+          <h1 className="page-title">Mes Comptes </h1><div className="ProfileCom"><Profile/></div>
+          
           <div className="compte-grid">
             <IonCard className="compte-card">
               <IonCardHeader>Compte Epargne</IonCardHeader>
@@ -56,17 +58,6 @@ const CompteDesktop: React.FC = () => {
                 <div className="balance-change">
                   <IonIcon icon={trendingUpOutline} />
                   <span>+2.5% ce mois</span>
-                </div>
-              </IonCardContent>
-            </IonCard>
-            <IonCard className="compte-card">
-              <IonCardHeader>Compte Courant</IonCardHeader>
-              <IonCardContent>
-                <div className="balance">5,230.45 TND</div>
-                <div className="account-number">78945678987</div>
-                <div className="balance-change">
-                  <IonIcon icon={trendingUpOutline} />
-                  <span>+10.5% ce mois</span>
                 </div>
               </IonCardContent>
             </IonCard>

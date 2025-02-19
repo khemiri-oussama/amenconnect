@@ -450,7 +450,6 @@
 .budget-item:focus,
 .transaction-item:focus,
 .quick-action-button:focus {
-  outline: 2px solid var(--color-link);
   outline-offset: 2px;
 }
 
