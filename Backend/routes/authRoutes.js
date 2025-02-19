@@ -5,7 +5,7 @@ const { register, verifyOTP, resendOTP, logout } = require('../controllers/authC
 const rateLimit = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 const { generateOTP, sendOTPEmail } = require('../controllers/authController');
-
+const authController = require("../controllers/authController");
 const router = express.Router();
 
 // Rate limiters and request validator
@@ -130,5 +130,5 @@ router.get(
 
 // Logout route (protected)
 router.post("/logout", passport.authenticate('jwt', { session: false }), logout);
-
+router.post("/addCompte", authController.addCompte);
 module.exports = router;
