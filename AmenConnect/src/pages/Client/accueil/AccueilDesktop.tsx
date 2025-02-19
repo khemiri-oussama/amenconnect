@@ -1,7 +1,5 @@
 "use client"
-import { useEffect } from "react"
-import type React from "react"
-import { useState, useMemo } from "react"
+import React, { useState, useMemo } from "react"
 import { IonContent, IonHeader, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
 import {
   walletOutline,
@@ -21,6 +19,7 @@ import Navbar from "../../../components/Navbar"
 import "./AccueilDesktop.css"
 import { useHistory } from "react-router-dom"
 import Profile from "./MenuDesktop/ProfileMenu"
+import { useAuth } from "../../../AuthContext"
 
 interface Account {
   id: number
@@ -46,17 +45,29 @@ interface Transaction {
 
 const AccueilDesktop: React.FC = () => {
   const history = useHistory()
-  const [accounts, setAccounts] = useState<Account[]>([
+  const { user, authLoading } = useAuth()
+
+  // Show a loading state while authentication is being determined
+  if (authLoading) {
+    return <div>Loading...</div>
+  }
+
+  // Derive user details from the Auth Context
+  const prenom = user?.prénom || "Utilisateur"
+  const nom = user?.nom || "Foulen"
+
+  // Sample data for demonstration purposes
+  const [accounts] = useState<Account[]>([
     { id: 1, name: "Compte Courant", balance: 10230.45, type: "current" },
     { id: 2, name: "Compte Épargne", balance: 5000.0, type: "savings" },
   ])
 
-  const [cards, setCards] = useState<Card[]>([
+  const [cards] = useState<Card[]>([
     { id: 1, type: "Visa", number: "**** **** **** 1234", expiry: "12/25" },
     { id: 2, type: "Mastercard", number: "**** **** **** 5678", expiry: "06/24" },
   ])
 
-  const [budgetData, setBudgetData] = useState({
+  const [budgetData] = useState({
     food: { current: 450, max: 600 },
     transport: { current: 200, max: 300 },
     leisure: { current: 150, max: 200 },
@@ -64,14 +75,17 @@ const AccueilDesktop: React.FC = () => {
     utilities: { current: 180, max: 250 },
   })
 
-  const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([
+  const [recentTransactions] = useState<Transaction[]>([
     { id: 1, description: "Supermarché", amount: 85.5, date: "2025-01-20", type: "debit" },
     { id: 2, description: "Salaire", amount: 2500.0, date: "2025-01-15", type: "credit" },
     { id: 3, description: "Restaurant", amount: 45.0, date: "2025-01-18", type: "debit" },
     { id: 4, description: "Transport", amount: 30.0, date: "2025-01-17", type: "debit" },
   ])
 
-  const totalBalance = useMemo(() => accounts.reduce((sum, account) => sum + account.balance, 0), [accounts])
+  const totalBalance = useMemo(
+    () => accounts.reduce((sum, account) => sum + account.balance, 0),
+    [accounts]
+  )
 
   const chartData = [
     { name: "Jan", income: 4000, expenses: 2400 },
@@ -91,7 +105,7 @@ const AccueilDesktop: React.FC = () => {
     value: string,
     change: string,
     icon: string,
-    changeType: "positive" | "negative",
+    changeType: "positive" | "negative"
   ) => (
     <div className="stat-card">
       <div className="stat-icon">
@@ -107,24 +121,6 @@ const AccueilDesktop: React.FC = () => {
       </div>
     </div>
   )
-
-const [prenom, setPrenom] = useState<string>("")
-const [email,setEmail]=useState<string>("")
-const [nom,setNom]=useState<string>("")
-
-useEffect(() => {
-  const userData = sessionStorage.getItem("user")
-  if (userData) {
-    try {
-      const parsedData = JSON.parse(userData)
-      setPrenom(parsedData.prénom || "Utilisateur")
-      setNom(parsedData.nom || "Foulen")
-      setEmail(parsedData.email || "example@ex.com")
-    } catch (error) {
-      console.error("Erreur lors du parsing du localStorage:", error)
-    }
-  }
-}, [])
 
   return (
     <IonPage>
@@ -142,7 +138,7 @@ useEffect(() => {
               <IonButton fill="clear" className="notification-button">
                 <IonIcon slot="icon-only" icon={notificationsOutline} />
               </IonButton>
-              <Profile/>
+              <Profile />
             </div>
           </div>
 
@@ -152,16 +148,22 @@ useEffect(() => {
               `${totalBalance.toFixed(2)} TND`,
               "+2.5% depuis le mois dernier",
               walletOutline,
-              "positive",
+              "positive"
             )}
             {renderStatCard(
               "Dépenses du mois",
               "3,240.80 TND",
               "-1.8% depuis le mois dernier",
               pieChartOutline,
-              "negative",
+              "negative"
             )}
-            {renderStatCard("Économies", "2,180.25 TND", "+5.2% depuis le mois dernier", trendingUpOutline, "positive")}
+            {renderStatCard(
+              "Économies",
+              "2,180.25 TND",
+              "+5.2% depuis le mois dernier",
+              trendingUpOutline,
+              "positive"
+            )}
           </div>
 
           <div className="main-grid">
@@ -185,8 +187,6 @@ useEffect(() => {
                     </div>
                     <div className="account-details">
                       <div className="account-name">{account.name}</div>
-                      {//<div className="account-type">{account.type === "current" ? " Courant" : " Épargne"}</div>
-                      }
                     </div>
                     <div className="account-balance">{account.balance.toFixed(2)} TND</div>
                   </div>
@@ -223,13 +223,7 @@ useEffect(() => {
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <Tooltip />
                     <Area type="monotone" dataKey="income" stroke="#82ca9d" fillOpacity={1} fill="url(#colorIncome)" />
-                    <Area
-                      type="monotone"
-                      dataKey="expenses"
-                      stroke="#8884d8"
-                      fillOpacity={1}
-                      fill="url(#colorExpenses)"
-                    />
+                    <Area type="monotone" dataKey="expenses" stroke="#8884d8" fillOpacity={1} fill="url(#colorExpenses)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -241,8 +235,8 @@ useEffect(() => {
                   <IonIcon icon={cardOutline} />
                   Cartes
                 </h2>
-                <a href="../Carte" className="section-link">
-                  <IonIcon icon={settingsOutline} onClick={() => history.push("/carte")} />
+                <a href="#" className="section-link" onClick={() => history.push("/carte")}>
+                  <IonIcon icon={settingsOutline} />
                   Gérer les cartes
                 </a>
               </div>
@@ -379,4 +373,3 @@ useEffect(() => {
 }
 
 export default AccueilDesktop
-
