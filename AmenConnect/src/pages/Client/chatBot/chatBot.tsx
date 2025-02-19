@@ -26,11 +26,6 @@ const ChatBot: React.FC = () => {
   // Detect if it's a borne interactive (not mobile, portrait, and touch screen)
   const isBorneInteractive = !isMobile && isPortrait && isTouchable
 
-  // Debugging: Log detection values
-  console.log("isMobile:", isMobile)
-  console.log("isPortrait:", isPortrait)
-  console.log("isTouchable:", isTouchable)
-  console.log("isBorneInteractive:", isBorneInteractive)
 
   return (
     <>
