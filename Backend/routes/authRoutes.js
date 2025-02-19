@@ -29,24 +29,32 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-// Registration route (unchanged)
+// Updated Registration route
 router.post(
   '/register',
   [
     body('cin').notEmpty().withMessage('CIN is required.'),
     body('nom').notEmpty().withMessage('Nom is required.'),
-    body('prénom').notEmpty().withMessage('Prénom is required.'),
+    body('prenom').notEmpty().withMessage('Prenom is required.'), // updated field name
     body('email').isEmail().withMessage('Valid email is required.'),
-    body('téléphone').notEmpty().withMessage('Téléphone is required.'),
+    body('telephone').notEmpty().withMessage('Telephone is required.'), // updated field name
     body('employeur').notEmpty().withMessage('Employeur is required.'),
     body('adresseEmployeur').notEmpty().withMessage('Adresse de l’employeur is required.'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters.')
   ],
   validateRequest,
-  register
+  async (req, res, next) => {
+    // Call the register controller and then include all user data in the response.
+    try {
+      // The register controller now returns the full user object without sensitive fields.
+      await register(req, res);
+    } catch (err) {
+      next(err);
+    }
+  }
 );
 
-// Login route using Passport Local Strategy
+// Login route using Passport Local Strategy with OTP generation
 router.post(
   '/login',
   loginLimiter,
@@ -68,8 +76,8 @@ router.post(
 
       try {
         const otpHashed = await bcrypt.hash(otpPlain, 10);
-        user.otp = otpHashed;
-        user.otpExpires = otpExpires;
+        // Store OTP as an object with hash and expires properties
+        user.otp = { hash: otpHashed, expires: otpExpires };
         await user.save();
 
         try {
@@ -89,7 +97,7 @@ router.post(
   }
 );
 
-// Verify OTP route (unchanged)
+// Verify OTP route
 router.post(
   '/verify-otp',
   verifyOTPLimiter,
@@ -98,10 +106,17 @@ router.post(
     body('otp').notEmpty().withMessage('OTP is required.')
   ],
   validateRequest,
-  verifyOTP
+  async (req, res, next) => {
+    try {
+      // Call verifyOTP controller which now returns the full user data
+      await verifyOTP(req, res);
+    } catch (err) {
+      next(err);
+    }
+  }
 );
 
-// Resend OTP route (unchanged)
+// Resend OTP route remains unchanged
 router.post(
   '/resend-otp',
   verifyOTPLimiter,
@@ -112,23 +127,26 @@ router.post(
   resendOTP
 );
 
-// Protected endpoint: get user profile using Passport JWT Strategy
+// Protected endpoint: get full user profile using Passport JWT Strategy
 router.get(
   '/profile',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
+    // Convert Mongoose document to plain object and remove sensitive fields.
+    const safeUser = req.user.toObject();
+    delete safeUser.password;
+    delete safeUser.otp;
+    delete safeUser.resetPasswordToken;
     res.json({
-      user: {
-        id: req.user._id,
-        email: req.user.email,
-        nom: req.user.nom,
-        prénom: req.user.prénom,
-      },
+      user: safeUser,
     });
   }
 );
 
 // Logout route (protected)
 router.post("/logout", passport.authenticate('jwt', { session: false }), logout);
+
+// Route for adding a new compte
 router.post("/addCompte", authController.addCompte);
+
 module.exports = router;

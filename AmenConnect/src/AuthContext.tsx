@@ -5,7 +5,7 @@ export interface User {
   id: string;
   email: string;
   nom: string;
-  prénom: string;
+  prenom: string;
 }
 
 interface AuthContextType {
