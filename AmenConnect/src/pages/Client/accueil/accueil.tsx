@@ -25,11 +25,6 @@ const Accueil: React.FC = () => {
   // Detect if it's a borne interactive (not mobile, portrait, and touch screen)
   const isBorneInteractive = !isMobile && isPortrait && isTouchable
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 77dc080ae68c14a6819921e7d45931e8b1dc002a
   return (
     <>
       {isMobile ? (
