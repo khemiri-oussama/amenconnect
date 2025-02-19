@@ -43,13 +43,13 @@ const ProfileMobile: React.FC = () => {
   }, []);
 
   const handleChange = (field: string, value: string | boolean) => {
-    console.log("Saving user info:");
+    
     // You can update the state here if needed
   };
 
   const handleSave = () => {
     // Here you would typically send the updated info to your backend
-    console.log("Saving user info:");
+    
     setIsEditing(false);
   };
 

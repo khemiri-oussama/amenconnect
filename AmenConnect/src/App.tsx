@@ -48,7 +48,6 @@ const AppContent: React.FC = () => {
   const { isAuthenticated, pendingUser } = useAuth();
 
   useEffect(() => {
-    console.log("🔄 Authentication state changed:", isAuthenticated);
   }, [isAuthenticated]);
 
   return (
