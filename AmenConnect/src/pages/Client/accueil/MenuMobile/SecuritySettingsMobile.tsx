@@ -51,7 +51,7 @@ const SecuritySettingsMobile: React.FC = () => {
   };
 
   const handleSavePassword = () => {
-    console.log("Saving new password:", passwordForm);
+    
     setIsChangingPassword(false);
     setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
   };
