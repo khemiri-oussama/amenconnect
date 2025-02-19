@@ -1,15 +1,16 @@
-// routes/authRoutes.js
 const express = require('express');
+const passport = require('passport');
 const { body, validationResult } = require('express-validator');
-const { login, register, verifyOTP, resendOTP, logout } = require('../controllers/authController');
-const verifyToken = require('../middleware/auth');
+const { register, verifyOTP, resendOTP, logout } = require('../controllers/authController');
 const rateLimit = require('express-rate-limit');
+const bcrypt = require('bcryptjs');
+const { generateOTP, sendOTPEmail } = require('../controllers/authController');
 
 const router = express.Router();
 
-// Rate limiters
+// Rate limiters and request validator
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 10,
   message: 'Too many login attempts from this IP, please try again later.'
 });
@@ -20,7 +21,6 @@ const verifyOTPLimiter = rateLimit({
   message: 'Too many OTP verification attempts, please try again later.'
 });
 
-// Validation error handler middleware
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -29,7 +29,7 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-// Register route validations
+// Registration route (unchanged)
 router.post(
   '/register',
   [
@@ -46,7 +46,7 @@ router.post(
   register
 );
 
-// Login route validations
+// Login route using Passport Local Strategy
 router.post(
   '/login',
   loginLimiter,
@@ -55,10 +55,41 @@ router.post(
     body('password').notEmpty().withMessage('Password is required.')
   ],
   validateRequest,
-  login
+  (req, res, next) => {
+    passport.authenticate('local', async (err, user, info) => {
+      if (err) return next(err);
+      if (!user) {
+        return res.status(400).json({ message: info.message || 'Invalid credentials.' });
+      }
+
+      // Generate OTP upon successful authentication
+      const otpPlain = generateOTP();
+      const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+      try {
+        const otpHashed = await bcrypt.hash(otpPlain, 10);
+        user.otp = otpHashed;
+        user.otpExpires = otpExpires;
+        await user.save();
+
+        try {
+          await sendOTPEmail(user.email, otpPlain);
+        } catch (emailError) {
+          console.error("Error sending OTP email:", emailError);
+          return res.status(500).json({ message: "Error sending OTP email. Please try again later." });
+        }
+
+        return res.json({
+          message: "OTP sent successfully to your email! Please enter it to verify."
+        });
+      } catch (err) {
+        return next(err);
+      }
+    })(req, res, next);
+  }
 );
 
-// Verify OTP route validations
+// Verify OTP route (unchanged)
 router.post(
   '/verify-otp',
   verifyOTPLimiter,
@@ -70,7 +101,7 @@ router.post(
   verifyOTP
 );
 
-// Resend OTP route validations
+// Resend OTP route (unchanged)
 router.post(
   '/resend-otp',
   verifyOTPLimiter,
@@ -81,16 +112,23 @@ router.post(
   resendOTP
 );
 
+// Protected endpoint: get user profile using Passport JWT Strategy
+router.get(
+  '/profile',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    res.json({
+      user: {
+        id: req.user._id,
+        email: req.user.email,
+        nom: req.user.nom,
+        prénom: req.user.prénom,
+      },
+    });
+  }
+);
 
-// Protected endpoint: get user profile from token
-router.get('/profile', verifyToken, (req, res) => {
-  res.json({
-    user: {
-      id: req.user.id,
-      email: req.user.email,
-      
-    },
-  });
-});
-router.post("/logout", verifyToken, logout);
+// Logout route (protected)
+router.post("/logout", passport.authenticate('jwt', { session: false }), logout);
+
 module.exports = router;

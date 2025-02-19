@@ -1,13 +1,16 @@
-// app.js
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 require('dotenv').config();
+const cookieParser = require('cookie-parser');
 
+// Import routes
 const authRoutes = require('./routes/authRoutes');
 const ipRoutes = require('./routes/ipRoutes');
 const forgotPassword = require('./routes/forgotPasswordRoutes');
-const cookieParser = require('cookie-parser');
+
+// Import and initialize Passport
+const passport = require('./config/passport');
 
 const app = express();
 
@@ -20,10 +23,14 @@ app.use(cors({
   credentials: true,
 }));
 
+// Initialize Passport (we're not using sessions with JWT)
+app.use(passport.initialize());
+
 // Mount routes
 app.use('/api/auth', authRoutes);
 app.use('/api/password', forgotPassword);
 app.use('/api/ip', ipRoutes);
+
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
