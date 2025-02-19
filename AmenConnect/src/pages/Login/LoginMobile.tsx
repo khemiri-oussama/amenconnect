@@ -33,7 +33,7 @@ const LoginMobile: React.FC = () => {
 
     try {
       const response = await axios.post("/api/auth/login", { email, password })
-      console.log("Login response:", response.data)
+
 
       const user = response.data.user
       if (!user) throw new Error("No user data returned from API")
@@ -41,7 +41,7 @@ const LoginMobile: React.FC = () => {
       localStorage.setItem("user", JSON.stringify(user))
       setIsAuthenticated(true)
 
-      console.log("Redirecting to /otp with user:", user)
+
       history.push("/otp", { user })
     } catch (error: any) {
       console.error("Login error:", error)
