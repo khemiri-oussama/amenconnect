@@ -46,7 +46,6 @@ const AppContent: React.FC = () => {
   const { isAuthenticated, pendingUser } = useAuth();
 
   useEffect(() => {
-    // Optionally, add any additional side-effects when isAuthenticated changes
   }, [isAuthenticated]);
 
   return (
@@ -59,7 +58,6 @@ const AppContent: React.FC = () => {
         <Route exact path="/ResetPassword" component={ResetPassword} />
         {/* Render OTP page only if a user exists (i.e. after login/OTP step) */}
         <Route exact path="/otp" render={(props) => pendingUser ? <Otp {...props} /> : <Redirect to="/login" /> }/>
-
 
         {/* Protected routes */}
         <PrivateRoute exact path="/accueil" component={Accueil} isAuthenticated={isAuthenticated} />
