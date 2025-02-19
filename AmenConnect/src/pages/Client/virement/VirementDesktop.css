@@ -326,7 +326,7 @@ ion-card-content {
 
 /* Focus styles */
 :focus {
-  outline: 2px solid #2eb851;
+  
   outline-offset: 2px;
 }
 
@@ -348,3 +348,18 @@ ion-card-content {
   background: rgba(135, 135, 135, 0.5);
 }
 
+.ProfileV{
+  margin-left: 1320px;
+  position: absolute;
+  margin-top: -4px;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}

@@ -35,9 +35,10 @@
   color: #cccccc;
 }
 
+
 /* Active page styling */
 .navbar-link.active {
-  color: #47ce65; /* Highlight color */
+  color: #e7e5e5; /* Highlight color */
   font-weight: bold;
   border-bottom: 2px solid #47ce65;
 }
