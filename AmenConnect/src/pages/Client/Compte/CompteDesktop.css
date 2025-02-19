@@ -42,8 +42,8 @@
 }
 
 .compte-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
 }
 
@@ -78,18 +78,6 @@ ion-card-content {
 /* Compte Card */
 .compte-card {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0.25) 100%);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.compte-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
-}
-
-.compte-card.active {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0.35) 100%);
-  border: 2px solid rgba(99, 102, 241, 0.5);
 }
 
 .balance {
@@ -121,7 +109,8 @@ ion-card-content {
 
 /* Chart Card */
 .chart-card {
-  grid-column: 1;
+  grid-column: 2;
+  grid-row: 1 / span 2;
 }
 
 .chart-container {
@@ -227,30 +216,6 @@ ion-card-content {
   padding: 6px 10px;
 }
 
-/* Compte Selector */
-.compte-selector {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.compte-selector-item {
-  background: rgba(255, 255, 255, 0.07);
-  padding: 12px 20px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.compte-selector-item:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.compte-selector-item.active {
-  background: rgba(99, 102, 241, 0.25);
-  font-weight: 600;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .compte-grid {
@@ -293,44 +258,20 @@ ion-card-content {
   }
 }
 
-/* Compte Selector Dropdown */
-.compte-selector {
-  margin-bottom: 24px;
-  width: 100%;
-  max-width: 300px;
-  position: relative;
-}
 
-.compte-selector select {
-  appearance: none;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  color: #fff;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 12px 20px;
-  width: 100%;
-  transition: all 0.3s ease;
-}
 
-.compte-selector select:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.compte-selector select:focus {
-  outline: none;
-  border-color: rgba(99, 102, 241, 0.5);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
-}
-
-.compte-selector::after {
-  content: "\25BC";
+.ProfileCom {
+  margin-left: 1320px;
   position: absolute;
-  top: 50%;
-  right: 15px;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: rgba(255, 255, 255, 0.5);
+  margin-top: -75px;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
 }
-
