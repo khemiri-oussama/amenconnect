@@ -30,6 +30,7 @@ app.use(passport.initialize());
 app.use('/api/auth', authRoutes);
 app.use('/api/password', forgotPassword);
 app.use('/api/ip', ipRoutes);
+app.use('/auth', require('./routes/authRoutes'));
 
 // Centralized error handling middleware
 app.use((err, req, res, next) => {

@@ -26,28 +26,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [pendingUser, setPendingUser] = useState<{ email: string } | null>(null);
   const [authLoading, setAuthLoading] = useState<boolean>(true);
 
-  // Check authentication on component mount by calling your profile API
-  useEffect(() => {
-    axios
-      .get("/api/auth/profile", { withCredentials: true })
-      .then((response) => {
-        if (response.data.user) {
-          setIsAuthenticated(true);
-          setUser(response.data.user);
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-        }
-      })
-      .catch((error) => {
-        console.error("Auth check failed:", error);
+
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const response = await axios.get("/api/auth/profile", { withCredentials: true });
+      if (response.data.user) {
+        setIsAuthenticated(true);
+        setUser(response.data.user);
+      } else {
         setIsAuthenticated(false);
         setUser(null);
-      })
-      .finally(() => {
-        setAuthLoading(false);
-      });
-  }, []);
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error);
+      setIsAuthenticated(false);
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  fetchProfile();
+}, [isAuthenticated]); // Add isAuthenticated as a dependency
+
+
+
 
   return (
     <AuthContext.Provider
