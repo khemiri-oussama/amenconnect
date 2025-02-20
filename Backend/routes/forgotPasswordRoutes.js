@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Forgot password route
 router.post(
-  "/forgot-password",
+"/forgot-password",
   [body("cin").isLength({ min: 8, max: 8 }).withMessage("CIN must be 8 digits.")],
   async (req, res) => {
     const errors = validationResult(req);
