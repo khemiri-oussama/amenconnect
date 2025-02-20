@@ -1,7 +1,7 @@
+//controllers/forgotPasswordController.js
 const User = require("../models/User")
 const crypto = require("crypto")
 const nodemailer = require("nodemailer")
-const bcrypt = require("bcryptjs")
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -64,13 +64,14 @@ exports.forgotPassword = async (req, res) => {
       return res.status(404).json({ message: "Utilisateur avec ce CIN non trouvé." })
     }
 
-    // Generate a unique token and set expiration time
+    // Generate and store token with expiration
     const resetToken = crypto.randomBytes(32).toString("hex")
-    const resetExpires = Date.now() + 3600000 // Token expires in 1 hour
+    const resetExpires = Date.now() + 3600000 // 1 hour
 
-    // Store token and expiration in database
-    user.resetPasswordToken = resetToken
-    user.resetPasswordExpires = resetExpires
+    user.resetPasswordToken = {
+      hash: resetToken,
+      expires: new Date(resetExpires)
+    }
     await user.save()
 
     // Create reset link
@@ -96,18 +97,20 @@ exports.resetPassword = async (req, res) => {
   const { token, newPassword } = req.body
   try {
     const user = await User.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }, // Ensure token is still valid
+      "resetPasswordToken.hash": token,
+      "resetPasswordToken.expires": { $gt: new Date() }
     })
 
     if (!user) {
       return res.status(400).json({ message: "Jeton invalide ou expiré." })
     }
 
-    // Assign the plain text password; the pre-save hook will hash it once
+    // Update password and clear reset token
     user.password = newPassword
-    user.resetPasswordToken = null
-    user.resetPasswordExpires = null
+    user.resetPasswordToken = {
+      hash: null,
+      expires: null
+    }
     await user.save()
 
     res.json({ message: "Mot de passe réinitialisé avec succès." })
@@ -116,4 +119,3 @@ exports.resetPassword = async (req, res) => {
     res.status(500).json({ message: "Erreur du serveur." })
   }
 }
-
