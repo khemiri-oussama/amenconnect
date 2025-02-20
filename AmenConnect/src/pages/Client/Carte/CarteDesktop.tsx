@@ -1,7 +1,7 @@
 "use client"
 import Profile from "../accueil/MenuDesktop/ProfileMenu"
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   IonPage,
   IonHeader,
@@ -19,6 +19,8 @@ import {
   IonLabel,
   IonAvatar,
   IonChip,
+  IonImg,
+  IonSpinner,
 } from "@ionic/react"
 import {
   shieldOutline,
@@ -28,7 +30,10 @@ import {
   trendingUpOutline,
   pieChartOutline,
   walletOutline,
+  eyeOutline,
+  eyeOffOutline,
 } from "ionicons/icons"
+import { color, motion } from "framer-motion"
 import "./CarteDesktop.css"
 import Navbar from "../../../components/Navbar"
 
@@ -42,64 +47,152 @@ interface Transaction {
   icon: string
 }
 
-const mockTransactions: Transaction[] = [
-  {
-    id: "1",
-    date: "09 févr. 2024",
-    merchant: "Carrefour Market",
-    amount: 156.7,
-    type: "debit",
-    category: "Courses",
-    icon: "🛒",
-  },
-  {
-    id: "2",
-    date: "08 févr. 2024",
-    merchant: "Virement Reçu - Salaire",
-    amount: 3500.0,
-    type: "credit",
-    category: "Revenus",
-    icon: "💰",
-  },
-  {
-    id: "3",
-    date: "07 févr. 2024",
-    merchant: "Restaurant Le Petit Jardin",
-    amount: 89.5,
-    type: "debit",
-    category: "Restauration",
-    icon: "🍽️",
-  },
-  {
-    id: "4",
-    date: "07 févr. 2024",
-    merchant: "SNCF",
-    amount: 45.0,
-    type: "debit",
-    category: "Transport",
-    icon: "🚂",
-  },
-  {
-    id: "5",
-    date: "06 févr. 2024",
-    merchant: "Netflix",
-    amount: 15.99,
-    type: "debit",
-    category: "Divertissement",
-    icon: "🎬",
-  },
-]
+interface SpendingCategory {
+  name: string
+  amount: number
+  color: string
+  percentage: number
+}
 
-const spendingCategories = [
-  { name: "Courses", amount: 450.7, color: "#FF6B6B", percentage: 35 },
-  { name: "Restauration", amount: 289.5, color: "#4ECDC4", percentage: 25 },
-  { name: "Transport", amount: 145.0, color: "#45B7D1", percentage: 20 },
-  { name: "Divertissement", amount: 115.99, color: "#96CEB4", percentage: 20 },
-]
+interface CardDetails {
+  cardNumber: string
+  cardHolder: string
+  expiryDate: string
+  cardType: string
+  balance: number
+  pendingTransactions: number
+  monthlySpendingLimit: number
+  monthlySpending: number
+  withdrawalLimit: number
+  withdrawalAmount: number
+}
+
+const mockFetchCardDetails = (): Promise<CardDetails> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        cardNumber: "1234 5678 9012 3456",
+        cardHolder: "Foulen ben foulen",
+        expiryDate: "01/28",
+        cardType: "EL AMEN WHITE EMV",
+        balance: 4521.8,
+        pendingTransactions: 245.3,
+        monthlySpendingLimit: 5000,
+        monthlySpending: 3450,
+        withdrawalLimit: 1000,
+        withdrawalAmount: 400,
+      })
+    }, 1000)
+  })
+}
+
+const mockFetchTransactions = (): Promise<Transaction[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: "1",
+          date: "09 févr. 2024",
+          merchant: "Carrefour Market",
+          amount: 156.7,
+          type: "debit",
+          category: "Courses",
+          icon: "🛒",
+        },
+        {
+          id: "2",
+          date: "08 févr. 2024",
+          merchant: "Virement Reçu - Salaire",
+          amount: 3500.0,
+          type: "credit",
+          category: "Revenus",
+          icon: "💰",
+        },
+        {
+          id: "3",
+          date: "07 févr. 2024",
+          merchant: "Restaurant Le Petit Jardin",
+          amount: 89.5,
+          type: "debit",
+          category: "Restauration",
+          icon: "🍽️",
+        },
+        {
+          id: "4",
+          date: "07 févr. 2024",
+          merchant: "SNCF",
+          amount: 45.0,
+          type: "debit",
+          category: "Transport",
+          icon: "🚂",
+        },
+        {
+          id: "5",
+          date: "06 févr. 2024",
+          merchant: "Netflix",
+          amount: 15.99,
+          type: "debit",
+          category: "Divertissement",
+          icon: "🎬",
+        },
+      ])
+    }, 1000)
+  })
+}
+
+const mockFetchSpendingCategories = (): Promise<SpendingCategory[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        { name: "Courses", amount: 450.7, color: "#FF6B6B", percentage: 35 },
+        { name: "Restauration", amount: 289.5, color: "#4ECDC4", percentage: 25 },
+        { name: "Transport", amount: 145.0, color: "#45B7D1", percentage: 20 },
+        { name: "Divertissement", amount: 115.99, color: "#96CEB4", percentage: 20 },
+      ])
+    }, 1000)
+  })
+}
 
 const CarteDesktop: React.FC = () => {
   const [activeTab, setActiveTab] = useState("operations")
   const [isCardLocked, setIsCardLocked] = useState(false)
+  const [isCardNumberVisible, setIsCardNumberVisible] = useState(false)
+  const [cardDetails, setCardDetails] = useState<CardDetails | null>(null)
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [spendingCategories, setSpendingCategories] = useState<SpendingCategory[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true)
+      setError(null)
+      try {
+        const [cardDetailsData, transactionsData, spendingCategoriesData] = await Promise.all([
+          mockFetchCardDetails(),
+          mockFetchTransactions(),
+          mockFetchSpendingCategories(),
+        ])
+        setCardDetails(cardDetailsData)
+        setTransactions(transactionsData)
+        setSpendingCategories(spendingCategoriesData)
+      } catch (err) {
+        setError("Une erreur s'est produite lors du chargement des données. Veuillez réessayer.")
+      }
+      setIsLoading(false)
+    }
+
+    fetchData()
+  }, [])
+
+  const toggleCardNumber = () => {
+    setIsCardNumberVisible(!isCardNumberVisible)
+  }
+
+  const toggleCardLock = () => {
+    setIsCardLocked(!isCardLocked)
+    // Here you would typically make an API call to lock/unlock the card
+  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("tn-TN", {
@@ -108,43 +201,87 @@ const CarteDesktop: React.FC = () => {
     }).format(amount)
   }
 
+  if (isLoading) {
+    return (
+      <IonPage className="carte-desktop">
+        <IonContent className="carte-desktop__content">
+          <div className="carte-desktop__loading">
+            <IonSpinner name="crescent" />
+            <p>Chargement des données...</p>
+          </div>
+        </IonContent>
+      </IonPage>
+    )
+  }
+
+  if (error) {
+    return (
+      <IonPage className="carte-desktop">
+        <IonContent className="carte-desktop__content">
+          <div className="carte-desktop__error">
+            <p>{error}</p>
+            <IonButton onClick={() => window.location.reload()}>Réessayer</IonButton>
+          </div>
+        </IonContent>
+      </IonPage>
+    )
+  }
+
   return (
     <IonPage className="carte-desktop">
       <IonHeader>
         <IonToolbar>
-          <Navbar currentPage="carte"/>
+          <Navbar currentPage="carte" />
         </IonToolbar>
       </IonHeader>
 
       <IonContent className="carte-desktop__content">
         <div className="carte-desktop__layout">
-        <div className="ProfileVir"><Profile/></div>
+          <div className="carte-desktop__profile">
+            <Profile />
+          </div>
           <div className="carte-desktop__left-panel">
-            <IonCard className="carte-desktop__credit-card">
-              <IonCardContent>
-                <div className="carte-desktop__card-chip"></div>
-                <div className="carte-desktop__card-details">
-                  <span className="carte-desktop__card-number">1234 •••• •••• 1234</span>
-                  <div className="carte-desktop__card-info">
-                    <span>
-                      <small>Expire à fin</small>
-                      <br />
-                      01/26
-                    </span>
-                    <span>
-                      <small>Foulen ben foulen</small>
-                    </span>
+            <motion.div
+              className="carte-desktop__card-display"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <IonCard className="carte-desktop__credit-card">
+                <IonCardContent>
+                  <div className="carte-desktop__card-header">
+                    <span className="carte-desktop__card-type">{cardDetails?.cardType}</span>
+                    <IonButton fill="clear" className="carte-desktop__toggle-visibility" onClick={toggleCardNumber}>
+                      <IonIcon icon={isCardNumberVisible ? eyeOffOutline : eyeOutline} />
+                    </IonButton>
                   </div>
-                </div>
-              </IonCardContent>
-            </IonCard>
+                  <div className="carte-desktop__card-body">
+                    <IonImg src="../puce.png" className="carte-desktop__chip" />
+                    <motion.div
+                      className="carte-desktop__card-number"
+                      animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}
+                    >
+                      {isCardNumberVisible
+                        ? cardDetails?.cardNumber
+                        : cardDetails?.cardNumber.replace(/\d{4}(?=.)/g, "•••• ")}
+                    </motion.div>
+                    <div className="carte-desktop__card-holder">{cardDetails?.cardHolder}</div>
+                  </div>
+                  <div className="carte-desktop__card-footer">
+                    <div className="carte-desktop__expiry">
+                      <span>Expire à </span>
+                      <span>{cardDetails?.expiryDate}</span>
+                    </div>
+                    <div className="carte-desktop__bank-logo">
+                      <IonImg src="../amen_logo.png" className="carte-desktop__bank-name" />
+                    </div>
+                  </div>
+                </IonCardContent>
+              </IonCard>
+            </motion.div>
 
             <div className="carte-desktop__quick-actions">
-              <IonButton
-                expand="block"
-                color={isCardLocked ? "danger" : "success"}
-                onClick={() => setIsCardLocked(!isCardLocked)}
-              >
+              <IonButton expand="block" color={isCardLocked ? "danger" : "success"} onClick={toggleCardLock}>
                 <IonIcon slot="start" icon={lockClosedOutline} />
                 {isCardLocked ? "Débloquer la carte" : "Bloquer la carte"}
               </IonButton>
@@ -166,16 +303,28 @@ const CarteDesktop: React.FC = () => {
                 <div className="carte-desktop__limit-item">
                   <div className="carte-desktop__limit-info">
                     <span>Dépenses mensuelles</span>
-                    <span>3 450 TND / 5 000 TND</span>
+                    <span>
+                      {formatCurrency(cardDetails?.monthlySpending || 0)} /{" "}
+                      {formatCurrency(cardDetails?.monthlySpendingLimit || 0)}
+                    </span>
                   </div>
-                  <IonProgressBar value={0.69} color="success"></IonProgressBar>
+                  <IonProgressBar
+                    value={cardDetails ? cardDetails.monthlySpending / cardDetails.monthlySpendingLimit : 0}
+                    color="success"
+                  ></IonProgressBar>
                 </div>
                 <div className="carte-desktop__limit-item">
                   <div className="carte-desktop__limit-info">
                     <span>Retrait DAB</span>
-                    <span>400 TND / 1 000 TND</span>
+                    <span>
+                      {formatCurrency(cardDetails?.withdrawalAmount || 0)} /{" "}
+                      {formatCurrency(cardDetails?.withdrawalLimit || 0)}
+                    </span>
                   </div>
-                  <IonProgressBar value={0.4} color="success"></IonProgressBar>
+                  <IonProgressBar
+                    value={cardDetails ? cardDetails.withdrawalAmount / cardDetails.withdrawalLimit : 0}
+                    color="success"
+                  ></IonProgressBar>
                 </div>
               </IonCardContent>
             </IonCard>
@@ -213,14 +362,14 @@ const CarteDesktop: React.FC = () => {
                     <IonCard className="carte-desktop__balance-card">
                       <IonCardContent>
                         <h4>Solde actuel</h4>
-                        <h2>{formatCurrency(4521.8)}</h2>
+                        <h2>{formatCurrency(cardDetails?.balance || 0)}</h2>
                         <IonChip color="success">+2,4% par rapport au mois dernier</IonChip>
                       </IonCardContent>
                     </IonCard>
                     <IonCard className="carte-desktop__balance-card">
                       <IonCardContent>
                         <h4>Transactions en attente</h4>
-                        <h2>{formatCurrency(245.3)}</h2>
+                        <h2>{formatCurrency(cardDetails?.pendingTransactions || 0)}</h2>
                         <span>3 transactions en attente</span>
                       </IonCardContent>
                     </IonCard>
@@ -232,7 +381,7 @@ const CarteDesktop: React.FC = () => {
                     </IonCardHeader>
                     <IonCardContent>
                       <IonList>
-                        {mockTransactions.map((transaction) => (
+                        {transactions.map((transaction) => (
                           <IonItem key={transaction.id} className="carte-desktop__transaction-item">
                             <IonAvatar slot="start">
                               <div className="carte-desktop__transaction-icon">{transaction.icon}</div>
@@ -305,19 +454,21 @@ const CarteDesktop: React.FC = () => {
                       <div className="carte-desktop__details-grid">
                         <div className="carte-desktop__detail-item">
                           <h4>Type de carte</h4>
-                          <p>Visa Premier</p>
+                          <p>{cardDetails?.cardType}</p>
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Statut de la carte</h4>
-                          <IonChip color="success">Active</IonChip>
+                          <IonChip color={isCardLocked ? "danger" : "success"}>
+                            {isCardLocked ? "Bloquée" : "Active"}
+                          </IonChip>
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Valable à partir de</h4>
-                          <p>01/23</p>
+                          <p>{cardDetails?.expiryDate.split("/")[1]}/23</p>
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Valable jusqu'à</h4>
-                          <p>01/26</p>
+                          <p>{cardDetails?.expiryDate}</p>
                         </div>
                       </div>
                     </IonCardContent>
