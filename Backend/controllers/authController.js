@@ -294,7 +294,7 @@ exports.getUserData = async (req, res) => {
     
     // Fetch all cartes associated with the user's comptes
     const cartes = await Carte.find({ comptesId: { $in: comptes.map(c => c._id) } });
-    console.log("Cartes found:", cartes);
+console.log("Cartes found:", cartes);
     // Combine the data into a single response
     const userData = {
       user: {
