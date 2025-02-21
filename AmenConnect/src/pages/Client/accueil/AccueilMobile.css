@@ -5,11 +5,13 @@
   --card-background: rgba(255, 255, 255, 0.1);
   --text-gray: rgba(255, 255, 255, 0.6);
   --accent-blue: #3b82f6;
+  --gradient-start: #2c3e50;
+  --gradient-end: #1a1a1a;
 }
 
 /* Content Styles */
 .custom-content-mobile {
-  --background: linear-gradient(to bottom, #1a1a1a, var(--background-dark));
+  --background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   --padding-top: 0;
   --padding-bottom: 80px;
 }
@@ -37,9 +39,15 @@
   align-items: center;
   margin-bottom: 24px;
   animation: fadeIn 0.5s ease-out;
-  background: var(--card-background);
+  background: rgba(255, 255, 255, 0.05);
   padding: 20px;
   border-radius: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info {
+  flex: 1;
 }
 
 .greeting-mobile {
@@ -53,6 +61,7 @@
   font-weight: 600;
   margin: 0;
   color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-actions-mobile {
@@ -62,43 +71,47 @@
 
 .profile-button-mobile,
 .notification-button-mobile {
-  --background: transparent;
   --color: white;
+  --border-radius: 50%;
   --padding-start: 8px;
   --padding-end: 8px;
   --padding-top: 8px;
   --padding-bottom: 8px;
-  font-size: 24px;
+  font-size: 20px;
   position: relative;
   overflow: hidden;
 }
 
 .notification-badge-mobile {
   position: absolute;
-  top: 9px;
-  right: 0;
+  top: -2px;
+  right: -2px;
   background: var(--primary-green);
   color: var(--background-dark);
   font-size: 12px;
   padding: 2px 6px;
   border-radius: 10px;
+  font-weight: bold;
 }
 
 /* Account Card */
 .account-card-mobile {
-  background: var(--card-background);
-  border-radius: 16px;
-  padding: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 20px;
+  padding: 24px;
   margin-bottom: 24px;
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: slideIn 0.5s ease-out;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .account-card-mobile:active {
   transform: scale(0.98);
-  box-shadow: 0 0 10px rgba(71, 206, 101, 0.3);
+  box-shadow: 0 0 20px rgba(71, 206, 101, 0.4);
 }
 
 .account-header-mobile {
@@ -106,6 +119,13 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 16px;
+}
+
+.account-header-mobile h2 {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
 }
 
 .stats-icon-mobile {
@@ -126,10 +146,11 @@
 }
 
 .balance-mobile {
-  font-size: 28px;
-  font-family: monospace;
+  font-size: 32px;
+  font-weight: 700;
   color: var(--primary-green);
   margin: 0 0 8px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .toggle-balance-mobile {
@@ -146,6 +167,36 @@
 .expiry-date-mobile {
   color: var(--text-gray);
   margin: 0;
+  font-size: 14px;
+}
+
+/* Quick Actions */
+.quick-actions-mobile {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 12px;
+}
+
+.quick-action-button {
+  --background: rgba(255, 255, 255, 0.1);
+  --color: white;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  height: 80px;
+  font-size: 14px;
+  flex-direction: column;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.quick-action-button:active {
+  transform: scale(0.95);
+}
+
+.quick-action-button ion-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
 }
 
 /* Section Styles */
@@ -165,6 +216,7 @@
   font-size: 20px;
   margin: 0;
   color: white;
+  font-weight: 600;
 }
 
 .view-all-mobile {
@@ -176,35 +228,62 @@
   --padding-end: 12px;
   --border-radius: 8px;
   transition: color 0.3s ease;
+  font-size: 14px;
 }
 
 .view-all-mobile:active {
   --color: var(--primary-green);
 }
 
+.view-all-mobile ion-icon {
+  margin-left: 4px;
+}
+
 /* Payment Card */
 .payment-card-mobile {
-  background: var(--card-background);
+  background: linear-gradient(135deg, #2980b9, #2c3e50);
   border-radius: 16px;
   padding: 20px;
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 180px;
 }
 
 .payment-card-mobile:active {
   transform: scale(0.98);
-  box-shadow: 0 0 10px rgba(71, 206, 101, 0.3);
+  box-shadow: 0 0 20px rgba(71, 206, 101, 0.4);
+}
+
+.card-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("/path-to-card-background-image.jpg") no-repeat center center;
+  background-size: cover;
+  opacity: 0.2;
+}
+
+.card-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .card-label-mobile {
   color: var(--text-gray);
   margin: 0 0 8px 0;
+  font-size: 14px;
 }
 
 .card-details-mobile {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 12px;
 }
 
@@ -220,32 +299,40 @@
 .card-name-mobile {
   color: white;
   margin: 0;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .card-number-mobile {
   color: var(--text-gray);
-  margin: 0;
+  margin: 4px 0 0 0;
+  font-size: 14px;
 }
 
 .card-expiry-mobile {
   color: var(--accent-blue);
   margin: 0;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 /* Budget Card */
 .budget-card-mobile {
-  background: var(--card-background);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
   border-radius: 16px;
   padding: 20px;
   position: relative;
   overflow: hidden;
-  margin-top: -20px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .budget-card-mobile h3 {
   color: white;
   margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .budget-progress-mobile {
@@ -267,10 +354,12 @@
   display: flex;
   justify-content: space-between;
   color: var(--text-gray);
+  font-size: 14px;
 }
 
 .budget-remaining-mobile {
   color: var(--accent-blue);
+  font-weight: 600;
 }
 
 /* Animations */
@@ -301,7 +390,7 @@
   }
 
   .balance-mobile {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .section-header-mobile h2 {
@@ -309,11 +398,19 @@
   }
 
   .card-name-mobile {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .card-number-mobile {
     font-size: 12px;
+  }
+
+  .quick-actions-mobile {
+    flex-wrap: wrap;
+  }
+
+  .quick-action-button {
+    flex: 0 0 calc(50% - 6px);
   }
 }
 
@@ -328,6 +425,7 @@
   z-index: 1000;
   animation: fadeIn 0.2s ease-out;
 }
+
 .user-menu {
   position: absolute;
   top: 70px;
@@ -363,7 +461,6 @@
   color: var(--text-gray);
 }
 
-
 .safe-area-padding {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
@@ -372,11 +469,13 @@
 .custom-content-mobile {
   --padding-top: 0;
   --padding-bottom: 0;
-  --padding-start: 16px;
-  --padding-end: 16px;
+  --padding-start: 5px;
+  --padding-end: 5px;
 }
+
 .content-wrapper-mobile {
   max-width: 600px;
   margin: 0 auto;
   width: 100%;
 }
+

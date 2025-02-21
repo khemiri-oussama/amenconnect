@@ -1,3 +1,5 @@
+// otp/otpMobile.tsx
+import React, { useRef, useState, useEffect } from "react";
 import {
   IonContent,
   IonPage,
@@ -11,38 +13,26 @@ import {
   IonRow,
   IonCol,
 } from "@ionic/react";
-import { useRef, useState, useEffect } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import "./otpMobile.css";
-
-interface User {
-  email: string;
-}
 
 const OtpMobile: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const history = useHistory();
-  const location = useLocation<{ user?: User }>();
-  const { setIsAuthenticated } = useAuth();
+  const { pendingUser, setIsAuthenticated } = useAuth();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else if (location.state?.user) {
-      setUser(location.state.user);
-      localStorage.setItem("user", JSON.stringify(location.state.user));
-    } else {
-      history.replace("/login");  // Redirect only if no user data is found
+    // If there is no pending user from the context, redirect to login.
+    if (!pendingUser) {
+      history.replace("/login");
     }
-  }, [location.state, history]);
-  
+  }, [pendingUser, history]);
+
   const handleOtpChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return;
     const newOtp = [...otp];
@@ -66,12 +56,12 @@ const OtpMobile: React.FC = () => {
     try {
       const otpCode = otp.join("");
       const response = await axios.post("/api/auth/verify-otp", {
-        email: user!.email,
+        email: pendingUser!.email,
         otp: otpCode,
       });
 
       if (response.data.message === "OTP verified successfully!") {
-        localStorage.setItem("token", response.data.token);
+        // Optionally, store token securely (e.g., in an HttpOnly cookie) on the server side.
         setIsAuthenticated(true);
         history.replace("/accueil");
       } else {
