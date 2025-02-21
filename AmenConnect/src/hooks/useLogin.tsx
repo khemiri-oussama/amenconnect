@@ -31,8 +31,9 @@ export function useLogin() {
 
       // If login is successful, set pending user before OTP verification
       if (response.data.message) {
-        setPendingUser({ email }); // ✅ Removed 'id' since it's not in the type
-        history.replace("/otp");
+        setPendingUser({ email });
+        // Optionally, pass user info via location state if needed by OTP pages
+        history.replace("/otp", { user: { email } });
       } else {
         throw new Error("Réponse inattendue.");
       }

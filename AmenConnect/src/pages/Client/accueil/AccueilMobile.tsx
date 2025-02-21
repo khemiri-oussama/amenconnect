@@ -1,6 +1,16 @@
+"use client"
+
 import type React from "react"
-import { useState,useEffect } from "react"
-import { IonContent, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
+import { useState, useEffect } from "react"
+import {
+  IonContent,
+  IonPage,
+  IonIcon,
+  IonRippleEffect,
+  IonButton,
+  IonRefresher,
+  IonRefresherContent,
+} from "@ionic/react"
 import {
   cardOutline,
   personOutline,
@@ -8,147 +18,194 @@ import {
   eyeOutline,
   eyeOffOutline,
   notificationsOutline,
+  chevronDownCircleOutline,
+  walletOutline,
+  arrowForwardOutline,
 } from "ionicons/icons"
 import { useHistory } from "react-router-dom"
 import "./AccueilMobile.css"
 import { UserMenu } from "./MenuMobile/UserMenu"
 import NavMobile from "../../../components/NavMobile"
+import { useAuth } from "../../../AuthContext"
 
 const AccueilMobile: React.FC = () => {
   const history = useHistory()
+  const { user, authLoading } = useAuth()
   const [showBalance, setShowBalance] = useState(true)
   const [notificationCount, setNotificationCount] = useState(3)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [today, setToday] = useState<string>('');
+  const [today, setToday] = useState<string>("")
 
   useEffect(() => {
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString('fr-FR'); // Format as desired
-    setToday(formattedDate);
-  }, []);
+    const currentDate = new Date()
+    const formattedDate = currentDate.toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+    setToday(formattedDate)
+  }, [])
+
+  if (authLoading) {
+    return <div>Loading...</div>
+  }
+
   const toggleBalance = () => {
     setShowBalance(!showBalance)
   }
-const [prenom, setPrenom] = useState<string>("")
-const [email,setEmail]=useState<string>("")
-const [nom,setNom]=useState<string>("")
 
-useEffect(() => {
-  const userData = localStorage.getItem("user")
-  if (userData) {
-    try {
-      const parsedData = JSON.parse(userData)
-      setPrenom(parsedData.prénom || "Utilisateur")
-      setNom(parsedData.nom || "Foulen")
-      setEmail(parsedData.email || "example@ex.com")
-    } catch (error) {
-      console.error("Erreur lors du parsing du localStorage:", error)
-    }
+  const handleRefresh = (event: CustomEvent) => {
+    setTimeout(() => {
+      // Add refresh logic here
+      event.detail.complete()
+    }, 2000)
   }
-}, [])
+
   return (
     <IonPage>
       <IonContent fullscreen className="custom-content-mobile" scrollY={true} forceOverscroll={true}>
+        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+          <IonRefresherContent
+            pullingIcon={chevronDownCircleOutline}
+            pullingText="Tirer pour rafraîchir"
+            refreshingSpinner="circles"
+            refreshingText="Mise à jour..."
+          ></IonRefresherContent>
+        </IonRefresher>
         <div className="safe-area-padding">
-          {/* Profile Header */}
-          <div className="profile-header-mobile">
-            <div>
-              <p className="greeting-mobile">Bonjour,</p>
-              <h1 className="username-mobile">{prenom} {nom}</h1>
-            </div>
-            <div className="header-actions-mobile">
-              <IonButton
-                fill="clear"
-                className="notification-button-mobile ion-activatable"
-                onClick={() => history.push("/notifications")}
-              >
-                <IonIcon icon={notificationsOutline} />
-                {notificationCount > 0 && <span className="notification-badge-mobile">{notificationCount}</span>}
-                <IonRippleEffect />
-              </IonButton>
-              <IonButton
-                fill="clear"
-                className="profile-button-mobile ion-activatable"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <IonIcon icon={personOutline} />
-                <IonRippleEffect />
-              </IonButton>
-              <UserMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-            </div>
-          </div>
-
-          {/* Account Card */}
-          <div className="account-card-mobile ion-activatable">
-            <div className="account-header-mobile">
-              <h2>Compte Epargne</h2>
-              <IonIcon icon={statsChartOutline} className="stats-icon-mobile" onClick={() => history.push("/compte")} />
-            </div>
-            <div className="account-details-mobile">
-              <div>
-                <div className="balance-container-mobile">
-                  <p className="balance-mobile">{showBalance ? "450.0 TND" : "••••• TND"}</p>
-                  <IonButton fill="clear" className="toggle-balance-mobile" onClick={toggleBalance}>
-                    <IonIcon icon={showBalance ? eyeOffOutline : eyeOutline} />
-                  </IonButton>
-                </div>
-                <p className="account-number-mobile">12345678987</p>
+          <div className="content-wrapper-mobile">
+            {/* Profile Header */}
+            <div className="profile-header-mobile">
+              <div className="profile-info">
+                <p className="greeting-mobile">Bonjour,</p>
+                <h1 className="username-mobile">
+                  {user?.prenom || "Utilisateur"} {user?.nom || ""}
+                </h1>
               </div>
-              <p className="expiry-date-mobile">{today}</p>
+              <div className="header-actions-mobile">
+                <IonButton
+                  fill="clear"
+                  className="notification-button-mobile ion-activatable"
+                  onClick={() => history.push("/notifications")}
+                >
+                  <IonIcon icon={notificationsOutline} />
+                  {notificationCount > 0 && (
+                    <span className="notification-badge-mobile">{notificationCount}</span>
+                  )}
+                  <IonRippleEffect />
+                </IonButton>
+                <IonButton
+                  fill="clear"
+                  className="profile-button-mobile ion-activatable"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                  <IonIcon icon={personOutline} />
+                  <IonRippleEffect />
+                </IonButton>
+                <UserMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+              </div>
             </div>
-            <IonRippleEffect />
-          </div>
 
-          {/* Cards Section */}
-          <div className="section-mobile">
-            <div className="section-header-mobile">
-              <h2>Cartes</h2>
-              <IonButton
-                fill="clear"
-                className="view-all-mobile ion-activatable"
-                onClick={() => history.push("/carte")}
-              >
-                Afficher tout
-                <IonRippleEffect />
-              </IonButton>
-            </div>
-            <div className="payment-card-mobile ion-activatable" onClick={() => history.push("/carte")}>
-              <p className="card-label-mobile">Carte de paiement</p>
-              <div className="card-details-mobile">
-                <IonIcon icon={cardOutline} className="card-icon-mobile" />
-                <div className="card-info-mobile">
-                  <p className="card-name-mobile">EL AMEN WHITE EMV</p>
-                  <p className="card-number-mobile">1234 •••• •••• 1234</p>
+            {/* Account Card */}
+            <div className="account-card-mobile ion-activatable" onClick={() => history.push("/compte")}>
+              <div className="account-header-mobile">
+                <h2>Compte Epargne</h2>
+                <IonIcon icon={statsChartOutline} className="stats-icon-mobile" />
+              </div>
+              <div className="account-details-mobile">
+                <div>
+                  <div className="balance-container-mobile">
+                    <p className="balance-mobile">{showBalance ? "450.0 TND" : "••••• TND"}</p>
+                    <IonButton
+                      fill="clear"
+                      className="toggle-balance-mobile"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleBalance()
+                      }}
+                    >
+                      <IonIcon icon={showBalance ? eyeOffOutline : eyeOutline} />
+                    </IonButton>
+                  </div>
+                  <p className="account-number-mobile">12345678987</p>
                 </div>
-                <p className="card-expiry-mobile">01/28</p>
+                <p className="expiry-date-mobile">{today}</p>
               </div>
               <IonRippleEffect />
             </div>
-          </div>
 
-          {/* Budget Section */}
-          <div className="section-mobile">
-            <div className="section-header-mobile">
-              <h2>Budget</h2>
-              <IonButton
-                fill="clear"
-                className="view-all-mobile ion-activatable"
-                onClick={() => history.push("/budget")}
-              >
-                Afficher tout
-                <IonRippleEffect />
+            {/* Quick Actions */}
+            <div className="quick-actions-mobile">
+              <IonButton className="quick-action-button" onClick={() => history.push("/virement")}>
+                <IonIcon icon={walletOutline} />
+                <span>Virement</span>
+              </IonButton>
+              <IonButton className="quick-action-button" onClick={() => history.push("/paiement")}>
+                <IonIcon icon={cardOutline} />
+                <span>Paiement</span>
+              </IonButton>
+              <IonButton className="quick-action-button" onClick={() => history.push("/budget")}>
+                <IonIcon icon={statsChartOutline} />
+                <span>Budget</span>
               </IonButton>
             </div>
-            <div className="budget-card-mobile ion-activatable">
-              <h3>Dépenses ce mois</h3>
-              <div className="budget-progress-mobile">
-                <div className="progress-bar-mobile" style={{ width: "70%" }}></div>
+
+            {/* Cards Section */}
+            <div className="section-mobile">
+              <div className="section-header-mobile">
+                <h2>Cartes</h2>
+                <IonButton
+                  fill="clear"
+                  className="view-all-mobile ion-activatable"
+                  onClick={() => history.push("/carte")}
+                >
+                  Afficher tout
+                  <IonIcon icon={arrowForwardOutline} />
+                  <IonRippleEffect />
+                </IonButton>
               </div>
-              <div className="budget-details-mobile">
-                <p>1,400 TND / 2,000 TND</p>
-                <p className="budget-remaining-mobile">Reste: 600 TND</p>
+              <div className="payment-card-mobile ion-activatable" onClick={() => history.push("/carte")}>
+                <div className="card-background"></div>
+                <div className="card-content">
+                  <p className="card-label-mobile">Carte de paiement</p>
+                  <div className="card-details-mobile">
+                    <IonIcon icon={cardOutline} className="card-icon-mobile" />
+                    <div className="card-info-mobile">
+                      <p className="card-name-mobile">EL AMEN WHITE EMV</p>
+                      <p className="card-number-mobile">1234 •••• •••• 1234</p>
+                    </div>
+                    <p className="card-expiry-mobile">01/28</p>
+                  </div>
+                </div>
+                <IonRippleEffect />
               </div>
-              <IonRippleEffect />
+            </div>
+
+            {/* Budget Section */}
+            <div className="section-mobile">
+              <div className="section-header-mobile">
+                <h2>Budget</h2>
+                <IonButton
+                  fill="clear"
+                  className="view-all-mobile ion-activatable"
+                  onClick={() => history.push("/budget")}
+                >
+                  Afficher tout
+                  <IonIcon icon={arrowForwardOutline} />
+                  <IonRippleEffect />
+                </IonButton>
+              </div>
+              <div className="budget-card-mobile ion-activatable" onClick={() => history.push("/budget")}>
+                <h3>Dépenses ce mois</h3>
+                <div className="budget-progress-mobile">
+                  <div className="progress-bar-mobile" style={{ width: "70%" }}></div>
+                </div>
+                <div className="budget-details-mobile">
+                  <p>1,400 TND / 2,000 TND</p>
+                  <p className="budget-remaining-mobile">Reste: 600 TND</p>
+                </div>
+                <IonRippleEffect />
+              </div>
             </div>
           </div>
         </div>
@@ -159,4 +216,3 @@ useEffect(() => {
 }
 
 export default AccueilMobile
-

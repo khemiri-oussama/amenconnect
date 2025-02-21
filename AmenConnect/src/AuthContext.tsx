@@ -48,7 +48,7 @@ useEffect(() => {
   };
 
   fetchProfile();
-}, [isAuthenticated]); // Add isAuthenticated as a dependency
+}, [isAuthenticated]);
 
 
 
