@@ -13,6 +13,9 @@ ion-content {
   --padding-bottom: 70px;
 }
 
+.encours-amount{
+  color:#fff;
+}
 /* Status Bar */
 .status-bar {
   height: 44px;
