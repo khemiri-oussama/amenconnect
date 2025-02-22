@@ -34,23 +34,35 @@ ion-content {
   perspective: 1000px;
 }
 
-/* New styles for card swipe functionality */
+/* Updated and new styles for card game shuffle animation */
 .card-container {
   position: relative;
   width: 100%;
-  height: 240px; /* Adjust based on your card height */
-  overflow: hidden;
+  height: 240px;
+  perspective: 1000px;
+  overflow: visible;
 }
 
 .card-wrapper {
-  display: flex;
-  transition: transform 0.3s ease;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
 }
 
 .credit-card {
-  flex-shrink: 0;
+  position: absolute;
   width: 100%;
-  margin-right: 20px; /* Space between cards */
+  max-width: 360px;
+  height: 220px;
+  backface-visibility: hidden;
+  transform-origin: center center;
+  transition: all 0.5s ease;
+  cursor: grab;
+}
+
+.credit-card:active {
+  cursor: grabbing;
 }
 
 .credit-card {
