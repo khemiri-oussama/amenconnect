@@ -121,7 +121,7 @@ exports.register = async (req, res) => {
     const compteDocuments = comptes.map(type => ({
       userId: user._id, // Link to user
       numéroCompte: generateAccountNumber(),
-      solde: 0,
+      solde: 0.0,
       type,
       ...compteTypes[type], // Merge default values
       historique: []
@@ -160,7 +160,7 @@ exports.addCompte = async (req, res) => {
     const newCompte = new Compte({
       userId,
       numéroCompte: generateAccountNumber(),
-      solde: 0,
+      solde: 0.0,
       type,
       ...compteTypes[type], // Merge default values
       historique: []
