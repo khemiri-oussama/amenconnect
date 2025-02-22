@@ -1,4 +1,5 @@
-import type React from "react"
+"use client"
+import React, { useMemo } from "react"
 import {
   IonContent,
   IonHeader,
@@ -8,7 +9,7 @@ import {
   IonCardContent,
   IonButton,
   IonIcon,
-  IonBadge,
+  IonBadge
 } from "@ionic/react"
 import {
   walletOutline,
@@ -17,27 +18,80 @@ import {
   cardOutline,
   trendingUpOutline,
   trendingDownOutline,
+  eyeOutline,
+  settingsOutline
 } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts"
 import Navbar from "../../../components/Navbar"
 import "./CompteDesktop.css"
 import Profile from "../accueil/MenuDesktop/ProfileMenu"
+import { useAuth } from "../../../AuthContext"
+
+interface Operation {
+  id: number
+  type: "credit" | "debit"
+  amount: number
+  description: string
+  date: string
+}
 
 const CompteDesktop: React.FC = () => {
+  const { profile, authLoading } = useAuth()
+  const history = useMemo(() => window.history, []) // Using browser history
+
+  // While auth is loading, show a loading message.
+  if (authLoading) {
+    return <div>Loading...</div>
+  }
+
+  // Use comptes from profile data; if none available, fallback to empty array.
+  const accounts = profile?.comptes ?? []
+
+  // Chart and operations sample data remain as is (unless coming from an API)
   const chartData = [
     { name: "Jan", revenus: 65, depenses: 28 },
     { name: "Feb", revenus: 59, depenses: 48 },
     { name: "Mar", revenus: 80, depenses: 40 },
     { name: "Apr", revenus: 81, depenses: 69 },
     { name: "May", revenus: 56, depenses: 36 },
-    { name: "Jun", revenus: 85, depenses: 47 },
+    { name: "Jun", revenus: 85, depenses: 47 }
   ]
 
-  const operations = [
+  const operations: Operation[] = [
     { id: 1, type: "credit", amount: 500, description: "Dépôt", date: "2025-01-20" },
     { id: 2, type: "debit", amount: 75.5, description: "Achat en ligne", date: "2025-01-19" },
-    { id: 3, type: "credit", amount: 1200, description: "Salaire", date: "2025-01-15" },
+    { id: 3, type: "credit", amount: 1200, description: "Salaire", date: "2025-01-15" }
   ]
+
+  // Navigate to account details
+  const handleAccountClick = (accountId: string) => {
+    console.log(`Viewing account ${accountId}...`)
+    // For example, using window.location.href or a router push:
+    window.location.href = `/Compte/${accountId}`
+  }
+
+  // A sample stat card render function remains as is
+  const renderStatCard = (
+    label: string,
+    value: string,
+    change: string,
+    icon: string,
+    changeType: "positive" | "negative"
+  ) => (
+    <div className="stat-card">
+      <div className="stat-icon">
+        <IonIcon icon={icon} />
+      </div>
+      <div className="stat-content">
+        <div className="stat-label">{label}</div>
+        <div className="stat-value">{value}</div>
+        <div className={`stat-change ${changeType}`}>
+          <IonIcon icon={changeType === "positive" ? trendingUpOutline : trendingDownOutline} />
+          {change}
+        </div>
+      </div>
+    </div>
+  )
 
   return (
     <IonPage>
@@ -46,21 +100,26 @@ const CompteDesktop: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding custom-content">
         <div className="compte-container">
-        
-          <h1 className="page-title">Mes Comptes </h1><div className="ProfileCom"><Profile/></div>
+          <h1 className="page-title">Mes Comptes</h1>
+          <div className="ProfileCom">
+            <Profile />
+          </div>
           
           <div className="compte-grid">
-            <IonCard className="compte-card">
-              <IonCardHeader>Compte Epargne</IonCardHeader>
-              <IonCardContent>
-                <div className="balance">15,230.45 TND</div>
-                <div className="account-number">12345678987</div>
-                <div className="balance-change">
-                  <IonIcon icon={trendingUpOutline} />
-                  <span>+2.5% ce mois</span>
-                </div>
-              </IonCardContent>
-            </IonCard>
+            {/* Display each account coming from the profile */}
+            {accounts.map((account) => (
+              <IonCard key={account._id} className="compte-card" onClick={() => handleAccountClick(account._id)}>
+                <IonCardHeader>{account.type}</IonCardHeader>
+                <IonCardContent>
+                  <div className="balance">{account.solde.toFixed(2)} TND</div>
+                  <div className="account-number">{account.numéroCompte}</div>
+                  <div className="balance-change">
+                    <IonIcon icon={trendingUpOutline} />
+                    <span>+2.5% ce mois</span>
+                  </div>
+                </IonCardContent>
+              </IonCard>
+            ))}
 
             <IonCard className="chart-card">
               <IonCardHeader>Aperçu financier</IonCardHeader>
@@ -173,4 +232,3 @@ const CompteDesktop: React.FC = () => {
 }
 
 export default CompteDesktop
-

@@ -216,7 +216,6 @@ exports.verifyOTP = async (req, res) => {
 
     res.json({
       message: "OTP verified successfully!",
-      user: { id: user._id, email: user.email, nom: user.nom, prenom: user.prenom },
     });
   } catch (err) {
     console.error("OTP verification error:", err);

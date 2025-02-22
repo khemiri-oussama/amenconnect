@@ -7,6 +7,9 @@ const bcrypt = require('bcryptjs');
 const { generateOTP, sendOTPEmail } = require('../controllers/authController');
 const authController = require("../controllers/authController");
 const router = express.Router();
+const User = require('../models/User');
+const Compte = require('../models/Compte');
+const Carte = require('../models/Cartes');
 
 // Rate limiters and request validator
 const loginLimiter = rateLimit({
@@ -131,15 +134,39 @@ router.post(
 router.get(
   '/profile',
   passport.authenticate('jwt', { session: false }),
-  (req, res) => {
-    // Convert Mongoose document to plain object and remove sensitive fields.
-    const safeUser = req.user.toObject();
-    delete safeUser.password;
-    delete safeUser.otp;
-    delete safeUser.resetPasswordToken;
-    res.json({
-      user: safeUser,
-    });
+  async (req, res) => {
+    try {
+      // Get the user ID from the authenticated token
+      const userId = req.user._id;
+
+      // Retrieve full user document
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      // Fetch all comptes associated with the user
+      const comptes = await Compte.find({ userId: userId });
+
+      // Fetch all cartes associated with the user's comptes
+      const cartes = await Carte.find({ comptesId: { $in: comptes.map(c => c._id) } });
+
+      // Prepare a safe user object by removing sensitive fields
+      const safeUser = user.toObject();
+      delete safeUser.password;
+      delete safeUser.otp;
+      delete safeUser.resetPasswordToken;
+
+      // Send the complete profile data as response
+      res.json({
+        user: safeUser,
+        comptes: comptes,
+        cartes: cartes
+      });
+    } catch (err) {
+      console.error("Error fetching profile data:", err);
+      res.status(500).json({ message: "Server error." });
+    }
   }
 );
 
