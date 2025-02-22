@@ -52,7 +52,23 @@ interface AutoTableOptions {
 
 declare module "jspdf" {
   interface jsPDF {
-    autoTable: (options: AutoTableOptions) => jsPDF
+    autoTable: (options: {
+      startY: number
+      head: string[][]
+      body: string[][]
+      theme?: string
+      styles?: {
+        fontSize?: number
+        cellPadding?: number
+      }
+      headStyles?: {
+        fillColor?: number[]
+        textColor?: number[]
+      }
+      alternateRowStyles?: {
+        fillColor?: number[]
+      }
+    }) => jsPDF
   }
 }
 
@@ -84,6 +100,36 @@ interface CardDetails {
   monthlySpending: number
   withdrawalLimit: number
   withdrawalAmount: number
+}
+
+// Add these interfaces after the existing interfaces
+
+interface BankBranding {
+  name: string
+  logo: string // Base64 or URL
+  primaryColor: string
+  secondaryColor: string
+  address: string[]
+  website: string
+  phone: string
+  email: string
+}
+
+interface StatementConfig {
+  showLogo: boolean
+  showFooter: boolean
+  showPageNumbers: boolean
+  showBankInfo: boolean
+  dateFormat: string
+  locale: string
+  currency: string
+  theme: {
+    headerColor: number[]
+    textColor: number[]
+    accentColor: number[]
+    tableHeaderColor: number[]
+    alternateRowColor: number[]
+  }
 }
 
 // These mock functions simulate fetching data for transactions and spending categories
@@ -154,6 +200,36 @@ const mockFetchSpendingCategories = (): Promise<SpendingCategory[]> => {
   })
 }
 
+// Add this constant before the CarteDesktop component
+
+const defaultBankBranding: BankBranding = {
+  name: "Amen Bank",
+  logo: "../amen_logo.png", // Update this with your actual logo path
+  primaryColor: "#4CAF50",
+  secondaryColor: "#388E3C",
+  address: ["Avenue Mohamed V", "Tunis 1002", "Tunisie"],
+  website: "www.amenbank.com.tn",
+  phone: "(+216) 71 148 000",
+  email: "contact@amenbank.com.tn",
+}
+
+const defaultStatementConfig: StatementConfig = {
+  showLogo: true,
+  showFooter: true,
+  showPageNumbers: true,
+  showBankInfo: true,
+  dateFormat: "fr-FR",
+  locale: "fr-FR",
+  currency: "TND",
+  theme: {
+    headerColor: [76, 175, 80], // RGB for #4CAF50
+    textColor: [0, 0, 0],
+    accentColor: [56, 142, 60], // RGB for #388E3C
+    tableHeaderColor: [76, 175, 80],
+    alternateRowColor: [245, 245, 245],
+  },
+}
+
 const CarteDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const [activeTab, setActiveTab] = useState("operations")
@@ -221,20 +297,95 @@ const CarteDesktop: React.FC = () => {
     }).format(amount)
   }
 
-  const downloadStatement = () => {
-    try {
-      // Create new PDF document
-      const doc = new jsPDF()
+  // Replace the existing downloadStatement function with this enhanced version
 
-      // Add header
-      doc.setFontSize(20)
-      doc.text("Relevé bancaire", 14, 15)
+  const downloadStatement = async () => {
+    try {
+      if (!cardDetails || !transactions.length) {
+        throw new Error("Les données ne sont pas disponibles")
+      }
+
+      // Create new PDF document
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      })
+
+      // Load and add bank logo
+      if (defaultStatementConfig.showLogo) {
+        try {
+          const img = new Image()
+          img.crossOrigin = "Anonymous"
+          await new Promise((resolve, reject) => {
+            img.onload = resolve
+            img.onerror = reject
+            img.src = defaultBankBranding.logo
+          })
+          doc.addImage(img, "PNG", 20, 10, 40, 20)
+        } catch (error) {
+          console.error("Error loading bank logo:", error)
+        }
+      }
+
+      // Add bank information
+      if (defaultStatementConfig.showBankInfo) {
+        doc.setFontSize(10)
+        doc.setTextColor(...defaultStatementConfig.theme.textColor)
+        const bankInfo = [
+          defaultBankBranding.name,
+          ...defaultBankBranding.address,
+          `Tél: ${defaultBankBranding.phone}`,
+          `Email: ${defaultBankBranding.email}`,
+          `Site web: ${defaultBankBranding.website}`,
+        ]
+        doc.text(bankInfo, doc.internal.pageSize.width - 60, 15, { align: "right" })
+      }
+
+      // Add statement header
+      doc.setFontSize(24)
+      doc.setTextColor(...defaultStatementConfig.theme.headerColor)
+      doc.text("Relevé bancaire", 20, 45)
+
+      // Add statement period
+      const today = new Date()
+      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+      doc.setFontSize(12)
+      doc.setTextColor(...defaultStatementConfig.theme.textColor)
+      doc.text(
+        `Période: ${firstDayOfMonth.toLocaleDateString(defaultStatementConfig.locale)} - ${today.toLocaleDateString(defaultStatementConfig.locale)}`,
+        20,
+        55,
+      )
 
       // Add card info
-      doc.setFontSize(12)
-      doc.text(`Titulaire: ${cardDetails?.cardHolder}`, 14, 25)
-      doc.text(`Numéro de carte: ****${cardDetails?.cardNumber.slice(-4)}`, 14, 32)
-      doc.text(`Date d'édition: ${new Date().toLocaleDateString("fr-FR")}`, 14, 39)
+      doc.setFontSize(11)
+      doc.text(
+        [
+          `Titulaire: ${cardDetails.cardHolder}`,
+          `Numéro de carte: ****${cardDetails.cardNumber.slice(-4)}`,
+          `Date d'édition: ${new Date().toLocaleDateString(defaultStatementConfig.locale)}`,
+          `Solde actuel: ${formatCurrency(cardDetails.balance)}`,
+        ],
+        20,
+        65,
+      )
+
+      // Add summary section
+      const totalCredit = transactions.filter((t) => t.type === "credit").reduce((sum, t) => sum + t.amount, 0)
+      const totalDebit = transactions.filter((t) => t.type === "debit").reduce((sum, t) => sum + t.amount, 0)
+
+      doc.setFontSize(11)
+      doc.text(
+        [
+          "Résumé des opérations",
+          `Total des crédits: ${formatCurrency(totalCredit)}`,
+          `Total des débits: ${formatCurrency(totalDebit)}`,
+          `Solde net: ${formatCurrency(totalCredit - totalDebit)}`,
+        ],
+        20,
+        90,
+      )
 
       // Add transactions table
       const tableData = transactions.map((t) => [
@@ -244,19 +395,55 @@ const CarteDesktop: React.FC = () => {
         t.category,
       ])
 
+      // @ts-ignore - autoTable is added by the plugin
       doc.autoTable({
-        startY: 45,
+        startY: 110,
         head: [["Date", "Description", "Montant", "Catégorie"]],
         body: tableData,
-        styles: { fontSize: 10 },
-        headStyles: { fillColor: [76, 175, 80] },
+        theme: "grid",
+        styles: {
+          fontSize: 10,
+          cellPadding: 5,
+        },
+        headStyles: {
+          fillColor: defaultStatementConfig.theme.tableHeaderColor,
+          textColor: [255, 255, 255],
+        },
+        alternateRowStyles: {
+          fillColor: defaultStatementConfig.theme.alternateRowColor,
+        },
       })
 
+      // Add footer
+      if (defaultStatementConfig.showFooter) {
+        const pageCount = doc.internal.getNumberOfPages()
+        doc.setFontSize(8)
+        for (let i = 1; i <= pageCount; i++) {
+          doc.setPage(i)
+
+          // Add page numbers if enabled
+          if (defaultStatementConfig.showPageNumbers) {
+            doc.text(`Page ${i} sur ${pageCount}`, doc.internal.pageSize.width / 2, doc.internal.pageSize.height - 10, {
+              align: "center",
+            })
+          }
+
+          // Add footer text
+          doc.text(
+            `Ce relevé a été généré automatiquement le ${new Date().toLocaleDateString(defaultStatementConfig.locale)} à ${new Date().toLocaleTimeString(defaultStatementConfig.locale)}`,
+            doc.internal.pageSize.width / 2,
+            doc.internal.pageSize.height - 5,
+            { align: "center" },
+          )
+        }
+      }
+
       // Save the PDF
-      doc.save(`releve_${new Date().toISOString().split("T")[0]}.pdf`)
+      const fileName = `releve_${cardDetails.cardHolder.replace(/\s+/g, "_").toLowerCase()}_${new Date().toISOString().split("T")[0]}.pdf`
+      doc.save(fileName)
     } catch (error) {
-      console.error("Error generating PDF:", error)
-      // You might want to show an error message to the user here
+      console.error("Erreur lors de la génération du PDF:", error)
+      // You could add a toast or alert here to notify the user
     }
   }
 
