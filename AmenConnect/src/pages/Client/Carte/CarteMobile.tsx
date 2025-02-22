@@ -93,6 +93,7 @@ const CarteMobile: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
 
   const cardContainerRef = useRef<HTMLDivElement>(null)
+  const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0 })
 
   useEffect(() => {
     if (profile && profile.cartes && profile.cartes.length > 0) {
@@ -113,6 +114,7 @@ const CarteMobile: React.FC = () => {
         }
       })
       setCards(cardsFromProfile)
+      setDragConstraints({ left: -((cardsFromProfile.length - 1) * 300), right: 0 })
     }
   }, [profile])
 
@@ -153,20 +155,47 @@ const CarteMobile: React.FC = () => {
     }
   }
 
-  const handleSwipe = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (cardContainerRef.current) {
-      const container = cardContainerRef.current
-      const containerWidth = container.offsetWidth
-      const swipeThreshold = containerWidth / 4
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const threshold = 100
+    const dragDistance = info.offset.x
+    const dragDirection = dragDistance < 0 ? -1 : 1
 
-      if (info.offset.x < -swipeThreshold && currentCardIndex < cards.length - 1) {
-        setCurrentCardIndex(currentCardIndex + 1)
-      } else if (info.offset.x > swipeThreshold && currentCardIndex > 0) {
-        setCurrentCardIndex(currentCardIndex - 1)
+    if (Math.abs(dragDistance) > threshold) {
+      const newIndex = currentCardIndex - dragDirection
+      if (newIndex >= 0 && newIndex < cards.length) {
+        setCurrentCardIndex(newIndex)
       }
-
-      container.style.transform = `translateX(${-currentCardIndex * 100}%)`
     }
+  }
+
+  const cardVariants = {
+    center: (index: number) => ({
+      rotateY: 0,
+      scale: 1,
+      x: 0,
+      zIndex: cards.length - index,
+      transition: { duration: 0.5 },
+    }),
+    left: (index: number) => ({
+      rotateY: 45,
+      scale: 0.8,
+      x: -300,
+      zIndex: cards.length - index - 1,
+      transition: { duration: 0.5 },
+    }),
+    right: (index: number) => ({
+      rotateY: -45,
+      scale: 0.8,
+      x: 300,
+      zIndex: cards.length - index - 1,
+      transition: { duration: 0.5 },
+    }),
+  }
+
+  const getCardPosition = (cardIndex: number) => {
+    if (cardIndex === currentCardIndex) return "center"
+    if (cardIndex < currentCardIndex) return "left"
+    return "right"
   }
 
   if (authLoading || isLoading) {
@@ -209,25 +238,20 @@ const CarteMobile: React.FC = () => {
           Mes cartes
         </motion.h1>
 
-        {/* Card Display */}
-        <motion.div
-          className="card-container"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <motion.div
-            className="card-wrapper"
-            ref={cardContainerRef}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            onDragEnd={handleSwipe}
-          >
+        {/* Updated Card Display */}
+        <motion.div className="card-container">
+          <motion.div className="card-wrapper" drag="x" dragConstraints={dragConstraints} onDragEnd={handleDragEnd}>
             {cards.map((card, index) => (
-              <div key={card.id} className="credit-card">
+              <motion.div
+                key={card.id}
+                className="credit-card"
+                custom={index}
+                variants={cardVariants}
+                animate={getCardPosition(index)}
+              >
                 <div className="card-header">
                   <span className="card-type">{card.cardType}</span>
-                  <button className="toggle-visibility" onClick={() => setIsCardNumberVisible(!isCardNumberVisible)}>
+                  <button className="toggle-visibility" onClick={toggleCardNumber}>
                     <IonIcon icon={isCardNumberVisible ? eyeOffOutline : eyeOutline} />
                   </button>
                 </div>
@@ -247,7 +271,7 @@ const CarteMobile: React.FC = () => {
                     <IonImg src="../amen_logo.png" className="bank-name" />
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
         </motion.div>
