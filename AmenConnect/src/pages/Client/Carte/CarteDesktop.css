@@ -105,6 +105,9 @@
   gap: 4px;
   font-size: 14px;
 }
+.carte-desktop-card_title{
+  color: #ffffff;
+}
 
 .carte-desktop__bank-name {
   width: 40%;
@@ -315,4 +318,6 @@ ion-progress-bar {
   margin-bottom: 20px;
   color: #ff4d4d;
 }
-
+.desktop-carte_balance{
+  color: #ffffff;
+}
