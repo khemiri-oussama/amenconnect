@@ -14,7 +14,7 @@ import {
   IonButton,
 } from "@ionic/react"
 import { eyeOutline, eyeOffOutline } from "ionicons/icons"
-import { motion, AnimatePresence, type PanInfo } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import "./CarteMobile.css"
 import NavMobile from "../../../components/NavMobile"
 import { useAuth } from "../../../AuthContext"
@@ -91,9 +91,11 @@ const CarteMobile: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isLongPressing, setIsLongPressing] = useState(false)
+  const [longPressProgress, setLongPressProgress] = useState(0)
 
-  const cardContainerRef = useRef<HTMLDivElement>(null)
-  const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0 })
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null)
+  const longPressDuration = 500 // milliseconds
 
   useEffect(() => {
     if (profile && profile.cartes && profile.cartes.length > 0) {
@@ -104,7 +106,7 @@ const CarteMobile: React.FC = () => {
           cardNumber: card.CardNumber,
           cardHolder: card.CardHolder,
           expiryDate: card.ExpiryDate,
-          cardType: "Carte bancaire",
+          cardType: "CARTE BANCAIRE",
           balance: account?.solde || 0,
           pendingTransactions: 0,
           monthlySpendingLimit: 5000,
@@ -114,7 +116,6 @@ const CarteMobile: React.FC = () => {
         }
       })
       setCards(cardsFromProfile)
-      setDragConstraints({ left: -((cardsFromProfile.length - 1) * 300), right: 0 })
     }
   }, [profile])
 
@@ -155,39 +156,31 @@ const CarteMobile: React.FC = () => {
     }
   }
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const threshold = 100
-    const dragDistance = info.offset.x
-    const dragDirection = dragDistance < 0 ? 1 : -1
+  const handleLongPressStart = () => {
+    setIsLongPressing(true)
+    setLongPressProgress(0)
+    longPressTimer.current = setInterval(() => {
+      setLongPressProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(longPressTimer.current as NodeJS.Timeout)
+          navigateCards()
+          return 0
+        }
+        return prev + 10
+      })
+    }, longPressDuration / 10)
+  }
 
-    if (Math.abs(dragDistance) > threshold) {
-      const newIndex = (currentCardIndex + dragDirection + cards.length) % cards.length
-      setCurrentCardIndex(newIndex)
+  const handleLongPressEnd = () => {
+    setIsLongPressing(false)
+    setLongPressProgress(0)
+    if (longPressTimer.current) {
+      clearInterval(longPressTimer.current)
     }
   }
 
-  const cardVariants = {
-    active: (index: number) => ({
-      rotateY: 0,
-      scale: 1,
-      x: 0,
-      y: 0,
-      zIndex: cards.length - index,
-      transition: { duration: 0.5 },
-    }),
-    inactive: (index: number) => ({
-      rotateY: 0,
-      scale: 0.95,
-      x: 0,
-      y: -10 * (cards.length - index - 1),
-      zIndex: index,
-      transition: { duration: 0.5 },
-    }),
-  }
-
-  const getCardPosition = (cardIndex: number) => {
-    if (cardIndex === currentCardIndex) return "active"
-    return "inactive"
+  const navigateCards = () => {
+    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length)
   }
 
   if (authLoading || isLoading) {
@@ -218,7 +211,7 @@ const CarteMobile: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent fullscreen className="ion-padding-horizontal">
+      <IonContent fullscreen>
         <div className="status-bar"></div>
 
         <motion.h1
@@ -230,22 +223,21 @@ const CarteMobile: React.FC = () => {
           Mes cartes
         </motion.h1>
 
-        {/* Updated Card Display */}
-        <motion.div className="card-container">
-          <motion.div
-            className="card-wrapper"
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            onDragEnd={handleDragEnd}
-          >
+        {/* Card Display */}
+        <div className="card-container">
+          <div className="card-wrapper">
             {cards.map((card, index) => (
               <motion.div
                 key={card.id}
-                className="credit-card"
-                custom={index}
-                variants={cardVariants}
-                animate={getCardPosition(index)}
-                style={{ originY: 1 }}
+                className={`credit-card ${index === currentCardIndex ? "active" : ""}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onTouchStart={handleLongPressStart}
+                onTouchEnd={handleLongPressEnd}
+                onMouseDown={handleLongPressStart}
+                onMouseUp={handleLongPressEnd}
+                onMouseLeave={handleLongPressEnd}
               >
                 <div className="card-header">
                   <span className="card-type">{card.cardType}</span>
@@ -255,24 +247,18 @@ const CarteMobile: React.FC = () => {
                 </div>
                 <div className="card-body">
                   <IonImg src="../puce.png" className="chip" alt="Card chip" />
-                  <motion.div className="card-number" animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}>
-                    {formatCardNumber(card.cardNumber, isCardNumberVisible)}
-                  </motion.div>
+                  <div className="card-number">{formatCardNumber(card.cardNumber, isCardNumberVisible)}</div>
                   <div className="card-holder">{card.cardHolder}</div>
                 </div>
-                <div className="card-footer">
-                  <div className="expiry">
-                    <span>Expire à </span>
-                    <span>{card.expiryDate}</span>
+                {isLongPressing && (
+                  <div className="long-press-indicator">
+                    <div className="long-press-progress" style={{ width: `${longPressProgress}%` }}></div>
                   </div>
-                  <div className="bank-logo">
-                    <IonImg src="../amen_logo.png" className="bank-name" alt="Bank logo" />
-                  </div>
-                </div>
+                )}
               </motion.div>
             ))}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Segments */}
         <IonSegment
@@ -303,13 +289,12 @@ const CarteMobile: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <h2>Détails de la carte</h2>
+              <h2 className="section-title">Détails de la carte</h2>
               {[
                 { label: "Titulaire de la carte", value: cards[currentCardIndex]?.cardHolder },
-                { label: "Type de la carte", value: cards[currentCardIndex]?.cardType },
-                { label: "Plafond retrait", value: formatCurrency(cards[currentCardIndex]?.withdrawalLimit || 0) },
-                { label: "Plafond total", value: formatCurrency(cards[currentCardIndex]?.monthlySpendingLimit || 0) },
-                { label: "Date d'expiration", value: cards[currentCardIndex]?.expiryDate },
+                { label: "Type de la carte", value: "Carte bancaire" },
+                { label: "Plafond retrait", value: "TND 1 000.000" },
+                { label: "Plafond total", value: "TND 5 000.000" },
               ].map((detail, index) => (
                 <motion.div
                   key={index}
@@ -333,7 +318,7 @@ const CarteMobile: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <h2>Encours de la carte</h2>
+              <h2 className="section-title">Encours de la carte</h2>
               <div className="encours-amount">
                 <span>Montant disponible</span>
                 <span className="amount">{formatCurrency(cards[currentCardIndex]?.balance || 0)}</span>
@@ -349,7 +334,7 @@ const CarteMobile: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <h2>Dernières opérations</h2>
+              <h2 className="section-title">Dernières opérations</h2>
               {transactions.map((transaction, index) => (
                 <motion.div
                   key={transaction.id}

@@ -4,6 +4,7 @@
   --background-dark: #121212;
   --card-background: rgba(255, 255, 255, 0.05);
   --text-gray: rgba(255, 255, 255, 0.6);
+  --card-blue: #2b4c8c;
 }
 
 /* Content Styles */
@@ -27,97 +28,43 @@ ion-content {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Credit Card Display */
-.card-display {
-  margin-bottom: 30px;
-  perspective: 1000px;
-}
-
-/* Updated and new styles for card game shuffle animation */
+/* Card Container */
 .card-container {
   position: relative;
   width: 100%;
-  height: 240px;
-  perspective: 1000px;
-  overflow: visible;
+  height: 220px;
+  margin-bottom: 20px;
+  padding: 0 20px;
 }
 
 .card-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
-  transform-style: preserve-3d;
 }
 
+/* Credit Card */
 .credit-card {
   position: absolute;
   width: 100%;
-  max-width: 360px;
-  height: 220px;
-  backface-visibility: hidden;
-  transform-origin: center center;
-  transition: all 0.5s ease;
-  cursor: grab;
-}
-
-.credit-card:active {
-  cursor: grabbing;
-}
-
-/* Card color variations */
-.credit-card:nth-child(1) {
-  --card-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-}
-
-.credit-card:nth-child(2) {
-  --card-gradient: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
-}
-
-.credit-card:nth-child(3) {
-  --card-gradient: linear-gradient(135deg, #3a7bd5 0%, #3a6073 100%);
-}
-
-.credit-card:nth-child(4) {
-  --card-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-}
-
-.credit-card {
-  background: var(--card-gradient);
+  height: 100%;
+  background: var(--card-blue);
   border-radius: 16px;
   padding: 24px;
-  height: 220px;
-  width: 360px;
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  color: white;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  margin: 0 auto;
+  display: none; /* Hide all cards by default */
 }
 
-.credit-card::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-  transform: rotate(30deg);
-}
-
-.credit-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+.credit-card.active {
+  display: block; /* Show only active card */
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 30px;
 }
 
 .card-type {
@@ -134,32 +81,25 @@ ion-content {
   color: white;
   font-size: 22px;
   cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-.toggle-visibility:hover {
   opacity: 0.8;
 }
 
 .card-body {
-  margin: 20px 0;
+  margin-bottom: 30px;
 }
 
 .chip {
-  width: 50px;
-  height: 38px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  width: 45px;
+  height: 35px;
+  margin-bottom: 25px;
 }
 
 .card-number {
   color: white;
-  font-size: 22px;
-  font-family: "Courier New", monospace;
+  font-size: 18px;
+  font-family: monospace;
   letter-spacing: 2px;
   margin-bottom: 20px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .card-holder {
@@ -167,59 +107,25 @@ ion-content {
   font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-weight: 500;
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  color: white;
-}
-
-.expiry {
-  flex-direction: row;
-  gap: 4px;
-  font-size: 14px;
-}
-
-.bank-name {
-  display: flow;
-  width: 60%;
-  height: 60%;
-  margin-left: 40%;
-  filter: brightness(0) invert(1);
-  opacity: 0.8;
-}
-
-.card-details {
-  align-items: stretch;
-  flex-direction: column;
 }
 
 /* Segment Control */
 .custom-segment {
   background: var(--card-background);
-  border-radius: 16px;
-  --background: transparent;
+  border-radius: 20px;
+  margin: 0 20px 20px;
   padding: 4px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 ion-segment-button {
   --background-checked: rgba(255, 255, 255, 0.1);
   --color-checked: white;
   --color: var(--text-gray);
-  --indicator-color: var(--primary-green);
+  --indicator-color: transparent;
   min-height: 36px;
   font-weight: 500;
-  transition: all 0.3s ease;
-  border-radius: 12px;
-}
-
-ion-segment-button:hover {
-  --color: white;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* Card Details Section */
@@ -228,14 +134,11 @@ ion-segment-button:hover {
 .card-operations {
   background: var(--card-background);
   border-radius: 16px;
+  margin: 0 20px;
   padding: 20px;
-  margin-top: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.card-details h2,
-.card-encours h2,
-.card-operations h2 {
+.section-title {
   color: white;
   font-size: 20px;
   margin-bottom: 20px;
@@ -258,150 +161,39 @@ ion-segment-button:hover {
 .detail-value {
   color: white;
   font-size: 16px;
-  font-weight: 500;
 }
 
-.encours-amount {
+/* Long press indicator */
+.long-press-indicator {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  height: 4px;
+  width: 100px;
+  overflow: hidden;
+}
+
+.long-press-progress {
+  height: 100%;
+  width: 0;
+  background-color: white;
+  transition: width 0.5s linear;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--background-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 0;
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  margin-top: 15px;
-}
-
-.encours-amount span {
-  color: var(--text-gray);
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.encours-amount .amount {
-  color: var(--primary-green);
-  font-size: 32px;
-  font-weight: 700;
-}
-
-.operation-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.operation-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.operation-date {
-  font-size: 12px;
-  color: var(--text-gray);
-  margin-bottom: 4px;
-}
-
-.operation-description {
-  font-size: 14px;
-  color: white;
-}
-
-.operation-amount {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.operation-amount.negative {
-  color: #ff4d4d;
-}
-
-.operation-amount.positive {
-  color: var(--primary-green);
-}
-
-/* iOS Specific Styles */
-.ios .status-bar {
-  height: 50px;
-}
-
-/* Android Specific Styles */
-.md .status-bar {
-  height: 24px;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.slide-up {
-  animation: slideUp 0.5s ease-in-out;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .page-title {
-    font-size: 24px;
-  }
-
-  .credit-card {
-    padding: 20px;
-    height: 200px;
-    width: 320px;
-  }
-
-  .card-number {
-    font-size: 18px;
-  }
-
-  .card-holder {
-    font-size: 14px;
-  }
-
-  .custom-segment {
-    margin-bottom: 15px;
-  }
-
-  .card-details,
-  .card-encours,
-  .card-operations {
-    padding: 15px;
-  }
-
-  .card-details h2,
-  .card-encours h2,
-  .card-operations h2 {
-    font-size: 18px;
-  }
-
-  .detail-label {
-    font-size: 13px;
-  }
-
-  .detail-value {
-    font-size: 15px;
-  }
-
-  .encours-amount .amount {
-    font-size: 28px;
-  }
 }
 
