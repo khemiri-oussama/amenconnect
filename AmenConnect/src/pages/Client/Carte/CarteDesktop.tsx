@@ -293,7 +293,7 @@ const CarteDesktop: React.FC = () => {
 
             <IonCard className="carte-desktop__card-limits">
               <IonCardHeader>
-                <IonCardTitle>Limites de la carte</IonCardTitle>
+                <IonCardTitle className="carte-desktop-card_title">Limites de la carte</IonCardTitle>
               </IonCardHeader>
               <IonCardContent>
                 <div className="carte-desktop__limit-item">
@@ -358,14 +358,14 @@ const CarteDesktop: React.FC = () => {
                     <IonCard className="carte-desktop__balance-card">
                       <IonCardContent>
                         <h4>Solde actuel</h4>
-                        <h2>{formatCurrency(cardDetails?.balance || 0)}</h2>
+                        <h2 className="desktop-carte_balance">{formatCurrency(cardDetails?.balance || 0)}</h2>
                         <IonChip color="success">+2,4% par rapport au mois dernier</IonChip>
                       </IonCardContent>
                     </IonCard>
                     <IonCard className="carte-desktop__balance-card">
                       <IonCardContent>
                         <h4>Transactions en attente</h4>
-                        <h2>{formatCurrency(cardDetails?.pendingTransactions || 0)}</h2>
+                        <h2 className="desktop-carte_balance">{formatCurrency(cardDetails?.pendingTransactions || 0)}</h2>
                         <span>3 transactions en attente</span>
                       </IonCardContent>
                     </IonCard>
@@ -373,7 +373,7 @@ const CarteDesktop: React.FC = () => {
 
                   <IonCard className="carte-desktop__recent-transactions">
                     <IonCardHeader>
-                      <IonCardTitle>Transactions récentes</IonCardTitle>
+                      <IonCardTitle className="carte-desktop-card_title">Transactions récentes</IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
                       <IonList>
@@ -400,7 +400,7 @@ const CarteDesktop: React.FC = () => {
 
               {activeTab === "analytics" && (
                 <div className="carte-desktop__analytics-tab">
-                  <h3>Analyse des dépenses</h3>
+                  <h3 className="carte-desktop-card_title">Analyse des dépenses</h3>
                   <IonList className="carte-desktop__spending-categories">
                     {spendingCategories.map((category, index) => (
                       <IonItem key={index} className="carte-desktop__category-item">
@@ -418,7 +418,7 @@ const CarteDesktop: React.FC = () => {
                   </IonList>
 
                   <div className="carte-desktop__spending-insights">
-                    <h4>Aperçus</h4>
+                    <h4 className="carte-desktop-card_title">Aperçus</h4>
                     <div className="carte-desktop__insights-grid">
                       <IonCard className="carte-desktop__insight-card">
                         <IonCardContent>
@@ -476,7 +476,7 @@ const CarteDesktop: React.FC = () => {
 
                   <IonCard className="carte-desktop__security-features">
                     <IonCardHeader>
-                      <IonCardTitle>Fonctionnalités de sécurité</IonCardTitle>
+                      <IonCardTitle className="carte-desktop-card_title">Fonctionnalités de sécurité</IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
                       <div className="carte-desktop__features-grid">
