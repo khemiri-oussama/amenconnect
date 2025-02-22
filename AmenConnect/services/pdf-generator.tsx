@@ -1,3 +1,4 @@
+//services/pdf-generator.tsx
 import { jsPDF } from "jspdf"
 import "jspdf-autotable"
 import QRCode from "qrcode"
@@ -54,96 +55,90 @@ export interface StatementConfig {
 }
 
 declare module "jspdf" {
-    interface jsPDF {
-      autoTable: (options: {
-        startY: number;
-        head: string[][];
-        body: string[][];
-        theme?: string;
-        styles?: {
-          fontSize?: number;
-          cellPadding?: number;
-          lineColor?: number[];
-          lineWidth?: number;
-        };
-        headStyles?: {
-          fillColor?: number[];
-          textColor?: number[];
-          fontSize?: number;
-          fontStyle?: string;
+  interface jsPDF {
+    autoTable: (options: {
+      startY: number;
+      head: string[][];
+      body: string[][];
+      theme?: string;
+      styles?: {
+        fontSize?: number;
+        cellPadding?: number;
+        lineColor?: number[];
+        lineWidth?: number;
+      };
+      headStyles?: {
+        fillColor?: number[];
+        textColor?: number[];
+        fontSize?: number;
+        fontStyle?: string;
+        halign?: "left" | "center" | "right";
+      };
+      columnStyles?: {
+        [key: number]: {
           halign?: "left" | "center" | "right";
         };
-        columnStyles?: {
-          [key: number]: {
-            halign?: "left" | "center" | "right";
-          };
-        };
-        alternateRowStyles?: {
-          fillColor?: number[];
-        };
-        bodyStyles?: {
-          fontSize?: number;
-        };
-        didDrawCell?: (data: {
-          section: "head" | "body";
-          column: { index: number };
-          cell: { raw: unknown };
-        }) => void;
-      }) => jsPDF;
-  
-      // Simplified internal type extension
-      internal: {
-        getNumberOfPages(): number;
-        pageSize: {
-          getWidth(): number;
-          getHeight(): number;
-        };
-      } & jsPDF["internal"]; // Merge with existing internal type
-  
-      // Standard method declarations
-      setTextColor(r: number, g: number, b: number): jsPDF;
-      setTextColor(r: number[]): jsPDF;
-      text(
-        text: string | string[],
-        x: number,
-        y: number,
-        options?: {
-          align?: "left" | "center" | "right";
-        }
-      ): jsPDF;
-      rect(x: number, y: number, w: number, h: number, style?: string): jsPDF;
-      roundedRect(
-        x: number,
-        y: number,
-        w: number,
-        h: number,
-        rx: number,
-        ry: number,
-        style?: string
-      ): jsPDF;
-      setFillColor(r: number, g: number, b: number): jsPDF;
-      setFillColor(r: number[]): jsPDF;
-      setDrawColor(r: number, g: number, b: number): jsPDF;
-      setDrawColor(r: number[]): jsPDF;
-      line(x1: number, y1: number, x2: number, y2: number): jsPDF;
-      addImage(
-        imageData: string | HTMLImageElement,
-        format: string,
-        x: number,
-        y: number,
-        w: number,
-        h: number
-      ): jsPDF;
-      save(filename: string): jsPDF;
-      setPage(pageNumber: number): jsPDF;
-    }
+      };
+      alternateRowStyles?: {
+        fillColor?: number[];
+      };
+      bodyStyles?: {
+        fontSize?: number;
+      };
+      didDrawCell?: (data: {
+        section: "head" | "body";
+        column: { index: number };
+        cell: { raw: unknown };
+      }) => void;
+    }) => jsPDF;
+
+    // Do not extend or override the existing "internal" type.
+    // When you need to call extra methods like getNumberOfPages, cast to any.
+    setTextColor(r: number, g: number, b: number): jsPDF;
+    setTextColor(r: number[]): jsPDF;
+    text(
+      text: string | string[],
+      x: number,
+      y: number,
+      options?: {
+        align?: "left" | "center" | "right";
+        angle?: number;
+      }
+    ): jsPDF;
+    rect(x: number, y: number, w: number, h: number, style?: string): jsPDF;
+    roundedRect(
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      rx: number,
+      ry: number,
+      style?: string
+    ): jsPDF;
+    setFillColor(r: number, g: number, b: number): jsPDF;
+    setFillColor(r: number[]): jsPDF;
+    setDrawColor(r: number, g: number, b: number): jsPDF;
+    setDrawColor(r: number[]): jsPDF;
+    line(x1: number, y1: number, x2: number, y2: number): jsPDF;
+    addImage(
+      imageData: string | HTMLImageElement,
+      format: string,
+      x: number,
+      y: number,
+      w: number,
+      h: number
+    ): jsPDF;
+    save(filename: string): jsPDF;
+    setPage(pageNumber: number): jsPDF;
+    setLineDash(segments: number[]): jsPDF;
   }
+}
 
 export const defaultBankBranding: BankBranding = {
   name: "Amen Bank",
   logo: "../amen_logo.png",
-  primaryColor: "#4CAF50",
-  secondaryColor: "#388E3C",
+  primaryColor: "#003366", // Dark blue
+  secondaryColor: "#0055A5", // Lighter blue
   address: ["Avenue Mohamed V", "Tunis 1002", "Tunisie"],
   website: "www.amenbank.com.tn",
   phone: "(+216) 71 148 000",
@@ -159,11 +154,11 @@ export const defaultStatementConfig: StatementConfig = {
   locale: "fr-FR",
   currency: "TND",
   theme: {
-    headerColor: [76, 175, 80],
-    textColor: [0, 0, 0],
-    accentColor: [56, 142, 60],
-    tableHeaderColor: [76, 175, 80],
-    alternateRowColor: [245, 245, 245],
+    headerColor: [0, 51, 102],       // Dark blue header
+    textColor: [33, 33, 33],         // Dark grey text for body
+    accentColor: [0, 102, 204],      // Blue accent for borders and highlights
+    tableHeaderColor: [0, 51, 102],  // Dark blue table header
+    alternateRowColor: [240, 240, 240],
   },
 }
 
@@ -202,24 +197,46 @@ export const generateBankStatement = async ({
       format: "a4",
     })
 
-    // Add subtle background pattern
+    // ─── Background Pattern ──────────────────────────────
     const addBackgroundPattern = () => {
-      doc.setFillColor(245, 245, 245)
+      // Fill page with a light background
+      doc.setFillColor(250, 250, 250)
+      doc.rect(0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight(), "F")
+      // Add subtle horizontal lines for texture
       doc.setDrawColor(230, 230, 230)
-      for (let i = 0; i < doc.internal.pageSize.height; i += 10) {
-        doc.line(0, i, doc.internal.pageSize.width, i)
+      for (let i = 0; i < doc.internal.pageSize.getHeight(); i += 10) {
+        doc.line(0, i, doc.internal.pageSize.getWidth(), i)
       }
     }
-
-    // Add background pattern to all pages
     addBackgroundPattern()
 
-    // Add decorative header bar
+    // ─── Enhanced Header ──────────────────────────────
+    const headerHeight = 40
     const headerColor = mergedConfig.theme.headerColor
+    // Draw solid header background
     doc.setFillColor(headerColor[0], headerColor[1], headerColor[2])
-    doc.rect(0, 0, doc.internal.pageSize.width, 35, "F")
+    doc.rect(0, 0, doc.internal.pageSize.getWidth(), headerHeight, "F")
 
-    // Load and add bank logo with better positioning
+    // ─── Bank Contact (Top Left) ──────────────────────────────
+    doc.setFont("helvetica", "normal")
+    doc.setFontSize(9)
+    doc.setTextColor(255, 255, 255)
+    const bankContact = [
+      mergedBranding.name,
+      ...mergedBranding.address,
+      `Tél: ${mergedBranding.phone}`,
+      `Email: ${mergedBranding.email}`,
+      `Site web: ${mergedBranding.website}`,
+    ]
+    // Render bank contact in the top left corner inside the header
+    doc.text(bankContact, 10, 10)
+
+    // ─── Title "Relevé bancaire" (Centered Top) ──────────────────────────────
+    doc.setFont("helvetica", "bold")
+    doc.setFontSize(20)
+    doc.text("Relevé bancaire", doc.internal.pageSize.getWidth() / 2, 20, { align: "center" })
+
+    // ─── Bank Logo (Optional, Top Right) ──────────────────────────────
     if (mergedConfig.showLogo) {
       try {
         const img = new Image()
@@ -229,90 +246,97 @@ export const generateBankStatement = async ({
           img.onerror = reject
           img.src = mergedBranding.logo
         })
-        doc.addImage(img, "PNG", 15, 5, 30, 15)
+        // Position logo at top right within the header area
+        doc.addImage(img, "PNG", doc.internal.pageSize.getWidth() - 55, 10, 45, 20)
       } catch (error) {
         console.error("Error loading bank logo:", error)
       }
     }
 
-    // Add bank information with improved styling
-    if (mergedConfig.showBankInfo) {
-      doc.setFontSize(8)
-      doc.setTextColor(255, 255, 255)
-      const bankInfo = [
-        mergedBranding.name,
-        ...mergedBranding.address,
-        `Tél: ${mergedBranding.phone}`,
-        `Email: ${mergedBranding.email}`,
-        `Site web: ${mergedBranding.website}`,
-      ]
-      doc.text(bankInfo, doc.internal.pageSize.width - 45, 12, { align: "right" })
-    }
-
-    // Add statement header with enhanced design
-    doc.setFontSize(24)
-    doc.setTextColor(255, 255, 255)
-    doc.text("Relevé bancaire", 15, 20)
-
-    // Add statement period with better positioning
+    // ─── Statement Period (Below Header) ──────────────────────────────
     const today = new Date()
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+    doc.setFont("helvetica", "normal")
     doc.setFontSize(10)
-    const textColor = mergedConfig.theme.textColor
-    doc.setTextColor(textColor[0], textColor[1], textColor[2])
+    doc.setTextColor(
+      mergedConfig.theme.textColor[0],
+      mergedConfig.theme.textColor[1],
+      mergedConfig.theme.textColor[2],
+    )
     doc.text(
-      `Période: ${firstDayOfMonth.toLocaleDateString(mergedConfig.locale)} - ${today.toLocaleDateString(
-        mergedConfig.locale,
-      )}`,
+      `Période: ${firstDayOfMonth.toLocaleDateString(mergedConfig.locale)} - ${today.toLocaleDateString(mergedConfig.locale)}`,
       15,
-      45,
+      headerHeight + 10,
     )
 
-    // Add card info in a styled box
-    const accentColor = mergedConfig.theme.accentColor
-    doc.setDrawColor(accentColor[0], accentColor[1], accentColor[2])
-    doc.setFillColor(250, 250, 250)
-    doc.roundedRect(15, 50, 180, 35, 3, 3, "FD")
+    // ─── Card Information Box ──────────────────────────────
+    const cardBoxX = 15,
+      cardBoxY = headerHeight + 20,
+      cardBoxWidth = 180,
+      cardBoxHeight = 35
+    // Draw white background for card info box
+    doc.setFillColor(255, 255, 255)
+    doc.roundedRect(cardBoxX, cardBoxY, cardBoxWidth, cardBoxHeight, 3, 3, "F")
+    // Draw dashed border for enhanced visual separation
+    doc.setDrawColor(
+      mergedConfig.theme.accentColor[0],
+      mergedConfig.theme.accentColor[1],
+      mergedConfig.theme.accentColor[2],
+    )
+    doc.setLineDash([2, 2])
+    doc.roundedRect(cardBoxX, cardBoxY, cardBoxWidth, cardBoxHeight, 3, 3, "D")
+    doc.setLineDash([])
 
-    // Add card info with icons and better formatting
-    const cardInfoY = 58
+    // Add card details text
+    const cardInfoY = cardBoxY + 10
+    doc.setFont("helvetica", "normal")
     doc.setFontSize(12)
-    doc.text(`Titulaire: ${cardDetails.cardHolder}`, 20, cardInfoY)
-    doc.text(`Numéro de carte: ****${cardDetails.cardNumber.slice(-4)}`, 20, cardInfoY + 8)
+    doc.setTextColor(
+      mergedConfig.theme.textColor[0],
+      mergedConfig.theme.textColor[1],
+      mergedConfig.theme.textColor[2],
+    )
+    doc.text(`Titulaire: ${cardDetails.cardHolder}`, cardBoxX + 5, cardInfoY)
+    doc.text(`Numéro de carte: ****${cardDetails.cardNumber.slice(-4)}`, cardBoxX + 5, cardInfoY + 8)
     doc.text(
       `Solde actuel: ${formatCurrency(cardDetails.balance, mergedConfig.locale, mergedConfig.currency)}`,
-      20,
+      cardBoxX + 5,
       cardInfoY + 16,
     )
 
-    // Add summary section with enhanced styling
+    // ─── Summary Section ──────────────────────────────
     const totalCredit = transactions.filter((t) => t.type === "credit").reduce((sum, t) => sum + t.amount, 0)
     const totalDebit = transactions.filter((t) => t.type === "debit").reduce((sum, t) => sum + t.amount, 0)
-
-    // Add summary box
-    doc.roundedRect(15, 90, 180, 40, 3, 3, "FD")
-
-    doc.setFontSize(14)
-    doc.text("Résumé des opérations", 20, 100)
-
-    // Add summary with colored amounts
-    const summaryY = 110
-    doc.setFontSize(11)
-    doc.text("Total des crédits:", 25, summaryY)
-    doc.setTextColor(46, 125, 50) // Green for credits
-    doc.text(formatCurrency(totalCredit, mergedConfig.locale, mergedConfig.currency), 90, summaryY)
-
-    doc.setTextColor(textColor[0], textColor[1], textColor[2])
-    doc.text("Total des débits:", 25, summaryY + 8)
-    doc.setTextColor(211, 47, 47) // Red for debits
-    doc.text(formatCurrency(totalDebit, mergedConfig.locale, mergedConfig.currency), 90, summaryY + 8)
-
-    doc.text("Solde net:", 25, summaryY + 16)
     const netBalance = totalCredit - totalDebit
-    doc.setTextColor(netBalance >= 0 ? 46 : 211, netBalance >= 0 ? 125 : 47, netBalance >= 0 ? 50 : 47)
-    doc.text(formatCurrency(netBalance, mergedConfig.locale, mergedConfig.currency), 90, summaryY + 16)
 
-    // Generate QR code for digital verification
+    const summaryBoxY = cardBoxY + cardBoxHeight + 10
+    doc.roundedRect(15, summaryBoxY, 180, 40, 3, 3, "F")
+    doc.setFillColor(245, 245, 245)
+    doc.roundedRect(15, summaryBoxY, 180, 40, 3, 3, "F")
+    doc.setFont("helvetica", "bold")
+    doc.setFontSize(14)
+    doc.text("Résumé des opérations", 20, summaryBoxY + 12)
+
+    // Display credits, debits, and net balance
+    doc.setFont("helvetica", "normal")
+    doc.setFontSize(11)
+    const summaryY = summaryBoxY + 22
+    doc.setTextColor(0, 102, 0) // Green for credits
+    doc.text("Total des crédits:", 25, summaryY)
+    doc.text(formatCurrency(totalCredit, mergedConfig.locale, mergedConfig.currency), 110, summaryY)
+    doc.setTextColor(204, 0, 0) // Red for debits
+    doc.text("Total des débits:", 25, summaryY + 8)
+    doc.text(formatCurrency(totalDebit, mergedConfig.locale, mergedConfig.currency), 110, summaryY + 8)
+    doc.setTextColor(
+      mergedConfig.theme.textColor[0],
+      mergedConfig.theme.textColor[1],
+      mergedConfig.theme.textColor[2],
+    )
+    doc.text("Solde net:", 25, summaryY + 16)
+    doc.setTextColor(netBalance >= 0 ? 0 : 204, netBalance >= 0 ? 102 : 0, netBalance >= 0 ? 0 : 0)
+    doc.text(formatCurrency(netBalance, mergedConfig.locale, mergedConfig.currency), 110, summaryY + 16)
+
+    // ─── QR Code for Verification ──────────────────────────────
     const qrData = await QRCode.toDataURL(
       JSON.stringify({
         cardNumber: cardDetails.cardNumber.slice(-4),
@@ -321,9 +345,10 @@ export const generateBankStatement = async ({
         totalDebit,
       }),
     )
-    doc.addImage(qrData, "PNG", 160, 95, 30, 30)
+    doc.addImage(qrData, "PNG", 155, summaryBoxY + 5, 30, 30)
 
-    // Add transactions table with improved styling
+    // ─── Transactions Table ──────────────────────────────
+    const tableHead = [["Date", "Description", "Montant", "Catégorie"]]
     const tableData = transactions.map((t) => [
       t.date,
       t.merchant,
@@ -334,8 +359,8 @@ export const generateBankStatement = async ({
     ])
 
     doc.autoTable({
-      startY: 140,
-      head: [["Date", "Description", "Montant", "Catégorie"]],
+      startY: summaryBoxY + 50,
+      head: tableHead,
       body: tableData,
       theme: "grid",
       styles: {
@@ -366,60 +391,50 @@ export const generateBankStatement = async ({
         if (data.section === "body" && data.column.index === 2) {
           const amount = data.cell.raw as string
           if (amount.startsWith("-")) {
-            doc.setTextColor(211, 47, 47) // Red for debits
+            doc.setTextColor(204, 0, 0) // Red for debits
           } else {
-            doc.setTextColor(46, 125, 50) // Green for credits
+            doc.setTextColor(0, 102, 0) // Green for credits
           }
         }
       },
     })
 
-    // Add footer with enhanced design
+    // ─── Footer ──────────────────────────────
     if (mergedConfig.showFooter) {
-      const pageCount = doc.internal.getNumberOfPages()
-
+      // Cast doc.internal to any so that we can use the extra method getNumberOfPages without type conflict.
+      const pageCount = (doc.internal as any).getNumberOfPages()
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i)
-
-        // Add decorative footer bar
+        // Footer background matching header color
         doc.setFillColor(headerColor[0], headerColor[1], headerColor[2])
-        doc.rect(0, doc.internal.pageSize.height - 20, doc.internal.pageSize.width, 20, "F")
-
-        // Add page numbers if enabled
-        if (mergedConfig.showPageNumbers) {
-          doc.setFontSize(9)
-          doc.setTextColor(255, 255, 255)
-          doc.text(`Page ${i} sur ${pageCount}`, doc.internal.pageSize.width / 2, doc.internal.pageSize.height - 7, {
-            align: "center",
-          })
-        }
-
-        // Add generation timestamp
-        doc.setFontSize(8)
+        doc.rect(0, doc.internal.pageSize.getHeight() - 20, doc.internal.pageSize.getWidth(), 20, "F")
+        // Page number and generation timestamp
+        doc.setFont("helvetica", "normal")
+        doc.setFontSize(9)
         doc.setTextColor(255, 255, 255)
+        if (mergedConfig.showPageNumbers) {
+          doc.text(
+            `Page ${i} sur ${pageCount}`,
+            doc.internal.pageSize.getWidth() / 2,
+            doc.internal.pageSize.getHeight() - 7,
+            { align: "center" },
+          )
+        }
         doc.text(
-          `Document généré le ${new Date().toLocaleDateString(mergedConfig.locale)} à ${new Date().toLocaleTimeString(
-            mergedConfig.locale,
-          )}`,
-          15,
-          doc.internal.pageSize.height - 7,
+          `Généré le ${new Date().toLocaleDateString(mergedConfig.locale)} à ${new Date().toLocaleTimeString(mergedConfig.locale)}`,
+          10,
+          doc.internal.pageSize.getHeight() - 7,
         )
-
-        // Add security notice
-        doc.text("Document bancaire confidentiel", doc.internal.pageSize.width - 15, doc.internal.pageSize.height - 7, {
-          align: "right",
-        })
       }
     }
 
-    // Save the PDF
-    const fileName = `releve_${cardDetails.cardHolder
-      .replace(/\s+/g, "_")
-      .toLowerCase()}_${new Date().toISOString().split("T")[0]}.pdf`
+    // ─── Save PDF ──────────────────────────────
+    const fileName = `releve_${cardDetails.cardHolder.replace(/\s+/g, "_").toLowerCase()}_${new Date()
+      .toISOString()
+      .split("T")[0]}.pdf`
     doc.save(fileName)
   } catch (error) {
     console.error("Erreur lors de la génération du PDF:", error)
     throw error
   }
 }
-
