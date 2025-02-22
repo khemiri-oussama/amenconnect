@@ -1,5 +1,7 @@
+"use client"
+
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
   IonContent,
   IonPage,
@@ -11,11 +13,8 @@ import {
   IonSpinner,
   IonButton,
 } from "@ionic/react"
-import {
-  eyeOutline,
-  eyeOffOutline,
-} from "ionicons/icons"
-import { motion, AnimatePresence } from "framer-motion"
+import { eyeOutline, eyeOffOutline } from "ionicons/icons"
+import { motion, AnimatePresence, type PanInfo } from "framer-motion"
 import "./CarteMobile.css"
 import NavMobile from "../../../components/NavMobile"
 import { useAuth } from "../../../AuthContext"
@@ -41,6 +40,10 @@ interface CardDetails {
   monthlySpending: number
   withdrawalLimit: number
   withdrawalAmount: number
+}
+
+interface Card extends CardDetails {
+  id: string
 }
 
 const mockFetchTransactions = (): Promise<Transaction[]> => {
@@ -83,29 +86,33 @@ const CarteMobile: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const [selectedSegment, setSelectedSegment] = useState<string>("details")
   const [isCardNumberVisible, setIsCardNumberVisible] = useState(false)
-  const [cardDetails, setCardDetails] = useState<CardDetails | null>(null)
+  const [cards, setCards] = useState<Card[]>([])
+  const [currentCardIndex, setCurrentCardIndex] = useState(0)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  const cardContainerRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (profile && profile.cartes && profile.cartes.length > 0) {
-      const cardFromProfile = profile.cartes[0]
-      const account = profile.comptes.find(
-        (compte) => compte._id === cardFromProfile.comptesId
-      )
-      setCardDetails({
-        cardNumber: cardFromProfile.CardNumber,
-        cardHolder: cardFromProfile.CardHolder,
-        expiryDate: cardFromProfile.ExpiryDate,
-        cardType: "Carte bancaire",
-        balance: account?.solde || 0,
-        pendingTransactions: 0,
-        monthlySpendingLimit: 5000,
-        monthlySpending: 0,
-        withdrawalLimit: 1000,
-        withdrawalAmount: 0,
+      const cardsFromProfile = profile.cartes.map((card, index) => {
+        const account = profile.comptes.find((compte) => compte._id === card.comptesId)
+        return {
+          id: `card-${index}`,
+          cardNumber: card.CardNumber,
+          cardHolder: card.CardHolder,
+          expiryDate: card.ExpiryDate,
+          cardType: "Carte bancaire",
+          balance: account?.solde || 0,
+          pendingTransactions: 0,
+          monthlySpendingLimit: 5000,
+          monthlySpending: 0,
+          withdrawalLimit: 1000,
+          withdrawalAmount: 0,
+        }
       })
+      setCards(cardsFromProfile)
     }
   }, [profile])
 
@@ -136,13 +143,29 @@ const CarteMobile: React.FC = () => {
   }
 
   const formatCardNumber = (cardNumber: string, isVisible: boolean): string => {
-    if (!cardNumber) return ''
+    if (!cardNumber) return ""
     if (isVisible) {
-      return cardNumber.replace(/(\d{4})(?=\d)/g, '$1 ') // Add space every 4 digits
+      return cardNumber.replace(/(\d{4})(?=\d)/g, "$1 ") // Add space every 4 digits
     } else {
       // Show only last 4 digits with •••• prefix
-      const masked = cardNumber.slice(0, -4).replace(/\d/g, '•') + cardNumber.slice(-4)
-      return masked.replace(/(.{4})/g, '$1 ').trim() // Format with spaces
+      const masked = cardNumber.slice(0, -4).replace(/\d/g, "•") + cardNumber.slice(-4)
+      return masked.replace(/(.{4})/g, "$1 ").trim() // Format with spaces
+    }
+  }
+
+  const handleSwipe = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (cardContainerRef.current) {
+      const container = cardContainerRef.current
+      const containerWidth = container.offsetWidth
+      const swipeThreshold = containerWidth / 4
+
+      if (info.offset.x < -swipeThreshold && currentCardIndex < cards.length - 1) {
+        setCurrentCardIndex(currentCardIndex + 1)
+      } else if (info.offset.x > swipeThreshold && currentCardIndex > 0) {
+        setCurrentCardIndex(currentCardIndex - 1)
+      }
+
+      container.style.transform = `translateX(${-currentCardIndex * 100}%)`
     }
   }
 
@@ -188,38 +211,45 @@ const CarteMobile: React.FC = () => {
 
         {/* Card Display */}
         <motion.div
-          className="card-display"
+          className="card-container"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="credit-card">
-            <div className="card-header">
-              <span className="card-type">{cardDetails?.cardType}</span>
-              <button className="toggle-visibility" onClick={toggleCardNumber}>
-                <IonIcon icon={isCardNumberVisible ? eyeOffOutline : eyeOutline} />
-              </button>
-            </div>
-            <div className="card-body">
-              <IonImg src="../puce.png" className="chip" />
-              <motion.div
-                className="card-number"
-                animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}
-              >
-                {formatCardNumber(cardDetails?.cardNumber || '', isCardNumberVisible)}
-              </motion.div>
-              <div className="card-holder">{cardDetails?.cardHolder}</div>
-            </div>
-            <div className="card-footer">
-              <div className="expiry">
-                <span>Expire à </span>
-                <span>{cardDetails?.expiryDate}</span>
+          <motion.div
+            className="card-wrapper"
+            ref={cardContainerRef}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            onDragEnd={handleSwipe}
+          >
+            {cards.map((card, index) => (
+              <div key={card.id} className="credit-card">
+                <div className="card-header">
+                  <span className="card-type">{card.cardType}</span>
+                  <button className="toggle-visibility" onClick={() => setIsCardNumberVisible(!isCardNumberVisible)}>
+                    <IonIcon icon={isCardNumberVisible ? eyeOffOutline : eyeOutline} />
+                  </button>
+                </div>
+                <div className="card-body">
+                  <IonImg src="../puce.png" className="chip" />
+                  <motion.div className="card-number" animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}>
+                    {formatCardNumber(card.cardNumber, isCardNumberVisible)}
+                  </motion.div>
+                  <div className="card-holder">{card.cardHolder}</div>
+                </div>
+                <div className="card-footer">
+                  <div className="expiry">
+                    <span>Expire à </span>
+                    <span>{card.expiryDate}</span>
+                  </div>
+                  <div className="bank-logo">
+                    <IonImg src="../amen_logo.png" className="bank-name" />
+                  </div>
+                </div>
               </div>
-              <div className="bank-logo">
-                <IonImg src="../amen_logo.png" className="bank-name" />
-              </div>
-            </div>
-          </div>
+            ))}
+          </motion.div>
         </motion.div>
 
         {/* Segments */}
@@ -253,11 +283,11 @@ const CarteMobile: React.FC = () => {
             >
               <h2>Détails de la carte</h2>
               {[
-                { label: "Titulaire de la carte", value: cardDetails?.cardHolder },
-                { label: "Type de la carte", value: cardDetails?.cardType },
-                { label: "Plafond retrait", value: formatCurrency(cardDetails?.withdrawalLimit || 0) },
-                { label: "Plafond total", value: formatCurrency(cardDetails?.monthlySpendingLimit || 0) },
-                { label: "Date d'expiration", value: cardDetails?.expiryDate },
+                { label: "Titulaire de la carte", value: cards[currentCardIndex]?.cardHolder },
+                { label: "Type de la carte", value: cards[currentCardIndex]?.cardType },
+                { label: "Plafond retrait", value: formatCurrency(cards[currentCardIndex]?.withdrawalLimit || 0) },
+                { label: "Plafond total", value: formatCurrency(cards[currentCardIndex]?.monthlySpendingLimit || 0) },
+                { label: "Date d'expiration", value: cards[currentCardIndex]?.expiryDate },
               ].map((detail, index) => (
                 <motion.div
                   key={index}
@@ -284,7 +314,7 @@ const CarteMobile: React.FC = () => {
               <h2>Encours de la carte</h2>
               <div className="encours-amount">
                 <span>Montant disponible</span>
-                <span className="amount">{formatCurrency(cardDetails?.balance || 0)}</span>
+                <span className="amount">{formatCurrency(cards[currentCardIndex]?.balance || 0)}</span>
               </div>
             </motion.div>
           )}
@@ -326,3 +356,4 @@ const CarteMobile: React.FC = () => {
 }
 
 export default CarteMobile
+
