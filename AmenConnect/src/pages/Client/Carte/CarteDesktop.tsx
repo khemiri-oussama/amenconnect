@@ -1,5 +1,5 @@
 "use client"
-import Profile from "../accueil/MenuDesktop/ProfileMenu"
+
 import type React from "react"
 import { useState, useEffect } from "react"
 import {
@@ -30,13 +30,31 @@ import {
   trendingUpOutline,
   pieChartOutline,
   walletOutline,
-  eyeOutline,
-  eyeOffOutline,
 } from "ionicons/icons"
 import { motion } from "framer-motion"
 import "./CarteDesktop.css"
 import Navbar from "../../../components/Navbar"
-import { useAuth } from "../../../AuthContext" // Adjust the import path as needed
+import { useAuth } from "../../../AuthContext"
+import { jsPDF } from "jspdf"
+import "jspdf-autotable"
+
+interface AutoTableOptions {
+  startY: number
+  head: string[][]
+  body: string[][]
+  styles: {
+    fontSize: number
+  }
+  headStyles: {
+    fillColor: number[]
+  }
+}
+
+declare module "jspdf" {
+  interface jsPDF {
+    autoTable: (options: AutoTableOptions) => jsPDF
+  }
+}
 
 interface Transaction {
   id: string
@@ -151,9 +169,7 @@ const CarteDesktop: React.FC = () => {
   useEffect(() => {
     if (profile && profile.cartes && profile.cartes.length > 0) {
       const cardFromProfile = profile.cartes[0]
-      const account = profile.comptes.find(
-        (compte) => compte._id === cardFromProfile.comptesId
-      )
+      const account = profile.comptes.find((compte) => compte._id === cardFromProfile.comptesId)
       setCardDetails({
         cardNumber: cardFromProfile.CardNumber,
         cardHolder: cardFromProfile.CardHolder,
@@ -203,6 +219,45 @@ const CarteDesktop: React.FC = () => {
       style: "currency",
       currency: "TND",
     }).format(amount)
+  }
+
+  const downloadStatement = () => {
+    try {
+      // Create new PDF document
+      const doc = new jsPDF()
+
+      // Add header
+      doc.setFontSize(20)
+      doc.text("Relevé bancaire", 14, 15)
+
+      // Add card info
+      doc.setFontSize(12)
+      doc.text(`Titulaire: ${cardDetails?.cardHolder}`, 14, 25)
+      doc.text(`Numéro de carte: ****${cardDetails?.cardNumber.slice(-4)}`, 14, 32)
+      doc.text(`Date d'édition: ${new Date().toLocaleDateString("fr-FR")}`, 14, 39)
+
+      // Add transactions table
+      const tableData = transactions.map((t) => [
+        t.date,
+        t.merchant,
+        t.type === "debit" ? `-${formatCurrency(t.amount)}` : formatCurrency(t.amount),
+        t.category,
+      ])
+
+      doc.autoTable({
+        startY: 45,
+        head: [["Date", "Description", "Montant", "Catégorie"]],
+        body: tableData,
+        styles: { fontSize: 10 },
+        headStyles: { fillColor: [76, 175, 80] },
+      })
+
+      // Save the PDF
+      doc.save(`releve_${new Date().toISOString().split("T")[0]}.pdf`)
+    } catch (error) {
+      console.error("Error generating PDF:", error)
+      // You might want to show an error message to the user here
+    }
   }
 
   if (authLoading || isLoading) {
@@ -285,7 +340,7 @@ const CarteDesktop: React.FC = () => {
                 <IonIcon slot="start" icon={shieldOutline} />
                 Paramètres de sécurité
               </IonButton>
-              <IonButton expand="block" color="success">
+              <IonButton expand="block" color="success" onClick={downloadStatement}>
                 <IonIcon slot="start" icon={downloadOutline} />
                 Télécharger le relevé
               </IonButton>
@@ -365,7 +420,9 @@ const CarteDesktop: React.FC = () => {
                     <IonCard className="carte-desktop__balance-card">
                       <IonCardContent>
                         <h4>Transactions en attente</h4>
-                        <h2 className="desktop-carte_balance">{formatCurrency(cardDetails?.pendingTransactions || 0)}</h2>
+                        <h2 className="desktop-carte_balance">
+                          {formatCurrency(cardDetails?.pendingTransactions || 0)}
+                        </h2>
                         <span>3 transactions en attente</span>
                       </IonCardContent>
                     </IonCard>
@@ -423,9 +480,7 @@ const CarteDesktop: React.FC = () => {
                       <IonCard className="carte-desktop__insight-card">
                         <IonCardContent>
                           <IonIcon icon={trendingUpOutline} />
-                          <p>
-                            Vos dépenses pour les courses ont augmenté de 15% ce mois-ci
-                          </p>
+                          <p>Vos dépenses pour les courses ont augmenté de 15% ce mois-ci</p>
                         </IonCardContent>
                       </IonCard>
                       <IonCard className="carte-desktop__insight-card">
@@ -437,9 +492,7 @@ const CarteDesktop: React.FC = () => {
                       <IonCard className="carte-desktop__insight-card">
                         <IonCardContent>
                           <IonIcon icon={walletOutline} />
-                          <p>
-                            Économisez 200 € en réduisant les dépenses de divertissement
-                          </p>
+                          <p>Économisez 200 € en réduisant les dépenses de divertissement</p>
                         </IonCardContent>
                       </IonCard>
                     </div>
@@ -509,3 +562,4 @@ const CarteDesktop: React.FC = () => {
 }
 
 export default CarteDesktop
+
