@@ -100,6 +100,7 @@ interface CardDetails {
   monthlySpending: number
   withdrawalLimit: number
   withdrawalAmount: number
+  TypeCarte: String;
 }
 
 // Add these interfaces after the existing interfaces
@@ -250,13 +251,14 @@ const CarteDesktop: React.FC = () => {
         cardNumber: cardFromProfile.CardNumber,
         cardHolder: cardFromProfile.CardHolder,
         expiryDate: cardFromProfile.ExpiryDate,
-        cardType: "Carte bancaire",
+        cardType: cardFromProfile.TypeCarte,
         balance: account?.solde || 0,
         pendingTransactions: 0,
         monthlySpendingLimit: 5000,
         monthlySpending: 0,
         withdrawalLimit: 1000,
         withdrawalAmount: 0,
+        TypeCarte : cardFromProfile.TypeCarte,
       })
     }
   }, [profile])
@@ -495,6 +497,7 @@ const CarteDesktop: React.FC = () => {
                 <IonCardContent>
                   <div className="carte-desktop__card-body">
                     <IonImg src="../puce.png" className="carte-desktop__chip" />
+                    <div className="typeC">{cardDetails?.TypeCarte}</div>
                     <motion.div
                       className="carte-desktop__card-number"
                       animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}
