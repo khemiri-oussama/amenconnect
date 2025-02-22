@@ -1,4 +1,3 @@
-//accueil/AccueilMobile.tsx
 "use client"
 
 import type React from "react"
@@ -29,14 +28,22 @@ import { UserMenu } from "./MenuMobile/UserMenu"
 import NavMobile from "../../../components/NavMobile"
 import { useAuth } from "../../../AuthContext"
 
+interface CardDetails {
+  cardNumber: string
+  cardHolder: string
+  expiryDate: string
+  cardType: string
+}
+
 const AccueilMobile: React.FC = () => {
   const history = useHistory()
-  // Get the full profile and authLoading flag from the context
   const { profile, authLoading } = useAuth()
   const [showBalance, setShowBalance] = useState(true)
   const [notificationCount, setNotificationCount] = useState(3)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [today, setToday] = useState<string>("")
+  const [cartes, setCartes] = useState<CardDetails[]>([])
+  const [isLoadingCartes, setIsLoadingCartes] = useState(true)
 
   useEffect(() => {
     const currentDate = new Date()
@@ -48,11 +55,28 @@ const AccueilMobile: React.FC = () => {
     setToday(formattedDate)
   }, [])
 
-  if (authLoading) {
-    return <div>Loading...</div>
+  // Fetch cartes data from profile
+  useEffect(() => {
+    if (profile && profile.cartes && profile.cartes.length > 0) {
+      const cartesData = profile.cartes.map((carte) => ({
+        cardNumber: carte.CardNumber,
+        cardHolder: carte.CardHolder,
+        expiryDate: carte.ExpiryDate,
+        cardType: "Carte bancaire",
+      }))
+      setCartes(cartesData)
+      setIsLoadingCartes(false)
+    }
+  }, [profile])
+
+  if (authLoading || isLoadingCartes) {
+    return (
+      <div className="loading-container">
+        <p>Chargement des données...</p>
+      </div>
+    )
   }
 
-  // Retrieve the first account from profile, if available.
   const account =
     profile && profile.comptes && profile.comptes.length > 0
       ? profile.comptes[0]
@@ -67,6 +91,13 @@ const AccueilMobile: React.FC = () => {
       // Add refresh logic here
       event.detail.complete()
     }, 2000)
+  }
+
+  const formatCardNumber = (cardNumber: string): string => {
+    if (!cardNumber) return ''
+    // Show only last 4 digits with •••• prefix
+    const masked = cardNumber.slice(0, -4).replace(/\d/g, '•') + cardNumber.slice(-4)
+    return masked.replace(/(.{4})/g, '$1 ').trim() // Format with spaces
   }
 
   return (
@@ -200,24 +231,33 @@ const AccueilMobile: React.FC = () => {
                   <IonRippleEffect />
                 </IonButton>
               </div>
-              <div
-                className="payment-card-mobile ion-activatable"
-                onClick={() => history.push("/carte")}
-              >
-                <div className="card-background"></div>
-                <div className="card-content">
-                  <p className="card-label-mobile">Carte de paiement</p>
-                  <div className="card-details-mobile">
-                    <IonIcon icon={cardOutline} className="card-icon-mobile" />
-                    <div className="card-info-mobile">
-                      <p className="card-name-mobile">EL AMEN WHITE EMV</p>
-                      <p className="card-number-mobile">1234 •••• •••• 1234</p>
+              {cartes.length > 0 ? (
+                cartes.map((carte, index) => (
+                  <div
+                    key={index}
+                    className="payment-card-mobile ion-activatable"
+                    onClick={() => history.push("/carte")}
+                  >
+                    <div className="card-background"></div>
+                    <div className="card-content">
+                      <p className="card-label-mobile">Carte de paiement</p>
+                      <div className="card-details-mobile">
+                        <IonIcon icon={cardOutline} className="card-icon-mobile" />
+                        <div className="card-info-mobile">
+                          <p className="card-name-mobile">{carte.cardType}</p>
+                          <p className="card-number-mobile">
+                            {formatCardNumber(carte.cardNumber)}
+                          </p>
+                        </div>
+                        <p className="card-expiry-mobile">{carte.expiryDate}</p>
+                      </div>
                     </div>
-                    <p className="card-expiry-mobile">01/28</p>
+                    <IonRippleEffect />
                   </div>
-                </div>
-                <IonRippleEffect />
-              </div>
+                ))
+              ) : (
+                <p className="no-cards-mobile">Aucune carte disponible</p>
+              )}
             </div>
 
             {/* Budget Section */}

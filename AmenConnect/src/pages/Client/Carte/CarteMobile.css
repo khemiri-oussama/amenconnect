@@ -34,6 +34,25 @@ ion-content {
   perspective: 1000px;
 }
 
+/* New styles for card swipe functionality */
+.card-container {
+  position: relative;
+  width: 100%;
+  height: 240px; /* Adjust based on your card height */
+  overflow: hidden;
+}
+
+.card-wrapper {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.credit-card {
+  flex-shrink: 0;
+  width: 100%;
+  margin-right: 20px; /* Space between cards */
+}
+
 .credit-card {
   background: var(--card-gradient);
   border-radius: 16px;
@@ -131,7 +150,6 @@ ion-content {
 }
 
 .expiry {
-  
   flex-direction: row;
   gap: 4px;
   font-size: 14px;
@@ -149,7 +167,6 @@ ion-content {
 .card-details {
   align-items: stretch;
   flex-direction: column;
-  
 }
 
 /* Segment Control */
@@ -271,7 +288,6 @@ ion-segment-button:hover {
 .operation-amount.positive {
   color: var(--primary-green);
 }
-
 
 /* iOS Specific Styles */
 .ios .status-bar {
