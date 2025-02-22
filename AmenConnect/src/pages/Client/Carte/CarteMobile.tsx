@@ -158,44 +158,36 @@ const CarteMobile: React.FC = () => {
   const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = 100
     const dragDistance = info.offset.x
-    const dragDirection = dragDistance < 0 ? -1 : 1
+    const dragDirection = dragDistance < 0 ? 1 : -1
 
     if (Math.abs(dragDistance) > threshold) {
-      const newIndex = currentCardIndex - dragDirection
-      if (newIndex >= 0 && newIndex < cards.length) {
-        setCurrentCardIndex(newIndex)
-      }
+      const newIndex = (currentCardIndex + dragDirection + cards.length) % cards.length
+      setCurrentCardIndex(newIndex)
     }
   }
 
   const cardVariants = {
-    center: (index: number) => ({
+    active: (index: number) => ({
       rotateY: 0,
       scale: 1,
       x: 0,
+      y: 0,
       zIndex: cards.length - index,
       transition: { duration: 0.5 },
     }),
-    left: (index: number) => ({
-      rotateY: 45,
-      scale: 0.8,
-      x: -300,
-      zIndex: cards.length - index - 1,
-      transition: { duration: 0.5 },
-    }),
-    right: (index: number) => ({
-      rotateY: -45,
-      scale: 0.8,
-      x: 300,
-      zIndex: cards.length - index - 1,
+    inactive: (index: number) => ({
+      rotateY: 0,
+      scale: 0.95,
+      x: 0,
+      y: -10 * (cards.length - index - 1),
+      zIndex: index,
       transition: { duration: 0.5 },
     }),
   }
 
   const getCardPosition = (cardIndex: number) => {
-    if (cardIndex === currentCardIndex) return "center"
-    if (cardIndex < currentCardIndex) return "left"
-    return "right"
+    if (cardIndex === currentCardIndex) return "active"
+    return "inactive"
   }
 
   if (authLoading || isLoading) {
@@ -240,7 +232,12 @@ const CarteMobile: React.FC = () => {
 
         {/* Updated Card Display */}
         <motion.div className="card-container">
-          <motion.div className="card-wrapper" drag="x" dragConstraints={dragConstraints} onDragEnd={handleDragEnd}>
+          <motion.div
+            className="card-wrapper"
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            onDragEnd={handleDragEnd}
+          >
             {cards.map((card, index) => (
               <motion.div
                 key={card.id}
@@ -248,6 +245,7 @@ const CarteMobile: React.FC = () => {
                 custom={index}
                 variants={cardVariants}
                 animate={getCardPosition(index)}
+                style={{ originY: 1 }}
               >
                 <div className="card-header">
                   <span className="card-type">{card.cardType}</span>
@@ -256,7 +254,7 @@ const CarteMobile: React.FC = () => {
                   </button>
                 </div>
                 <div className="card-body">
-                  <IonImg src="../puce.png" className="chip" />
+                  <IonImg src="../puce.png" className="chip" alt="Card chip" />
                   <motion.div className="card-number" animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}>
                     {formatCardNumber(card.cardNumber, isCardNumberVisible)}
                   </motion.div>
@@ -268,7 +266,7 @@ const CarteMobile: React.FC = () => {
                     <span>{card.expiryDate}</span>
                   </div>
                   <div className="bank-logo">
-                    <IonImg src="../amen_logo.png" className="bank-name" />
+                    <IonImg src="../amen_logo.png" className="bank-name" alt="Bank logo" />
                   </div>
                 </div>
               </motion.div>
