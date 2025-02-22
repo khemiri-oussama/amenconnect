@@ -4,7 +4,6 @@
   --background-dark: #121212;
   --card-background: rgba(255, 255, 255, 0.05);
   --text-gray: rgba(255, 255, 255, 0.6);
-  --card-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
 }
 
 /* Content Styles */
@@ -63,6 +62,23 @@ ion-content {
 
 .credit-card:active {
   cursor: grabbing;
+}
+
+/* Card color variations */
+.credit-card:nth-child(1) {
+  --card-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+.credit-card:nth-child(2) {
+  --card-gradient: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+}
+
+.credit-card:nth-child(3) {
+  --card-gradient: linear-gradient(135deg, #3a7bd5 0%, #3a6073 100%);
+}
+
+.credit-card:nth-child(4) {
+  --card-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
 }
 
 .credit-card {
