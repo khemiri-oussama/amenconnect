@@ -135,6 +135,17 @@ const CarteMobile: React.FC = () => {
     }).format(amount)
   }
 
+  const formatCardNumber = (cardNumber: string, isVisible: boolean): string => {
+    if (!cardNumber) return ''
+    if (isVisible) {
+      return cardNumber.replace(/(\d{4})(?=\d)/g, '$1 ') // Add space every 4 digits
+    } else {
+      // Show only last 4 digits with •••• prefix
+      const masked = cardNumber.slice(0, -4).replace(/\d/g, '•') + cardNumber.slice(-4)
+      return masked.replace(/(.{4})/g, '$1 ').trim() // Format with spaces
+    }
+  }
+
   if (authLoading || isLoading) {
     return (
       <IonPage>
@@ -191,10 +202,11 @@ const CarteMobile: React.FC = () => {
             </div>
             <div className="card-body">
               <IonImg src="../puce.png" className="chip" />
-              <motion.div className="card-number" animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}>
-                {isCardNumberVisible
-                  ? cardDetails?.cardNumber
-                  : cardDetails?.cardNumber.replace(/\d{4}(?=.)/g, "•••• ")}
+              <motion.div
+                className="card-number"
+                animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}
+              >
+                {formatCardNumber(cardDetails?.cardNumber || '', isCardNumberVisible)}
               </motion.div>
               <div className="card-holder">{cardDetails?.cardHolder}</div>
             </div>
