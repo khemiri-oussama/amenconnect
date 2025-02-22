@@ -454,7 +454,7 @@ const CarteDesktop: React.FC = () => {
                       <div className="carte-desktop__details-grid">
                         <div className="carte-desktop__detail-item">
                           <h4>Type de carte</h4>
-                          <p>{cardDetails?.cardType}</p>
+                          <p className="desktop-carte_data">{cardDetails?.cardType}</p>
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Statut de la carte</h4>
@@ -464,11 +464,11 @@ const CarteDesktop: React.FC = () => {
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Valable à partir de</h4>
-                          <p>{cardDetails?.expiryDate.split("/")[1]}/23</p>
+                          <p className="desktop-carte_data">{cardDetails?.expiryDate.split("/")[1]}/23</p>
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Valable jusqu'à</h4>
-                          <p>{cardDetails?.expiryDate}</p>
+                          <p className="desktop-carte_data">{cardDetails?.expiryDate}</p>
                         </div>
                       </div>
                     </IonCardContent>
