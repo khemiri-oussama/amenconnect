@@ -107,11 +107,10 @@
 }
 
 .carte-desktop__bank-name {
-  width: 60%;
-  height: 60%;
+  width: 50%;
+  height: 50%;
   margin-left: 40%;
-  filter: brightness(0) invert(1);
-  opacity: 0.8;
+  opacity: 1;
 }
 
 .carte-desktop__quick-actions {

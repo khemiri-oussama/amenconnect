@@ -242,7 +242,6 @@ const CarteDesktop: React.FC = () => {
       <IonContent className="carte-desktop__content">
         <div className="carte-desktop__layout">
           {/* Pass the profile data to your Profile component */}
-
           <div className="carte-desktop__left-panel">
             <motion.div
               className="carte-desktop__card-display"
@@ -252,16 +251,6 @@ const CarteDesktop: React.FC = () => {
             >
               <IonCard className="carte-desktop__credit-card">
                 <IonCardContent>
-                  <div className="carte-desktop__card-header">
-                    <span className="carte-desktop__card-type">{cardDetails?.cardType}</span>
-                    <IonButton
-                      fill="clear"
-                      className="carte-desktop__toggle-visibility"
-                      onClick={toggleCardNumber}
-                    >
-                      <IonIcon icon={isCardNumberVisible ? eyeOffOutline : eyeOutline} />
-                    </IonButton>
-                  </div>
                   <div className="carte-desktop__card-body">
                     <IonImg src="../puce.png" className="carte-desktop__chip" />
                     <motion.div
