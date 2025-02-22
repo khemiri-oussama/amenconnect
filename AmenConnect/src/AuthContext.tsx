@@ -22,6 +22,7 @@ export interface Carte {
   ExpiryDate: string;
   CardHolder: string;
   comptesId: string;
+  TypeCarte: string;
 }
 
 export interface Profile {

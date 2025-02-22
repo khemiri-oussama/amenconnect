@@ -40,6 +40,7 @@ interface CardDetails {
   monthlySpending: number
   withdrawalLimit: number
   withdrawalAmount: number
+  TypeCarte: string
 }
 
 interface Card extends CardDetails {
@@ -106,7 +107,7 @@ const CarteMobile: React.FC = () => {
           cardNumber: card.CardNumber,
           cardHolder: card.CardHolder,
           expiryDate: card.ExpiryDate,
-          cardType: "CARTE BANCAIRE",
+          cardType: card.TypeCarte,
           balance: account?.solde || 0,
           pendingTransactions: 0,
           monthlySpendingLimit: 5000,

@@ -83,8 +83,11 @@
   margin-bottom: 20px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-
+.typeC{
+  color:#ffffff;
+}
 .carte-desktop__card-holder {
+  margin-top:-14px;
   color: white;
   font-size: 16px;
   text-transform: uppercase;
