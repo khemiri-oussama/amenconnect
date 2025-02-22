@@ -13,6 +13,9 @@ ion-content {
   --padding-bottom: 70px;
 }
 
+.encours-amount{
+  color:#fff;
+}
 /* Status Bar */
 .status-bar {
   height: 44px;
@@ -20,12 +23,13 @@ ion-content {
 }
 
 /* Page Title */
-.page-title {
+.mes-cartes {
   font-size: 28px;
   font-weight: 700;
   color: white;
   margin: 20px 0 30px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 20px;
 }
 
 /* Card Container */
@@ -110,12 +114,7 @@ ion-content {
 }
 
 /* Segment Control */
-.custom-segment {
-  background: var(--card-background);
-  border-radius: 20px;
-  margin: 0 20px 20px;
-  padding: 4px;
-}
+
 
 ion-segment-button {
   --background-checked: rgba(255, 255, 255, 0.1);
