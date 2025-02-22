@@ -1,6 +1,13 @@
 "use client"
-import React, { useState, useMemo } from "react"
-import { IonContent, IonHeader, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
+import React, { useMemo } from "react"
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonIcon,
+  IonRippleEffect,
+  IonButton
+} from "@ionic/react"
 import {
   walletOutline,
   cardOutline,
@@ -12,7 +19,7 @@ import {
   notificationsOutline,
   timeOutline,
   peopleOutline,
-  globeOutline,
+  globeOutline
 } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import Navbar from "../../../components/Navbar"
@@ -22,17 +29,17 @@ import Profile from "./MenuDesktop/ProfileMenu"
 import { useAuth } from "../../../AuthContext"
 
 interface Account {
-  id: number
-  name: string
-  balance: number
+  _id: string
+  numéroCompte: string
+  solde: number
   type: string
 }
 
 interface Card {
-  id: number
-  type: string
-  number: string
-  expiry: string
+  _id: string
+  CardNumber: string
+  ExpiryDate: string
+  CardHolder: string
 }
 
 interface Transaction {
@@ -45,45 +52,54 @@ interface Transaction {
 
 const AccueilDesktop: React.FC = () => {
   const history = useHistory()
-  const { user, authLoading } = useAuth()
+  // Use the complete profile data from AuthContext
+  const { profile, authLoading } = useAuth()
 
-  // Show a loading state while authentication is being determined
   if (authLoading) {
     return <div>Loading...</div>
   }
 
-  // Derive user details from the Auth Context
-  const prenom = user?.prenom || "Utilisateur"
-  const nom = user?.nom || "Foulen"
+  // Derive user details from profile data
+  const prenom = profile?.user?.prenom || "Utilisateur"
+  const nom = profile?.user?.nom || "Foulen"
+  
+  // You can also use real data from the profile for email, phone, etc.
+  const email = profile?.user?.email || "foulen@gmail.com"
+  const tel = profile?.user?.telephone || "06 12 34 56 78"
 
-  // Sample data for demonstration purposes
-  const [accounts] = useState<Account[]>([
-    { id: 1, name: "Compte Courant", balance: 10230.45, type: "current" },
-    { id: 2, name: "Compte Épargne", balance: 5000.0, type: "savings" },
-  ])
+  // Use comptes and cartes from the profile
+  const accounts: Account[] = (profile?.comptes || []).map((compte) => ({
+    _id: compte._id,
+    numéroCompte: compte.numéroCompte,
+    solde: compte.solde,
+    type: compte.type
+  }))
 
-  const [cards] = useState<Card[]>([
-    { id: 1, type: "Visa", number: "**** **** **** 1234", expiry: "12/25" },
-    { id: 2, type: "Mastercard", number: "**** **** **** 5678", expiry: "06/24" },
-  ])
+  const cards: Card[] = (profile?.cartes || []).map((card) => ({
+    _id: card._id,
+    CardNumber: card.CardNumber,
+    ExpiryDate: card.ExpiryDate,
+    CardHolder: card.CardHolder
+  }))
 
-  const [budgetData] = useState({
+  // Sample data for budget and transactions (if not coming from API)
+  const budgetData = {
     food: { current: 450, max: 600 },
     transport: { current: 200, max: 300 },
     leisure: { current: 150, max: 200 },
     shopping: { current: 300, max: 400 },
     utilities: { current: 180, max: 250 },
-  })
+  }
 
-  const [recentTransactions] = useState<Transaction[]>([
+  const recentTransactions: Transaction[] = [
     { id: 1, description: "Supermarché", amount: 85.5, date: "2025-01-20", type: "debit" },
     { id: 2, description: "Salaire", amount: 2500.0, date: "2025-01-15", type: "credit" },
     { id: 3, description: "Restaurant", amount: 45.0, date: "2025-01-18", type: "debit" },
     { id: 4, description: "Transport", amount: 30.0, date: "2025-01-17", type: "debit" },
-  ])
+  ]
 
   const totalBalance = useMemo(
-    () => accounts.reduce((sum, account) => sum + account.balance, 0),
+    () => accounts.reduce((sum, account) => sum + account.solde, 0),
     [accounts]
   )
 
@@ -96,8 +112,10 @@ const AccueilDesktop: React.FC = () => {
     { name: "Jun", income: 2390, expenses: 3800 },
   ]
 
-  const handleAccountClick = (accountId: number) => {
+  const handleAccountClick = (accountId: string) => {
     console.log(`Viewing account ${accountId}...`)
+    // Navigate to account details page
+    history.push(`/Compte/${accountId}`)
   }
 
   const renderStatCard = (
@@ -180,15 +198,15 @@ const AccueilDesktop: React.FC = () => {
               </div>
               <div className="accounts-list">
                 {accounts.map((account) => (
-                  <div key={account.id} className="account-item" onClick={() => handleAccountClick(account.id)}>
+                  <div key={account._id} className="account-item" onClick={() => handleAccountClick(account._id)}>
                     <IonRippleEffect />
                     <div className="account-icon">
-                      <IonIcon icon={account.type === "current" ? walletOutline : trendingUpOutline} />
+                      <IonIcon icon={account.type === "Compte courant" ? walletOutline : trendingUpOutline} />
                     </div>
                     <div className="account-details">
-                      <div className="account-name">{account.name}</div>
+                      <div className="account-name">{account.type}</div>
                     </div>
-                    <div className="account-balance">{account.balance.toFixed(2)} TND</div>
+                    <div className="account-balance">{account.solde.toFixed(2)} TND</div>
                   </div>
                 ))}
               </div>
@@ -242,15 +260,14 @@ const AccueilDesktop: React.FC = () => {
               </div>
               <div className="cards-list" onClick={() => history.push("/carte")}>
                 {cards.map((card) => (
-                  <div key={card.id} className="card-item">
+                  <div key={card._id} className="card-item">
                     <IonRippleEffect />
                     <div className="card-icon">
                       <IonIcon icon={cardOutline} />
                     </div>
                     <div className="card-details">
-                      <div className="card-type">{card.type}</div>
-                      <div className="card-number">{card.number}</div>
-                      <div className="card-expiry">Expire: {card.expiry}</div>
+                      <div className="card-type">{card.CardNumber}</div>
+                      <div className="card-expiry">Expire: {card.ExpiryDate}</div>
                     </div>
                   </div>
                 ))}

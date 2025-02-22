@@ -33,9 +33,10 @@ import {
   eyeOutline,
   eyeOffOutline,
 } from "ionicons/icons"
-import { color, motion } from "framer-motion"
+import { motion } from "framer-motion"
 import "./CarteDesktop.css"
 import Navbar from "../../../components/Navbar"
+import { useAuth } from "../../../AuthContext" // Adjust the import path as needed
 
 interface Transaction {
   id: string
@@ -67,25 +68,7 @@ interface CardDetails {
   withdrawalAmount: number
 }
 
-const mockFetchCardDetails = (): Promise<CardDetails> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        cardNumber: "1234 5678 9012 3456",
-        cardHolder: "Foulen ben foulen",
-        expiryDate: "01/28",
-        cardType: "EL AMEN WHITE EMV",
-        balance: 4521.8,
-        pendingTransactions: 245.3,
-        monthlySpendingLimit: 5000,
-        monthlySpending: 3450,
-        withdrawalLimit: 1000,
-        withdrawalAmount: 400,
-      })
-    }, 1000)
-  })
-}
-
+// These mock functions simulate fetching data for transactions and spending categories
 const mockFetchTransactions = (): Promise<Transaction[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -154,6 +137,7 @@ const mockFetchSpendingCategories = (): Promise<SpendingCategory[]> => {
 }
 
 const CarteDesktop: React.FC = () => {
+  const { profile, authLoading } = useAuth()
   const [activeTab, setActiveTab] = useState("operations")
   const [isCardLocked, setIsCardLocked] = useState(false)
   const [isCardNumberVisible, setIsCardNumberVisible] = useState(false)
@@ -163,17 +147,38 @@ const CarteDesktop: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Once the profile loads, derive the card details from the first card and its associated account
+  useEffect(() => {
+    if (profile && profile.cartes && profile.cartes.length > 0) {
+      const cardFromProfile = profile.cartes[0]
+      const account = profile.comptes.find(
+        (compte) => compte._id === cardFromProfile.comptesId
+      )
+      setCardDetails({
+        cardNumber: cardFromProfile.CardNumber,
+        cardHolder: cardFromProfile.CardHolder,
+        expiryDate: cardFromProfile.ExpiryDate,
+        cardType: "Carte bancaire",
+        balance: account?.solde || 0,
+        pendingTransactions: 0,
+        monthlySpendingLimit: 5000,
+        monthlySpending: 0,
+        withdrawalLimit: 1000,
+        withdrawalAmount: 0,
+      })
+    }
+  }, [profile])
+
+  // Fetch transactions and spending categories
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
       setError(null)
       try {
-        const [cardDetailsData, transactionsData, spendingCategoriesData] = await Promise.all([
-          mockFetchCardDetails(),
+        const [transactionsData, spendingCategoriesData] = await Promise.all([
           mockFetchTransactions(),
           mockFetchSpendingCategories(),
         ])
-        setCardDetails(cardDetailsData)
         setTransactions(transactionsData)
         setSpendingCategories(spendingCategoriesData)
       } catch (err) {
@@ -181,7 +186,6 @@ const CarteDesktop: React.FC = () => {
       }
       setIsLoading(false)
     }
-
     fetchData()
   }, [])
 
@@ -201,7 +205,7 @@ const CarteDesktop: React.FC = () => {
     }).format(amount)
   }
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <IonPage className="carte-desktop">
         <IonContent className="carte-desktop__content">
@@ -237,9 +241,8 @@ const CarteDesktop: React.FC = () => {
 
       <IonContent className="carte-desktop__content">
         <div className="carte-desktop__layout">
-          <div className="carte-desktop__profile">
-            <Profile />
-          </div>
+          {/* Pass the profile data to your Profile component */}
+
           <div className="carte-desktop__left-panel">
             <motion.div
               className="carte-desktop__card-display"
@@ -251,7 +254,11 @@ const CarteDesktop: React.FC = () => {
                 <IonCardContent>
                   <div className="carte-desktop__card-header">
                     <span className="carte-desktop__card-type">{cardDetails?.cardType}</span>
-                    <IonButton fill="clear" className="carte-desktop__toggle-visibility" onClick={toggleCardNumber}>
+                    <IonButton
+                      fill="clear"
+                      className="carte-desktop__toggle-visibility"
+                      onClick={toggleCardNumber}
+                    >
                       <IonIcon icon={isCardNumberVisible ? eyeOffOutline : eyeOutline} />
                     </IonButton>
                   </div>
@@ -427,7 +434,9 @@ const CarteDesktop: React.FC = () => {
                       <IonCard className="carte-desktop__insight-card">
                         <IonCardContent>
                           <IonIcon icon={trendingUpOutline} />
-                          <p>Vos dépenses pour les courses ont augmenté de 15% ce mois-ci</p>
+                          <p>
+                            Vos dépenses pour les courses ont augmenté de 15% ce mois-ci
+                          </p>
                         </IonCardContent>
                       </IonCard>
                       <IonCard className="carte-desktop__insight-card">
@@ -439,7 +448,9 @@ const CarteDesktop: React.FC = () => {
                       <IonCard className="carte-desktop__insight-card">
                         <IonCardContent>
                           <IonIcon icon={walletOutline} />
-                          <p>Économisez 200 € en réduisant les dépenses de divertissement</p>
+                          <p>
+                            Économisez 200 € en réduisant les dépenses de divertissement
+                          </p>
                         </IonCardContent>
                       </IonCard>
                     </div>
@@ -509,4 +520,3 @@ const CarteDesktop: React.FC = () => {
 }
 
 export default CarteDesktop
-

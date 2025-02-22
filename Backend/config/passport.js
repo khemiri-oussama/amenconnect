@@ -1,3 +1,4 @@
+//config/passport.js
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const JwtStrategy   = require('passport-jwt').Strategy;
@@ -5,7 +6,6 @@ const ExtractJwt    = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
-// Local Strategy: Authenticate with email and password
 passport.use(
   new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
     try {
