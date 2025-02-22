@@ -54,77 +54,90 @@ export interface StatementConfig {
 }
 
 declare module "jspdf" {
-  interface jsPDF {
-    autoTable: (options: {
-      startY: number
-      head: string[][]
-      body: string[][]
-      theme?: string
-      styles?: {
-        fontSize?: number
-        cellPadding?: number
-        lineColor?: number[]
-        lineWidth?: number
-      }
-      headStyles?: {
-        fillColor?: number[]
-        textColor?: number[]
-        fontSize?: number
-        fontStyle?: string
-        halign?: "left" | "center" | "right"
-      }
-      columnStyles?: {
-        [key: number]: {
-          halign?: "left" | "center" | "right"
+    interface jsPDF {
+      autoTable: (options: {
+        startY: number;
+        head: string[][];
+        body: string[][];
+        theme?: string;
+        styles?: {
+          fontSize?: number;
+          cellPadding?: number;
+          lineColor?: number[];
+          lineWidth?: number;
+        };
+        headStyles?: {
+          fillColor?: number[];
+          textColor?: number[];
+          fontSize?: number;
+          fontStyle?: string;
+          halign?: "left" | "center" | "right";
+        };
+        columnStyles?: {
+          [key: number]: {
+            halign?: "left" | "center" | "right";
+          };
+        };
+        alternateRowStyles?: {
+          fillColor?: number[];
+        };
+        bodyStyles?: {
+          fontSize?: number;
+        };
+        didDrawCell?: (data: {
+          section: "head" | "body";
+          column: { index: number };
+          cell: { raw: unknown };
+        }) => void;
+      }) => jsPDF;
+  
+      // Simplified internal type extension
+      internal: {
+        getNumberOfPages(): number;
+        pageSize: {
+          getWidth(): number;
+          getHeight(): number;
+        };
+      } & jsPDF["internal"]; // Merge with existing internal type
+  
+      // Standard method declarations
+      setTextColor(r: number, g: number, b: number): jsPDF;
+      setTextColor(r: number[]): jsPDF;
+      text(
+        text: string | string[],
+        x: number,
+        y: number,
+        options?: {
+          align?: "left" | "center" | "right";
         }
-      }
-      alternateRowStyles?: {
-        fillColor?: number[]
-      }
-      bodyStyles?: {
-        fontSize?: number
-      }
-      didDrawCell?: (data: {
-        section: "head" | "body"
-        column: { index: number }
-        cell: { raw: unknown }
-      }) => void
-    }) => jsPDF
-    internal: {
-      events: unknown
-      scaleFactor: number
-      pageSize: {
-        width: number
-        height: number
-        getWidth: () => number
-        getHeight: () => number
-      }
-      pages: number[]
-      getNumberOfPages(): number
-      getEncryptor(objectId: number): (data: string) => string
+      ): jsPDF;
+      rect(x: number, y: number, w: number, h: number, style?: string): jsPDF;
+      roundedRect(
+        x: number,
+        y: number,
+        w: number,
+        h: number,
+        rx: number,
+        ry: number,
+        style?: string
+      ): jsPDF;
+      setFillColor(r: number, g: number, b: number): jsPDF;
+      setFillColor(r: number[]): jsPDF;
+      setDrawColor(r: number, g: number, b: number): jsPDF;
+      setDrawColor(r: number[]): jsPDF;
+      line(x1: number, y1: number, x2: number, y2: number): jsPDF;
+      addImage(
+        imageData: string | HTMLImageElement,
+        format: string,
+        x: number,
+        y: number,
+        w: number,
+        h: number
+      ): jsPDF;
+      save(filename: string): jsPDF;
+      setPage(pageNumber: number): jsPDF;
     }
-    setTextColor(r: number, g: number, b: number): jsPDF
-    setTextColor(r: number[]): jsPDF
-    text(
-      text: string | string[],
-      x: number,
-      y: number,
-      options?: {
-        align?: "left" | "center" | "right"
-      },
-    ): jsPDF
-    rect(x: number, y: number, w: number, h: number, style?: string): jsPDF
-    roundedRect(x: number, y: number, w: number, h: number, rx: number, ry: number, style?: string): jsPDF
-    setFillColor(r: number, g: number, b: number): jsPDF
-    setFillColor(r: number[]): jsPDF
-    setDrawColor(r: number, g: number, b: number): jsPDF
-    setDrawColor(r: number[]): jsPDF
-    line(x1: number, y1: number, x2: number, y2: number): jsPDF
-    addImage(imageData: string | HTMLImageElement, format: string, x: number, y: number, w: number, h: number): jsPDF
-    save(filename: string): jsPDF
-    setPage(pageNumber: number): jsPDF
   }
-}
 
 export const defaultBankBranding: BankBranding = {
   name: "Amen Bank",
