@@ -107,14 +107,14 @@ const CarteMobile: React.FC = () => {
           cardNumber: card.CardNumber,
           cardHolder: card.CardHolder,
           expiryDate: card.ExpiryDate,
-          cardType: card.TypeCarte,
+          cardType: card.TypeCarte, // Already correct
           balance: account?.solde || 0,
           pendingTransactions: 0,
           monthlySpendingLimit: 5000,
           monthlySpending: 0,
           withdrawalLimit: 1000,
           withdrawalAmount: 0,
-          TypeCarte : ""
+          TypeCarte: card.TypeCarte // Fix this line (was empty string)
         }
       })
       setCards(cardsFromProfile)
@@ -251,6 +251,7 @@ const CarteMobile: React.FC = () => {
                   <IonImg src="../puce.png" className="chip" alt="Card chip" />
                   <div className="card-number">{formatCardNumber(card.cardNumber, isCardNumberVisible)}</div>
                   <div className="card-holder">{card.cardHolder}</div>
+                  <div className="card-expiry">{card.expiryDate}</div>
                 </div>
                 {isLongPressing && (
                   <div className="long-press-indicator">
@@ -294,9 +295,9 @@ const CarteMobile: React.FC = () => {
               <h2 className="section-title">Détails de la carte</h2>
               {[
                 { label: "Titulaire de la carte", value: cards[currentCardIndex]?.cardHolder },
-                { label: "Type de la carte", value: "Carte bancaire" },
-                { label: "Plafond retrait", value: "TND 1 000.000" },
-                { label: "Plafond total", value: "TND 5 000.000" },
+                { label: "Type de la carte", value: cards[currentCardIndex]?.TypeCarte },
+                { label: "Plafond retrait", value:  cards[currentCardIndex]?.withdrawalLimit },
+                { label: "Plafond total", value:  cards[currentCardIndex]?.monthlySpendingLimit },
               ].map((detail, index) => (
                 <motion.div
                   key={index}
