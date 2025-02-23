@@ -11,6 +11,313 @@ const User = require('../models/User');
 const Compte = require('../models/Compte');
 const Carte = require('../models/Cartes');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - cin
+ *         - nom
+ *         - prenom
+ *         - email
+ *         - telephone
+ *         - employeur
+ *         - adresseEmployeur
+ *         - password
+ *       properties:
+ *         cin:
+ *           type: string
+ *           description: User's CIN number
+ *           example: "12345678"
+ *         nom:
+ *           type: string
+ *           description: User's last name
+ *           example: "Doe"
+ *         prenom:
+ *           type: string
+ *           description: User's first name
+ *           example: "John"
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: User's email address
+ *           example: "john.doe@example.com"
+ *         telephone:
+ *           type: string
+ *           description: User's phone number
+ *           example: "+21612345678"
+ *         employeur:
+ *           type: string
+ *           description: User's employer
+ *           example: "Tech Company Ltd"
+ *         adresseEmployeur:
+ *           type: string
+ *           description: Employer's address
+ *           example: "123 Business Street, 1000"
+ *         password:
+ *           type: string
+ *           format: password
+ *           description: User's password (min 6 characters)
+ *           example: "securePassword123"
+ *     UserProfile:
+ *       type: object
+ *       properties:
+ *         user:
+ *           type: object
+ *           properties:
+ *             cin:
+ *               type: string
+ *             nom:
+ *               type: string
+ *             prenom:
+ *               type: string
+ *             email:
+ *               type: string
+ *             telephone:
+ *               type: string
+ *             employeur:
+ *               type: string
+ *             adresseEmployeur:
+ *               type: string
+ *         comptes:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Compte'
+ *         cartes:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Carte'
+ *     Compte:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         userId:
+ *           type: string
+ *         numeroCompte:
+ *           type: string
+ *         solde:
+ *           type: number
+ *         type:
+ *           type: string
+ *           enum: [courant, epargne]
+ *     Carte:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         comptesId:
+ *           type: string
+ *         numeroCarte:
+ *           type: string
+ *         type:
+ *           type: string
+ *           enum: [debit, credit]
+ *   responses:
+ *     UnauthorizedError:
+ *       description: Authentication information is missing or invalid
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 example: "Unauthorized access"
+ */
+
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *           example:
+ *             cin: "12345678"
+ *             nom: "Doe"
+ *             prenom: "John"
+ *             email: "john.doe@example.com"
+ *             telephone: "+21612345678"
+ *             employeur: "Tech Company Ltd"
+ *             adresseEmployeur: "123 Business Street, 1000"
+ *             password: "securePassword123"
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User registered successfully"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     cin:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *       400:
+ *         description: Invalid input data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       msg:
+ *                         type: string
+ *                       param:
+ *                         type: string
+ *       409:
+ *         description: User already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User already exists"
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login user and receive OTP
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *           example:
+ *             email: "john.doe@example.com"
+ *             password: "securePassword123"
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "OTP sent successfully to your email! Please enter it to verify."
+ *       400:
+ *         description: Invalid credentials or rate limit exceeded
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid credentials."
+ *       429:
+ *         description: Too many login attempts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Too many login attempts from this IP, please try again later."
+ */
+
+/**
+ * @swagger
+ * /api/auth/verify-otp:
+ *   post:
+ *     summary: Verify OTP and complete login
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - otp
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               otp:
+ *                 type: string
+ *           example:
+ *             email: "john.doe@example.com"
+ *             otp: "123456"
+ *     responses:
+ *       200:
+ *         description: OTP verified successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/UserProfile'
+ *       400:
+ *         description: Invalid or expired OTP
+ *       429:
+ *         description: Too many verification attempts
+ */
+
+/**
+ * @swagger
+ * /api/auth/profile:
+ *   get:
+ *     summary: Get user profile with accounts and cards
+ *     tags: [User]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfile'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         description: User not found
+ */
+
 // Rate limiters and request validator
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -111,7 +418,6 @@ router.post(
   validateRequest,
   async (req, res, next) => {
     try {
-      // Call verifyOTP controller which now returns the full user data
       await verifyOTP(req, res);
     } catch (err) {
       next(err);
