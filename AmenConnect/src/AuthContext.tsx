@@ -23,7 +23,34 @@ export interface Carte {
   CardHolder: string;
   comptesId: string;
   TypeCarte: string;
+  // New fields from your updated schema:
+  monthlyExpenses?: {
+    current: number;
+    limit: number;
+  };
+  atmWithdrawal?: {
+    current: number;
+    limit: number;
+  };
+  pendingTransactions?: {
+    amount: number;
+    count: number;
+  };
+  cardStatus?: string;
+  creditCardTransactions?: CreditCardTransaction[];
 }
+
+export interface CreditCardTransaction {
+  _id: string
+  amount: number
+  transactionDate: string
+  description: string
+  currency: string
+  merchant: string
+  status: string
+  carteId: string
+}
+
 
 export interface Profile {
   user: {
