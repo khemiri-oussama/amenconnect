@@ -1,4 +1,3 @@
-//services/pdf-generator.tsx
 import { jsPDF } from "jspdf"
 import "jspdf-autotable"
 import QRCode from "qrcode"
@@ -92,8 +91,6 @@ declare module "jspdf" {
       }) => void;
     }) => jsPDF;
 
-    // Do not extend or override the existing "internal" type.
-    // When you need to call extra methods like getNumberOfPages, cast to any.
     setTextColor(r: number, g: number, b: number): jsPDF;
     setTextColor(r: number[]): jsPDF;
     text(
