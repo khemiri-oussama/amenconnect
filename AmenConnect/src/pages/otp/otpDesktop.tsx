@@ -68,7 +68,7 @@ export default function OtpPage() {
       );
       
       setIsAuthenticated(true);
-      history.replace("/accueil");
+      window.location.href = "/accueil";
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || "Erreur OTP.");
     } finally {
