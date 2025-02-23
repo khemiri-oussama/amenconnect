@@ -90,7 +90,7 @@ ion-content {
 }
 
 /* Chart Container */
-.chart-container {
+.mobile-chart-container {
   background: var(--card-background);
   border-radius: 20px;
   padding: 20px;

@@ -172,7 +172,7 @@ const AccueilMobile: React.FC = () => {
               </div>
             </div>
             <div className="section-header-mobile">
-                <h2>Cartes</h2>
+                <h2>Comptes</h2>
                 <IonButton
                   fill="clear"
                   className="view-all-mobile ion-activatable"
