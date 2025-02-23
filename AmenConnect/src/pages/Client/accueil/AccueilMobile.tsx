@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
   IonContent,
   IonPage,
@@ -44,6 +44,11 @@ const AccueilMobile: React.FC = () => {
   const [today, setToday] = useState<string>("")
   const [cartes, setCartes] = useState<CardDetails[]>([])
   const [isLoadingCartes, setIsLoadingCartes] = useState(true)
+  const [currentAccountIndex, setCurrentAccountIndex] = useState(0)
+  const [isLongPressing, setIsLongPressing] = useState(false)
+  const [longPressProgress, setLongPressProgress] = useState(0)
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null)
+  const longPressDuration = 500 // milliseconds
 
   useEffect(() => {
     const currentDate = new Date()
@@ -62,7 +67,7 @@ const AccueilMobile: React.FC = () => {
         cardNumber: carte.CardNumber,
         cardHolder: carte.CardHolder,
         expiryDate: carte.ExpiryDate,
-        cardType: "Carte bancaire",
+        cardType: carte.TypeCarte,
       }))
       setCartes(cartesData)
       setIsLoadingCartes(false)
@@ -77,10 +82,7 @@ const AccueilMobile: React.FC = () => {
     )
   }
 
-  const account =
-    profile && profile.comptes && profile.comptes.length > 0
-      ? profile.comptes[0]
-      : null
+  const account = profile && profile.comptes && profile.comptes.length > 0 ? profile.comptes[currentAccountIndex] : null
 
   const toggleBalance = () => {
     setShowBalance(!showBalance)
@@ -94,20 +96,42 @@ const AccueilMobile: React.FC = () => {
   }
 
   const formatCardNumber = (cardNumber: string): string => {
-    if (!cardNumber) return ''
+    if (!cardNumber) return ""
     // Show only last 4 digits with •••• prefix
-    const masked = cardNumber.slice(0, -4).replace(/\d/g, '•') + cardNumber.slice(-4)
-    return masked.replace(/(.{4})/g, '$1 ').trim() // Format with spaces
+    const masked = cardNumber.slice(0, -4).replace(/\d/g, "•") + cardNumber.slice(-4)
+    return masked.replace(/(.{4})/g, "$1 ").trim() // Format with spaces
+  }
+
+  const handleLongPressStart = () => {
+    setIsLongPressing(true)
+    setLongPressProgress(0)
+    longPressTimer.current = setInterval(() => {
+      setLongPressProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(longPressTimer.current as NodeJS.Timeout)
+          navigateAccounts()
+          return 0
+        }
+        return prev + 10
+      })
+    }, longPressDuration / 10)
+  }
+
+  const handleLongPressEnd = () => {
+    setIsLongPressing(false)
+    setLongPressProgress(0)
+    if (longPressTimer.current) {
+      clearInterval(longPressTimer.current)
+    }
+  }
+
+  const navigateAccounts = () => {
+    setCurrentAccountIndex((prevIndex) => (prevIndex + 1) % (profile?.comptes?.length || 1))
   }
 
   return (
     <IonPage>
-      <IonContent
-        fullscreen
-        className="custom-content-mobile"
-        scrollY={true}
-        forceOverscroll={true}
-      >
+      <IonContent fullscreen className="custom-content-mobile" scrollY={true} forceOverscroll={true}>
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent
             pullingIcon={chevronDownCircleOutline}
@@ -123,8 +147,7 @@ const AccueilMobile: React.FC = () => {
               <div className="profile-info">
                 <p className="greeting-mobile">Bonjour,</p>
                 <h1 className="username-mobile">
-                  {profile?.user.prenom || "Utilisateur"}{" "}
-                  {profile?.user.nom || ""}
+                  {profile?.user.prenom || "Utilisateur"} {profile?.user.nom || ""}
                 </h1>
               </div>
               <div className="header-actions-mobile">
@@ -134,11 +157,7 @@ const AccueilMobile: React.FC = () => {
                   onClick={() => history.push("/notifications")}
                 >
                   <IonIcon icon={notificationsOutline} />
-                  {notificationCount > 0 && (
-                    <span className="notification-badge-mobile">
-                      {notificationCount}
-                    </span>
-                  )}
+                  {notificationCount > 0 && <span className="notification-badge-mobile">{notificationCount}</span>}
                   <IonRippleEffect />
                 </IonButton>
                 <IonButton
@@ -152,25 +171,39 @@ const AccueilMobile: React.FC = () => {
                 <UserMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
               </div>
             </div>
-
+            <div className="section-header-mobile">
+                <h2>Cartes</h2>
+                <IonButton
+                  fill="clear"
+                  className="view-all-mobile ion-activatable"
+                  onClick={() => history.push("/compte")}
+                >
+                  Afficher tout
+                  <IonIcon icon={arrowForwardOutline} />
+                  <IonRippleEffect />
+                </IonButton>
+              </div>
             {/* Account Card */}
             <div
+            
               className="account-card-mobile ion-activatable"
-              onClick={() => history.push("/compte")}
+              
+              onTouchStart={handleLongPressStart}
+              onTouchEnd={handleLongPressEnd}
+              onMouseDown={handleLongPressStart}
+              onMouseUp={handleLongPressEnd}
+              onMouseLeave={handleLongPressEnd}
             >
               <div className="account-header-mobile">
                 <h2>{account ? account.type : "Compte Epargne"}</h2>
                 <IonIcon icon={statsChartOutline} className="stats-icon-mobile" />
               </div>
+              
               <div className="account-details-mobile">
                 <div>
                   <div className="balance-container-mobile">
                     <p className="balance-mobile">
-                      {showBalance
-                        ? account
-                          ? `${account.solde} TND`
-                          : "450.0 TND"
-                        : "••••• TND"}
+                      {showBalance ? (account ? `${account.solde} TND` : "450.0 TND") : "••••• TND"}
                     </p>
                     <IonButton
                       fill="clear"
@@ -183,35 +216,29 @@ const AccueilMobile: React.FC = () => {
                       <IonIcon icon={showBalance ? eyeOffOutline : eyeOutline} />
                     </IonButton>
                   </div>
-                  <p className="account-number-mobile">
-                    {account ? account.numéroCompte : "12345678987"}
-                  </p>
+                  <p className="account-number-mobile">{account ? account.numéroCompte : "12345678987"}</p>
                 </div>
                 <p className="expiry-date-mobile">{today}</p>
               </div>
+              {isLongPressing && (
+                <div className="long-press-indicator">
+                  <div className="long-press-progress" style={{ width: `${longPressProgress}%` }}></div>
+                </div>
+              )}
               <IonRippleEffect />
             </div>
 
             {/* Quick Actions */}
             <div className="quick-actions-mobile">
-              <IonButton
-                className="quick-action-button"
-                onClick={() => history.push("/virement")}
-              >
+              <IonButton className="quick-action-button" onClick={() => history.push("/virement")}>
                 <IonIcon icon={walletOutline} />
                 <span>Virement</span>
               </IonButton>
-              <IonButton
-                className="quick-action-button"
-                onClick={() => history.push("/paiement")}
-              >
+              <IonButton className="quick-action-button" onClick={() => history.push("/paiement")}>
                 <IonIcon icon={cardOutline} />
                 <span>Paiement</span>
               </IonButton>
-              <IonButton
-                className="quick-action-button"
-                onClick={() => history.push("/budget")}
-              >
+              <IonButton className="quick-action-button" onClick={() => history.push("/budget")}>
                 <IonIcon icon={statsChartOutline} />
                 <span>Budget</span>
               </IonButton>
@@ -235,19 +262,17 @@ const AccueilMobile: React.FC = () => {
                 cartes.map((carte, index) => (
                   <div
                     key={index}
-                    className="payment-card-mobile ion-activatable"
+                    className={`payment-card-mobile ion-activatable ${index === 1 ? "secondary" : ""}`}
                     onClick={() => history.push("/carte")}
                   >
                     <div className="card-background"></div>
                     <div className="card-content">
-                      <p className="card-label-mobile">Carte de paiement</p>
+                      <p className="card-label-mobile">{carte.cardType}</p>
                       <div className="card-details-mobile">
                         <IonIcon icon={cardOutline} className="card-icon-mobile" />
                         <div className="card-info-mobile">
-                          <p className="card-name-mobile">{carte.cardType}</p>
-                          <p className="card-number-mobile">
-                            {formatCardNumber(carte.cardNumber)}
-                          </p>
+                          <p className="card-name-mobile">{carte.cardHolder}</p>
+                          <p className="card-number-mobile">{formatCardNumber(carte.cardNumber)}</p>
                         </div>
                         <p className="card-expiry-mobile">{carte.expiryDate}</p>
                       </div>
@@ -274,10 +299,7 @@ const AccueilMobile: React.FC = () => {
                   <IonRippleEffect />
                 </IonButton>
               </div>
-              <div
-                className="budget-card-mobile ion-activatable"
-                onClick={() => history.push("/budget")}
-              >
+              <div className="budget-card-mobile ion-activatable" onClick={() => history.push("/budget")}>
                 <h3>Dépenses ce mois</h3>
                 <div className="budget-progress-mobile">
                   <div className="progress-bar-mobile" style={{ width: "70%" }}></div>
@@ -298,3 +320,4 @@ const AccueilMobile: React.FC = () => {
 }
 
 export default AccueilMobile
+
