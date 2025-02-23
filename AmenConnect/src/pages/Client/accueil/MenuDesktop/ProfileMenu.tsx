@@ -11,7 +11,7 @@ import { useAuth } from "../../../../AuthContext"
 import ProfileModal from "./ProfileModal"  // Adjust the import path as needed
 
 const ProfileMenu: React.FC = () => {
-  const { setIsAuthenticated, setPendingUser } = useAuth()
+  const { setIsAuthenticated,setProfile, setPendingUser } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -36,9 +36,10 @@ const ProfileMenu: React.FC = () => {
     try {
       await axios.post("/api/auth/logout", {}, { withCredentials: true })
       setIsAuthenticated(false)
+      setProfile(null),
       setPendingUser(null)
       setTimeout(() => {
-        history.replace("/login")
+        window.location.href = "/login";
       }, 100)
     } catch (error) {
       console.error("Logout failed:", error)

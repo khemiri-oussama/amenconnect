@@ -9,7 +9,7 @@ interface PrivateRouteProps extends RouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, ...rest }) => {
-  const { isAuthenticated, user, authLoading } = useAuth();
+  const { isAuthenticated, profile, authLoading } = useAuth();
 
   if (authLoading) {
     return <div>Loading...</div>;
@@ -18,15 +18,16 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, ...re
   return (
     <Route
       {...rest}
-      render={(props) => {
-        if (!isAuthenticated && !user) {
-          console.log("Redirecting to login");
-          return <Redirect to="/login" />;
-        }
-        return <Component {...props} />;
-      }}
+      render={(props) =>
+        isAuthenticated || profile ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/login" />
+        )
+      }
     />
   );
 };
 
 export default PrivateRoute;
+
