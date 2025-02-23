@@ -1,5 +1,5 @@
 // otp/otpMobile.tsx
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   IonContent,
   IonPage,
@@ -19,33 +19,51 @@ import { useAuth } from "../../AuthContext";
 import "./otpMobile.css";
 
 const OtpMobile: React.FC = () => {
-  const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
+  const [otp, setOtp] = useState<string>("");
   const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [countdown, setCountdown] = useState(90);
+  const [canResend, setCanResend] = useState(false);
   const history = useHistory();
   const { pendingUser, setIsAuthenticated } = useAuth();
 
   useEffect(() => {
-    // If there is no pending user from the context, redirect to login.
-    if (!pendingUser) {
-      history.replace("/login");
-    }
+    if (!pendingUser) history.replace("/login");
   }, [pendingUser, history]);
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    } else {
+      setCanResend(true);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
   const handleOtpChange = (index: number, value: string) => {
-    if (!/^[0-9]?$/.test(value)) return;
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-    if (value && index < 5) {
-      setTimeout(() => inputRefs.current[index + 1]?.setFocus(), 100);
+    if (/^\d{6}$/.test(value)) {
+      setOtp(value);
+      inputRefs.current[5]?.setFocus();
+    } else if (value.length <= 1 && /^[0-9]*$/.test(value)) {
+      const newOtp = otp.slice(0, index) + value + otp.slice(index + 1);
+      setOtp(newOtp);
+      if (value && index < 5) inputRefs.current[index + 1]?.setFocus();
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLIonInputElement>) => {
-    if (e.key === "Backspace" && index > 0 && otp[index] === "") {
-      setTimeout(() => inputRefs.current[index - 1]?.setFocus(), 100);
+  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.setFocus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const pastedData = e.clipboardData.getData("Text").trim();
+    if (/^\d{6}$/.test(pastedData)) {
+      setOtp(pastedData);
+      inputRefs.current[5]?.setFocus();
     }
   };
 
@@ -53,15 +71,15 @@ const OtpMobile: React.FC = () => {
     e.preventDefault();
     setErrorMessage("");
     setIsLoading(true);
+
     try {
-      const otpCode = otp.join("");
-      const response = await axios.post("/api/auth/verify-otp", {
-        email: pendingUser!.email,
-        otp: otpCode,
-      });
+      const response = await axios.post(
+        "/api/auth/verify-otp",
+        { email: pendingUser!.email, otp },
+        { withCredentials: true }
+      );
 
       if (response.data.message === "OTP verified successfully!") {
-        // Optionally, store token securely (e.g., in an HttpOnly cookie) on the server side.
         setIsAuthenticated(true);
         history.replace("/accueil");
       } else {
@@ -73,6 +91,24 @@ const OtpMobile: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const handleResend = useCallback(async () => {
+    setErrorMessage("");
+    setIsLoading(true);
+    try {
+      await axios.post(
+        "/api/auth/resend-otp",
+        { email: pendingUser!.email },
+        { withCredentials: true }
+      );
+      setCountdown(90);
+      setCanResend(false);
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || "Erreur lors de l'envoi de l'OTP.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [pendingUser]);
 
   return (
     <IonPage>
@@ -93,16 +129,17 @@ const OtpMobile: React.FC = () => {
                   <IonLabel className="otp-mobile-input-label">Code OTP</IonLabel>
                   <div className="otp-mobile-input-wrapper">
                     <div className="otp-mobile-inputs">
-                      {otp.map((_, index) => (
+                      {Array.from({ length: 6 }).map((_, index) => (
                         <IonInput
                           key={index}
                           type="tel"
                           inputmode="numeric"
                           pattern="[0-9]*"
                           maxlength={1}
-                          value={otp[index]}
+                          value={otp[index] || ""}
                           onIonInput={(e) => handleOtpChange(index, e.detail.value!)}
                           onKeyDown={(e) => handleKeyDown(index, e)}
+                          onPaste={index === 0 ? handlePaste : undefined}
                           ref={(el) => (inputRefs.current[index] = el)}
                           className="otp-mobile-input"
                         />
@@ -117,9 +154,19 @@ const OtpMobile: React.FC = () => {
                   </IonText>
                 )}
 
-                <IonText className="otp-mobile-resend">
-                  <a href="#">N'avez-vous pas reçu le code OTP ?</a>
-                </IonText>
+                <div className="otp-mobile-resend">
+                  {countdown > 0 ? (
+                    <p>Renvoyer le code dans {countdown} secondes</p>
+                  ) : (
+                    <IonButton
+                      fill="clear"
+                      onClick={handleResend}
+                      disabled={isLoading || !canResend}
+                    >
+                      Renvoyer le code OTP
+                    </IonButton>
+                  )}
+                </div>
 
                 <IonButton
                   expand="block"
