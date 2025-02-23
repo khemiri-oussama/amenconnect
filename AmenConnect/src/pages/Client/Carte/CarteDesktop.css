@@ -327,3 +327,18 @@ ion-progress-bar {
 .desktop-carte_data{
   color: #2fa6c4;
 }
+.carte-desktop__transaction-item .transaction-description {
+  font-size: 0.8em;
+  color: var(--ion-color-medium);
+  margin-top: 4px;
+}
+
+.carte-desktop__transaction-item ion-label h2 {
+  font-weight: bold;
+}
+
+.carte-desktop__transaction-item ion-label p {
+  margin-top: 2px;
+}
+
+
