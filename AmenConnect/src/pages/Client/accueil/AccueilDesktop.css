@@ -50,10 +50,6 @@
   gap: 16px;
 }
 
-.profile-button {
-  --padding-start: 16px;
-  --padding-end: 16px;
-}
 .notification-button {
   --padding-start: 16px;
   --padding-end: 16px;
@@ -94,11 +90,6 @@
   background: var(--color-negative);
   border-radius: 50%;
   display: none;
-}
-
-.notification-button.has-notifications::after {
-  display: block;
-  animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
@@ -299,8 +290,6 @@
   margin-bottom: 4px;
 }
 
-.account-type,
-.card-number,
 .transaction-date {
   font-size: 14px;
   color: var(--color-text-secondary);
