@@ -12,7 +12,17 @@ ion-content {
   --background: var(--background-dark);
   --padding-bottom: 70px;
 }
-
+.payment-card-mobile {
+  z-index: 1;
+  margin-top: -72px;
+  background: linear-gradient(135deg, #2980b9, #2c3e50);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 108px;
+}
 .encours-amount{
   color:#fff;
 }

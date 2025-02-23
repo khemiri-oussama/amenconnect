@@ -114,6 +114,7 @@ const CarteMobile: React.FC = () => {
           monthlySpending: 0,
           withdrawalLimit: 1000,
           withdrawalAmount: 0,
+          TypeCarte : ""
         }
       })
       setCards(cardsFromProfile)
