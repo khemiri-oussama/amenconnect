@@ -8,10 +8,8 @@
     --padding-end: 16px;
     --padding-top: 4px;
     --padding-bottom: 4px;
-    --background: var(--color-card-bg);
-    --background-hover: var(--color-card-hover);
-    --ripple-color: var(--color-link);
-    --color: var(--color-text);
+
+    --color: transparent;
     --border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -27,20 +25,18 @@
   }
   
   .notification-button:hover {
-    --background: var(--color-card-hover);
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   }
   
   .notification-badge {
     position: absolute;
-    top: -5px;
-    right: -8px; /* Adjusted to move the badge more to the right */
+    top: -1px;
+    right: -10px;
     background-color: var(--color-negative);
     color: white;
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     font-size: 12px;
     display: flex;
     align-items: center;
