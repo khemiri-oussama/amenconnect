@@ -1,0 +1,158 @@
+.NotificationD-menu-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .notification-button {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: 4px;
+    --padding-bottom: 4px;
+
+    --color: transparent;
+    --border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .notification-button ion-icon {
+    font-size: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    color: var(--color-text);
+  }
+  
+  .notification-button:hover {
+    transform: translateY(-3px);
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: -1px;
+    right: -10px;
+    background-color: var(--color-negative);
+    color: white;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .NotificationD-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: rgba(30, 30, 30, 0.8); /* Semi-transparent background */
+    backdrop-filter: blur(3px); /* Add blur effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 320px;
+    z-index: 1000;
+    overflow: hidden;
+    animation: fadeInDown 0.3s ease;
+  }
+  
+  .NotificationD-dropdown-arrow {
+    position: absolute;
+    top: -8px;
+    right: 16px;
+    width: 16px;
+    height: 16px;
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transform: rotate(45deg);
+  }
+  
+  .NotificationD-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .NotificationD-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  
+  .NotificationD-menu-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .notification-item {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .notification-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .notification-item.unread {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .notification-content h4 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  
+  .notification-content p {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+  
+  .notification-time {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Custom scrollbar for the notification list */
+  .NotificationD-menu-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .NotificationD-menu-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .NotificationD-menu-list::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+  }
+  
+  .NotificationD-menu-list::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  

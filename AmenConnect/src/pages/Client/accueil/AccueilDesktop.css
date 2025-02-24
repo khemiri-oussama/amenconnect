@@ -50,48 +50,6 @@
   gap: 16px;
 }
 
-.notification-button {
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --padding-top: 4px;
-  --padding-bottom: 4px;
-  --background: var(--color-card-bg);
-  --background-hover: var(--color-card-hover);
-  --ripple-color: var(--color-link);
-  --color: var(--color-text);
-  --border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  position: relative;
-  transition: all var(--transition-speed) ease;
-}
-
-.notification-button ion-icon {
-  font-size: 24px;
-  min-width: 24px;
-  min-height: 24px;
-  color: var(--color-text);
-}
-
-.notification-button:hover {
-  --background: var(--color-card-hover);
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Notification badge */
-.notification-button::after {
-  content: "";
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  background: var(--color-negative);
-  border-radius: 50%;
-  display: none;
-}
-
 @keyframes pulse {
   0% {
     transform: scale(0.95);
