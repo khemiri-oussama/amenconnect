@@ -12,6 +12,7 @@ ion-content {
   --background: var(--background-dark);
   --padding-bottom: 70px;
 }
+
 .payment-card-mobile {
   z-index: 1;
   margin-top: -72px;
@@ -23,9 +24,11 @@ ion-content {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 108px;
 }
-.encours-amount{
-  color:#fff;
+
+.encours-amount {
+  color: #fff;
 }
+
 /* Status Bar */
 .status-bar {
   height: 44px;
@@ -124,8 +127,6 @@ ion-content {
 }
 
 /* Segment Control */
-
-
 ion-segment-button {
   --background-checked: rgba(255, 255, 255, 0.1);
   --color-checked: white;
@@ -181,7 +182,7 @@ ion-segment-button {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   height: 4px;
-  width: 100px;
+  width: 80px;
   overflow: hidden;
 }
 
@@ -204,5 +205,47 @@ ion-segment-button {
   display: flex;
   justify-content: space-around;
   align-items: center;
+}
+
+/* Operation Item */
+.operation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.operation-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.operation-date {
+  color: var(--text-gray);
+  font-size: 12px;
+}
+
+.operation-description {
+  color: white;
+  font-size: 14px;
+}
+
+.operation-amount {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.operation-amount.positive {
+  color: var(--primary-green);
+}
+
+.operation-amount.negative {
+  color: #ff4d4d;
+}
+
+/* Infinite Scroll */
+ion-infinite-scroll-content {
+  color: var(--text-gray);
 }
 

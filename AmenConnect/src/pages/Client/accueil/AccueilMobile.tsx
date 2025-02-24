@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect, useRef } from "react"
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   IonContent,
   IonPage,
@@ -10,7 +10,7 @@ import {
   IonButton,
   IonRefresher,
   IonRefresherContent,
-} from "@ionic/react"
+} from "@ionic/react";
 import {
   cardOutline,
   personOutline,
@@ -21,46 +21,51 @@ import {
   chevronDownCircleOutline,
   walletOutline,
   arrowForwardOutline,
-} from "ionicons/icons"
-import { useHistory } from "react-router-dom"
-import "./AccueilMobile.css"
-import { UserMenu } from "./MenuMobile/UserMenu"
-import NavMobile from "../../../components/NavMobile"
-import { useAuth } from "../../../AuthContext"
+} from "ionicons/icons";
+import { useHistory } from "react-router-dom";
+import "./AccueilMobile.css";
+import { UserMenu } from "./MenuMobile/UserMenu";
+import NavMobile from "../../../components/NavMobile";
+import { useAuth } from "../../../AuthContext";
 
+// Define CardDetails interface with an optional monthlyExpenses property
 interface CardDetails {
-  cardNumber: string
-  cardHolder: string
-  expiryDate: string
-  cardType: string
+  cardNumber: string;
+  cardHolder: string;
+  expiryDate: string;
+  cardType: string;
+  monthlyExpenses?: {
+    current: number;
+    limit: number;
+  };
 }
 
 const AccueilMobile: React.FC = () => {
-  const history = useHistory()
-  const { profile, authLoading } = useAuth()
-  const [showBalance, setShowBalance] = useState(true)
-  const [notificationCount, setNotificationCount] = useState(3)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [today, setToday] = useState<string>("")
-  const [cartes, setCartes] = useState<CardDetails[]>([])
-  const [isLoadingCartes, setIsLoadingCartes] = useState(true)
-  const [currentAccountIndex, setCurrentAccountIndex] = useState(0)
-  const [isLongPressing, setIsLongPressing] = useState(false)
-  const [longPressProgress, setLongPressProgress] = useState(0)
-  const longPressTimer = useRef<NodeJS.Timeout | null>(null)
-  const longPressDuration = 500 // milliseconds
+  const history = useHistory();
+  const { profile, authLoading, refreshProfile } = useAuth();
+  const [showBalance, setShowBalance] = useState(true);
+  const [notificationCount, setNotificationCount] = useState(3);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [today, setToday] = useState<string>("");
+  const [cartes, setCartes] = useState<CardDetails[]>([]);
+  const [isLoadingCartes, setIsLoadingCartes] = useState(true);
+  const [currentAccountIndex, setCurrentAccountIndex] = useState(0);
+  const [isLongPressing, setIsLongPressing] = useState(false);
+  const [longPressProgress, setLongPressProgress] = useState(0);
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const longPressDuration = 500; // milliseconds
 
   useEffect(() => {
-    const currentDate = new Date()
+    const currentDate = new Date();
     const formattedDate = currentDate.toLocaleDateString("fr-FR", {
       day: "numeric",
       month: "long",
       year: "numeric",
-    })
-    setToday(formattedDate)
-  }, [])
+    });
+    setToday(formattedDate);
+  }, []);
 
-  // Fetch cartes data from profile
+  // Map profile.cartes to our CardDetails array
   useEffect(() => {
     if (profile && profile.cartes && profile.cartes.length > 0) {
       const cartesData = profile.cartes.map((carte) => ({
@@ -68,76 +73,98 @@ const AccueilMobile: React.FC = () => {
         cardHolder: carte.CardHolder,
         expiryDate: carte.ExpiryDate,
         cardType: carte.TypeCarte,
-      }))
-      setCartes(cartesData)
-      setIsLoadingCartes(false)
+        monthlyExpenses: carte.monthlyExpenses, // may be undefined
+      }));
+      setCartes(cartesData);
+      setIsLoadingCartes(false);
     }
-  }, [profile])
+  }, [profile]);
 
   if (authLoading || isLoadingCartes) {
     return (
       <div className="loading-container">
         <p>Chargement des données...</p>
       </div>
-    )
+    );
   }
 
-  const account = profile && profile.comptes && profile.comptes.length > 0 ? profile.comptes[currentAccountIndex] : null
+  const account =
+    profile && profile.comptes && profile.comptes.length > 0
+      ? profile.comptes[currentAccountIndex]
+      : null;
 
   const toggleBalance = () => {
-    setShowBalance(!showBalance)
-  }
+    setShowBalance(!showBalance);
+  };
 
-  const handleRefresh = (event: CustomEvent) => {
-    setTimeout(() => {
-      // Add refresh logic here
-      event.detail.complete()
-    }, 2000)
-  }
+  // Refresh handler re-fetches the profile data
+  const handleRefresh = async (event: CustomEvent) => {
+    try {
+      await refreshProfile();
+    } catch (error) {
+      console.error("Refresh failed:", error);
+    } finally {
+      event.detail.complete();
+    }
+  };
 
   const formatCardNumber = (cardNumber: string): string => {
-    if (!cardNumber) return ""
-    // Show only last 4 digits with •••• prefix
-    const masked = cardNumber.slice(0, -4).replace(/\d/g, "•") + cardNumber.slice(-4)
-    return masked.replace(/(.{4})/g, "$1 ").trim() // Format with spaces
-  }
+    if (!cardNumber) return "";
+    // Mask all but the last 4 digits
+    const masked =
+      cardNumber.slice(0, -4).replace(/\d/g, "•") + cardNumber.slice(-4);
+    return masked.replace(/(.{4})/g, "$1 ").trim();
+  };
 
   const handleLongPressStart = () => {
-    setIsLongPressing(true)
-    setLongPressProgress(0)
+    setIsLongPressing(true);
+    setLongPressProgress(0);
     longPressTimer.current = setInterval(() => {
       setLongPressProgress((prev) => {
         if (prev >= 100) {
-          clearInterval(longPressTimer.current as NodeJS.Timeout)
-          navigateAccounts()
-          return 0
+          clearInterval(longPressTimer.current as NodeJS.Timeout);
+          navigateAccounts();
+          return 0;
         }
-        return prev + 10
-      })
-    }, longPressDuration / 10)
-  }
+        return prev + 10;
+      });
+    }, longPressDuration / 10);
+  };
 
   const handleLongPressEnd = () => {
-    setIsLongPressing(false)
-    setLongPressProgress(0)
+    setIsLongPressing(false);
+    setLongPressProgress(0);
     if (longPressTimer.current) {
-      clearInterval(longPressTimer.current)
+      clearInterval(longPressTimer.current);
     }
-  }
+  };
 
   const navigateAccounts = () => {
-    setCurrentAccountIndex((prevIndex) => (prevIndex + 1) % (profile?.comptes?.length || 1))
-  }
+    setCurrentAccountIndex(
+      (prevIndex) => (prevIndex + 1) % (profile?.comptes?.length || 1)
+    );
+  };
+
+  // Calculate the dynamic progress based on monthlyExpenses from the first card.
+  // If no monthlyExpenses is available, fallback to 0%.
+  const monthlyExpenses = cartes[0]?.monthlyExpenses;
+  const progressPercentage = monthlyExpenses
+    ? Math.min((monthlyExpenses.current / monthlyExpenses.limit) * 100, 100)
+    : 0;
 
   return (
     <IonPage>
-      <IonContent fullscreen className="custom-content-mobile" scrollY={true} forceOverscroll={true}>
+      <IonContent
+        fullscreen
+        className="custom-content-mobile"
+        scrollY={true}
+        forceOverscroll={true}
+      >
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent
             pullingIcon={chevronDownCircleOutline}
             pullingText="Tirer pour rafraîchir"
             refreshingSpinner="circles"
-            refreshingText="Mise à jour..."
           ></IonRefresherContent>
         </IonRefresher>
         <div className="safe-area-padding">
@@ -157,7 +184,11 @@ const AccueilMobile: React.FC = () => {
                   onClick={() => history.push("/notifications")}
                 >
                   <IonIcon icon={notificationsOutline} />
-                  {notificationCount > 0 && <span className="notification-badge-mobile">{notificationCount}</span>}
+                  {notificationCount > 0 && (
+                    <span className="notification-badge-mobile">
+                      {notificationCount}
+                    </span>
+                  )}
                   <IonRippleEffect />
                 </IonButton>
                 <IonButton
@@ -171,23 +202,23 @@ const AccueilMobile: React.FC = () => {
                 <UserMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
               </div>
             </div>
+
             <div className="section-header-mobile">
-                <h2>Comptes</h2>
-                <IonButton
-                  fill="clear"
-                  className="view-all-mobile ion-activatable"
-                  onClick={() => history.push("/compte")}
-                >
-                  Afficher tout
-                  <IonIcon icon={arrowForwardOutline} />
-                  <IonRippleEffect />
-                </IonButton>
-              </div>
+              <h2>Comptes</h2>
+              <IonButton
+                fill="clear"
+                className="view-all-mobile ion-activatable"
+                onClick={() => history.push("/compte")}
+              >
+                Afficher tout
+                <IonIcon icon={arrowForwardOutline} />
+                <IonRippleEffect />
+              </IonButton>
+            </div>
+
             {/* Account Card */}
             <div
-            
               className="account-card-mobile ion-activatable"
-              
               onTouchStart={handleLongPressStart}
               onTouchEnd={handleLongPressEnd}
               onMouseDown={handleLongPressStart}
@@ -198,31 +229,39 @@ const AccueilMobile: React.FC = () => {
                 <h2>{account ? account.type : "Compte Epargne"}</h2>
                 <IonIcon icon={statsChartOutline} className="stats-icon-mobile" />
               </div>
-              
               <div className="account-details-mobile">
                 <div>
                   <div className="balance-container-mobile">
                     <p className="balance-mobile">
-                      {showBalance ? (account ? `${account.solde} TND` : "450.0 TND") : "••••• TND"}
+                      {showBalance
+                        ? account
+                          ? `${account.solde} TND`
+                          : "450.0 TND"
+                        : "••••• TND"}
                     </p>
                     <IonButton
                       fill="clear"
                       className="toggle-balance-mobile"
                       onClick={(e) => {
-                        e.stopPropagation()
-                        toggleBalance()
+                        e.stopPropagation();
+                        toggleBalance();
                       }}
                     >
                       <IonIcon icon={showBalance ? eyeOffOutline : eyeOutline} />
                     </IonButton>
                   </div>
-                  <p className="account-number-mobile">{account ? account.numéroCompte : "12345678987"}</p>
+                  <p className="account-number-mobile">
+                    {account ? account.numéroCompte : "12345678987"}
+                  </p>
                 </div>
                 <p className="expiry-date-mobile">{today}</p>
               </div>
               {isLongPressing && (
                 <div className="long-press-indicator">
-                  <div className="long-press-progress" style={{ width: `${longPressProgress}%` }}></div>
+                  <div
+                    className="long-press-progress"
+                    style={{ width: `${longPressProgress}%` }}
+                  ></div>
                 </div>
               )}
               <IonRippleEffect />
@@ -230,15 +269,24 @@ const AccueilMobile: React.FC = () => {
 
             {/* Quick Actions */}
             <div className="quick-actions-mobile">
-              <IonButton className="quick-action-button" onClick={() => history.push("/virement")}>
+              <IonButton
+                className="quick-action-button"
+                onClick={() => history.push("/virement")}
+              >
                 <IonIcon icon={walletOutline} />
                 <span>Virement</span>
               </IonButton>
-              <IonButton className="quick-action-button" onClick={() => history.push("/paiement")}>
+              <IonButton
+                className="quick-action-button"
+                onClick={() => history.push("/paiement")}
+              >
                 <IonIcon icon={cardOutline} />
                 <span>Paiement</span>
               </IonButton>
-              <IonButton className="quick-action-button" onClick={() => history.push("/budget")}>
+              <IonButton
+                className="quick-action-button"
+                onClick={() => history.push("/budget")}
+              >
                 <IonIcon icon={statsChartOutline} />
                 <span>Budget</span>
               </IonButton>
@@ -262,7 +310,9 @@ const AccueilMobile: React.FC = () => {
                 cartes.map((carte, index) => (
                   <div
                     key={index}
-                    className={`payment-card-mobile ion-activatable ${index === 1 ? "secondary" : ""}`}
+                    className={`payment-card-mobile ion-activatable ${
+                      index === 1 ? "secondary" : ""
+                    }`}
                     onClick={() => history.push("/carte")}
                   >
                     <div className="card-background"></div>
@@ -272,7 +322,9 @@ const AccueilMobile: React.FC = () => {
                         <IonIcon icon={cardOutline} className="card-icon-mobile" />
                         <div className="card-info-mobile">
                           <p className="card-name-mobile">{carte.cardHolder}</p>
-                          <p className="card-number-mobile">{formatCardNumber(carte.cardNumber)}</p>
+                          <p className="card-number-mobile">
+                            {formatCardNumber(carte.cardNumber)}
+                          </p>
                         </div>
                         <p className="card-expiry-mobile">{carte.expiryDate}</p>
                       </div>
@@ -292,21 +344,35 @@ const AccueilMobile: React.FC = () => {
                 <IonButton
                   fill="clear"
                   className="view-all-mobile ion-activatable"
-                  onClick={() => history.push("/budget")}
+                  onClick={() => history.push("/compte")}
                 >
                   Afficher tout
                   <IonIcon icon={arrowForwardOutline} />
                   <IonRippleEffect />
                 </IonButton>
               </div>
-              <div className="budget-card-mobile ion-activatable" onClick={() => history.push("/budget")}>
+              <div
+                className="budget-card-mobile ion-activatable"
+                onClick={() => history.push("/compte")}
+              >
                 <h3>Dépenses ce mois</h3>
                 <div className="budget-progress-mobile">
-                  <div className="progress-bar-mobile" style={{ width: "70%" }}></div>
+                  <div
+                    className="progress-bar-mobile"
+                    style={{ width: `${progressPercentage}%` }}
+                  ></div>
                 </div>
                 <div className="budget-details-mobile">
-                  <p>1,400 TND / 2,000 TND</p>
-                  <p className="budget-remaining-mobile">Reste: 600 TND</p>
+                  <p>
+                    {monthlyExpenses?.current ?? 0} / {monthlyExpenses?.limit ?? 2000} TND
+                  </p>
+                  <p className="budget-remaining-mobile">
+                    Reste:{" "}
+                    {monthlyExpenses
+                      ? monthlyExpenses.limit - monthlyExpenses.current
+                      : 2000}{" "}
+                    TND
+                  </p>
                 </div>
                 <IonRippleEffect />
               </div>
@@ -316,8 +382,7 @@ const AccueilMobile: React.FC = () => {
       </IonContent>
       <NavMobile currentPage="accueil" />
     </IonPage>
-  )
-}
+  );
+};
 
-export default AccueilMobile
-
+export default AccueilMobile;
