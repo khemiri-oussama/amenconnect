@@ -17,7 +17,6 @@ import {
   trendingDownOutline,
   eyeOutline,
   settingsOutline,
-  notificationsOutline,
   timeOutline,
   peopleOutline,
   globeOutline
@@ -28,6 +27,7 @@ import "./AccueilDesktop.css"
 import { useHistory } from "react-router-dom"
 import Profile from "./MenuDesktop/ProfileMenu"
 import { useAuth } from "../../../AuthContext"
+import NotificationDesktop from "./NotificationMenu/NotificationDesktop"
 
 interface Account {
   _id: string
@@ -154,9 +154,7 @@ const AccueilDesktop: React.FC = () => {
               <p className="welcome-subtitle">Voici un aperçu de vos finances</p>
             </div>
             <div className="welcome-actions">
-              <IonButton fill="clear" className="notification-button">
-                <IonIcon slot="icon-only" icon={notificationsOutline} />
-              </IonButton>
+              <NotificationDesktop />
               <Profile />
             </div>
           </div>
