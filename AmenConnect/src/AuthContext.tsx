@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 
-// Define interfaces for the detailed profile data
+// Define interfaces for detailed profile data
 export interface Compte {
   _id: string;
   numéroCompte: string;
@@ -41,16 +41,15 @@ export interface Carte {
 }
 
 export interface CreditCardTransaction {
-  _id: string
-  amount: number
-  transactionDate: string
-  description: string
-  currency: string
-  merchant: string
-  status: string
-  carteId: string
+  _id: string;
+  amount: number;
+  transactionDate: string;
+  description: string;
+  currency: string;
+  merchant: string;
+  status: string;
+  carteId: string;
 }
-
 
 export interface Profile {
   user: {
@@ -67,7 +66,7 @@ export interface Profile {
   };
   comptes: Compte[];
   cartes: Carte[];
-  // If your API later returns additional properties, they will be included automatically.
+  // Any additional properties returned by the API will be included.
 }
 
 interface AuthContextType {
@@ -78,6 +77,7 @@ interface AuthContextType {
   pendingUser: { email: string } | null;
   setPendingUser: (user: { email: string } | null) => void;
   authLoading: boolean;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -88,30 +88,47 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [pendingUser, setPendingUser] = useState<{ email: string } | null>(null);
   const [authLoading, setAuthLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        // Fetch the entire profile response from the API
-        const response = await axios.get("/api/auth/profile", { withCredentials: true });
-        if (response.data && response.data.user) {
-          // Set the profile state to the complete API response
-          setProfile(response.data);
-          setIsAuthenticated(true);
-        } else {
-          setProfile(null);
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        console.error("Auth check failed:", error);
+  const fetchProfile = async () => {
+    try {
+      // Fetch the entire profile response from the API
+      const response = await axios.get("/api/auth/profile", { withCredentials: true });
+      if (response.data && response.data.user) {
+        setProfile(response.data);
+        setIsAuthenticated(true);
+      } else {
         setProfile(null);
         setIsAuthenticated(false);
-      } finally {
-        setAuthLoading(false);
       }
-    };
+    } catch (error) {
+      console.error("Auth check failed:", error);
+      setProfile(null);
+      setIsAuthenticated(false);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
 
+  // New refresh function to re-fetch the profile on demand
+  const refreshProfile = async () => {
+    try {
+      const response = await axios.get("/api/auth/profile", { withCredentials: true });
+      if (response.data && response.data.user) {
+        setProfile(response.data);
+      } else {
+        setProfile(null);
+      }
+    } catch (error) {
+      console.error("Error refreshing profile:", error);
+      setProfile(null);
+      setIsAuthenticated(false);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProfile();
-  }, []); // Run once when the component mounts
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -123,6 +140,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         pendingUser,
         setPendingUser,
         authLoading,
+        refreshProfile,
       }}
     >
       {children}

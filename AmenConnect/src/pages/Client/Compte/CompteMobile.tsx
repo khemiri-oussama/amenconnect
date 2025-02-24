@@ -1,45 +1,100 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { IonContent, IonPage, IonIcon, IonSearchbar, IonSegment, IonSegmentButton, IonLabel } from "@ionic/react"
-import { statsChartOutline } from "ionicons/icons"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
-import { motion } from "framer-motion"
+import type React from "react";
+import { useState, useEffect } from "react";
+import {
+  IonContent,
+  IonPage,
+  IonIcon,
+  IonSearchbar,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
+  IonRefresher,
+  IonRefresherContent,
+} from "@ionic/react";
+import { statsChartOutline, chevronDownCircleOutline } from "ionicons/icons";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
+import { motion } from "framer-motion";
+import { useAuth } from "../../../AuthContext";
 
-import "./CompteMobile.css"
-import NavMobile from "../../../components/NavMobile"
+import "./CompteMobile.css";
+import NavMobile from "../../../components/NavMobile";
 
-const chartData = [
+// Sample chart data (replace this with your actual operations data if available)
+const sampleChartData = [
   { month: "Jan", income: 2, expenses: 1 },
   { month: "Feb", income: 4, expenses: 2 },
   { month: "Mar", income: 3, expenses: 4 },
   { month: "Apr", income: 5, expenses: 3 },
   { month: "May", income: 7, expenses: 5 },
   { month: "Jun", income: 6, expenses: 4 },
-]
+];
 
 const CompteMobile: React.FC = () => {
-  const [today, setToday] = useState<string>("")
+  const [today, setToday] = useState<string>("");
+  const [selectedSegment, setSelectedSegment] = useState<string>("operations");
+
+  // Fetch real data using the AuthContext
+  const { profile, authLoading, refreshProfile } = useAuth();
 
   useEffect(() => {
-    const currentDate = new Date()
-    const formattedDate = currentDate.toLocaleDateString("fr-FR") // Format as desired
-    setToday(formattedDate)
-  }, [])
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString("fr-FR");
+    setToday(formattedDate);
+  }, []);
 
-  const [selectedSegment, setSelectedSegment] = useState<string>("operations")
+  // Refresh function called when the user pulls to refresh.
+  const handleRefreshC = async (event: CustomEvent) => {
+    try {
+      await refreshProfile();
+    } catch (error) {
+      console.error("Refresh failed:", error);
+    } finally {
+      event.detail.complete();
+    }
+  };
 
+  // Handle segment change
   const handleSegmentChange = (e: CustomEvent) => {
-    setSelectedSegment(e.detail.value)
+    setSelectedSegment(e.detail.value);
+  };
+
+  // Display a loading state until profile data is fetched
+  if (authLoading) {
+    return (
+      <IonPage>
+        <IonContent fullscreen className="ion-padding">
+          <p>Chargement des données...</p>
+        </IonContent>
+      </IonPage>
+    );
   }
+
+  // Use the first account from the profile, if available
+  const account =
+    profile?.comptes && profile.comptes.length > 0 ? profile.comptes[0] : null;
 
   return (
     <IonPage>
       <IonContent fullscreen>
+        {/* IonRefresher is placed as a direct child of IonContent */}
+        <IonRefresher slot="fixed" onIonRefresh={handleRefreshC}>
+          <IonRefresherContent
+            pullingIcon={chevronDownCircleOutline}
+            pullingText="Tirer pour rafraîchir"
+            refreshingSpinner="circles"
+          ></IonRefresherContent>
+        </IonRefresher>
+
         <div className="scrollable-content ion-padding-horizontal">
-
-
           <motion.h1
             className="page-title"
             initial={{ opacity: 0, y: -20 }}
@@ -57,13 +112,17 @@ const CompteMobile: React.FC = () => {
             transition={{ duration: 0.5 }}
           >
             <div className="account-header">
-              <span>Compte Epargne</span>
+              <span>{account?.type || "Compte Epargne"}</span>
               <IonIcon icon={statsChartOutline} className="stats-icon" />
             </div>
             <div className="account-details">
               <div>
-                <h2 className="balance">450.0 TND</h2>
-                <p className="account-number">12345678987</p>
+                <h2 className="balance">
+                  {account ? `${account.solde} TND` : "450.0 TND"}
+                </h2>
+                <p className="account-number">
+                  {account ? account.numéroCompte : "12345678987"}
+                </p>
               </div>
               <span className="expiry-date">{today}</span>
             </div>
@@ -78,7 +137,10 @@ const CompteMobile: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <ResponsiveContainer width="100%" height={200}>
-                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <AreaChart
+                  data={sampleChartData}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
                   <defs>
                     <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.8} />
@@ -89,7 +151,10 @@ const CompteMobile: React.FC = () => {
                       <stop offset="95%" stopColor="#FF5722" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="rgba(255,255,255,0.1)"
+                  />
                   <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
                   <YAxis stroke="rgba(255,255,255,0.5)" />
                   <Area
@@ -114,7 +179,12 @@ const CompteMobile: React.FC = () => {
           )}
 
           {/* Segments */}
-          <IonSegment mode="ios" value={selectedSegment} onIonChange={handleSegmentChange} className="custom-segment">
+          <IonSegment
+            mode="ios"
+            value={selectedSegment}
+            onIonChange={handleSegmentChange}
+            className="custom-segment"
+          >
             <IonSegmentButton value="operations">
               <IonLabel>Opérations</IonLabel>
             </IonSegmentButton>
@@ -141,7 +211,12 @@ const CompteMobile: React.FC = () => {
               <p className="last-update">Dernière mise à jour: {today}</p>
             </motion.div>
           )}
-          <IonSearchbar placeholder="Rechercher" className="custom-searchbar" mode="ios"></IonSearchbar>
+
+          <IonSearchbar
+            placeholder="Rechercher"
+            className="custom-searchbar"
+            mode="ios"
+          ></IonSearchbar>
 
           {/* Account Information Section */}
           {selectedSegment === "infos" && (
@@ -152,34 +227,82 @@ const CompteMobile: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <h2>Information du compte</h2>
-
-              {[
-                { label: "RIB", value: "07098050012167474684" },
-                { label: "Numéro du compte", value: "12345678321" },
-                { label: "IBAN", value: "TN5907098050012167474684" },
-                { label: "Référence agence", value: "TN5907098050012167474684" },
-                { label: "Solde du compte", value: "40.0" },
-                { label: "Date de création", value: "22/01/2025" },
-              ].map((item, index) => (
-                <motion.div
-                  key={item.label}
-                  className="info-item"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 * index }}
-                >
-                  <span className="info-label">{item.label}</span>
-                  <span className="info-value">{item.value}</span>
-                </motion.div>
-              ))}
+              {/* Replace dummy data with real account info where available */}
+              <motion.div
+                className="info-item"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <span className="info-label">RIB</span>
+                <span className="info-value">
+                  {account ? account.numéroCompte : "07098050012167474684"}
+                </span>
+              </motion.div>
+              <motion.div
+                className="info-item"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <span className="info-label">Numéro du compte</span>
+                <span className="info-value">
+                  {account ? account.numéroCompte : "12345678321"}
+                </span>
+              </motion.div>
+              <motion.div
+                className="info-item"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <span className="info-label">IBAN</span>
+                <span className="info-value">
+                  {account ? `TN${account.numéroCompte}` : "TN5907098050012167474684"}
+                </span>
+              </motion.div>
+              <motion.div
+                className="info-item"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <span className="info-label">Référence agence</span>
+                <span className="info-value">
+                  {account ? account.numéroCompte : "Réf. Agence"}
+                </span>
+              </motion.div>
+              <motion.div
+                className="info-item"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <span className="info-label">Solde du compte</span>
+                <span className="info-value">
+                  {account ? `${account.solde} TND` : "40.0 TND"}
+                </span>
+              </motion.div>
+              <motion.div
+                className="info-item"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                <span className="info-label">Date de création</span>
+                <span className="info-value">
+                  {account
+                    ? new Date(account.createdAt).toLocaleDateString("fr-FR")
+                    : "22/01/2025"}
+                </span>
+              </motion.div>
             </motion.div>
           )}
         </div>
       </IonContent>
       <NavMobile currentPage="compte" />
     </IonPage>
-  )
-}
+  );
+};
 
-export default CompteMobile
-
+export default CompteMobile;
