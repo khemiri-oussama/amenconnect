@@ -3,6 +3,7 @@ const Compte = require("../models/Compte"); // Import the Compte model
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const { generateRIB, DOMICILIATION } = require("../config/helper");
 
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -89,20 +90,20 @@ const compteTypes = {
   "Compte courant": {
     avecChéquier: true,
     avecCarteBancaire: true,
-    modalitésRetrait: "Limite de retrait: 1000 TND/jour",
+    modalitésRetrait: "2000",
     conditionsGel: "Aucune restriction"
   },
   "Compte épargne": {
     avecChéquier: false,
     avecCarteBancaire: false,
-    modalitésRetrait: "Retrait limité à 2 fois par mois",
+    modalitésRetrait: "5000",
     conditionsGel: "Fonds bloqués pour 1 an"
   }
 };
 
 // **Register New User and Create Accounts**
 exports.register = async (req, res) => {
-  // Note: expecting "prenom" and "telephone" now instead of "prénom" and "téléphone"
+  // Expecting "prenom" and "telephone" now instead of "prénom" and "téléphone"
   const { cin, nom, prenom, email, telephone, employeur, adresseEmployeur, password, comptes = ["Compte courant", "Compte épargne"] } = req.body;
 
   try {
@@ -118,14 +119,23 @@ exports.register = async (req, res) => {
     console.log("User saved:", user);
 
     // Create the comptes based on user selection
-    const compteDocuments = comptes.map(type => ({
-      userId: user._id, // Link to user
-      numéroCompte: generateAccountNumber(),
-      solde: 0.0,
-      type,
-      ...compteTypes[type], // Merge default values
-      historique: []
-    }));
+    const compteDocuments = comptes.map(type => {
+      const accountNumber = generateAccountNumber(); // Should be 11 characters
+      const rib = generateRIB(accountNumber); // Full RIB string
+      return {
+        userId: user._id, // Link to user
+        numéroCompte: accountNumber,
+        solde: 0.0,
+        type,
+        RIB: rib,
+        // If you want to store domiciliation, you may add a new field in your schema (see below)
+        domiciliation: DOMICILIATION,
+        // Merge default values for the given type if needed
+        ...compteTypes[type],
+        historique: []
+      };
+    });
+
 
     await Compte.insertMany(compteDocuments);
     console.log("Comptes created:", compteDocuments);
@@ -141,35 +151,43 @@ exports.addCompte = async (req, res) => {
   const { userId, type } = req.body;
 
   try {
+    // Validate that the user exists.
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
+    // Validate the compte type.
     if (!compteTypes[type]) {
       return res.status(400).json({ message: "Invalid compte type." });
     }
 
-    // Check if the user already has this compte type
+    // Check if the user already has a compte of this type.
     const existingCompte = await Compte.findOne({ userId, type });
     if (existingCompte) {
       return res.status(400).json({ message: "User already has this type of compte." });
     }
 
-    // Create new compte with a unique `_id` (automatically generated)
+    // Generate a new 11-character account number and compute a valid RIB.
+    const accountNumber = generateAccountNumber();  // 11 characters
+    const rib = generateRIB(accountNumber);
+
+    // Create the new compte document.
     const newCompte = new Compte({
       userId,
-      numéroCompte: generateAccountNumber(),
+      numéroCompte: accountNumber,
       solde: 0.0,
       type,
-      ...compteTypes[type], // Merge default values
+      RIB: rib,
+      domiciliation: DOMICILIATION, // Save the bank and agency information
+      ...compteTypes[type],        // Merge default settings for this type
       historique: []
     });
 
     await newCompte.save();
     res.status(201).json({ message: "Compte added successfully.", compte: newCompte });
   } catch (err) {
-    console.error("Add compte error:", err);
+    console.error("Add Compte error:", err);
     res.status(500).json({ message: "Server error." });
   }
 };

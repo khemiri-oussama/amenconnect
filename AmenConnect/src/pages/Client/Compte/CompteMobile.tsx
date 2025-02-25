@@ -236,7 +236,7 @@ const CompteMobile: React.FC = () => {
               >
                 <span className="info-label">RIB</span>
                 <span className="info-value">
-                  {account ? account.numéroCompte : "07098050012167474684"}
+                  {account ? account.RIB : "07098050012167474684"}
                 </span>
               </motion.div>
               <motion.div
@@ -247,7 +247,7 @@ const CompteMobile: React.FC = () => {
               >
                 <span className="info-label">Numéro du compte</span>
                 <span className="info-value">
-                  {account ? account.numéroCompte : "12345678321"}
+                  {account ? account.numéroCompte : "99999999"}
                 </span>
               </motion.div>
               <motion.div
@@ -258,7 +258,7 @@ const CompteMobile: React.FC = () => {
               >
                 <span className="info-label">IBAN</span>
                 <span className="info-value">
-                  {account ? `TN${account.numéroCompte}` : "TN5907098050012167474684"}
+                  {account ? `${account.IBAN}` : ""}
                 </span>
               </motion.div>
               <motion.div
@@ -293,7 +293,7 @@ const CompteMobile: React.FC = () => {
                 <span className="info-value">
                   {account
                     ? new Date(account.createdAt).toLocaleDateString("fr-FR")
-                    : "22/01/2025"}
+                    : "00/00/0000"}
                 </span>
               </motion.div>
             </motion.div>

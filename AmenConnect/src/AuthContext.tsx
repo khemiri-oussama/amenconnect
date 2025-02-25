@@ -14,6 +14,8 @@ export interface Compte {
   conditionsGel: string;
   createdAt: string;
   updatedAt: string;
+  IBAN : string;
+  RIB : string;
 }
 
 export interface Carte {

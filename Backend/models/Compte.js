@@ -39,6 +39,16 @@ const CompteSchema = new Schema(
     historique: {
       type: Array,
       default: []
+    },
+    RIB: {
+      type: String
+    },
+    IBAN: {
+      type: String
+    },
+    // New field for domiciliation:
+    domiciliation: {
+      type: String
     }
   },
   { timestamps: true }

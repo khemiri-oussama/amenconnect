@@ -29,37 +29,37 @@ const Carte = require('../models/Cartes');
  *       properties:
  *         cin:
  *           type: string
- *           description: User's CIN number
+ *           description: User's CIN number.
  *           example: "12345678"
  *         nom:
  *           type: string
- *           description: User's last name
+ *           description: User's last name.
  *           example: "Doe"
  *         prenom:
  *           type: string
- *           description: User's first name
+ *           description: User's first name.
  *           example: "John"
  *         email:
  *           type: string
  *           format: email
- *           description: User's email address
+ *           description: User's email address.
  *           example: "john.doe@example.com"
  *         telephone:
  *           type: string
- *           description: User's phone number
+ *           description: User's phone number.
  *           example: "+21612345678"
  *         employeur:
  *           type: string
- *           description: User's employer
+ *           description: User's employer.
  *           example: "Tech Company Ltd"
  *         adresseEmployeur:
  *           type: string
- *           description: Employer's address
+ *           description: Employer's address.
  *           example: "123 Business Street, 1000"
  *         password:
  *           type: string
  *           format: password
- *           description: User's password (min 6 characters)
+ *           description: User's password (min 6 characters).
  *           example: "securePassword123"
  *     UserProfile:
  *       type: object
@@ -98,11 +98,26 @@ const Carte = require('../models/Cartes');
  *           type: string
  *         numeroCompte:
  *           type: string
+ *           description: The unique 11-character account number.
  *         solde:
  *           type: number
  *         type:
  *           type: string
- *           enum: [courant, epargne]
+ *           enum: [Compte courant, Compte épargne]
+ *         RIB:
+ *           type: string
+ *           description: The complete RIB (bank code + branch code + account number + RIB key).
+ *         domiciliation:
+ *           type: string
+ *           description: Bank domiciliation details (name of bank and agency).
+ *         IBAN:
+ *           type: string
+ *           description: The account's IBAN.
+ *         historique:
+ *           type: array
+ *           items:
+ *             type: object
+ *           description: History of account operations.
  *     Carte:
  *       type: object
  *       properties:
@@ -117,7 +132,7 @@ const Carte = require('../models/Cartes');
  *           enum: [debit, credit]
  *   responses:
  *     UnauthorizedError:
- *       description: Authentication information is missing or invalid
+ *       description: Authentication information is missing or invalid.
  *       content:
  *         application/json:
  *           schema:
@@ -132,7 +147,7 @@ const Carte = require('../models/Cartes');
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: Register a new user
+ *     summary: Register a new user.
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -151,7 +166,7 @@ const Carte = require('../models/Cartes');
  *             password: "securePassword123"
  *     responses:
  *       201:
- *         description: User registered successfully
+ *         description: User registered successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -168,40 +183,18 @@ const Carte = require('../models/Cartes');
  *                     email:
  *                       type: string
  *       400:
- *         description: Invalid input data
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 errors:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       msg:
- *                         type: string
- *                       param:
- *                         type: string
+ *         description: Invalid input data.
  *       409:
- *         description: User already exists
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "User already exists"
+ *         description: User already exists.
  *       500:
- *         description: Server error
+ *         description: Server error.
  */
 
 /**
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login user and receive OTP
+ *     summary: Login user and receive an OTP.
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -224,7 +217,7 @@ const Carte = require('../models/Cartes');
  *             password: "securePassword123"
  *     responses:
  *       200:
- *         description: OTP sent successfully
+ *         description: OTP sent successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -234,32 +227,16 @@ const Carte = require('../models/Cartes');
  *                   type: string
  *                   example: "OTP sent successfully to your email! Please enter it to verify."
  *       400:
- *         description: Invalid credentials or rate limit exceeded
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Invalid credentials."
+ *         description: Invalid credentials.
  *       429:
- *         description: Too many login attempts
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Too many login attempts from this IP, please try again later."
+ *         description: Too many login attempts.
  */
 
 /**
  * @swagger
  * /api/auth/verify-otp:
  *   post:
- *     summary: Verify OTP and complete login
+ *     summary: Verify OTP and complete login.
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -281,7 +258,7 @@ const Carte = require('../models/Cartes');
  *             otp: "123456"
  *     responses:
  *       200:
- *         description: OTP verified successfully
+ *         description: OTP verified successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -292,22 +269,22 @@ const Carte = require('../models/Cartes');
  *                 user:
  *                   $ref: '#/components/schemas/UserProfile'
  *       400:
- *         description: Invalid or expired OTP
+ *         description: Invalid or expired OTP.
  *       429:
- *         description: Too many verification attempts
+ *         description: Too many OTP verification attempts.
  */
 
 /**
  * @swagger
  * /api/auth/profile:
  *   get:
- *     summary: Get user profile with accounts and cards
+ *     summary: Retrieve user profile including comptes and cartes.
  *     tags: [User]
  *     security:
  *       - cookieAuth: []
  *     responses:
  *       200:
- *         description: User profile retrieved successfully
+ *         description: User profile retrieved successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -315,7 +292,104 @@ const Carte = require('../models/Cartes');
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       404:
- *         description: User not found
+ *         description: User not found.
+ *       500:
+ *         description: Server error.
+ */
+
+/**
+ * @swagger
+ * /api/auth/addCompte:
+ *   post:
+ *     summary: Add a new compte for a user.
+ *     tags: [Account]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - type
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: The ID of the user.
+ *                 example: "60f1c1bde9f1b2a5a8f2c123"
+ *               type:
+ *                 type: string
+ *                 description: The type of compte.
+ *                 enum: [Compte courant, Compte épargne]
+ *                 example: "Compte courant"
+ *     responses:
+ *       201:
+ *         description: Compte added successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Compte added successfully."
+ *                 compte:
+ *                   $ref: '#/components/schemas/Compte'
+ *       400:
+ *         description: Invalid input or compte type already exists for the user.
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Server error.
+ */
+
+/**
+ * @swagger
+ * /api/auth/user/{userId}:
+ *   get:
+ *     summary: Retrieve user data along with comptes and cartes.
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the user.
+ *     responses:
+ *       200:
+ *         description: User data retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfile'
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Server error.
+ */
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout the current user.
+ *     tags: [Authentication]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: User logged out successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User logged out successfully."
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
  */
 
 // Rate limiters and request validator
