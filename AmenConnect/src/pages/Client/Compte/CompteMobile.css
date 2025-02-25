@@ -259,9 +259,6 @@ ion-content {
   transition: color 0.3s ease;
 }
 
-.tab-button.active {
-  color: var(--primary-green);
-}
 
 .tab-button ion-icon {
   font-size: 24px;
