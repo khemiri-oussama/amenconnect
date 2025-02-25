@@ -1,3 +1,4 @@
+//cpntrollers/authController.js
 const User = require("../models/User");
 const Compte = require("../models/Compte"); // Import the Compte model
 const bcrypt = require("bcryptjs");
