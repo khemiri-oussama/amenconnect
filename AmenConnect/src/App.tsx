@@ -4,7 +4,7 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Route, Redirect } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';  
-
+import { CarteProvider } from './CarteContext';
 import Home from './pages/Home';
 import Otp from './pages/otp/otp';
 import Login from './pages/Login/Login';
@@ -82,9 +82,11 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => (
   <AuthProvider>
-    <IonApp>
-      <AppContent />
-    </IonApp>
+    <CarteProvider>  {/* Wrap the application with the CarteProvider */}
+      <IonApp>
+        <AppContent />
+      </IonApp>
+    </CarteProvider>
   </AuthProvider>
 );
 

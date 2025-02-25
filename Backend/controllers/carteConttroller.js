@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Carte = require("../models/Cartes");
 const Compte = require("../models/Compte");
 
-// Helper: generate a unique 16-digit card number
+// Existing helper functions...
 const generateCardNumber = () => {
   let cardNumber = "";
   for (let i = 0; i < 16; i++) {
@@ -12,7 +12,6 @@ const generateCardNumber = () => {
   return cardNumber;
 };
 
-// Helper: generate an expiry date in MM/YY format (4 years validity)
 const generateExpiryDate = () => {
   const now = new Date();
   const year = now.getFullYear() + 4; // valid for 4 years
@@ -22,6 +21,7 @@ const generateExpiryDate = () => {
   return `${formattedMonth}/${formattedYear}`;
 };
 
+// Existing addCarte function...
 exports.addCarte = async (req, res) => {
   const { comptesId, CardHolder, TypeCarte } = req.body;
 
@@ -53,6 +53,40 @@ exports.addCarte = async (req, res) => {
     res.status(201).json({ message: "Carte added successfully.", carte: newCarte });
   } catch (err) {
     console.error("Add Carte error:", err);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+// New API: Update Carte Status
+exports.updateCarteStatus = async (req, res) => {
+  const { carteId, status } = req.body;
+
+  // Define the allowed statuses. Adjust the values as needed.
+  const allowedStatuses = ["Active", "Bloquer"];
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).json({
+      message: `Invalid status provided. Allowed statuses are: ${allowedStatuses.join(", ")}.`
+    });
+  }
+
+  try {
+    // Find the carte by its ID and update the cardStatus field.
+    const updatedCarte = await Carte.findByIdAndUpdate(
+      carteId,
+      { cardStatus: status, UpdatedAt: new Date().toISOString() },
+      { new: true } // Return the updated document.
+    );
+
+    if (!updatedCarte) {
+      return res.status(404).json({ message: "Carte not found." });
+    }
+
+    res.status(200).json({
+      message: "Carte status updated successfully.",
+      carte: updatedCarte
+    });
+  } catch (err) {
+    console.error("Update Carte Status error:", err);
     res.status(500).json({ message: "Server error." });
   }
 };

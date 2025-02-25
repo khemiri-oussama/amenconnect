@@ -36,7 +36,7 @@ app.use('/auth', require('./routes/authRoutes'));
 app.use("/api/carte", carteRoutes);
 // Swagger documentation route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
-
+app.use("/api/carte", carteRoutes);
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

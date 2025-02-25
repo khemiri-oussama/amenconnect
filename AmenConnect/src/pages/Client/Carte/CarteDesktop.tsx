@@ -1,6 +1,5 @@
 "use client"
-import type React from "react"
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import {
   IonPage,
   IonHeader,
@@ -27,6 +26,8 @@ import "./CarteDesktop.css"
 import Navbar from "../../../components/Navbar"
 import { useAuth, type Carte, type Compte } from "../../../AuthContext"
 import { generateBankStatement, type CardDetails, type Transaction } from "../../../../services/pdf-generator"
+// Import the useCarte hook from your CarteContext
+import { useCarte } from "../../../CarteContext"
 
 // Add this interface definition at the top of the file, after the imports
 interface CreditCardTransaction {
@@ -41,6 +42,8 @@ interface CreditCardTransaction {
 
 const CarteDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
+  const { updateCarteStatus } = useCarte() // Destructure the update function from CarteContext
+
   const [activeTab, setActiveTab] = useState("operations")
   const [isCardLocked, setIsCardLocked] = useState(false)
   const [isCardNumberVisible, setIsCardNumberVisible] = useState(false)
@@ -58,7 +61,9 @@ const CarteDesktop: React.FC = () => {
       setTransactions(cardFromProfile.creditCardTransactions || [])
 
       // Find the associated account
-      const associatedAccount = profile.comptes.find((compte) => compte._id === cardFromProfile.comptesId)
+      const associatedAccount = profile.comptes.find(
+        (compte) => compte._id === cardFromProfile.comptesId
+      )
       setAccountDetails(associatedAccount || null)
     }
     setIsLoading(false)
@@ -68,9 +73,24 @@ const CarteDesktop: React.FC = () => {
     setIsCardNumberVisible(!isCardNumberVisible)
   }
 
-  const toggleCardLock = () => {
-    setIsCardLocked(!isCardLocked)
-    // Here you would typically make an API call to lock/unlock the card
+  // Updated toggleCardLock function that calls the API
+  const toggleCardLock = async () => {
+    if (!cardDetails) return
+
+    // Determine the new status based on the current status
+    const newStatus = cardDetails.cardStatus === "Active" ? "Bloquer" : "Active"
+    try {
+      // Call the API to update the card status
+      await updateCarteStatus(cardDetails._id, newStatus)
+      // Update local state based on the new status
+      setIsCardLocked(newStatus !== "Active")
+      setCardDetails((prev) =>
+        prev ? { ...prev, cardStatus: newStatus } : prev
+      )
+    } catch (err) {
+      console.error("Failed to update card status:", err)
+      // Optionally, display an error notification to the user here.
+    }
   }
 
   const formatCurrency = (amount: number) => {
@@ -120,7 +140,7 @@ const CarteDesktop: React.FC = () => {
       })
     } catch (error) {
       console.error("Erreur lors de la génération du relevé:", error)
-      // You could add a toast or alert here to notify the user
+      // Optionally add a toast or alert to notify the user.
     }
   }
 
@@ -196,7 +216,11 @@ const CarteDesktop: React.FC = () => {
             </motion.div>
 
             <div className="carte-desktop__quick-actions">
-              <IonButton expand="block" color={isCardLocked ? "danger" : "success"} onClick={toggleCardLock}>
+              <IonButton
+                expand="block"
+                color={isCardLocked ? "danger" : "success"}
+                onClick={toggleCardLock}
+              >
                 <IonIcon slot="start" icon={lockClosedOutline} />
                 {isCardLocked ? "Débloquer la carte" : "Bloquer la carte"}
               </IonButton>
@@ -204,7 +228,11 @@ const CarteDesktop: React.FC = () => {
                 <IonIcon slot="start" icon={shieldOutline} />
                 Paramètres de sécurité
               </IonButton>
-              <IonButton expand="block" color="success" onClick={handleDownloadStatement}>
+              <IonButton
+                expand="block"
+                color="success"
+                onClick={handleDownloadStatement}
+              >
                 <IonIcon slot="start" icon={downloadOutline} />
                 Télécharger le relevé
               </IonButton>
@@ -212,7 +240,9 @@ const CarteDesktop: React.FC = () => {
 
             <IonCard className="carte-desktop__card-limits">
               <IonCardHeader>
-                <IonCardTitle className="carte-desktop-card_title">Limites de la carte</IonCardTitle>
+                <IonCardTitle className="carte-desktop-card_title">
+                  Limites de la carte
+                </IonCardTitle>
               </IonCardHeader>
               <IonCardContent>
                 <div className="carte-desktop__limit-item">
@@ -226,7 +256,8 @@ const CarteDesktop: React.FC = () => {
                   <IonProgressBar
                     value={
                       cardDetails?.monthlyExpenses
-                        ? cardDetails.monthlyExpenses.current / cardDetails.monthlyExpenses.limit
+                        ? cardDetails.monthlyExpenses.current /
+                          cardDetails.monthlyExpenses.limit
                         : 0
                     }
                     color="success"
@@ -243,7 +274,8 @@ const CarteDesktop: React.FC = () => {
                   <IonProgressBar
                     value={
                       cardDetails?.atmWithdrawal
-                        ? cardDetails.atmWithdrawal.current / cardDetails.atmWithdrawal.limit
+                        ? cardDetails.atmWithdrawal.current /
+                          cardDetails.atmWithdrawal.limit
                         : 0
                     }
                     color="success"
@@ -285,7 +317,9 @@ const CarteDesktop: React.FC = () => {
                     <IonCard className="carte-desktop__balance-card">
                       <IonCardContent>
                         <h4>Solde actuel</h4>
-                        <h2 className="desktop-carte_balance">{formatCurrency(accountDetails?.solde || 0)}</h2>
+                        <h2 className="desktop-carte_balance">
+                          {formatCurrency(accountDetails?.solde || 0)}
+                        </h2>
                       </IonCardContent>
                     </IonCard>
                     <IonCard className="carte-desktop__balance-card">
@@ -294,29 +328,39 @@ const CarteDesktop: React.FC = () => {
                         <h2 className="desktop-carte_balance">
                           {formatCurrency(cardDetails?.pendingTransactions?.amount || 0)}
                         </h2>
-                        <span>{cardDetails?.pendingTransactions?.count || 0} transactions en attente</span>
+                        <span>
+                          {cardDetails?.pendingTransactions?.count || 0} transactions en attente
+                        </span>
                       </IonCardContent>
                     </IonCard>
                   </div>
 
                   <IonCard className="carte-desktop__recent-transactions">
                     <IonCardHeader>
-                      <IonCardTitle className="carte-desktop-card_title">Transactions récentes</IonCardTitle>
+                      <IonCardTitle className="carte-desktop-card_title">
+                        Transactions récentes
+                      </IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
                       <IonList>
                         {transactions.map((transaction) => (
-                          <IonItem key={transaction._id} className="carte-desktop__transaction-item">
+                          <IonItem
+                            key={transaction._id}
+                            className="carte-desktop__transaction-item"
+                          >
                             <IonAvatar slot="start">
                               <div className="carte-desktop__transaction-icon">💳</div>
                             </IonAvatar>
                             <IonLabel>
                               <h2>{transaction.merchant}</h2>
                               <p>
-                                {new Date(transaction.transactionDate).toLocaleDateString()} - {transaction.status}
+                                {new Date(transaction.transactionDate).toLocaleDateString()} -{" "}
+                                {transaction.status}
                               </p>
                               {transaction.description && (
-                                <p className="transaction-description">{transaction.description}</p>
+                                <p className="transaction-description">
+                                  {transaction.description}
+                                </p>
                               )}
                             </IonLabel>
                             <IonChip slot="end" color={transaction.amount < 0 ? "danger" : "success"}>
@@ -355,7 +399,9 @@ const CarteDesktop: React.FC = () => {
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Valable à partir de</h4>
-                          <p className="desktop-carte_data">{cardDetails?.ExpiryDate.split("/")[1]}/23</p>
+                          <p className="desktop-carte_data">
+                            {cardDetails?.ExpiryDate.split("/")[1]}/23
+                          </p>
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Valable jusqu'à</h4>
@@ -367,7 +413,9 @@ const CarteDesktop: React.FC = () => {
 
                   <IonCard className="carte-desktop__security-features">
                     <IonCardHeader>
-                      <IonCardTitle className="carte-desktop-card_title">Fonctionnalités de sécurité</IonCardTitle>
+                      <IonCardTitle className="carte-desktop-card_title">
+                        Fonctionnalités de sécurité
+                      </IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
                       <div className="carte-desktop__features-grid">
@@ -400,4 +448,3 @@ const CarteDesktop: React.FC = () => {
 }
 
 export default CarteDesktop
-
