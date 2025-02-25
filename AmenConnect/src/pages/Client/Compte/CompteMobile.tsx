@@ -258,7 +258,7 @@ const CompteMobile: React.FC = () => {
               >
                 <span className="info-label">IBAN</span>
                 <span className="info-value">
-                  {account ? `${account.IBAN}` : ""}
+                  {account ? `TN${account.RIB}` : ""}
                 </span>
               </motion.div>
               <motion.div
