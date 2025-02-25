@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const ipRoutes = require('./routes/ipRoutes');
 const forgotPassword = require('./routes/forgotPasswordRoutes');
-
+const carteRoutes = require('./routes/carteRoutes')
 // Import and initialize Passport
 const passport = require('./config/passport');
 
@@ -33,7 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/password', forgotPassword);
 app.use('/api/ip', ipRoutes);
 app.use('/auth', require('./routes/authRoutes'));
-
+app.use("/api/carte", carteRoutes);
 // Swagger documentation route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 

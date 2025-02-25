@@ -289,62 +289,7 @@ exports.logout = async (req, res) => {
 
 const Carte = require("../models/Cartes"); // Import the Carte model
 
-exports.getUserData = async (req, res) => {
-  const { userId } = req.params; // Assuming userId is passed as a URL parameter
 
-  try {
-    // Fetch the user data
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
-    }
-
-    // Fetch all comptes associated with the user
-    const comptes = await Compte.find({ userId: user._id });
-    console.log("User ID:", user._id);
-    console.log("Comptes found:", comptes);
-    console.log("Comptes IDs:", comptes.map(c => c._id));
-    
-
-    
-    
-    
-    // Fetch all cartes associated with the user's comptes
-    const cartes = await Carte.find({ comptesId: { $in: comptes.map(c => c._id) } });
-console.log("Cartes found:", cartes);
-    // Combine the data into a single response
-    const userData = {
-      user: {
-        cin: user.cin,
-        nom: user.nom,
-        prenom: user.prenom,
-        email: user.email,
-        telephone: user.telephone,
-        employeur: user.employeur,
-        adresseEmployeur: user.adresseEmployeur,
-      },
-      comptes: comptes.map(compte => ({
-        numéroCompte: compte.numéroCompte,
-        solde: compte.solde,
-        type: compte.type,
-        avecChéquier: compte.avecChéquier,
-        avecCarteBancaire: compte.avecCarteBancaire,
-        modalitésRetrait: compte.modalitésRetrait,
-        conditionsGel: compte.conditionsGel,
-      })),
-      cartes: cartes.map(carte => ({
-        CardNumber: carte.CardNumber,
-        ExpiryDate: carte.ExpiryDate,
-        CardHolder: carte.CardHolder,
-      })),
-    };
-
-    res.status(200).json(userData);
-  } catch (err) {
-    console.error("Error fetching user data:", err);
-    res.status(500).json({ message: "Server error." });
-  }
-};
 
 // Export OTP helper functions if needed elsewhere
 exports.generateOTP = generateOTP;
