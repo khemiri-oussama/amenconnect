@@ -55,19 +55,23 @@ const CarteDesktop: React.FC = () => {
 
   useEffect(() => {
     if (profile && profile.cartes && profile.cartes.length > 0) {
-      const cardFromProfile = profile.cartes[0]
-      setCardDetails(cardFromProfile)
-      setIsCardLocked(cardFromProfile.cardStatus !== "Active")
-      setTransactions(cardFromProfile.creditCardTransactions || [])
-
+      const cardFromProfile = profile.cartes[0];
+      setCardDetails(cardFromProfile);
+      // Use a case-insensitive comparison:
+      setIsCardLocked(
+        cardFromProfile.cardStatus?.toLowerCase() !== "active"
+      );
+      setTransactions(cardFromProfile.creditCardTransactions || []);
+  
       // Find the associated account
       const associatedAccount = profile.comptes.find(
         (compte) => compte._id === cardFromProfile.comptesId
-      )
-      setAccountDetails(associatedAccount || null)
+      );
+      setAccountDetails(associatedAccount || null);
     }
-    setIsLoading(false)
-  }, [profile])
+    setIsLoading(false);
+  }, [profile]);
+  
 
   const toggleCardNumber = () => {
     setIsCardNumberVisible(!isCardNumberVisible)
@@ -75,23 +79,25 @@ const CarteDesktop: React.FC = () => {
 
   // Updated toggleCardLock function that calls the API
   const toggleCardLock = async () => {
-    if (!cardDetails) return
-
-    // Determine the new status based on the current status
-    const newStatus = cardDetails.cardStatus === "Active" ? "Bloquer" : "Active"
+    if (!cardDetails) return;
+  
+    // Determine the new status using a case-insensitive check
+    const currentStatus = cardDetails.cardStatus?.toLowerCase();
+    const newStatus = currentStatus === "active" ? "Bloquer" : "Active";
     try {
       // Call the API to update the card status
-      await updateCarteStatus(cardDetails._id, newStatus)
+      await updateCarteStatus(cardDetails._id, newStatus);
       // Update local state based on the new status
-      setIsCardLocked(newStatus !== "Active")
+      setIsCardLocked(newStatus.toLowerCase() !== "active");
       setCardDetails((prev) =>
         prev ? { ...prev, cardStatus: newStatus } : prev
-      )
+      );
     } catch (err) {
-      console.error("Failed to update card status:", err)
+      console.error("Failed to update card status:", err);
       // Optionally, display an error notification to the user here.
     }
-  }
+  };
+  
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("tn-TN", {
