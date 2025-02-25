@@ -176,6 +176,15 @@
   justify-content: space-between;
   margin-bottom: 24px;
   gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.quick-actions-mobile::-webkit-scrollbar {
+  display: none; /* WebKit */
 }
 
 .quick-action-button {
@@ -183,11 +192,12 @@
   --color: white;
   --border-radius: 12px;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  flex: 1;
+  flex: 0 0 calc(33.333% - 8px);
   height: 80px;
   font-size: 14px;
   flex-direction: column;
   transition: transform 0.3s ease, background-color 0.3s ease;
+  scroll-snap-align: start;
 }
 
 .quick-action-button:active {
@@ -241,6 +251,7 @@
 
 /* Payment Card */
 .payment-card-mobile {
+  margin-top: -22px;
   background: linear-gradient(135deg, #2980b9, #2c3e50);
   border-radius: 16px;
   padding: 20px;
@@ -410,7 +421,8 @@
   }
 
   .quick-actions-mobile {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
 
   .quick-action-button {
