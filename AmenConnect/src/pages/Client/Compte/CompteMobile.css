@@ -11,7 +11,7 @@
 }
 
 /* Content Styles */
-ion-content {
+ion-content{
   --background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   --padding-bottom: 70px;
 }
