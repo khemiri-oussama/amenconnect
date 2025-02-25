@@ -296,31 +296,36 @@ const AccueilMobile: React.FC = () => {
                   <IonRippleEffect />
                 </IonButton>
               </div>
-              {cartes.length > 0 ? (
-                cartes.map((carte, index) => (
-                  <div
-                    key={index}
-                    className={`payment-card-mobile ion-activatable ${index % 2 === 1 ? "secondary" : ""}`}
-                    onClick={() => history.push("/carte")}
-                  >
-                    <div className="card-background"></div>
-                    <div className="card-content">
-                      <p className="card-label-mobile">{carte.cardType}</p>
-                      <div className="card-details-mobile">
-                        <IonIcon icon={cardOutline} className="card-icon-mobile" />
-                        <div className="card-info-mobile">
-                          <p className="card-name-mobile">{carte.cardHolder}</p>
-                          <p className="card-number-mobile">{formatCardNumber(carte.cardNumber)}</p>
+              <div className="cards-stack">
+                {cartes.length > 0 ? (
+                  cartes.map((carte, index) => (
+                    <div
+                      key={index}
+                      className={`payment-card-mobile ion-activatable ${index % 2 === 1 ? "secondary" : ""}`}
+                      onClick={() => history.push("/carte")}
+                      style={{
+                        zIndex: cartes.length - index,
+                      }}
+                    >
+                      <div className="card-background"></div>
+                      <div className="card-content">
+                        <p className="card-label-mobile">{carte.cardType}</p>
+                        <div className="card-details-mobile">
+                          <IonIcon icon={cardOutline} className="card-icon-mobile" />
+                          <div className="card-info-mobile">
+                            <p className="card-name-mobile">{carte.cardHolder}</p>
+                            <p className="card-number-mobile">{formatCardNumber(carte.cardNumber)}</p>
+                          </div>
+                          <p className="card-expiry-mobile">{carte.expiryDate}</p>
                         </div>
-                        <p className="card-expiry-mobile">{carte.expiryDate}</p>
                       </div>
+                      <IonRippleEffect />
                     </div>
-                    <IonRippleEffect />
-                  </div>
-                ))
-              ) : (
-                <p className="no-cards-mobile">Aucune carte disponible</p>
-              )}
+                  ))
+                ) : (
+                  <p className="no-cards-mobile">Aucune carte disponible</p>
+                )}
+              </div>
             </div>
 
             {/* Budget Section */}
