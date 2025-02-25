@@ -1,15 +1,18 @@
 /* Global Variables */
 :root {
-  --primary-green: #4caf50;
+  --primary-green: #47ce65;
   --primary-red: #ff5722;
-  --background-dark: #121212;
-  --card-background: rgba(255, 255, 255, 0.05);
+  --background-dark: #1e1e1e;
+  --card-background: rgba(255, 255, 255, 0.1);
   --text-gray: rgba(255, 255, 255, 0.6);
+  --accent-blue: #3b82f6;
+  --gradient-start: #2c3e50;
+  --gradient-end: #1a1a1a;
 }
 
 /* Content Styles */
 ion-content {
-  --background: var(--background-dark);
+  --background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   --padding-bottom: 70px;
 }
 
@@ -35,76 +38,102 @@ ion-content {
   font-weight: 700;
   color: white;
   margin: 60px 0 30px; /* Updated margin-top */
+  animation: fadeIn 0.5s ease-out;
 }
 
 /* Account Card */
 .account-card {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(255, 87, 34, 0.2));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: slideIn 0.5s ease-out;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.account-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+.account-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 20px rgba(71, 206, 101, 0.4);
 }
 
 .account-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   color: white;
+}
+
+.account-type {
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .stats-icon {
   color: var(--primary-green);
-  font-size: 28px;
+  font-size: 24px;
 }
 
 .account-details {
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.balance-container {
+  display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .balance {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
   color: white;
-  margin: 0 0 8px 0;
+  margin: 0;
 }
 
 .account-number {
   color: var(--text-gray);
-  margin: 0;
   font-size: 14px;
+  margin: 0;
 }
 
 .expiry-date {
   color: var(--text-gray);
   font-size: 14px;
+  align-self: flex-end;
+  margin: 0;
 }
 
 /* Chart Container */
 .mobile-chart-container {
-  background: var(--card-background);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
   border-radius: 20px;
-  padding: 20px;
+  padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  animation: slideIn 0.5s ease-out;
 }
 
 /* Custom Segment */
 .custom-segment {
-  background: var(--card-background);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   --background: transparent;
   padding: 4px;
   margin-bottom: 24px;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.5s ease-out;
 }
 
 ion-segment-button {
@@ -120,6 +149,7 @@ ion-segment-button {
 /* Operations Section */
 .operations-section {
   margin-top: 20px;
+  animation: fadeIn 0.5s ease-out;
 }
 
 .operations-section h3 {
@@ -137,16 +167,27 @@ ion-segment-button {
 
 /* Custom Searchbar */
 .custom-searchbar {
-  --background: var(--card-background);
-  --color: white;
+  --background: rgba(255, 255, 255, 0.05);
+  --border-radius: 16px;
+  --box-shadow: none;
   --placeholder-color: var(--text-gray);
   --icon-color: var(--text-gray);
-  --border-radius: 12px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(8px);
 }
 
 /* Account Info Section */
 .account-info-section {
-  padding-top: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  animation: fadeIn 0.5s ease-out;
 }
 
 .account-info-section h2 {
@@ -180,27 +221,27 @@ ion-segment-button {
   --background: var(--primary-green);
   --background-activated: var(--primary-green);
   --background-hover: var(--primary-green);
-  --box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4);
+  --box-shadow: 0 4px 16px rgba(71, 206, 101, 0.4);
   transition: all 0.3s ease;
 }
 
 .custom-fab:hover {
-  --box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+  --box-shadow: 0 6px 20px rgba(71, 206, 101, 0.6);
   transform: translateY(-2px);
 }
 
 /* Fixed bottom navigation */
 
-
 /* Adjust content padding */
 ion-content {
-  --padding-bottom: 70px;
+  --background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
 }
 
 /* Ensure content is scrollable */
 .scrollable-content {
-  height: 100%;
-  overflow-y: auto;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  padding: 16px;
   padding-top: 60px; /* Updated padding-top */
   padding-bottom: 70px; /* Adjust this value based on your bottom nav height */
 }
@@ -236,5 +277,53 @@ ion-content {
   z-index: 1000;
   background: var(--background-dark);
   padding: 10px 16px;
+}
+
+/* Add animations to match AccueilMobile */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Update text colors to match AccueilMobile */
+.page-title,
+.account-header,
+.balance,
+h2,
+h3,
+.info-value {
+  color: white;
+}
+
+.account-number,
+.expiry-date,
+.last-update,
+.info-label {
+  color: var(--text-gray);
+}
+
+/* Update the stats-icon color to match AccueilMobile */
+.stats-icon {
+  color: var(--primary-green);
+}
+
+/* Ensure the gradient covers the entire page */
+.ion-page {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
 }
 

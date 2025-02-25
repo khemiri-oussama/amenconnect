@@ -141,7 +141,7 @@ const CarteMobile: React.FC = () => {
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("tn-TN", {
+    return new Intl.NumberFormat("fr-FR", {
       style: "currency",
       currency: "TND",
     }).format(amount)
@@ -323,7 +323,7 @@ const CarteMobile: React.FC = () => {
             >
               <h2 className="section-title">Encours de la carte</h2>
               <div className="encours-amount">
-                <span>Montant disponible</span>
+                <span>Montant disponible </span>
                 <span className="amount">{formatCurrency(cards[currentCardIndex]?.balance || 0)}</span>
               </div>
             </motion.div>
