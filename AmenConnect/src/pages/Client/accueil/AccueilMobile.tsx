@@ -59,6 +59,11 @@ const AccueilMobile: React.FC = () => {
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
   const quickActionsRef = useRef<HTMLDivElement>(null)
 
+  // Add these new state variables at the top of your component
+  const [selectedCard, setSelectedCard] = useState<CardDetails | null>(null)
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false)
+  const previewTimerRef = useRef<NodeJS.Timeout | null>(null)
+
   useEffect(() => {
     const currentDate = new Date()
     const formattedDate = currentDate.toLocaleDateString("fr-FR", {
@@ -171,6 +176,30 @@ const AccueilMobile: React.FC = () => {
   const progressPercentage = monthlyExpenses
     ? Math.min((monthlyExpenses.current / monthlyExpenses.limit) * 100, 100)
     : 0
+
+  // Add these handler functions
+  const handleCardLongPress = (e: React.TouchEvent | React.MouseEvent, card: CardDetails) => {
+    e.preventDefault()
+    previewTimerRef.current = setTimeout(() => {
+      setSelectedCard(card)
+      setIsPreviewVisible(true)
+      // Vibrate for feedback if available
+      if (window.navigator.vibrate) {
+        window.navigator.vibrate(50)
+      }
+    }, 500)
+  }
+
+  const handleCardPressEnd = () => {
+    if (previewTimerRef.current) {
+      clearTimeout(previewTimerRef.current)
+    }
+  }
+
+  const closePreview = () => {
+    setIsPreviewVisible(false)
+    setSelectedCard(null)
+  }
 
   return (
     <IonPage>
@@ -302,7 +331,11 @@ const AccueilMobile: React.FC = () => {
                     <div
                       key={index}
                       className={`payment-card-mobile ion-activatable ${index % 2 === 1 ? "secondary" : ""}`}
-                      onClick={() => history.push("/carte")}
+                      onTouchStart={(e) => handleCardLongPress(e, carte)}
+                      onTouchEnd={handleCardPressEnd}
+                      onMouseDown={(e) => handleCardLongPress(e, carte)}
+                      onMouseUp={handleCardPressEnd}
+                      onMouseLeave={handleCardPressEnd}
                       style={{
                         zIndex: cartes.length - index,
                       }}
@@ -326,6 +359,58 @@ const AccueilMobile: React.FC = () => {
                   <p className="no-cards-mobile">Aucune carte disponible</p>
                 )}
               </div>
+
+              {/* Card Preview Modal */}
+              {isPreviewVisible && selectedCard && (
+                <div className="card-preview-overlay" onClick={closePreview}>
+                  <div className="card-preview-container" onClick={(e) => e.stopPropagation()}>
+                    <div
+                      className={`card-preview ${
+                        selectedCard.cardType.toLowerCase().includes("visa")
+                          ? "visa"
+                          : selectedCard.cardType.toLowerCase().includes("mastercard")
+                            ? "mastercard"
+                            : selectedCard.cardType.toLowerCase().includes("gold")
+                              ? "gold"
+                              : "default"
+                      }`}
+                    >
+                      <div className="card-preview-content">
+                        <div className="card-preview-top">
+                          <div className="card-chip-container">
+                            <div className="card-chip"></div>
+                            <svg
+                              className="contactless-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-2-2-1.5 0-2 .62-2 2s.5 2 2 2z" />
+                              <path d="M2 15.5a5.5 0 0 0 8.5-4.5c0-2.75-1-4-4-4-3 0-4 1.25-4 4s1 4 4 4z" />
+                              <path d="M14.5 12a2.5 2.5 0 0 0 5 0c0-1.38-.5-2-2-2-1.5 0-2 .62-2 2s.5 2 2 2z" />
+                            </svg>
+                          </div>
+                          <div className="card-brand">
+                            <span className="brand-text">{selectedCard.cardType}</span>
+                          </div>
+                        </div>
+                        <div className="card-preview-number">{formatCardNumber(selectedCard.cardNumber)}</div>
+                        <div className="card-preview-bottom">
+                          <div className="card-preview-holder">
+                            <span className="preview-label">TITULAIRE</span>
+                            <span className="preview-value">{selectedCard.cardHolder}</span>
+                          </div>
+                          <div className="card-preview-expiry">
+                            <span className="preview-label">EXPIRE</span>
+                            <span className="preview-value">{selectedCard.expiryDate}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Budget Section */}
