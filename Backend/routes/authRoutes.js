@@ -123,13 +123,52 @@ const Carte = require('../models/Cartes');
  *       properties:
  *         _id:
  *           type: string
+ *         CardNumber:
+ *           type: string
+ *           description: The unique 16-digit card number.
+ *         ExpiryDate:
+ *           type: string
+ *           description: The expiry date in MM/YY format.
+ *         CardHolder:
+ *           type: string
+ *         CreatedAt:
+ *           type: string
+ *         UpdatedAt:
+ *           type: string
  *         comptesId:
  *           type: string
- *         numeroCarte:
+ *           description: The ID of the compte this card is linked to.
+ *         TypeCarte:
  *           type: string
- *         type:
+ *           description: The type of the card (e.g., debit, credit).
+ *         creditCardTransactions:
+ *           type: array
+ *           items:
+ *             type: object
+ *         monthlyExpenses:
+ *           type: object
+ *           properties:
+ *             current:
+ *               type: number
+ *             limit:
+ *               type: number
+ *         atmWithdrawal:
+ *           type: object
+ *           properties:
+ *             current:
+ *               type: number
+ *             limit:
+ *               type: number
+ *         pendingTransactions:
+ *           type: object
+ *           properties:
+ *             amount:
+ *               type: number
+ *             count:
+ *               type: number
+ *         cardStatus:
  *           type: string
- *           enum: [debit, credit]
+ *           description: The current status of the card.
  *   responses:
  *     UnauthorizedError:
  *       description: Authentication information is missing or invalid.
@@ -547,5 +586,5 @@ router.post("/logout", passport.authenticate('jwt', { session: false }), logout)
 
 // Route for adding a new compte
 router.post("/addCompte", authController.addCompte);
-router.get("/user/:userId", authController.getUserData);
+
 module.exports = router;
