@@ -134,6 +134,7 @@ ion-segment-button {
   --indicator-color: transparent;
   min-height: 36px;
   font-weight: 500;
+  width: 85px;
   text-transform: none;
   letter-spacing: 0;
 }
