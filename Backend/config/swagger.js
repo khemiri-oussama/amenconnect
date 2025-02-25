@@ -146,7 +146,6 @@ const options = {
       { name: 'Carte', description: 'Endpoints for card management' },
       { name: 'Transactions', description: 'Endpoints for credit card transactions' },
       { name: 'Password', description: 'Endpoints for password recovery' },
-      { name: 'IP', description: 'Endpoints for IP related operations' }
     ],
     paths: {
       '/api/auth/register': {
@@ -518,23 +517,6 @@ const options = {
           }
         }
       },
-      '/api/ip': {
-        get: {
-          tags: ['IP'],
-          summary: 'Example endpoint for IP related operations',
-          responses: {
-            '200': {
-              description: 'IP endpoint response',
-              content: {
-                'application/json': {
-                  schema: { type: 'object', properties: { ip: { type: 'string', example: '127.0.0.1' } } }
-                }
-              }
-            },
-            '500': { description: 'Server error' }
-          }
-        }
-      }
     }
   },
   apis: ['./routes/*.js'] // Optionally include your route annotations
