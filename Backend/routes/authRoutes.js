@@ -559,8 +559,5 @@ router.post("/logout", passport.authenticate('jwt', { session: false }), logout)
 
 // Route for adding a new compte
 router.post("/addCompte", authController.addCompte);
-<<<<<<< HEAD
 
-=======
->>>>>>> 1018fa65c6a0f99cffb93e218264d6ef131a28c0
 module.exports = router;
