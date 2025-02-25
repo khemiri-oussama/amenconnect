@@ -342,33 +342,6 @@ const Carte = require('../models/Cartes');
  *       500:
  *         description: Server error.
  */
-
-/**
- * @swagger
- * /api/auth/user/{userId}:
- *   get:
- *     summary: Retrieve user data along with comptes and cartes.
- *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: string
- *         required: true
- *         description: The ID of the user.
- *     responses:
- *       200:
- *         description: User data retrieved successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/UserProfile'
- *       404:
- *         description: User not found.
- *       500:
- *         description: Server error.
- */
-
 /**
  * @swagger
  * /api/auth/logout:
@@ -547,5 +520,4 @@ router.post("/logout", passport.authenticate('jwt', { session: false }), logout)
 
 // Route for adding a new compte
 router.post("/addCompte", authController.addCompte);
-router.get("/user/:userId", authController.getUserData);
 module.exports = router;
