@@ -1,8 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
 
-.welcome-container {
+html {
+  /* Base de la typographie */
+  font-size: 16px;
+}
+
+.homekiosk-container {
   font-family: "Outfit", sans-serif;
-  height: 100vh; /* Utilise 100% de la hauteur de la fenêtre */
+  height: 100vh;
   width: 100vw;
   position: relative;
   overflow: hidden;
@@ -11,14 +16,14 @@
   background-size: cover;
 }
 
-.img {
+.homekiosk-img {
   width: 100%;
   height: auto;
   display: block;
   margin: 0 auto;
 }
 
-.content-wrapper-totem {
+.homekiosk-content {
   position: absolute;
   top: 0;
   left: 0;
@@ -32,42 +37,45 @@
   text-align: center;
 }
 
-.logo {
-  margin-bottom: 70px; /* Utiliser une seule déclaration */
+.homekiosk-logo {
+  margin-bottom: 70px;
 }
 
-.welcome-kiosk {
+.homekiosk-title {
   color: #121660;
-  font-size: 4rem;
+  font-size: 5rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
 }
 
-.banking-question {
+.homekiosk-question {
   color: #121660;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 400;
   line-height: 1.3;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
-.start-button {
+.homekiosk-btn {
   background: linear-gradient(to right, #121660, #181e92);
   border: none;
   border-radius: 2rem;
   color: white;
   cursor: pointer;
   font-family: "Outfit", sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 600;
   padding: 1rem 3rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   box-shadow: 0 4px 10px rgba(18, 22, 96, 0.3);
+  text-transform: uppercase;
 }
 
-.success-message {
+.homekiosk-message {
   color: #121660;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 600;
   line-height: 1.3;
   margin: 0;
@@ -75,7 +83,7 @@
 
 /* Gestion de l'orientation : affichage d'un message en mode paysage */
 @media (orientation: landscape) {
-  .content-wrapper-totem:before {
+  .homekiosk-content:before {
     content: "Veuillez orienter votre appareil en mode portrait";
     position: absolute;
     top: 50%;
@@ -87,45 +95,44 @@
     padding: 1rem;
     border-radius: 10px;
   }
-  /* Masquer le contenu principal en mode paysage */
-  .content-wrapper-totem > * {
+  .homekiosk-content > * {
     display: none;
   }
 }
 
 /* Responsive pour les écrans plus petits */
 @media (max-width: 768px) {
-  .welcome-kiosk {
-    font-size: 3rem;
+  .homekiosk-title {
+    font-size: 4rem;
   }
-
-  .banking-question,
-  .success-message {
+  .homekiosk-question,
+  .homekiosk-message {
+    font-size: 2rem;
+  }
+  .homekiosk-btn {
     font-size: 1.5rem;
-  }
-
-  .start-button {
-    font-size: 1.25rem;
     padding: 0.875rem 2.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .logo {
+  .homekiosk-logo {
     font-size: 2rem;
   }
-
-  .welcome-kiosk {
-    font-size: 2.5rem;
+  .homekiosk-title {
+    font-size: 3rem;
   }
-
-  .banking-question,
-  .success-message {
+  .homekiosk-question,
+  .homekiosk-message {
+    font-size: 1.75rem;
+  }
+  .homekiosk-btn {
     font-size: 1.25rem;
-  }
-
-  .start-button {
-    font-size: 1rem;
     padding: 0.75rem 2rem;
   }
+}
+
+.homekiosk-video-container {
+  width: 100vw;
+  height: 100vh;
 }
