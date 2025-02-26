@@ -18,7 +18,7 @@
   margin: 0 auto;
 }
 
-.content-wrapper {
+.content-wrapper-totem {
   position: absolute;
   top: 0;
   left: 0;
@@ -71,6 +71,26 @@
   font-weight: 600;
   line-height: 1.3;
   margin: 0;
+}
+
+/* Gestion de l'orientation : affichage d'un message en mode paysage */
+@media (orientation: landscape) {
+  .content-wrapper-totem:before {
+    content: "Veuillez orienter votre appareil en mode portrait";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: #121660;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  /* Masquer le contenu principal en mode paysage */
+  .content-wrapper-totem > * {
+    display: none;
+  }
 }
 
 /* Responsive pour les écrans plus petits */
