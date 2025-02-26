@@ -3,19 +3,17 @@ import { IonContent, IonPage, IonImg } from "@ionic/react";
 import "./Homekiosk.css";
 
 const HomeKiosk: React.FC = () => {
-  // false : mode repos (vidéo affichée), true : mode interactif
+
   const [active, setActive] = useState(false);
-  // Référence pour le timer d'inactivité
+
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
-  // Référence pour la vidéo
+
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Fonction pour réinitialiser le timer d'inactivité
   const resetTimer = useCallback(() => {
     if (inactivityTimer.current) {
       clearTimeout(inactivityTimer.current);
     }
-    // Passage au mode repos après 1 minute (60000 ms) d'inactivité
     inactivityTimer.current = setTimeout(() => {
       setActive(false);
       // Relance la vidéo en mode repos avec son
