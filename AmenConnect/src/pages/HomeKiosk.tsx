@@ -29,9 +29,7 @@ const HomeKiosk: React.FC = () => {
 
   // Gestion de l'interaction utilisateur
   const handleUserInteraction = useCallback(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = false; // Active le son après interaction
-    }
+    
     if (!active) {
       setActive(true);
     }
