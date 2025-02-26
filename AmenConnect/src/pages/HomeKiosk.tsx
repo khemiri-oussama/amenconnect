@@ -3,20 +3,28 @@ import { IonContent, IonPage, IonImg } from "@ionic/react";
 import "./Homekiosk.css";
 
 const HomeKiosk: React.FC = () => {
-  const [active, setActive] = useState(false); // Mode interactif ou repos
+  // false : mode repos (vidéo affichée), true : mode interactif
+  const [active, setActive] = useState(false);
+  // Référence pour le timer d'inactivité
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
+  // Référence pour la vidéo
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Fonction pour relancer le mode repos après inactivité
+  // Fonction pour réinitialiser le timer d'inactivité
   const resetTimer = useCallback(() => {
-    if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
-
+    if (inactivityTimer.current) {
+      clearTimeout(inactivityTimer.current);
+    }
+    // Passage au mode repos après 1 minute (60000 ms) d'inactivité
     inactivityTimer.current = setTimeout(() => {
       setActive(false);
+      // Relance la vidéo en mode repos avec son
       if (videoRef.current) {
-        videoRef.current.play().catch((error) => console.error("Erreur lecture vidéo:", error));
+        videoRef.current.play().catch((error) =>
+          console.error("Erreur lors de la lecture de la vidéo :", error)
+        );
       }
-    }, 60000); // 1 minute d'inactivité
+    }, 60000);
   }, []);
 
   // Gestion de l'interaction utilisateur
@@ -28,6 +36,7 @@ const HomeKiosk: React.FC = () => {
   }, [active, resetTimer]);
 
   useEffect(() => {
+    // Ajoute des écouteurs pour détecter toute interaction (tactile ou clic)
     document.addEventListener("touchstart", handleUserInteraction);
     document.addEventListener("click", handleUserInteraction);
 
@@ -42,8 +51,11 @@ const HomeKiosk: React.FC = () => {
     <IonPage>
       <IonContent fullscreen>
         {active ? (
-          // Mode interactif
-          <div className="welcome-container" style={{ backgroundImage: `url('./background.png')` }}>
+          // Mode interactif : interface de la totem
+          <div
+            className="welcome-container"
+            style={{ backgroundImage: `url('./background.png')` }}
+          >
             <div className="content-wrapper">
               <div className="logo">
                 <IonImg src="favicon.png" alt="Amen Bank Logo" className="img" />
@@ -62,15 +74,17 @@ const HomeKiosk: React.FC = () => {
             </div>
           </div>
         ) : (
-          // Mode repos : vidéo en boucle
-          <div className="video-container">
+          // Mode repos : lecture automatique de la vidéo en boucle avec son
+          <div className="video-container" style={{ width: "100vw", height: "100vh" }}>
             <video
               ref={videoRef}
               autoPlay
               loop
               playsInline
-              muted
-              onError={(e) => console.error("Erreur chargement vidéo:", e)}
+              controls={false}
+              onError={(e) =>
+                console.error("Erreur lors du chargement de la vidéo :", e)
+              }
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             >
               <source src="pub.mp4" type="video/mp4" />
