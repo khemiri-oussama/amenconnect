@@ -2,6 +2,9 @@
   --color: #ffffff;
 }
 
+.carte-desktop__content{
+  background: #1E1E1E;
+}
 .carte-desktop__layout {
   display: grid;
   grid-template-columns: 400px 1fr;
