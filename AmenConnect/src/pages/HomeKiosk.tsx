@@ -29,6 +29,9 @@ const HomeKiosk: React.FC = () => {
 
   // Gestion de l'interaction utilisateur
   const handleUserInteraction = useCallback(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = false; // Active le son après interaction
+    }
     if (!active) {
       setActive(true);
     }
@@ -53,29 +56,37 @@ const HomeKiosk: React.FC = () => {
         {active ? (
           // Mode interactif : interface de la totem
           <div
-            className="welcome-container"
+            className="homekiosk-container"
             style={{ backgroundImage: `url('./background.png')` }}
           >
-            <div className="content-wrapper-totem">
-              <div className="logo">
-                <IonImg src="favicon.png" alt="Amen Bank Logo" className="img" />
+            <div className="homekiosk-content">
+              <div className="homekiosk-logo">
+                <IonImg
+                  src="favicon.png"
+                  alt="Amen Bank Logo"
+                  className="homekiosk-img"
+                />
               </div>
-              <h1 className="welcome-kiosk">Bienvenue!</h1>
-              <h2 className="banking-question">
+              <h1 className="homekiosk-title">Bienvenue!</h1>
+              <h2 className="homekiosk-question">
                 Quels sont vos besoins
                 <br />
                 bancaires aujourd'hui ?
               </h2>
-              <button className="start-button">Commencez ici</button>
-              <p className="success-message">
-                La réussite est à<br />
+              <button className="homekiosk-btn">Commencez ici</button>
+              <p className="homekiosk-message">
+                La réussite est à
+                <br />
                 portée de clic.
               </p>
             </div>
           </div>
         ) : (
           // Mode repos : lecture automatique de la vidéo en boucle avec son
-          <div className="video-container" style={{ width: "100vw", height: "100vh" }}>
+          <div
+            className="homekiosk-video-container"
+            style={{ width: "100vw", height: "100vh" }}
+          >
             <video
               ref={videoRef}
               autoPlay
