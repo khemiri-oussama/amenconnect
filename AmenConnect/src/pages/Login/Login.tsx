@@ -23,7 +23,7 @@ const Login: React.FC = () => {
   }, [])
 
   // Detect if it's a borne interactive (not mobile, portrait, and touch screen)
-  const isBorneInteractive = !isMobile && isPortrait && isTouchable
+  const isBorneInteractive = !isMobile && isPortrait 
 
   return (
     <>

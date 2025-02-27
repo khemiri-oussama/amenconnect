@@ -1,19 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
 
-html {
-  /* Base de la typographie */
-  font-size: 16px;
-}
-
 .homekiosk-container {
   font-family: "Outfit", sans-serif;
   height: 100vh;
   width: 100vw;
   position: relative;
   overflow: hidden;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
+}
+
+.background-white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  z-index: -2;
+}
+
+.background-svg {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1080px;
+  height: 1920px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
 }
 
 .homekiosk-img {
@@ -35,6 +47,7 @@ html {
   align-items: center;
   padding: 2rem;
   text-align: center;
+  transition: opacity 0.3s ease;
 }
 
 .homekiosk-logo {
@@ -73,6 +86,28 @@ html {
   text-transform: uppercase;
 }
 
+.homekiosk-buttons {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.homekiosk-btn-guest {
+  background: #ffcc00;
+  color: #121660;
+}
+
+.homekiosk-btn-login {
+  background: linear-gradient(to right, #121660, #181e92);
+}
+
+.homekiosk-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .homekiosk-message {
   color: #121660;
   font-size: 2.5rem;
@@ -81,27 +116,12 @@ html {
   margin: 0;
 }
 
-/* Gestion de l'orientation : affichage d'un message en mode paysage */
-@media (orientation: landscape) {
-  .homekiosk-content:before {
-    content: "Veuillez orienter votre appareil en mode portrait";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    color: #121660;
-    background: #fff;
-    padding: 1rem;
-    border-radius: 10px;
-  }
-  .homekiosk-content > * {
-    display: none;
-  }
-}
-
-/* Responsive pour les écrans plus petits */
 @media (max-width: 768px) {
+  .homekiosk-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
   .homekiosk-title {
     font-size: 4rem;
   }
@@ -136,3 +156,43 @@ html {
   width: 100vw;
   height: 100vh;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-staggered {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-staggered:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.animate-staggered:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
