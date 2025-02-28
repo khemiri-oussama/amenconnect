@@ -1,80 +1,126 @@
+// LoginKiosk.tsx
 "use client"
 
-import type React from "react"
-import { useState, useEffect, useRef, useCallback } from "react"
-import { IonContent, IonPage, IonImg, useIonRouter, IonIcon } from "@ionic/react"
-import { arrowBack, eyeOutline, eyeOffOutline, phonePortrait } from "ionicons/icons"
-import { QRCodeSVG } from "qrcode.react"
-import "./LoginKiosk.css"
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { IonContent, IonPage, IonImg, useIonRouter, IonIcon } from "@ionic/react";
+import { arrowBack, eyeOutline, eyeOffOutline, phonePortrait } from "ionicons/icons";
+import { QRCodeSVG } from "qrcode.react";
+import "./LoginKiosk.css";
 
 const LoginKiosk: React.FC = () => {
-  const [showLoginForm, setShowLoginForm] = useState(false)
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const ionRouter = useIonRouter()
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const ionRouter = useIonRouter();
 
-  const inactivityTimer = useRef<NodeJS.Timeout | null>(null)
-  const usernameInputRef = useRef<HTMLInputElement | null>(null)
+  // Ref for managing inactivity timer
+  const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
+  // Ref to focus on the username input when the form is shown
+  const usernameInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Generate a unique session ID for the QR code
-  const sessionId = useRef(Math.random().toString(36).substring(2, 15))
+  // Generate a unique session ID for the QR code when the component loads
+  const sessionId = useRef(Math.random().toString(36).substring(2, 15));
 
+  // Create a QR session in the database
+  useEffect(() => {
+    const createSession = async () => {
+      try {
+        const response = await fetch("/api/qr-login/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ sessionId: sessionId.current }),
+        });
+        if (!response.ok) {
+          console.error("Failed to create QR session");
+        }
+      } catch (err) {
+        console.error("Error creating QR session:", err);
+      }
+    };
+    createSession();
+  }, []);
+
+  // Reset inactivity timer (session timeout)
   const resetTimer = useCallback(() => {
     if (inactivityTimer.current) {
-      clearTimeout(inactivityTimer.current)
+      clearTimeout(inactivityTimer.current);
     }
     inactivityTimer.current = setTimeout(() => {
-      ionRouter.push("/home")
-    }, 60000)
-  }, [ionRouter])
+      ionRouter.push("/home");
+    }, 60000);
+  }, [ionRouter]);
 
   const handleUserInteraction = useCallback(() => {
-    resetTimer()
-  }, [resetTimer])
+    resetTimer();
+  }, [resetTimer]);
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Login attempt with:", { username, password })
+    e.preventDefault();
+    console.log("Login attempt with:", { username, password });
     // Add your authentication logic here
-    resetTimer()
-  }
+    resetTimer();
+  };
 
   const handleBack = () => {
     if (showLoginForm) {
-      setShowLoginForm(false)
+      setShowLoginForm(false);
     } else {
-      ionRouter.push("/")
+      ionRouter.push("/");
     }
-  }
+  };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
   const showIdentifierLogin = () => {
-    setShowLoginForm(true)
-    resetTimer()
-  }
+    setShowLoginForm(true);
+    resetTimer();
+  };
 
-  // Generate QR code data
-  const qrCodeData = `https://yourapp.com/auth?session=${sessionId.current}`
+  // Embed the session ID in the QR code URL for the mobile app to scan
+  const qrCodeData = `http://localhost:8200/auth?session=${sessionId.current}`;
+
+  // Polling: periodically check if the mobile app has authenticated the session.
+  // When authenticated, redirect the kiosk to /accueil.
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/qr-login/${sessionId.current}`, {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.status === "authenticated") {
+            ionRouter.push("/accueil");
+            clearInterval(intervalId);
+          }
+        }
+      } catch (error) {
+        console.error("Polling error:", error);
+      }
+    }, 3000);
+    return () => clearInterval(intervalId);
+  }, [ionRouter]);
 
   useEffect(() => {
-    document.addEventListener("touchstart", handleUserInteraction)
-    document.addEventListener("click", handleUserInteraction)
+    document.addEventListener("touchstart", handleUserInteraction);
+    document.addEventListener("click", handleUserInteraction);
 
-    // Focus the username input when the login form is shown
     if (showLoginForm && usernameInputRef.current) {
-      usernameInputRef.current.focus()
+      usernameInputRef.current.focus();
     }
 
     return () => {
-      document.removeEventListener("touchstart", handleUserInteraction)
-      document.removeEventListener("click", handleUserInteraction)
-      if (inactivityTimer.current) clearTimeout(inactivityTimer.current)
-    }
-  }, [handleUserInteraction, showLoginForm])
+      document.removeEventListener("touchstart", handleUserInteraction);
+      document.removeEventListener("click", handleUserInteraction);
+      if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
+    };
+  }, [handleUserInteraction, showLoginForm]);
 
   return (
     <IonPage>
@@ -93,13 +139,10 @@ const LoginKiosk: React.FC = () => {
               <IonIcon icon={arrowBack} />
               <span>Retour</span>
             </div>
-
             <div className="loginkiosk-logo">
               <IonImg src="favicon.png" alt="Amen Bank Logo" className="loginkiosk-img" />
             </div>
-
             <h1 className="loginkiosk-title">Connexion</h1>
-
             {!showLoginForm ? (
               <div className="loginkiosk-qr-section animate-fade-in">
                 <div className="loginkiosk-qr-container">
@@ -139,7 +182,6 @@ const LoginKiosk: React.FC = () => {
                     required
                   />
                 </div>
-
                 <div className="loginkiosk-form-group">
                   <label htmlFor="password" className="loginkiosk-label">
                     Mot de passe
@@ -159,17 +201,15 @@ const LoginKiosk: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
                 <button type="submit" className="loginkiosk-btn">
                   Se connecter
                 </button>
-
                 <div className="loginkiosk-forgot-password">
                   <a
                     href="#"
                     onClick={(e) => {
-                      e.preventDefault()
-                      console.log("Forgot password")
+                      e.preventDefault();
+                      console.log("Forgot password");
                     }}
                   >
                     Mot de passe oublié ?
@@ -177,7 +217,6 @@ const LoginKiosk: React.FC = () => {
                 </div>
               </form>
             )}
-
             <p className="loginkiosk-message">
               La réussite est à
               <br />
@@ -187,7 +226,7 @@ const LoginKiosk: React.FC = () => {
         </div>
       </IonContent>
     </IonPage>
-  )
-}
+  );
+};
 
-export default LoginKiosk
+export default LoginKiosk;

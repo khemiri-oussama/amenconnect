@@ -39,6 +39,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
 import './theme/variables.css';
+import QRScanner from './pages/Client/accueil/qrscanner';
 
 setupIonicReact();
 
@@ -56,6 +57,7 @@ const AppContent: React.FC = () => {
         <Route exact path="/login" component={Login} />
         <Route exact path="/ForgotPassword" component={ForgotPassword} />
         <Route exact path="/ResetPassword" component={ResetPassword} />
+        <Route exact path="/qr-scanner" component={QRScanner} />
         {/* Render OTP page only if a user exists (i.e. after login/OTP step) */}
         <Route exact path="/otp" render={(props) => pendingUser ? <Otp {...props} /> : <Redirect to="/login" /> }/>
 

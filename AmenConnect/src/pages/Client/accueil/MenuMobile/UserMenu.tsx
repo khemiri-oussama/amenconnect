@@ -6,7 +6,8 @@ import {
   mailOutline,
   logOutOutline,
   globeOutline,
-  informationCircleOutline
+  informationCircleOutline,
+  scanOutline // New icon for QR scanner
 } from "ionicons/icons"
 import type React from "react"
 import { useHistory } from "react-router-dom"
@@ -28,7 +29,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
   const handleLogout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
-    history.push("/login");
+    history.push("/login")
   }
 
   return (
@@ -52,7 +53,8 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
           Nous contacter
         </button>
         <button className="menu-item" onClick={() => handleNavigation("/about")}>
-          <IonIcon icon={informationCircleOutline} />A propos
+          <IonIcon icon={informationCircleOutline} />
+          A propos
         </button>
         <button className="menu-item" onClick={() => window.open("https://www.amenbank.com.tn", "_blank")}>
           <IonIcon icon={globeOutline} />
@@ -62,6 +64,11 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
           <IonIcon icon={globeOutline} />
           Visiter le site @mennet
         </button>
+        {/* New Menu Item for QR Code Scanning */}
+        <button className="menu-item" onClick={() => handleNavigation("/qr-scanner")}>
+          <IonIcon icon={scanOutline} />
+          Scanner QR Code
+        </button>
         <button className="menu-item" onClick={() => handleLogout()}>
           <IonIcon icon={logOutOutline} /> Déconnecter
         </button>
@@ -69,4 +76,3 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
     </>
   )
 }
-
