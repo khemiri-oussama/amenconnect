@@ -5,7 +5,7 @@ import { useState } from "react"
 import { IonButton, IonContent, IonPage, IonLoading, IonToast } from "@ionic/react"
 import { useHistory } from "react-router-dom"
 import { QrReader } from "react-qr-reader"
-import "./qrscanner.css" // Import the CSS file
+import "./qr-scanner.css" // Import the CSS file
 
 const QRScanner: React.FC = () => {
   const history = useHistory()
@@ -69,7 +69,7 @@ const QRScanner: React.FC = () => {
   }
 
   return (
-    <IonPage>
+    <IonPage className="qr-scanner-page">
       <IonContent className="ion-padding qr-scanner-container">
         <div className="qr-scanner-header">
           <h1>QR Scanner</h1>
@@ -124,7 +124,7 @@ const QRScanner: React.FC = () => {
           onDidDismiss={() => setMessage("")}
           message={message}
           duration={3000}
-          cssClass={`custom-toast ${messageType}-toast`}
+          cssClass={`qr-scanner-page-toast ${messageType}-toast`}
         />
       </IonContent>
     </IonPage>
