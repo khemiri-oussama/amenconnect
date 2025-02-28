@@ -87,25 +87,28 @@ const LoginKiosk: React.FC = () => {
 
   // Polling: periodically check if the mobile app has authenticated the session.
   // When authenticated, redirect the kiosk to /accueil.
-  useEffect(() => {
-    const intervalId = setInterval(async () => {
-      try {
-        const response = await fetch(`/api/qr-login/${sessionId.current}`, {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.status === "authenticated") {
-            ionRouter.push("/accueil");
-            clearInterval(intervalId);
-          }
+useEffect(() => {
+  const intervalId = setInterval(async () => {
+    try {
+      const response = await fetch(`/api/qr-login/${sessionId.current}`, {
+        credentials: "include",
+      });
+      console.log("Polling response status:", response.status);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Polling response data:", data);
+        if (data.status === "authenticated") {
+          ionRouter.push("/accueil");
+          clearInterval(intervalId);
         }
-      } catch (error) {
-        console.error("Polling error:", error);
       }
-    }, 3000);
-    return () => clearInterval(intervalId);
-  }, [ionRouter]);
+    } catch (error) {
+      console.error("Polling error:", error);
+    }
+  }, 3000);
+  return () => clearInterval(intervalId);
+}, [ionRouter]);
+
 
   useEffect(() => {
     document.addEventListener("touchstart", handleUserInteraction);
