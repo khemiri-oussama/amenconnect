@@ -1,78 +1,93 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useRef } from "react"
-import { IonButton, IonContent, IonPage, IonLoading, IonToast } from "@ionic/react"
-import { useHistory } from "react-router-dom"
-import { QrReader } from "react-qr-reader"
-import "./qrscanner.css" // Import the CSS file
+import { useEffect, useRef, useState } from "react";
+import { IonButton, IonContent, IonPage, IonLoading, IonToast } from "@ionic/react";
+import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode"; // ✅ Fixed import
+import { useHistory } from "react-router-dom";
+import "./qrscanner.css"; // Ensure you have a CSS file for styling
 
 const QRScanner: React.FC = () => {
-  const history = useHistory()
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
-  const [messageType, setMessageType] = useState<"info" | "success" | "error">("info")
-  const [scanning, setScanning] = useState(true) // Controls whether the camera is active
-  const [scanSuccess, setScanSuccess] = useState(false)
-  const scanHandled = useRef(false) // Ensures the scan is processed only once
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<"info" | "success" | "error">("info");
+  const [scanning, setScanning] = useState(true);
+  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
 
-  const handleScan = async (data: string | null) => {
-    if (data && scanning && !scanHandled.current) {
-      // Mark this scan as handled so further scans are ignored
-      scanHandled.current = true
+  useEffect(() => {
+    if (scanning) {
+      scannerRef.current = new Html5QrcodeScanner(
+        "qr-reader",
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 },
+          aspectRatio: 1,
+          supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA], // ✅ Fixed issue here
+        },
+        false // ✅ Verbose mode set to false
+      );
 
-      try {
-        const url = new URL(data)
-        const sessionId = url.searchParams.get("session")
-        if (!sessionId) {
-          setMessage("Session ID not found in QR code.")
-          setMessageType("error")
-          return
+      scannerRef.current.render(
+        async (decodedText) => {
+          handleScan(decodedText);
+        },
+        (errorMessage) => {
+          console.warn("QR Scanner Error:", errorMessage);
         }
-
-        // Turn off the camera by unmounting the QrReader component
-        setScanning(false)
-        setScanSuccess(true)
-
-        setLoading(true)
-        const response = await fetch("/api/qr-login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include", // ensures mobile's token cookie is sent
-          body: JSON.stringify({ sessionId }),
-        })
-
-        const result = await response.json()
-        setLoading(false)
-        if (response.ok) {
-          setMessage("QR session authenticated. Please return to the kiosk.")
-          setMessageType("success")
-        } else {
-          setMessage(result.message || "Failed to authenticate QR session.")
-          setMessageType("error")
-        }
-      } catch (err) {
-        setLoading(false)
-        setMessage("Error processing QR code.")
-        setMessageType("error")
-        console.error(err)
-      }
+      );
     }
-  }
 
-  const handleError = (err: any) => {
-    console.error(err)
-    setMessage("QR Scanner error.")
-    setMessageType("error")
-  }
+    return () => {
+      scannerRef.current?.clear().catch(console.error);
+    };
+  }, [scanning]);
+
+  const handleScan = async (data: string) => {
+    if (!data) return;
+
+    setScanning(false);
+    setLoading(true);
+
+    try {
+      const url = new URL(data);
+      const sessionId = url.searchParams.get("session");
+
+      if (!sessionId) {
+        setMessage("Session ID not found in QR code.");
+        setMessageType("error");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("/api/qr-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ sessionId }),
+      });
+
+      const result = await response.json();
+      setLoading(false);
+
+      if (response.ok) {
+        setMessage("QR session authenticated. Please return to the kiosk.");
+        setMessageType("success");
+      } else {
+        setMessage(result.message || "Failed to authenticate QR session.");
+        setMessageType("error");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("Error processing QR code.");
+      setMessageType("error");
+      setLoading(false);
+    }
+  };
 
   const resetScanner = () => {
-    // Reset the scanning state to allow another scan
-    setScanning(true)
-    setScanSuccess(false)
-    setMessage("")
-    scanHandled.current = false
-  }
+    setScanning(true);
+    setMessage("");
+  };
 
   return (
     <IonPage className="qr-scanner-page">
@@ -82,29 +97,8 @@ const QRScanner: React.FC = () => {
           <p>Scan the QR code to login</p>
         </div>
 
-        {/* Render the QR reader only when scanning is active */}
-        {scanning && (
-          <div className={`qr-scanner-viewport ${scanSuccess ? "scan-success" : ""}`}>
-            <QrReader
-              onResult={(result, error) => {
-                if (result) {
-                  handleScan(result.getText())
-                }
-                if (error) {
-                  handleError(error)
-                }
-              }}
-              // Request the back (environment) camera
-              constraints={{ facingMode: "environment" }}
-              containerStyle={{ width: "100%", height: "100%" }}
-              videoStyle={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-            <div className="scanner-overlay"></div>
-            <div className="scanner-laser"></div>
-          </div>
-        )}
+        {scanning && <div id="qr-reader" className="qr-scanner-viewport"></div>}
 
-        {/* Display status message when scanning has stopped */}
         {!scanning && <div className={`status-message ${messageType}`}>{message}</div>}
 
         {loading && (
@@ -137,7 +131,7 @@ const QRScanner: React.FC = () => {
         />
       </IonContent>
     </IonPage>
-  )
-}
+  );
+};
 
-export default QRScanner
+export default QRScanner;
