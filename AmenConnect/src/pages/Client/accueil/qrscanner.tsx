@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { IonButton, IonContent, IonPage, IonLoading, IonToast } from "@ionic/react"
 import { useHistory } from "react-router-dom"
 import { QrReader } from "react-qr-reader"
@@ -14,9 +14,13 @@ const QRScanner: React.FC = () => {
   const [messageType, setMessageType] = useState<"info" | "success" | "error">("info")
   const [scanning, setScanning] = useState(true) // Controls whether the camera is active
   const [scanSuccess, setScanSuccess] = useState(false)
+  const scanHandled = useRef(false) // Ensures the scan is processed only once
 
   const handleScan = async (data: string | null) => {
-    if (data && scanning) {
+    if (data && scanning && !scanHandled.current) {
+      // Mark this scan as handled so further scans are ignored
+      scanHandled.current = true
+
       try {
         const url = new URL(data)
         const sessionId = url.searchParams.get("session")
@@ -26,7 +30,7 @@ const QRScanner: React.FC = () => {
           return
         }
 
-        // Turn off the camera scanning
+        // Turn off the camera by unmounting the QrReader component
         setScanning(false)
         setScanSuccess(true)
 
@@ -63,9 +67,11 @@ const QRScanner: React.FC = () => {
   }
 
   const resetScanner = () => {
+    // Reset the scanning state to allow another scan
     setScanning(true)
     setScanSuccess(false)
     setMessage("")
+    scanHandled.current = false
   }
 
   return (
@@ -76,6 +82,7 @@ const QRScanner: React.FC = () => {
           <p>Scan the QR code to login</p>
         </div>
 
+        {/* Render the QR reader only when scanning is active */}
         {scanning && (
           <div className={`qr-scanner-viewport ${scanSuccess ? "scan-success" : ""}`}>
             <QrReader
@@ -87,6 +94,7 @@ const QRScanner: React.FC = () => {
                   handleError(error)
                 }
               }}
+              // Request the back (environment) camera
               constraints={{ facingMode: "environment" }}
               containerStyle={{ width: "100%", height: "100%" }}
               videoStyle={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -96,6 +104,7 @@ const QRScanner: React.FC = () => {
           </div>
         )}
 
+        {/* Display status message when scanning has stopped */}
         {!scanning && <div className={`status-message ${messageType}`}>{message}</div>}
 
         {loading && (
@@ -132,4 +141,3 @@ const QRScanner: React.FC = () => {
 }
 
 export default QRScanner
-
