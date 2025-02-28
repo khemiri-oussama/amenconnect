@@ -5,7 +5,7 @@ import { useState } from "react"
 import { IonButton, IonContent, IonPage, IonLoading, IonToast } from "@ionic/react"
 import { useHistory } from "react-router-dom"
 import { QrReader } from "react-qr-reader"
-import "./qr-scanner.css" // Import the CSS file
+import "./qrscanner.css" // Import the CSS file
 
 const QRScanner: React.FC = () => {
   const history = useHistory()
