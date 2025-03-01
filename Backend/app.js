@@ -13,7 +13,7 @@ const ipRoutes = require("./routes/ipRoutes");
 const forgotPasswordRoutes = require("./routes/forgotPasswordRoutes");
 const carteRoutes = require("./routes/carteRoutes");
 const qrLoginRoutes = require("./routes/qrLogin"); // Import QR login routes
-
+const paymentRoutes = require('./routes/paymentRoutes');
 // Import Passport
 const passport = require("./config/passport");
 
@@ -38,7 +38,7 @@ app.use("/api/ip", ipRoutes);
 app.use("/api/carte", carteRoutes);
 app.use("/api/qr-login", qrLoginRoutes); // Mount QR login routes
 app.use("/auth", authRoutes);
-
+app.use('/api/payment', paymentRoutes);
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
