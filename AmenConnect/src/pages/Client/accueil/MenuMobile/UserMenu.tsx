@@ -1,5 +1,6 @@
-import { IonIcon } from "@ionic/react"
+import { IonPopover, IonIcon,useIonRouter } from "@ionic/react"
 import {
+  
   personOutline,
   shieldOutline,
   helpCircleOutline,
@@ -9,8 +10,7 @@ import {
   informationCircleOutline,
   scanOutline // New icon for QR scanner
 } from "ionicons/icons"
-import type React from "react"
-import { useHistory } from "react-router-dom"
+import React from "react"
 
 interface UserMenuProps {
   isOpen: boolean
@@ -18,23 +18,22 @@ interface UserMenuProps {
 }
 
 export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
-  const history = useHistory()
-
-  if (!isOpen) return null
+ const ionRouter = useIonRouter();
 
   const handleNavigation = (path: string) => {
-    history.push(path)
+    ionRouter.push(path)
     onClose()
   }
   const handleLogout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
-    history.push("/login")
+    ionRouter.push("/login")
   }
 
   return (
-    <>
-      <div className="menu-backdrop" onClick={onClose} />
+    <IonPopover isOpen={isOpen} onDidDismiss={onClose}
+     alignment="start"
+    >
       <div className="user-menu">
         <button className="menu-item" onClick={() => handleNavigation("/profile")}>
           <IonIcon icon={personOutline} />
@@ -56,11 +55,17 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
           <IonIcon icon={informationCircleOutline} />
           A propos
         </button>
-        <button className="menu-item" onClick={() => window.open("https://www.amenbank.com.tn", "_blank")}>
+        <button
+          className="menu-item"
+          onClick={() => window.open("https://www.amenbank.com.tn", "_blank")}
+        >
           <IonIcon icon={globeOutline} />
           Visiter le site AMEN BANK
         </button>
-        <button className="menu-item" onClick={() => window.open("https://www.amennet.com.tn", "_blank")}>
+        <button
+          className="menu-item"
+          onClick={() => window.open("https://www.amennet.com.tn", "_blank")}
+        >
           <IonIcon icon={globeOutline} />
           Visiter le site @mennet
         </button>
@@ -69,10 +74,10 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
           <IonIcon icon={scanOutline} />
           Scanner QR Code
         </button>
-        <button className="menu-item" onClick={() => handleLogout()}>
+        <button className="menu-item" onClick={handleLogout}>
           <IonIcon icon={logOutOutline} /> Déconnecter
         </button>
       </div>
-    </>
+    </IonPopover>
   )
 }
