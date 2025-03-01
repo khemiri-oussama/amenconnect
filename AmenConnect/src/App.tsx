@@ -1,22 +1,23 @@
 // App.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect,Suspense, lazy } from 'react';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Route, Redirect } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';  
 import { CarteProvider } from './CarteContext';
 import Home from './pages/Home';
+
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword/ResetPassword'));
+const ProfileMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/ProfileMobile'));
+const SecuritySettingsMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/SecuritySettingsMobile'));
 import Otp from './pages/otp/otp';
 import Login from './pages/Login/Login';
-import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
-import ResetPassword from './pages/ResetPassword/ResetPassword';
 import Accueil from './pages/Client/accueil/accueil';
 import Compte from './pages/Client/Compte/Compte';
 import Carte from './pages/Client/Carte/Carte';
 import ChatBot from './pages/Client/chatBot/chatBot';
 import Virement from './pages/Client/virement/virement';
-import ProfileMobile from './pages/Client/accueil/MenuMobile/ProfileMobile';
-import SecuritySettingsMobile from './pages/Client/accueil/MenuMobile/SecuritySettingsMobile';
 // Admin routes
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import UserManagement from './pages/Admin/Gestion Utilisateur/UserManagement';
@@ -39,7 +40,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
 import './theme/variables.css';
-import QRScanner from './pages/Client/accueil/qrscanner';
+const QRScanner = lazy(() => import('./pages/Client/accueil/qrscanner'));
 
 setupIonicReact();
 
@@ -51,6 +52,7 @@ const AppContent: React.FC = () => {
 
   return (
     <IonReactRouter>
+       <Suspense fallback={<div>Loading...</div>}></Suspense>
       <IonRouterOutlet>
         {/* Public routes */}
         <Route exact path="/home" component={Home} />
