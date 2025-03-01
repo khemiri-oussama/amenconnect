@@ -62,6 +62,24 @@ const CompteMobile: React.FC = () => {
     }
   };
 
+  const [Day, setDay] = useState<string>("");
+    useEffect(() => {
+      const isoString = "2025-02-25T02:20:26.487Z";
+      const date = new Date(isoString);
+      const options: Intl.DateTimeFormatOptions = { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+      };
+    let formattedDate = date.toLocaleDateString('fr-FR', options); 
+    // This typically returns "25 février 2025". If you need the month capitalized ("Fevrier")
+    const parts = formattedDate.split(' ');
+    if (parts.length === 3) {
+      parts[1] = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+      formattedDate = parts.join(' ');
+    }
+       setDay(formattedDate); // For example, "25/02/2025"
+    }, []);
   // Handle segment change
   const handleSegmentChange = (e: CustomEvent) => {
     setSelectedSegment(e.detail.value);
@@ -124,7 +142,7 @@ const CompteMobile: React.FC = () => {
                   {account ? account.numéroCompte : "12345678987"}
                 </p>
               </div>
-              <span className="expiry-date">{today}</span>
+              <span className="expiry-date">{Day}</span>
             </div>
           </motion.div>
 

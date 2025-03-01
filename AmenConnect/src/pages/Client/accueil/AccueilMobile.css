@@ -504,9 +504,6 @@
 }
 
 .user-menu {
-  position: absolute;
-  top: 70px;
-  right: 16px;
   background: var(--background-dark);
   border-radius: 12px;
   padding: 8px;
@@ -515,6 +512,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   animation: slideIn 0.2s ease-out;
 }
+
+/* Fix positioning for IonPopover */
+ion-popover {
+  --offset-y: 10px; /* Adjust dropdown spacing */
+  --width: 220px;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 
 .menu-item {
   display: flex;
