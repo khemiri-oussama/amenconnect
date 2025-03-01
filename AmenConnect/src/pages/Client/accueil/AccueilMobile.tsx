@@ -234,7 +234,9 @@ const AccueilMobile: React.FC = () => {
                 <IonButton
                   fill="clear"
                   className="profile-button-mobile ion-activatable"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  onClick={() => setIsMenuOpen(!isMenuOpen) 
+                    
+                  }
                 >
                   <IonIcon icon={personOutline} />
                   <IonRippleEffect />
