@@ -1,0 +1,253 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+
+.otpkiosk-container {
+  font-family: "Outfit", sans-serif;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.background-white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  z-index: -2;
+}
+
+.background-svg {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1080px;
+  height: 1920px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.otpkiosk-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.otpkiosk-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+
+.otpkiosk-back-button {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #121660;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.otpkiosk-back-button ion-icon {
+  font-size: 1.5rem;
+}
+
+.otpkiosk-logo {
+  margin-bottom: 50px;
+}
+
+.otpkiosk-title {
+  color: #121660;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.otpkiosk-subtitle {
+  color: #121660;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.otpkiosk-form {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 2rem;
+}
+
+.otpkiosk-input-group {
+  margin-bottom: 1.5rem;
+}
+
+.otpkiosk-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.otpkiosk-input {
+  width: 3rem;
+  height: 3rem;
+  text-align: center;
+  font-size: 1.75rem;
+  font-family: "Outfit", sans-serif;
+  border: 2px solid #e0e0e0;
+  border-radius: 0.75rem;
+  background-color: #f8f8f8;
+  transition: border-color 0.3s ease;
+}
+
+.otpkiosk-input:focus {
+  outline: none;
+  border-color: #121660;
+}
+
+.error-message {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.otpkiosk-resend {
+  margin: 1rem 0;
+  font-size: 1.25rem;
+  color: #121660;
+}
+
+.otpkiosk-resend p {
+  margin: 0;
+}
+
+.otpkiosk-btn {
+  background: linear-gradient(to right, #121660, #181e92);
+  border: none;
+  border-radius: 2rem;
+  color: white;
+  cursor: pointer;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  padding: 1rem 3rem;
+  margin: 1.5rem 0;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(18, 22, 96, 0.3);
+  text-transform: uppercase;
+}
+
+.otpkiosk-message {
+  color: #121660;
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 2rem 0 0 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+@media (orientation: landscape) {
+  .otpkiosk-content:before {
+    content: "Veuillez orienter votre appareil en mode portrait";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: #121660;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  .otpkiosk-content > * {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .otpkiosk-title {
+    font-size: 3.5rem;
+  }
+  .otpkiosk-message {
+    font-size: 2rem;
+  }
+  .otpkiosk-btn {
+    font-size: 1.5rem;
+    padding: 0.875rem 2.5rem;
+  }
+  .otpkiosk-form {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .otpkiosk-inputs {
+    gap: 0.25rem;
+  }
+  .otpkiosk-input {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+  }
+  .otpkiosk-back-button {
+    top: 1rem;
+    left: 1rem;
+    font-size: 1rem;
+  }
+  .otpkiosk-back-button ion-icon {
+    font-size: 1.25rem;
+  }
+  .otpkiosk-logo {
+    margin-bottom: 30px;
+  }
+  .otpkiosk-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .otpkiosk-message {
+    font-size: 1.75rem;
+  }
+  .otpkiosk-btn {
+    font-size: 1.25rem;
+    padding: 0.75rem 2rem;
+  }
+  .otpkiosk-form {
+    max-width: 100%;
+  }
+}

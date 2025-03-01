@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { IonContent, IonPage, IonImg, useIonRouter, IonIcon } from "@ionic/react";
 import { arrowBack, eyeOutline, eyeOffOutline, phonePortrait } from "ionicons/icons";
 import { QRCodeSVG } from "qrcode.react";
+import { useLogin } from "../../hooks/useLogin"; // Import the useLogin hook
 import "./LoginKiosk.css";
 
 const LoginKiosk: React.FC = () => {
@@ -58,10 +59,12 @@ const LoginKiosk: React.FC = () => {
     resetTimer();
   }, [resetTimer]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Use the useLogin hook for email/password login
+  const { isLoading, errorMessage, login } = useLogin();
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt with:", { username, password });
-    // Add your authentication logic here
+    await login(username, password);
     resetTimer();
   };
 
@@ -87,28 +90,27 @@ const LoginKiosk: React.FC = () => {
 
   // Polling: periodically check if the mobile app has authenticated the session.
   // When authenticated, redirect the kiosk to /accueil.
-useEffect(() => {
-  const intervalId = setInterval(async () => {
-    try {
-      const response = await fetch(`/api/qr-login/${sessionId.current}`, {
-        credentials: "include",
-      });
-      console.log("Polling response status:", response.status);
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Polling response data:", data);
-        if (data.status === "authenticated") {
-          ionRouter.push("/accueil");
-          clearInterval(intervalId);
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/qr-login/${sessionId.current}`, {
+          credentials: "include",
+        });
+        console.log("Polling response status:", response.status);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Polling response data:", data);
+          if (data.status === "authenticated") {
+            ionRouter.push("/accueil");
+            clearInterval(intervalId);
+          }
         }
+      } catch (error) {
+        console.error("Polling error:", error);
       }
-    } catch (error) {
-      console.error("Polling error:", error);
-    }
-  }, 3000);
-  return () => clearInterval(intervalId);
-}, [ionRouter]);
-
+    }, 3000);
+    return () => clearInterval(intervalId);
+  }, [ionRouter]);
 
   useEffect(() => {
     document.addEventListener("touchstart", handleUserInteraction);
@@ -204,8 +206,13 @@ useEffect(() => {
                     </div>
                   </div>
                 </div>
-                <button type="submit" className="loginkiosk-btn">
-                  Se connecter
+                {errorMessage && (
+                  <p className="error-message" style={{ color: "red" }}>
+                    {errorMessage}
+                  </p>
+                )}
+                <button type="submit" className="loginkiosk-btn" disabled={isLoading}>
+                  {isLoading ? "Connexion en cours..." : "Se connecter"}
                 </button>
                 <div className="loginkiosk-forgot-password">
                   <a
