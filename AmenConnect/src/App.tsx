@@ -1,31 +1,10 @@
-// App.tsx
-import React, { useEffect,Suspense, lazy } from 'react';
+// src/App.tsx
+import React, { lazy, Suspense, useEffect } from 'react';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Route, Redirect } from 'react-router-dom';
-import { AuthProvider, useAuth } from './AuthContext';  
+import { AuthProvider, useAuth } from './AuthContext';
 import { CarteProvider } from './CarteContext';
-import Home from './pages/Home';
-
-const ForgotPassword = lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
-const ResetPassword = lazy(() => import('./pages/ResetPassword/ResetPassword'));
-const ProfileMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/ProfileMobile'));
-const SecuritySettingsMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/SecuritySettingsMobile'));
-import Otp from './pages/otp/otp';
-import Login from './pages/Login/Login';
-import Accueil from './pages/Client/accueil/accueil';
-import Compte from './pages/Client/Compte/Compte';
-import Carte from './pages/Client/Carte/Carte';
-import ChatBot from './pages/Client/chatBot/chatBot';
-import Virement from './pages/Client/virement/virement';
-// Admin routes
-import Dashboard from './pages/Admin/Dashboard/Dashboard';
-import UserManagement from './pages/Admin/Gestion Utilisateur/UserManagement';
-import SurveillanceMonitoring from './pages/Admin/SurveillanceMonitoring/SurveillanceMonitoring';
-import PermissionsManagement from './pages/Admin/Permissions/permissionsManagement';
-import AuthenticationSecurity from './pages/Admin/AuthenticationSecurity/AuthenticationSecurity';
-import InteractiveTotemManagement from './pages/Admin/Gestion des Totem/InteractiveTotemManagement';
-
 import PrivateRoute from './PrivateRoute';
 
 import '@ionic/react/css/core.css';
@@ -38,55 +17,147 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-
 import './theme/variables.css';
-const QRScanner = lazy(() => import('./pages/Client/accueil/qrscanner'));
 
 setupIonicReact();
+
+// Lazy load public pages
+const Home = lazy(() => import('./pages/Home'));
+const Login = lazy(() => import('./pages/Login/Login'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword/ResetPassword'));
+const QRScanner = lazy(() => import('./pages/Client/accueil/qrscanner'));
+const Otp = lazy(() => import('./pages/otp/otp'));
+
+// Lazy load protected client pages
+const Accueil = lazy(() => import('./pages/Client/accueil/accueil'));
+const Compte = lazy(() => import('./pages/Client/Compte/Compte'));
+const Carte = lazy(() => import('./pages/Client/Carte/Carte'));
+const ChatBot = lazy(() => import('./pages/Client/chatBot/chatBot'));
+const Virement = lazy(() => import('./pages/Client/virement/virement'));
+const ProfileMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/ProfileMobile'));
+const SecuritySettingsMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/SecuritySettingsMobile'));
+
+// Lazy load admin pages
+const Dashboard = lazy(() => import('./pages/Admin/Dashboard/Dashboard'));
+const UserManagement = lazy(() => import('./pages/Admin/Gestion Utilisateur/UserManagement'));
+const SurveillanceMonitoring = lazy(() => import('./pages/Admin/SurveillanceMonitoring/SurveillanceMonitoring'));
+const PermissionsManagement = lazy(() => import('./pages/Admin/Permissions/permissionsManagement'));
+const AuthenticationSecurity = lazy(() => import('./pages/Admin/AuthenticationSecurity/AuthenticationSecurity'));
+const InteractiveTotemManagement = lazy(() => import('./pages/Admin/Gestion des Totem/InteractiveTotemManagement'));
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, pendingUser } = useAuth();
 
   useEffect(() => {
+    // You can add additional side effects if needed
   }, [isAuthenticated]);
 
   return (
     <IonReactRouter>
-       <Suspense fallback={<div>Loading...</div>}></Suspense>
-      <IonRouterOutlet>
-        {/* Public routes */}
-        <Route exact path="/home" component={Home} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/ForgotPassword" component={ForgotPassword} />
-        <Route exact path="/ResetPassword" component={ResetPassword} />
-        <Route exact path="/qr-scanner" component={QRScanner} />
-        {/* Render OTP page only if a user exists (i.e. after login/OTP step) */}
-        <Route exact path="/otp" render={(props) => pendingUser ? <Otp {...props} /> : <Redirect to="/login" /> }/>
+      {/* Wrap your routes with Suspense and a fallback UI */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <IonRouterOutlet>
+          {/* Public routes */}
+          <Route exact path="/home" component={Home} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/ForgotPassword" component={ForgotPassword} />
+          <Route exact path="/ResetPassword" component={ResetPassword} />
+          <Route exact path="/qr-scanner" component={QRScanner} />
+          <Route
+            exact
+            path="/otp"
+            render={(props) =>
+              pendingUser ? <Otp {...props} /> : <Redirect to="/login" />
+            }
+          />
 
-        {/* Protected routes */}
-        <PrivateRoute exact path="/accueil" component={Accueil} isAuthenticated={isAuthenticated} />
-        <PrivateRoute exact path="/compte" component={Compte} isAuthenticated={isAuthenticated} />
-        <PrivateRoute exact path="/carte" component={Carte} isAuthenticated={isAuthenticated} />
-        <PrivateRoute exact path="/chatBot" component={ChatBot} isAuthenticated={isAuthenticated} />
-        <PrivateRoute exact path="/virement" component={Virement} isAuthenticated={isAuthenticated} />
-        <PrivateRoute exact path="/profile" component={ProfileMobile} isAuthenticated={isAuthenticated} />
-        <PrivateRoute exact path="/SecuritySettingsMobile" component={SecuritySettingsMobile} isAuthenticated={isAuthenticated} />
-        <PrivateRoute path="/Dashboard" component={Dashboard} isAuthenticated={isAuthenticated} />
-        <PrivateRoute path="/UserManagement" component={UserManagement} isAuthenticated={isAuthenticated} />
-        <PrivateRoute path="/SurveillanceMonitoring" component={SurveillanceMonitoring} isAuthenticated={isAuthenticated} />
-        <PrivateRoute path="/PermissionsManagement" component={PermissionsManagement} isAuthenticated={isAuthenticated} />
-        <PrivateRoute path="/AuthenticationSecurity" component={AuthenticationSecurity} isAuthenticated={isAuthenticated} />
-        <PrivateRoute path="/InteractiveTotemManagement" component={InteractiveTotemManagement} isAuthenticated={isAuthenticated} />
+          {/* Protected routes */}
+          <PrivateRoute
+            exact
+            path="/accueil"
+            component={Accueil}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            exact
+            path="/compte"
+            component={Compte}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            exact
+            path="/carte"
+            component={Carte}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            exact
+            path="/chatBot"
+            component={ChatBot}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            exact
+            path="/virement"
+            component={Virement}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            exact
+            path="/profile"
+            component={ProfileMobile}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            exact
+            path="/SecuritySettingsMobile"
+            component={SecuritySettingsMobile}
+            isAuthenticated={isAuthenticated}
+          />
 
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
-      </IonRouterOutlet>
+          {/* Admin routes */}
+          <PrivateRoute
+            path="/Dashboard"
+            component={Dashboard}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            path="/UserManagement"
+            component={UserManagement}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            path="/SurveillanceMonitoring"
+            component={SurveillanceMonitoring}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            path="/PermissionsManagement"
+            component={PermissionsManagement}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            path="/AuthenticationSecurity"
+            component={AuthenticationSecurity}
+            isAuthenticated={isAuthenticated}
+          />
+          <PrivateRoute
+            path="/InteractiveTotemManagement"
+            component={InteractiveTotemManagement}
+            isAuthenticated={isAuthenticated}
+          />
+
+          <Route exact path="/" render={() => <Redirect to="/home" />} />
+        </IonRouterOutlet>
+      </Suspense>
     </IonReactRouter>
   );
 };
 
 const App: React.FC = () => (
   <AuthProvider>
-    <CarteProvider>  {/* Wrap the application with the CarteProvider */}
+    <CarteProvider>
       <IonApp>
         <AppContent />
       </IonApp>
