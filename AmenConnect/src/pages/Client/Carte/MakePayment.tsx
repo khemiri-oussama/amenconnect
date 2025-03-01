@@ -1,10 +1,10 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { IonButton, IonIcon, IonInput, IonToast, IonAlert } from "@ionic/react"
 import { qrCodeOutline, cashOutline, closeCircleOutline } from "ionicons/icons"
-import { QrReader } from "react-qr-reader"
+import { Html5Qrcode } from "html5-qrcode"  // Import html5-qrcode
 
 interface MakePaymentProps {
   card: {
@@ -21,21 +21,72 @@ const MakePayment: React.FC<MakePaymentProps> = ({ card }) => {
   const [toastMessage, setToastMessage] = useState("")
   const [showPermissionModal, setShowPermissionModal] = useState(false)
 
-  const handleScanResult = (result: any, error: any) => {
-    if (result) {
-      try {
-        setScannedData(JSON.parse(result.text))
-        setShowScanner(false)
-      } catch (err) {
-        console.error("Error parsing scanned data", err)
-        setToastMessage("Erreur lors de la lecture du QR code. Veuillez réessayer.")
-        setShowToast(true)
+  // Ref to hold the Html5Qrcode instance
+  const html5QrcodeRef = useRef<Html5Qrcode | null>(null)
+
+  // Called when a QR code is successfully scanned
+  const onScanSuccess = (decodedText: string, decodedResult: any) => {
+    try {
+      setScannedData(JSON.parse(decodedText))
+      setShowScanner(false)
+      // Stop scanning once a valid QR code is read
+      if (html5QrcodeRef.current) {
+        html5QrcodeRef.current.stop().catch(err =>
+          console.error("Error stopping scanner", err)
+        )
       }
-    }
-    if (error) {
-      console.error(error)
+    } catch (err) {
+      console.error("Error parsing scanned data", err)
       setToastMessage("Erreur lors de la lecture du QR code. Veuillez réessayer.")
       setShowToast(true)
+    }
+  }
+
+  // Called on scanning error (this callback is optional)
+  const onScanError = (errorMessage: string) => {
+    console.log("Scan error: ", errorMessage)
+  }
+
+  // Initialize and start the html5-qrcode scanner when showScanner is true
+  useEffect(() => {
+    if (showScanner) {
+      const config = { fps: 10, qrbox: 250 }
+      html5QrcodeRef.current = new Html5Qrcode("reader")
+      html5QrcodeRef.current
+        .start({ facingMode: "environment" }, config, onScanSuccess, onScanError)
+        .catch(err => {
+          console.error("Unable to start scanning", err)
+          setToastMessage("Erreur lors du démarrage du scanner.")
+          setShowToast(true)
+        })
+    }
+
+    // Cleanup: stop the scanner when the component unmounts or when showScanner changes
+    return () => {
+      if (html5QrcodeRef.current) {
+        html5QrcodeRef.current
+          .stop()
+          .catch(err => console.error("Error stopping scanner on cleanup", err))
+        html5QrcodeRef.current.clear()
+      }
+    }
+  }, [showScanner])
+
+  // Handler to manually stop the scanner
+  const handleStopScanner = () => {
+    if (html5QrcodeRef.current) {
+      html5QrcodeRef.current
+        .stop()
+        .then(() => {
+          setShowScanner(false)
+        })
+        .catch(err => {
+          console.error("Error stopping scanner", err)
+          setToastMessage("Erreur lors de l'arrêt du scanner.")
+          setShowToast(true)
+        })
+    } else {
+      setShowScanner(false)
     }
   }
 
@@ -46,14 +97,16 @@ const MakePayment: React.FC<MakePaymentProps> = ({ card }) => {
 
   const handleShowScanner = async () => {
     try {
-      const permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName })
+      const permissionStatus = await navigator.permissions.query({
+        name: "camera" as PermissionName,
+      })
       if (permissionStatus.state === "granted") {
         setShowScanner(true)
       } else if (permissionStatus.state === "prompt") {
         setShowPermissionModal(true)
       } else {
         setToastMessage(
-          "L'accès à la caméra a été bloqué. Veuillez l'autoriser dans les paramètres de votre navigateur.",
+          "L'accès à la caméra a été bloqué. Veuillez l'autoriser dans les paramètres de votre navigateur."
         )
         setShowToast(true)
       }
@@ -83,16 +136,11 @@ const MakePayment: React.FC<MakePaymentProps> = ({ card }) => {
 
       {showScanner && (
         <div className="scanner-container relative">
-          <QrReader
-            onResult={handleScanResult}
-            constraints={{ facingMode: "environment" }}
-            videoId="qr-video"
-            scanDelay={500}
-            className="w-full h-64 rounded-lg overflow-hidden"
-          />
+          {/* The scanner attaches to this div */}
+          <div id="reader" className="w-full h-64 rounded-lg overflow-hidden"></div>
           <IonButton
             fill="clear"
-            onClick={() => setShowScanner(false)}
+            onClick={handleStopScanner}
             className="close-scanner absolute top-2 right-2"
           >
             <IonIcon icon={closeCircleOutline} />
@@ -169,4 +217,3 @@ const MakePayment: React.FC<MakePaymentProps> = ({ card }) => {
 }
 
 export default MakePayment
-
