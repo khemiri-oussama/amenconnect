@@ -1,0 +1,271 @@
+:root {
+    --ion-color-primary: #47ce65;
+    --ion-color-secondary: #ffcc00;
+    --ion-color-tertiary: #6a64ff;
+    --ion-color-success: #2fdf75;
+    --ion-color-warning: #ffd534;
+    --ion-color-danger: #ff4961;
+    --ion-color-light: #f4f5f8;
+    --ion-color-medium: #989aa2;
+    --ion-background-color: #212121;
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
+  }
+  
+  /* Base styles */
+  .mode-invite-desktop {
+    font-family: "Poppins", sans-serif;
+    background-color: var(--ion-background-color);
+    color: var(--ion-text-color);
+  }
+  
+  .mode-invite-desktop-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Background elements */
+  .mode-invite-desktop-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: -1;
+  }
+  
+  .mode-invite-desktop-gradient-1,
+  .mode-invite-desktop-gradient-2 {
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+  }
+  
+  .mode-invite-desktop-gradient-1 {
+    top: -20%;
+    right: -10%;
+    background: radial-gradient(circle, var(--ion-color-primary) 0%, transparent 70%);
+  }
+  
+  .mode-invite-desktop-gradient-2 {
+    bottom: -20%;
+    left: -10%;
+    background: radial-gradient(circle, var(--ion-color-secondary) 0%, transparent 70%);
+  }
+  
+  .mode-invite-desktop-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.2;
+  }
+  
+  /* Header */
+  .mode-invite-desktop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+  
+  .mode-invite-desktop-logo-image {
+    width: 180px;
+    height: auto;
+  }
+  
+  .mode-invite-desktop-nav {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .mode-invite-desktop-nav-button {
+    --color: rgba(255, 255, 255, 0.7);
+    --color-hover: var(--ion-color-primary);
+    font-weight: 500;
+    text-transform: none;
+  }
+  
+  /* Main content */
+  .mode-invite-desktop-main {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+  
+  .mode-invite-desktop-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--ion-text-color);
+  }
+  
+  .mode-invite-desktop-searchbar {
+    --background: rgba(255, 255, 255, 0.1);
+    --color: var(--ion-text-color);
+    --placeholder-color: rgba(255, 255, 255, 0.5);
+    --icon-color: rgba(255, 255, 255, 0.5);
+    --clear-button-color: rgba(255, 255, 255, 0.5);
+    --border-radius: 25px;
+    max-width: 500px;
+    margin: 0 auto 3rem;
+  }
+  
+  /* Cards */
+  .mode-invite-desktop-card {
+    --background: rgba(255, 255, 255, 0.08);
+    --color: var(--ion-text-color);
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mode-invite-desktop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .mode-invite-desktop-card ion-card-header {
+    padding-bottom: 0;
+  }
+  
+    .mode-invite-desktop-card-icon {
+  font-size: 3rem;
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 1rem;
+}
+  
+  .mode-invite-desktop-card ion-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+  
+  .mode-invite-desktop-card ion-card-content {
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  
+  .mode-invite-desktop-card-button {
+    --color: var(--ion-color-primary);
+    font-weight: 500;
+    text-transform: none;
+  }
+  
+  /* Footer */
+  .mode-invite-desktop-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 3rem;
+  }
+  
+  .mode-invite-desktop-footer h3 {
+    color: var(--ion-text-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .mode-invite-desktop-footer p,
+  .mode-invite-desktop-footer ul {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .mode-invite-desktop-footer ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .mode-invite-desktop-footer ul li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .mode-invite-desktop-footer ul a {
+    color: var(--ion-color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .mode-invite-desktop-footer ul a:hover {
+    color: var(--ion-color-primary-shade);
+  }
+  
+  .mode-invite-desktop-copyright {
+    display: block;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.875rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Modal */
+  .mode-invite-desktop-modal {
+    --background: var(--ion-background-color);
+    --width: 90%;
+    --max-width: 600px;
+    --height: 80%;
+    --border-radius: 16px;
+    --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+  
+  .mode-invite-desktop-modal ion-header {
+    --background: var(--ion-background-color);
+  }
+  
+  .mode-invite-desktop-modal ion-toolbar {
+    --background: var(--ion-background-color);
+    --color: var(--ion-text-color);
+  }
+  
+  .mode-invite-desktop-modal ion-content {
+    --background: var(--ion-background-color);
+    --color: var(--ion-text-color);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .mode-invite-desktop-title {
+      font-size: 2rem;
+    }
+  
+    .mode-invite-desktop-searchbar {
+      width: 100%;
+    }
+  
+    .mode-invite-desktop-card {
+      margin-bottom: 1rem;
+    }
+  }
+  
+  /* Fade-in Animation */
+  .fade-in-section {
+    opacity: 0;
+    transform: translateY(20vh);
+    visibility: hidden;
+    transition: opacity 0.6s ease-out, transform 1.2s ease-out;
+    will-change: opacity, visibility;
+  }
+  
+  .fade-in-section.is-visible {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+  }
+  
+  

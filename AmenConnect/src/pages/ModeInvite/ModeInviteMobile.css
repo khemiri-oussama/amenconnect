@@ -1,0 +1,167 @@
+:root {
+    --ion-color-primary: #47ce65;
+    --ion-color-secondary: #ffcc00;
+    --ion-color-tertiary: #6a64ff;
+    --ion-color-success: #2fdf75;
+    --ion-color-warning: #ffd534;
+    --ion-color-danger: #ff4961;
+    --ion-color-light: #f4f5f8;
+    --ion-color-medium: #989aa2;
+    --ion-background-color: #212121;
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
+  }
+  
+  /* Base styles */
+  .mode-invite-mobile {
+    font-family: "Poppins", sans-serif;
+    background-color: var(--ion-background-color);
+    color: var(--ion-text-color);
+  }
+  
+  .mode-invite-mobile-content {
+    padding: 1rem;
+  }
+  
+  /* Header */
+  ion-header ion-toolbar {
+    --background: var(--ion-background-color);
+    --color: var(--ion-text-color);
+  }
+  
+  /* Logo */
+  .mode-invite-mobile-logo {
+    width: 150px;
+    height: auto;
+    margin: 2rem auto;
+    display: block;
+  }
+  
+  /* Title */
+  .mode-invite-mobile-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--ion-text-color);
+  }
+  
+  /* Searchbar */
+  .mode-invite-mobile-searchbar {
+    --background: rgba(255, 255, 255, 0.1);
+    --color: var(--ion-text-color);
+    --placeholder-color: rgba(255, 255, 255, 0.5);
+    --icon-color: rgba(255, 255, 255, 0.5);
+    --clear-button-color: rgba(255, 255, 255, 0.5);
+    --border-radius: 20px;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Grid */
+  .mode-invite-mobile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  
+  /* Cards */
+  .mode-invite-mobile-card {
+    --background: rgba(255, 255, 255, 0.08);
+    --color: var(--ion-text-color);
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mode-invite-mobile-card:active {
+    transform: scale(0.98);
+  }
+  
+  .mode-invite-mobile-card ion-card-header {
+    padding-bottom: 0;
+  }
+  
+  .mode-invite-mobile-card-icon {
+    font-size: 3rem;
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .mode-invite-mobile-card ion-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+  
+  .mode-invite-mobile-card ion-card-content {
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  
+  .mode-invite-mobile-card-button {
+    --color: var(--ion-color-primary);
+    font-weight: 500;
+    text-transform: none;
+    font-size: 0.875rem;
+  }
+  
+  /* Footer */
+  .mode-invite-mobile-footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Modal */
+  .mode-invite-mobile-modal,
+  .mode-invite-mobile-menu {
+    --background: var(--ion-background-color);
+    --height: 100%;
+    --border-radius: 0;
+  }
+  
+  .mode-invite-mobile-modal ion-header,
+  .mode-invite-mobile-menu ion-header {
+    --background: var(--ion-background-color);
+  }
+  
+  .mode-invite-mobile-modal ion-toolbar,
+  .mode-invite-mobile-menu ion-toolbar {
+    --background: var(--ion-background-color);
+    --color: var(--ion-text-color);
+  }
+  
+  .mode-invite-mobile-modal ion-content,
+  .mode-invite-mobile-menu ion-content {
+    --background: var(--ion-background-color);
+    --color: var(--ion-text-color);
+  }
+  
+  /* Menu */
+  .mode-invite-mobile-menu ion-list {
+    background-color: var(--ion-background-color);
+  }
+  
+  .mode-invite-mobile-menu ion-item {
+    --background: var(--ion-background-color);
+    --color: var(--ion-text-color);
+  }
+  
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .mode-invite-mobile-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+  
+    .mode-invite-mobile-title {
+      font-size: 2rem;
+    }
+  }
+  
+  
