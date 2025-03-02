@@ -1,5 +1,5 @@
-import type React from "react"
-import { useState } from "react"
+import type React from "react";
+import { useState } from "react";
 import {
   IonContent,
   IonPage,
@@ -15,51 +15,69 @@ import {
   IonButtons,
   IonBackButton,
   IonText,
-} from "@ionic/react"
-import { swapHorizontalOutline, cardOutline, cashOutline, documentTextOutline, calendarOutline } from "ionicons/icons"
-import { useHistory } from "react-router-dom"
-import NavMobile from "../../../components/NavMobile"
-import "./transfer-pages.css"
-import axios from "axios" 
-import Compte from "../Compte/Compte"
-const AccountTransfer: React.FC = () => {
-  const history = useHistory()
-  const [amount, setAmount] = useState<string>("")
-  const [sourceAccount, setSourceAccount] = useState<string>("")
-  const [targetAccount, setTargetAccount] = useState<string>("")
-  const [transferReason, setTransferReason] = useState<string>("")
-  const [transferDate, setTransferDate] = useState<string>("")
+} from "@ionic/react";
+import { swapHorizontalOutline, cardOutline, cashOutline, documentTextOutline, calendarOutline } from "ionicons/icons";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+import NavMobile from "../../../components/NavMobile";
+import "./transfer-pages.css";
 
-  // Mock data
-  const accounts = [
-    { id: "1", name: "Compte Courant", balance: "12,450.30 MAD" },
-    { id: "2", name: "Compte Épargne", balance: "33,280.75 MAD" },
-    { id: "3", name: "Compte Investissement", balance: "5,620.00 MAD" },
-  ]
+// Import the authentication context to access the logged-in user's profile
+import { useAuth } from "../../../AuthContext";
+
+// Define the custom IonTitle component before it's used
+const IonTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return <div className="ion-title">{children}</div>;
+};
+
+const AccountTransfer: React.FC = () => {
+  const history = useHistory();
+  const { profile } = useAuth(); // Get the profile from AuthContext
+
+  const [amount, setAmount] = useState<string>("");
+  const [sourceAccount, setSourceAccount] = useState<string>("");
+  const [targetAccount, setTargetAccount] = useState<string>("");
+  const [transferReason, setTransferReason] = useState<string>("");
+  const [transferDate, setTransferDate] = useState<string>("");
+
+  // Generate accounts from the logged-in user's profile
+  // The compte name is derived from compte.numéroCompte
+  const accounts = profile
+    ? profile.comptes.map((compte) => ({
+        id: compte._id,
+        name: compte.numéroCompte, // compte name for display and value
+        balance: `${compte.solde} TND`, // Format the balance with currency
+      }))
+    : [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
+    // Ensure a user is logged in before proceeding
+    if (!profile) {
+      alert("Utilisateur non authentifié. Veuillez vous connecter.");
+      return;
+    }
+
     if (!amount || !sourceAccount || !targetAccount) {
       alert("Veuillez remplir tous les champs requis.");
       return;
     }
-  
+
     try {
+      // Send the transfer request; sourceAccount is now the compte name
       const response = await axios.post("http://localhost:3000/api/virements", {
-        userId: "fdsfds,", // Replace with actual logged-in user ID
-        sourceAccount,
-        destinationAccount: targetAccount,
+        userId: profile.user._id, // changed from user to userId
+        sourceAccount, // compte name from the form
+        destinationAccount: targetAccount, // compte name from the form
         amount: parseFloat(amount),
         currency: "TND", // Default currency
         transferType: "internal", // Assuming internal transfer
         reason: transferReason,
         transferDate: transferDate || new Date().toISOString(),
       });
-  
       console.log("Virement successful:", response.data);
       alert("Virement effectué avec succès!");
-  
       // Redirect user after success
       history.push("/virements");
     } catch (error) {
@@ -90,7 +108,6 @@ const AccountTransfer: React.FC = () => {
                 <IonIcon icon={cardOutline} />
               </div>
               <h2 className="section-title">Compte à débiter</h2>
-
               <IonList className="custom-list">
                 <IonItem className="custom-item" lines="none">
                   <IonSelect
@@ -101,7 +118,7 @@ const AccountTransfer: React.FC = () => {
                     className="account-select"
                   >
                     {accounts.map((account) => (
-                      <IonSelectOption key={account.id} value={account.id}>
+                      <IonSelectOption key={account.id} value={account.name}>
                         <div className="account-option">
                           <span>{account.name}</span>
                           <span className="account-balance">{account.balance}</span>
@@ -118,7 +135,6 @@ const AccountTransfer: React.FC = () => {
                 <IonIcon icon={swapHorizontalOutline} />
               </div>
               <h2 className="section-title">Compte à créditer</h2>
-
               <IonList className="custom-list">
                 <IonItem className="custom-item" lines="none">
                   <IonSelect
@@ -130,9 +146,9 @@ const AccountTransfer: React.FC = () => {
                     disabled={!sourceAccount}
                   >
                     {accounts
-                      .filter((account) => account.id !== sourceAccount)
+                      .filter((account) => account.name !== sourceAccount)
                       .map((account) => (
-                        <IonSelectOption key={account.id} value={account.id}>
+                        <IonSelectOption key={account.id} value={account.name}>
                           <div className="account-option">
                             <span>{account.name}</span>
                             <span className="account-balance">{account.balance}</span>
@@ -149,7 +165,6 @@ const AccountTransfer: React.FC = () => {
                 <IonIcon icon={cashOutline} />
               </div>
               <h2 className="section-title">Montant</h2>
-
               <IonList className="custom-list">
                 <IonItem className="custom-item" lines="none">
                   <IonInput
@@ -159,7 +174,7 @@ const AccountTransfer: React.FC = () => {
                     onIonChange={(e) => setAmount(e.detail.value!)}
                     className="amount-input"
                   />
-                  <IonText className="currency">MAD</IonText>
+                  <IonText className="currency">TND</IonText>
                 </IonItem>
               </IonList>
             </div>
@@ -169,7 +184,6 @@ const AccountTransfer: React.FC = () => {
                 <IonIcon icon={documentTextOutline} />
               </div>
               <h2 className="section-title">Motif</h2>
-
               <IonList className="custom-list">
                 <IonItem className="custom-item" lines="none">
                   <IonInput
@@ -187,7 +201,6 @@ const AccountTransfer: React.FC = () => {
                 <IonIcon icon={calendarOutline} />
               </div>
               <h2 className="section-title">Date d'exécution</h2>
-
               <IonList className="custom-list">
                 <IonItem className="custom-item" lines="none">
                   <IonInput
@@ -199,6 +212,7 @@ const AccountTransfer: React.FC = () => {
                 </IonItem>
               </IonList>
             </div>
+
             <div className="submit-button-container">
               <IonButton
                 expand="block"
@@ -215,12 +229,7 @@ const AccountTransfer: React.FC = () => {
 
       <NavMobile currentPage="virements" />
     </IonPage>
-  )
-}
+  );
+};
 
-const IonTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <div className="ion-title">{children}</div>
-}
-
-export default AccountTransfer
-
+export default AccountTransfer;
