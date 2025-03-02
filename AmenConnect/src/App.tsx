@@ -22,8 +22,9 @@ import './theme/variables.css';
 setupIonicReact();
 
 // Lazy load public pages
-const Home = lazy(() => import('./pages/Home'));
-const Login = lazy(() => import('./pages/Login/Login'));
+import Home from './pages/Home';
+import Login from './pages/Login/Login';
+import ModeInvite from './pages/ModeInvite/ModeInvite';
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword/ResetPassword'));
 const QRScanner = lazy(() => import('./pages/Client/accueil/qrscanner'));
@@ -64,6 +65,7 @@ const AppContent: React.FC = () => {
           <Route exact path="/login" component={Login} />
           <Route exact path="/ForgotPassword" component={ForgotPassword} />
           <Route exact path="/ResetPassword" component={ResetPassword} />
+          <Route exact path="/ModeInvite" component={ModeInvite} />
           <Route exact path="/qr-scanner" component={QRScanner} />
           <Route
             exact
