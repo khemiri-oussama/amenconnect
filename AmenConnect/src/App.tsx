@@ -45,7 +45,8 @@ const SurveillanceMonitoring = lazy(() => import('./pages/Admin/SurveillanceMoni
 const PermissionsManagement = lazy(() => import('./pages/Admin/Permissions/permissionsManagement'));
 const AuthenticationSecurity = lazy(() => import('./pages/Admin/AuthenticationSecurity/AuthenticationSecurity'));
 const InteractiveTotemManagement = lazy(() => import('./pages/Admin/Gestion des Totem/InteractiveTotemManagement'));
-
+const VirementB = lazy(()=>import('./pages/Client/virement/beneficiary-transfer'));
+const VirementA = lazy(()=>import('./pages/Client/virement/account-transfer'));
 const AppContent: React.FC = () => {
   const { isAuthenticated, pendingUser } = useAuth();
 
@@ -77,6 +78,18 @@ const AppContent: React.FC = () => {
             exact
             path="/accueil"
             component={Accueil}
+            isAuthenticated={isAuthenticated}
+          />
+            <PrivateRoute
+            exact
+            path="/account-transfer"
+            component={VirementA}
+            isAuthenticated={isAuthenticated}
+          />
+            <PrivateRoute
+            exact
+            path="/beneficiary-transfer"
+            component={VirementB}
             isAuthenticated={isAuthenticated}
           />
           <PrivateRoute

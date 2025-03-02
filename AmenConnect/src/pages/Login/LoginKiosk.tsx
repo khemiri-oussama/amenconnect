@@ -93,16 +93,21 @@ const LoginKiosk: React.FC = () => {
   useEffect(() => {
     const intervalId = setInterval(async () => {
       try {
-        const response = await fetch(`/api/qr-login/${sessionId.current}`, {
-          credentials: "include",
-        });
+        const response = await fetch(
+          `/api/qr-login/${sessionId.current}?t=${Date.now()}`, 
+          {
+            credentials: "include",
+            cache: "no-store"
+          }
+        );
         console.log("Polling response status:", response.status);
         if (response.ok) {
           const data = await response.json();
           console.log("Polling response data:", data);
           if (data.status === "authenticated") {
-            ionRouter.push("/accueil");
+            console.log("Session authenticated, redirecting to accueil...");
             clearInterval(intervalId);
+            window.location.href="/accueil";
           }
         }
       } catch (error) {
@@ -111,6 +116,7 @@ const LoginKiosk: React.FC = () => {
     }, 3000);
     return () => clearInterval(intervalId);
   }, [ionRouter]);
+  
 
   useEffect(() => {
     document.addEventListener("touchstart", handleUserInteraction);
