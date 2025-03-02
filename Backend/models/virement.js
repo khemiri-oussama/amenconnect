@@ -1,10 +1,9 @@
 //models/virement.js
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 // Define the schema for the "virement" collection
 const virementSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
   sourceAccount: { type: String, required: true },
   destinationAccount: { type: String, required: true },
   amount: { type: Number, required: true },
