@@ -39,7 +39,7 @@ const HomeMobile: React.FC = () => {
   }
 
   const handleGuestMode = () => {
-    // Implement guest mode logic here
+    history.push("/ModeInvite")
   }
 
   useEffect(() => {

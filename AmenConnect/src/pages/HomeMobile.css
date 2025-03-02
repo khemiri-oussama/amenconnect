@@ -1,5 +1,5 @@
 :root {
-  --background-color: #1a1a1a;
+  --background-color: #212121;
   --primary-color: #4caf50;
   --secondary-color: #ffc107;
   --text-color: #ffffff;
@@ -185,7 +185,7 @@
 /* Services Section */
 .home-mobile-services-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
   gap: 1.8rem;
 }
 

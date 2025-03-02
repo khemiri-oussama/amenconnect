@@ -11,23 +11,33 @@ import {
   scanOutline // New icon for QR scanner
 } from "ionicons/icons"
 import React from "react"
-
+import { useAuth } from "../../../../AuthContext"
+import axios from "axios"
 interface UserMenuProps {
   isOpen: boolean
   onClose: () => void
 }
 
 export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose }) => {
+  const { setIsAuthenticated,setProfile, setPendingUser } = useAuth()
  const ionRouter = useIonRouter();
 
   const handleNavigation = (path: string) => {
     ionRouter.push(path)
     onClose()
   }
-  const handleLogout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    ionRouter.push("/login")
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/auth/logout", {}, { withCredentials: true })
+      setIsAuthenticated(false)
+      setProfile(null),
+      setPendingUser(null)
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 100)
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
   }
 
   return (
