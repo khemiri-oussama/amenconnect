@@ -1,86 +1,69 @@
 // controllers/virementController.js
 const mongoose = require("mongoose");
 const Virement = require("../models/virement");
+const Compte = require("../models/Compte");
 const User = require("../models/User");
 
-// Function to create a new virement
+// Function to create a new virement using compte IDs
 exports.makeVirement = async (req, res) => {
   const {
-    userId,
-    sourceAccount,
-    destinationAccount,
+    sourceCompteId,       // New field: source account ID
+    destinationCompteId,  // New field: destination account ID
     amount,
     currency,
-    transferType,
+    transferType,         // 'internal' or 'external'
     reason,
     beneficiaryName,
     beneficiaryBank
   } = req.body;
 
   try {
-    // Validate that the user exists.
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
+    // Get the user from the JWT middleware (assumes req.user is populated)
+    const userId = req.user.id;
+
+    // Validate that the source compte exists and belongs to the user.
+    const sourceCompte = await Compte.findOne({ _id: sourceCompteId, userId });
+    if (!sourceCompte) {
+      return res.status(404).json({ message: "Source account not found or not associated with this user." });
     }
 
-    // Additional validations can be added here (e.g., checking account balance, valid amount, etc.)
+    // Validate that the destination compte exists.
+    // For internal transfers, you might check if the destination account exists in your system.
+    const destinationCompte = await Compte.findById(destinationCompteId);
+    if (!destinationCompte) {
+      return res.status(404).json({ message: "Destination account not found." });
+    }
+
+    // Example additional validation: Check if the source account has sufficient balance.
+    if (sourceCompte.solde < amount) {
+      return res.status(400).json({ message: "Insufficient balance in the source account." });
+    }
 
     // Create the new Virement document.
     const newVirement = new Virement({
-      user: userId,
-      sourceAccount,
-      destinationAccount,
+      user: userId,  // Associate the transfer with the logged-in user.
+      sourceAccount: sourceCompteId,      // Now using compte IDs
+      destinationAccount: destinationCompteId,
       amount,
       currency: currency || 'TND', // Default to 'TND' if not provided.
-      transferType, // Should be either 'internal' or 'external'
+      transferType,              // Should be either 'internal' or 'external'
       reason,
       beneficiaryName,
       beneficiaryBank
-      // transferDate defaults to Date.now and status defaults to 'pending'
+      // transferDate and status have default values in the schema.
     });
 
     await newVirement.save();
+
+    // Optionally, update the account balances here if that logic is part of your workflow.
+    // e.g., subtract from sourceCompte.solde and add to destinationCompte.solde for internal transfers.
+
     res.status(201).json({
       message: "Virement created successfully.",
       virement: newVirement
     });
   } catch (err) {
     console.error("Make Virement error:", err);
-    res.status(500).json({ message: "Server error." });
-  }
-};
-
-// Function to update the virement status
-exports.updateVirementStatus = async (req, res) => {
-  const { virementId, status } = req.body;
-
-  // Define the allowed statuses.
-  const allowedStatuses = ["pending", "completed", "failed"];
-  if (!allowedStatuses.includes(status)) {
-    return res.status(400).json({
-      message: `Invalid status provided. Allowed statuses are: ${allowedStatuses.join(", ")}.`
-    });
-  }
-
-  try {
-    // Find the virement by its ID and update the status.
-    const updatedVirement = await Virement.findByIdAndUpdate(
-      virementId,
-      { status, updatedAt: new Date().toISOString() },
-      { new: true } // Return the updated document.
-    );
-
-    if (!updatedVirement) {
-      return res.status(404).json({ message: "Virement not found." });
-    }
-
-    res.status(200).json({
-      message: "Virement status updated successfully.",
-      virement: updatedVirement
-    });
-  } catch (err) {
-    console.error("Update Virement Status error:", err);
     res.status(500).json({ message: "Server error." });
   }
 };
