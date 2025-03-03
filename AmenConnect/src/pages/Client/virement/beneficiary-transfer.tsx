@@ -1,3 +1,4 @@
+//pages/Client/virement/beneficiary-transfer.tsx
 import type React from "react"
 import { useState } from "react"
 import {
@@ -52,8 +53,7 @@ const BeneficiaryTransfer: React.FC = () => {
       transferDate,
     })
 
-    // Show success message and redirect
-    history.push("/virements")
+    history.push("/virement")
   }
 
   return (

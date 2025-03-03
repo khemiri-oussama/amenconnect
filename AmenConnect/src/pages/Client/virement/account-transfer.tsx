@@ -1,5 +1,5 @@
-import type React from "react";
-import { useState } from "react";
+// pages/client/virement/account-transfer.tsx
+import React, { useState } from "react";
 import {
   IonContent,
   IonPage,
@@ -16,44 +16,48 @@ import {
   IonBackButton,
   IonText,
 } from "@ionic/react";
-import { swapHorizontalOutline, cardOutline, cashOutline, documentTextOutline, calendarOutline } from "ionicons/icons";
+import {
+  swapHorizontalOutline,
+  cardOutline,
+  cashOutline,
+  documentTextOutline,
+  calendarOutline,
+} from "ionicons/icons";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import NavMobile from "../../../components/NavMobile";
+import { useAuth } from "../../../AuthContext";
+import { useVirement } from "../../../hooks/useVirement";
 import "./transfer-pages.css";
 
-// Import the authentication context to access the logged-in user's profile
-import { useAuth } from "../../../AuthContext";
-
-// Define the custom IonTitle component before it's used
+// Custom IonTitle component
 const IonTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return <div className="ion-title">{children}</div>;
 };
 
 const AccountTransfer: React.FC = () => {
   const history = useHistory();
-  const { profile } = useAuth(); // Get the profile from AuthContext
+  const { profile } = useAuth(); // Logged-in user's profile
+  const { isLoading, errorMessage, makeVirement } = useVirement();
 
   const [amount, setAmount] = useState<string>("");
+  // These states now hold compte IDs rather than account names.
   const [sourceAccount, setSourceAccount] = useState<string>("");
   const [targetAccount, setTargetAccount] = useState<string>("");
   const [transferReason, setTransferReason] = useState<string>("");
   const [transferDate, setTransferDate] = useState<string>("");
 
-  // Generate accounts from the logged-in user's profile
-  // The compte name is derived from compte.numéroCompte
+  // Build the accounts list from the user's profile.
   const accounts = profile
     ? profile.comptes.map((compte) => ({
-        id: compte._id,
-        name: compte.numéroCompte, // compte name for display and value
-        balance: `${compte.solde} TND`, // Format the balance with currency
+        id: compte._id, // Unique MongoDB ObjectId
+        name: compte.numéroCompte, // Display name
+        balance: `${compte.solde} TND`,
       }))
     : [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Ensure a user is logged in before proceeding
     if (!profile) {
       alert("Utilisateur non authentifié. Veuillez vous connecter.");
       return;
@@ -65,21 +69,17 @@ const AccountTransfer: React.FC = () => {
     }
 
     try {
-      // Send the transfer request; sourceAccount is now the compte name
-      const response = await axios.post("http://localhost:3000/api/virements", {
-        userId: profile.user._id, // changed from user to userId
-        sourceAccount, // compte name from the form
-        destinationAccount: targetAccount, // compte name from the form
+      // Call the custom hook's makeVirement function
+      await makeVirement({
+        sourceCompteId: sourceAccount,
+        destinationCompteId: targetAccount,
         amount: parseFloat(amount),
-        currency: "TND", // Default currency
-        transferType: "internal", // Assuming internal transfer
+        currency: "TND",
+        transferType: "internal",
         reason: transferReason,
         transferDate: transferDate || new Date().toISOString(),
       });
-      console.log("Virement successful:", response.data);
       alert("Virement effectué avec succès!");
-      // Redirect user after success
-      history.push("/virements");
     } catch (error) {
       console.error("Virement failed:", error);
       alert("Échec du virement. Veuillez réessayer.");
@@ -97,10 +97,16 @@ const AccountTransfer: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen className="ion-padding dark-theme" style={{ "--padding-bottom": "100px" }}>
+      <IonContent
+        fullscreen
+        className="ion-padding dark-theme"
+        style={{ "--padding-bottom": "100px" }}
+      >
         <div className="transfer-form-container">
           <h1 className="form-title">Virement entre comptes</h1>
-          <p className="form-subtitle">Transférez de l'argent entre vos comptes en quelques clics</p>
+          <p className="form-subtitle">
+            Transférez de l'argent entre vos comptes en quelques clics
+          </p>
 
           <form onSubmit={handleSubmit} className="transfer-form">
             <div className="form-section">
@@ -118,10 +124,12 @@ const AccountTransfer: React.FC = () => {
                     className="account-select"
                   >
                     {accounts.map((account) => (
-                      <IonSelectOption key={account.id} value={account.name}>
+                      <IonSelectOption key={account.id} value={account.id}>
                         <div className="account-option">
                           <span>{account.name}</span>
-                          <span className="account-balance">{account.balance}</span>
+                          <span className="account-balance">
+                            {account.balance}
+                          </span>
                         </div>
                       </IonSelectOption>
                     ))}
@@ -146,12 +154,14 @@ const AccountTransfer: React.FC = () => {
                     disabled={!sourceAccount}
                   >
                     {accounts
-                      .filter((account) => account.name !== sourceAccount)
+                      .filter((account) => account.id !== sourceAccount)
                       .map((account) => (
-                        <IonSelectOption key={account.id} value={account.name}>
+                        <IonSelectOption key={account.id} value={account.id}>
                           <div className="account-option">
                             <span>{account.name}</span>
-                            <span className="account-balance">{account.balance}</span>
+                            <span className="account-balance">
+                              {account.balance}
+                            </span>
                           </div>
                         </IonSelectOption>
                       ))}
@@ -218,11 +228,12 @@ const AccountTransfer: React.FC = () => {
                 expand="block"
                 onClick={handleSubmit}
                 className="submit-button"
-                disabled={!amount || !sourceAccount || !targetAccount}
+                disabled={!amount || !sourceAccount || !targetAccount || isLoading}
               >
-                Confirmer le virement
+                {isLoading ? "En cours..." : "Confirmer le virement"}
               </IonButton>
             </div>
+            {errorMessage && <IonText color="danger">{errorMessage}</IonText>}
           </form>
         </div>
       </IonContent>
