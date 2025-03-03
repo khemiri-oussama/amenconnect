@@ -44,8 +44,10 @@ import { motion, AnimatePresence } from "framer-motion"
 import "./CarteMobile.css"
 import NavMobile from "../../../components/NavMobile"
 import { useAuth } from "../../../AuthContext"
-import PaymentQRCode from "../../../components/PaymentQRCode/PaymentQRCode";
-import QRPaymentScanner from "../../../components/PaymentQRCode/QRPaymentScanner";
+// Import updateCarteStatus from your CarteContext for dynamic update
+import { useCarte } from "../../../CarteContext"
+import PaymentQRCode from "../../../components/PaymentQRCode/PaymentQRCode"
+import QRPaymentScanner from "../../../components/PaymentQRCode/QRPaymentScanner"
 
 interface Transaction {
   id: string
@@ -73,6 +75,8 @@ interface CardDetails {
 
 interface Card extends CardDetails {
   id: string
+  // We use locked to represent whether the card is blocked
+  locked?: boolean
 }
 
 const mockFetchTransactions = (): Promise<Transaction[]> => {
@@ -131,6 +135,9 @@ const mockFetchTransactions = (): Promise<Transaction[]> => {
 
 const CarteMobile: React.FC = () => {
   const { profile, authLoading } = useAuth()
+  // Import the update function from your CarteContext
+  const { updateCarteStatus } = useCarte()
+
   const [selectedSegment, setSelectedSegment] = useState<string>("details")
   const [isCardNumberVisible, setIsCardNumberVisible] = useState(false)
   const [cards, setCards] = useState<Card[]>([])
@@ -138,7 +145,6 @@ const CarteMobile: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isCardLocked, setIsCardLocked] = useState(false)
   const [showCardActions, setShowCardActions] = useState(false)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState("")
@@ -155,26 +161,35 @@ const CarteMobile: React.FC = () => {
 
   useEffect(() => {
     if (profile && profile.cartes && profile.cartes.length > 0) {
-      const cardsFromProfile = profile.cartes.map((card, index) => {
+      const cardsFromProfile = profile.cartes.map((card) => {
         const account = profile.comptes.find((compte) => compte._id === card.comptesId)
+        const lock = card.cardStatus;
+        const islocked=false;
+        if(lock=="Bloquer"){
+          const islocked=true;
+        }
         return {
-          id: `card-${index}`,
+          id: card._id, // use the actual _id from your profile
           cardNumber: card.CardNumber,
           cardHolder: card.CardHolder,
           expiryDate: card.ExpiryDate,
           cardType: card.TypeCarte,
           balance: account?.solde || 0,
           pendingTransactions: 0,
-          monthlySpendingLimit: 5000,
-          monthlySpending: 2350,
-          withdrawalLimit: 1000,
-          withdrawalAmount: 450,
+          monthlySpendingLimit: card.monthlyExpenses?.limit || 0,
+          monthlySpending: card.monthlyExpenses?.current || 0,
+          withdrawalLimit: card.atmWithdrawal?.limit || 0,
+          withdrawalAmount: card.atmWithdrawal?.current || 0,
           TypeCarte: card.TypeCarte,
+          locked: islocked, // initialize as unlocked
         }
       })
       setCards(cardsFromProfile)
     }
   }, [profile])
+  
+  
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -199,6 +214,8 @@ const CarteMobile: React.FC = () => {
     return new Intl.NumberFormat("fr-FR", {
       style: "currency",
       currency: "TND",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(amount)
   }
 
@@ -302,7 +319,9 @@ const CarteMobile: React.FC = () => {
         // Update the card balance (simulated)
         setCards((prevCards) =>
           prevCards.map((card, index) =>
-            index === currentCardIndex ? { ...card, balance: card.balance - (scannedData?.amount || 0) } : card,
+            index === currentCardIndex
+              ? { ...card, balance: card.balance - (scannedData?.amount || 0) }
+              : card,
           ),
         )
 
@@ -326,11 +345,36 @@ const CarteMobile: React.FC = () => {
     }
   }
 
-  const toggleCardLock = () => {
-    setIsCardLocked(!isCardLocked)
-    setToastMessage(isCardLocked ? "Carte débloquée avec succès" : "Carte bloquée avec succès")
-    setShowToast(true)
-    setShowCardActions(false)
+  // Updated toggleCardLock: call updateCarteStatus from context and update only current card
+  const toggleCardLock = async () => {
+    if (!currentCard) return
+    // Determine the new status based on the current locked value.
+    // For instance, if the card is currently unlocked (locked: false),
+    // then newStatus should be "Bloquer", otherwise "Active".
+    const newStatus = currentCard.locked ? "Active" : "Bloquer"
+    try {
+      // Call the API to update the card status
+      await updateCarteStatus(currentCard.id, newStatus)
+      // Update local state: update only the current card's locked property.
+      setCards((prevCards) =>
+        prevCards.map((card, index) =>
+          index === currentCardIndex
+            ? { ...card, locked: newStatus.toLowerCase() !== "active" }
+            : card,
+        ),
+      )
+      setToastMessage(
+        newStatus.toLowerCase() !== "active"
+          ? "Carte bloquée avec succès"
+          : "Carte débloquée avec succès",
+      )
+      setShowToast(true)
+      setShowCardActions(false)
+    } catch (err) {
+      console.error("Failed to update card status:", err)
+      setToastMessage("Échec de la mise à jour du statut de la carte")
+      setShowToast(true)
+    }
   }
 
   if (authLoading || isLoading) {
@@ -444,16 +488,16 @@ const CarteMobile: React.FC = () => {
             {cards.map((card, index) => (
               <motion.div
                 key={card.id}
-                className={`credit-card ${index === currentCardIndex ? "active" : ""} ${isCardLocked ? "locked" : ""}`}
+                className={`credit-card ${index === currentCardIndex ? "active" : ""} ${card.locked ? "locked" : ""}`}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{
                   opacity: index === currentCardIndex ? 1 : 0,
                   scale: index === currentCardIndex ? 1 : 0.9,
-                  rotateY: isCardLocked ? [0, 10, 0] : 0,
+                  rotateY: card.locked ? [0, 10, 0] : 0,
                 }}
                 transition={{
                   duration: 0.4,
-                  rotateY: { repeat: isCardLocked ? Number.POSITIVE_INFINITY : 0, repeatType: "mirror", duration: 1.5 },
+                  rotateY: { repeat: card.locked ? Number.POSITIVE_INFINITY : 0, repeatType: "mirror", duration: 1.5 },
                 }}
               >
                 <div className="card-header">
@@ -468,8 +512,8 @@ const CarteMobile: React.FC = () => {
                 </div>
                 <div className="card-body">
                   <div className="card-chip-row">
-                    <IonImg src="/assets/chip.png" className="chip" alt="Puce de carte" />
-                    {isCardLocked && (
+                    <IonImg src="/puce.png" className="chip" alt="Puce de carte" />
+                    {card.locked && (
                       <div className="card-lock-indicator">
                         <IonIcon icon={lockClosedOutline} />
                         <span>Bloquée</span>
@@ -488,7 +532,7 @@ const CarteMobile: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                {isCardLocked && (
+                {card.locked && (
                   <div className="card-lock-overlay">
                     <IonIcon icon={lockClosedOutline} className="lock-icon" />
                   </div>
@@ -544,10 +588,7 @@ const CarteMobile: React.FC = () => {
             <IonIcon slot="start" icon={scanOutline} />
             Payer
           </IonButton>
-          <IonButton className="action-button" fill="outline" onClick={() => setShowCardActions(!showCardActions)}>
-            <IonIcon slot="start" icon={ellipsisHorizontalOutline} />
-            Plus
-          </IonButton>
+          
         </motion.div>
 
         {/* Card Actions Popover */}
@@ -561,8 +602,11 @@ const CarteMobile: React.FC = () => {
               transition={{ duration: 0.3 }}
             >
               <IonButton expand="block" fill="clear" className="action-item" onClick={toggleCardLock}>
-                <IonIcon slot="start" icon={isCardLocked ? lockOpenOutline : lockClosedOutline} />
-                {isCardLocked ? "Débloquer la carte" : "Bloquer la carte"}
+                <IonIcon
+                  slot="start"
+                  icon={cards[currentCardIndex]?.locked ? lockOpenOutline : lockClosedOutline}
+                />
+                {cards[currentCardIndex]?.locked ? "Débloquer la carte" : "Bloquer la carte"}
               </IonButton>
               <IonButton
                 expand="block"
@@ -634,7 +678,8 @@ const CarteMobile: React.FC = () => {
                   label: "Plafond mensuel",
                   value: formatCurrency(cards[currentCardIndex]?.monthlySpendingLimit || 0),
                   icon: arrowUpOutline,
-                  progress: cards[currentCardIndex]?.monthlySpending / cards[currentCardIndex]?.monthlySpendingLimit,
+                  progress:
+                    cards[currentCardIndex]?.monthlySpending / cards[currentCardIndex]?.monthlySpendingLimit,
                 },
                 {
                   label: "Plafond retrait",
@@ -801,9 +846,16 @@ const CarteMobile: React.FC = () => {
               </div>
 
               <div className="card-actions">
-                <IonButton expand="block" color={isCardLocked ? "success" : "danger"} onClick={toggleCardLock}>
-                  <IonIcon slot="start" icon={isCardLocked ? lockOpenOutline : lockClosedOutline} />
-                  {isCardLocked ? "Débloquer la carte" : "Bloquer la carte"}
+                <IonButton
+                  expand="block"
+                  color={cards[currentCardIndex]?.locked ? "success" : "danger"}
+                  onClick={toggleCardLock}
+                >
+                  <IonIcon
+                    slot="start"
+                    icon={cards[currentCardIndex]?.locked ? lockOpenOutline : lockClosedOutline}
+                  />
+                  {cards[currentCardIndex]?.locked ? "Débloquer la carte" : "Bloquer la carte"}
                 </IonButton>
               </div>
             </div>
@@ -815,7 +867,9 @@ const CarteMobile: React.FC = () => {
           isOpen={showConfirmation}
           onDidDismiss={() => setShowConfirmation(false)}
           header={"Confirmer le paiement"}
-          message={`Voulez-vous payer ${formatCurrency(scannedData?.amount || 0)} à ${scannedData?.merchant || "Marchand inconnu"}?`}
+          message={`Voulez-vous payer ${formatCurrency(scannedData?.amount || 0)} à ${
+            scannedData?.merchant || "Marchand inconnu"
+          }?`}
           buttons={[
             {
               text: "Annuler",
@@ -846,4 +900,3 @@ const CarteMobile: React.FC = () => {
 }
 
 export default CarteMobile
-
