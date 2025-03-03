@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 
-// Define interfaces for detailed profile data
+
 export interface Compte {
   _id: string;
   numéroCompte: string;
@@ -25,7 +25,6 @@ export interface Carte {
   CardHolder: string;
   comptesId: string;
   TypeCarte: string;
-  // New fields from your updated schema:
   monthlyExpenses?: {
     current: number;
     limit: number;
@@ -68,7 +67,7 @@ export interface Profile {
   };
   comptes: Compte[];
   cartes: Carte[];
-  // Any additional properties returned by the API will be included.
+  
 }
 
 interface AuthContextType {
@@ -92,7 +91,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchProfile = async () => {
     try {
-      // Fetch the entire profile response from the API
+     
       const response = await axios.get("/api/auth/profile", { withCredentials: true });
       if (response.data && response.data.user) {
         setProfile(response.data);
@@ -110,7 +109,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // New refresh function to re-fetch the profile on demand
+  
   const refreshProfile = async () => {
     try {
       const response = await axios.get("/api/auth/profile", { withCredentials: true });
