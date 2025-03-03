@@ -1,4 +1,4 @@
-import type React from "react"
+import type React from "react";
 import {
   IonHeader,
   IonToolbar,
@@ -12,29 +12,29 @@ import {
   IonSelectOption,
   IonInput,
   IonToggle,
-} from "@ionic/react"
-import { closeCircleOutline, checkmarkCircleOutline } from "ionicons/icons"
-import type { Beneficiary } from "./../types/beneficiary"
-import type { Account } from "./../types/accounts"
+} from "@ionic/react";
+import { closeCircleOutline, checkmarkCircleOutline } from "ionicons/icons";
+import type { Beneficiary } from "./../types/beneficiary";
+import type { Account } from "./../types/accounts";
 
 export interface TransferModalProps {
-  isOpen: boolean
-  isRecurring: boolean
+  isOpen: boolean;
+  isRecurring: boolean;
   transfer: {
-    beneficiaryId: string
-    accountFrom: string
-    amount: string
-    reason: string
-    date: string
-    frequency: string
-    endDate: string
-  }
-  beneficiaries: Beneficiary[]
-  accounts: Account[]
-  onClose: () => void
-  onTransferChange: (field: string, value: string) => void
-  onToggleRecurring: (value: boolean) => void
-  onSubmit: () => void
+    beneficiaryId: string;
+    accountFrom: string;
+    amount: string;
+    reason: string;
+    date: string;
+    frequency: string;
+    endDate: string;
+  };
+  beneficiaries: Beneficiary[];
+  accounts: Account[];
+  onClose: () => void;
+  onTransferChange: (field: string, value: string) => void;
+  onToggleRecurring: (value: boolean) => void;
+  onSubmit: () => void;
 }
 
 const TransferModal: React.FC<TransferModalProps> = ({
@@ -48,14 +48,18 @@ const TransferModal: React.FC<TransferModalProps> = ({
   onToggleRecurring,
   onSubmit,
 }) => {
-  const selectedBeneficiary = beneficiaries.find((b) => b.id === transfer.beneficiaryId)
-  const selectedAccount = accounts.find((a) => a.value === transfer.accountFrom)
+  const selectedBeneficiary = beneficiaries.find(
+    (b) => b.id === transfer.beneficiaryId
+  );
+  const selectedAccount = accounts.find((a) => a.value === transfer.accountFrom);
 
   return (
     <>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>{isRecurring ? "Virement Récurrent" : "Confirmer le Virement"}</IonTitle>
+          <IonTitle>
+            {isRecurring ? "Virement Récurrent" : "Confirmer le Virement"}
+          </IonTitle>
           <IonButton slot="end" fill="clear" onClick={onClose}>
             <IonIcon icon={closeCircleOutline} />
           </IonButton>
@@ -70,7 +74,9 @@ const TransferModal: React.FC<TransferModalProps> = ({
               <IonLabel>Compte source</IonLabel>
               <IonSelect
                 value={transfer.accountFrom}
-                onIonChange={(e) => onTransferChange("accountFrom", e.detail.value)}
+                onIonChange={(e) =>
+                  onTransferChange("accountFrom", e.detail.value ?? "")
+                }
               >
                 {accounts.map((account) => (
                   <IonSelectOption key={account.id} value={account.value}>
@@ -82,7 +88,12 @@ const TransferModal: React.FC<TransferModalProps> = ({
 
             <IonItem>
               <IonLabel>Fréquence</IonLabel>
-              <IonSelect value={transfer.frequency} onIonChange={(e) => onTransferChange("frequency", e.detail.value)}>
+              <IonSelect
+                value={transfer.frequency}
+                onIonChange={(e) =>
+                  onTransferChange("frequency", e.detail.value ?? "")
+                }
+              >
                 <IonSelectOption value="once">Une seule fois</IonSelectOption>
                 <IonSelectOption value="daily">Quotidien</IonSelectOption>
                 <IonSelectOption value="weekly">Hebdomadaire</IonSelectOption>
@@ -97,17 +108,23 @@ const TransferModal: React.FC<TransferModalProps> = ({
               <IonInput
                 type="date"
                 value={transfer.date.substring(0, 10)}
-                onIonChange={(e) => onTransferChange("date", e.detail.value)}
+                onIonChange={(e) =>
+                  onTransferChange("date", e.detail.value ?? "")
+                }
                 min={new Date().toISOString().substring(0, 10)}
               />
             </IonItem>
 
             <IonItem>
-              <IonLabel position="stacked">Date de fin (optionnel)</IonLabel>
+              <IonLabel position="stacked">
+                Date de fin (optionnel)
+              </IonLabel>
               <IonInput
                 type="date"
                 value={transfer.endDate}
-                onIonChange={(e) => onTransferChange("endDate", e.detail.value)}
+                onIonChange={(e) =>
+                  onTransferChange("endDate", e.detail.value ?? "")
+                }
                 min={transfer.date.substring(0, 10)}
               />
             </IonItem>
@@ -139,12 +156,10 @@ const TransferModal: React.FC<TransferModalProps> = ({
           <div className="confirmation-form">
             <div className="confirmation-summary">
               <h3>Détails du virement</h3>
-
               <div className="summary-item">
                 <span>Compte source:</span>
                 <span>{selectedAccount?.label || "-"}</span>
               </div>
-
               <div className="summary-item">
                 <span>Bénéficiaire:</span>
                 <span>{selectedBeneficiary?.name || "Non sélectionné"}</span>
@@ -157,21 +172,25 @@ const TransferModal: React.FC<TransferModalProps> = ({
                 <span>Montant:</span>
                 <span className="amount">{transfer.amount || "0"} DT</span>
               </div>
-
               <div className="summary-item">
                 <span>Motif:</span>
                 <span>{transfer.reason || "Non spécifié"}</span>
               </div>
               <div className="summary-item">
                 <span>Date d'exécution:</span>
-                <span>{new Date(transfer.date).toLocaleDateString()}</span>
+                <span>
+                  {new Date(transfer.date).toLocaleDateString()}
+                </span>
               </div>
             </div>
 
             <div className="confirmation-details">
               <IonItem>
                 <IonLabel>Programmer une récurrence?</IonLabel>
-                <IonToggle checked={isRecurring} onIonChange={(e) => onToggleRecurring(e.detail.checked)} />
+                <IonToggle
+                  checked={isRecurring}
+                  onIonChange={(e) => onToggleRecurring(e.detail.checked)}
+                />
               </IonItem>
             </div>
 
@@ -185,8 +204,7 @@ const TransferModal: React.FC<TransferModalProps> = ({
         )}
       </IonContent>
     </>
-  )
-}
+  );
+};
 
-export default TransferModal
-
+export default TransferModal;
