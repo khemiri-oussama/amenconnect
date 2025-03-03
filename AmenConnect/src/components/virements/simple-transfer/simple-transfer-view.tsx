@@ -84,10 +84,10 @@ const SimpleTransferView: React.FC<SimpleTransferViewProps> = ({
                 <IonLabel position="floating">Compte source</IonLabel>
                 <IonSelect
                   value={transfer.accountFrom}
-                  onIonChange={(e) => onTransferChange("accountFrom", e.detail.value)}
+                  onIonChange={(e) => onTransferChange("accountFrom", e.detail.value ?? "")}
                 >
                   {accounts.map((account) => (
-                    <IonSelectOption key={account.id} value={account.value}>
+                    <IonSelectOption key={account.id} value={account.id}>
                       {account.label} ({account.balance.toLocaleString("fr-FR")} DT)
                     </IonSelectOption>
                   ))}
@@ -98,7 +98,7 @@ const SimpleTransferView: React.FC<SimpleTransferViewProps> = ({
                 <IonLabel position="floating">Bénéficiaire</IonLabel>
                 <IonSelect
                   value={transfer.beneficiaryId}
-                  onIonChange={(e) => onTransferChange("beneficiaryId", e.detail.value)}
+                  onIonChange={(e) => onTransferChange("beneficiaryId", e.detail.value ?? "")}
                 >
                   {beneficiaries.map((ben) => (
                     <IonSelectOption key={ben.id} value={ben.id}>
@@ -114,7 +114,7 @@ const SimpleTransferView: React.FC<SimpleTransferViewProps> = ({
                   type="number"
                   placeholder="0.00"
                   value={transfer.amount}
-                  onIonChange={(e) => onTransferChange("amount", e.detail.value)}
+                  onIonChange={(e) => onTransferChange("amount", e.detail.value ?? "")}
                   required
                 />
               </IonItem>
@@ -125,7 +125,7 @@ const SimpleTransferView: React.FC<SimpleTransferViewProps> = ({
                   type="text"
                   placeholder="Ex: Paiement facture"
                   value={transfer.reason}
-                  onIonChange={(e) => onTransferChange("reason", e.detail.value)}
+                  onIonChange={(e) => onTransferChange("reason", e.detail.value ?? "")}
                 />
               </IonItem>
 
@@ -136,7 +136,7 @@ const SimpleTransferView: React.FC<SimpleTransferViewProps> = ({
                     <IonInput
                       type="date"
                       value={transfer.date.substring(0, 10)}
-                      onIonChange={(e) => onTransferChange("date", e.detail.value)}
+                      onIonChange={(e) => onTransferChange("date", e.detail.value ?? "")}
                       min={new Date().toISOString().substring(0, 10)}
                     />
                   </IonItem>
@@ -144,7 +144,7 @@ const SimpleTransferView: React.FC<SimpleTransferViewProps> = ({
                     <IonLabel position="floating">Fréquence</IonLabel>
                     <IonSelect
                       value={transfer.frequency}
-                      onIonChange={(e) => onTransferChange("frequency", e.detail.value)}
+                      onIonChange={(e) => onTransferChange("frequency", e.detail.value ?? "")}
                     >
                       <IonSelectOption value="unique">Unique</IonSelectOption>
                       <IonSelectOption value="mensuel">Mensuel</IonSelectOption>
@@ -156,7 +156,7 @@ const SimpleTransferView: React.FC<SimpleTransferViewProps> = ({
                     <IonInput
                       type="date"
                       value={transfer.endDate}
-                      onIonChange={(e) => onTransferChange("endDate", e.detail.value)}
+                      onIonChange={(e) => onTransferChange("endDate", e.detail.value ?? "")}
                       min={new Date().toISOString().substring(0, 10)}
                     />
                   </IonItem>

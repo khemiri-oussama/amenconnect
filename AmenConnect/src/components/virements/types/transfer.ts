@@ -1,3 +1,4 @@
+//types/transfer.ts
 export interface Transfer {
   id: string
   beneficiaryId: string
