@@ -315,6 +315,8 @@ ion-content {
   --background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   overflow: hidden;
+  width: auto;
+  max-width: 100%;
 }
 
 ion-segment-button {
@@ -326,6 +328,45 @@ ion-segment-button {
   font-weight: 500;
   text-transform: none;
   letter-spacing: 0;
+  font-size: 13px;
+  padding: 0;
+}
+
+/* Add responsive adjustments for segment buttons */
+@media (max-width: 320px) {
+  ion-segment-button {
+    font-size: 11px;
+    --padding-start: 2px;
+    --padding-end: 2px;
+  }
+
+  .custom-segment {
+    margin: 0 10px 20px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 375px) {
+  ion-segment-button {
+    font-size: 12px;
+    --padding-start: 4px;
+    --padding-end: 4px;
+  }
+}
+
+@media (min-width: 376px) and (max-width: 414px) {
+  ion-segment-button {
+    font-size: 13px;
+    --padding-start: 6px;
+    --padding-end: 6px;
+  }
+}
+
+@media (min-width: 415px) {
+  ion-segment-button {
+    font-size: 14px;
+    --padding-start: 10px;
+    --padding-end: 10px;
+  }
 }
 
 /* Card Details Section */
