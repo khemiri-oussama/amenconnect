@@ -8,6 +8,10 @@
   --accent-blue: #3b82f6;
   --gradient-start: #2c3e50;
   --gradient-end: #1a1a1a;
+  --status-pending: #f59e0b;
+  --status-processing: #3b82f6;
+  --status-completed: #10b981;
+  --status-failed: #ef4444;
 }
 
 /* Content Styles */
@@ -149,44 +153,256 @@ ion-segment-button {
   backdrop-filter: blur(8px);
 }
 
-/* Bottom Navigation */
-.tab-button {
+/* Transfer History Item */
+.transfer-history-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.transfer-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.transfer-history-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.transfer-amount {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+.transfer-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-gray);
+  margin: 8px 0;
+}
+
+.transfer-date ion-icon {
+  font-size: 16px;
+}
+
+.transfer-reference {
+  font-size: 14px;
+  color: var(--text-gray);
+  margin: 8px 0 0;
+}
+
+.transfer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* Status Badge */
+.status-badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.status-pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--status-pending);
+}
+
+.status-processing {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--status-processing);
+}
+
+.status-completed {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--status-completed);
+}
+
+.status-failed {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--status-failed);
+}
+
+/* Empty State */
+.empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  background: transparent;
-  border: none;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
   color: var(--text-gray);
+}
+
+.empty-state ion-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.empty-state-subtitle {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* Modal Styles */
+ion-modal ion-toolbar {
+  --background: var(--gradient-start);
+  --color: white;
+}
+
+ion-modal ion-content {
+  --background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+}
+
+ion-modal ion-item {
+  --background: rgba(255, 255, 255, 0.05);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --color: white;
+  --border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+ion-modal ion-label {
+  --color: white;
+}
+
+ion-modal ion-input,
+ion-modal ion-select,
+ion-modal ion-datetime {
+  --color: white;
+  --placeholder-color: var(--text-gray);
+}
+
+/* Beneficiary Card */
+.beneficiary-card {
+  --background: rgba(255, 255, 255, 0.05);
+  --border-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 16px;
+}
+
+.beneficiary-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Scheduled Transfer Card */
+.scheduled-transfer-card {
+  --background: rgba(255, 255, 255, 0.05);
+  --border-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 16px;
+}
+
+.transfer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.transfer-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.transfer-iban {
+  font-size: 14px;
+  color: var(--text-gray);
+  margin: 0 0 12px;
+}
+
+.label {
   font-size: 12px;
-  padding: 5px;
-  transition: color 0.3s ease;
+  color: var(--text-gray);
+  margin: 0 0 4px;
 }
 
-.tab-button.active {
-  color: var(--primary-green);
+.value {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
 }
 
-.tab-button ion-icon {
-  font-size: 24px;
-  margin-bottom: 2px;
+.transfer-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
 }
 
-/* Ensure content is scrollable */
-.scrollable-content {
-  min-height: 100vh;
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  padding: 16px;
-  padding-top: 60px;
-  padding-bottom: 70px;
+.transfer-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* Ensure the gradient covers the entire page */
-.ion-page {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+.recurring-details {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Add animations */
+.recurring-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-gray);
+}
+
+.recurring-item ion-icon {
+  font-size: 16px;
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  bottom: 80px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 9999;
+  animation: slideUp 0.3s ease-out;
+}
+
+.toast-message {
+  background: var(--primary-green);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.toast-message ion-icon {
+  font-size: 18px;
+}
+
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -197,6 +413,17 @@ ion-segment-button {
 }
 
 @keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
   from {
     transform: translateY(20px);
     opacity: 0;
