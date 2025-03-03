@@ -1,3 +1,4 @@
+//types/accounts.ts
 export interface Account {
     id: string
     label: string
