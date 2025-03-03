@@ -1,4 +1,4 @@
-// app.js (or server.js)
+// app.js
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -14,6 +14,7 @@ const forgotPasswordRoutes = require("./routes/forgotPasswordRoutes");
 const carteRoutes = require("./routes/carteRoutes");
 const qrLoginRoutes = require("./routes/qrLogin"); // Import QR login routes
 const paymentRoutes = require('./routes/paymentRoutes');
+const virementRoutes = require('./routes/virementRoutes');
 // Import Passport
 const passport = require("./config/passport");
 
@@ -39,6 +40,7 @@ app.use("/api/carte", carteRoutes);
 app.use("/api/qr-login", qrLoginRoutes); // Mount QR login routes
 app.use("/auth", authRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/virements', virementRoutes);
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
