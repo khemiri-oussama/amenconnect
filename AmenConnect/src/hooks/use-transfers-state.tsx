@@ -1,33 +1,52 @@
 "use client"
 
-import { useState } from "react"
-import { useAuth } from "./../AuthContext"
-import { mapCompteToAccount } from "./../components/virements/utils/account-mapper"
-import type { Transfer, ScheduledTransfer } from "./../components/virements/types/transfer"
-import type { Beneficiary } from "./../components/virements/types/beneficiary"
-import type { Account } from "./../components/virements/types/accounts"
+import { useState, useEffect } from "react";
+import { useAuth } from "./../AuthContext";
+import { mapCompteToAccount } from "./../components/virements/utils/account-mapper";
+import type { Transfer, ScheduledTransfer } from "./../components/virements/types/transfer";
+import type { Beneficiary } from "./../components/virements/types/beneficiary";
+import type { Account } from "./../components/virements/types/accounts";
+import axios from "axios";
 
 export const useTransfersState = () => {
-  const { profile } = useAuth()
+  const { profile } = useAuth();
 
   // Map Compte to Account
-  const accounts: Account[] = profile?.comptes.map(mapCompteToAccount) || []
+  const accounts: Account[] = profile?.comptes.map(mapCompteToAccount) || [];
 
   // Get the main account
   const mainAccount = accounts.find(
-    (account) => account.label.toLowerCase().includes("courant") || account.label.toLowerCase().includes("current"),
-  )
+    (account) =>
+      account.label.toLowerCase().includes("courant") ||
+      account.label.toLowerCase().includes("current")
+  );
 
   // State for transfers
-  const [transferHistory, setTransferHistory] = useState<Transfer[]>([])
-  const [scheduledTransfers, setScheduledTransfers] = useState<ScheduledTransfer[]>([])
-  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([])
+  const [transferHistory, setTransferHistory] = useState<Transfer[]>([]);
+  const [scheduledTransfers, setScheduledTransfers] = useState<ScheduledTransfer[]>([]);
+  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
+
+  // Fetch beneficiaries from backend on mount
+  useEffect(() => {
+    async function fetchBeneficiaries() {
+      try {
+        const response = await axios.get("/api/beneficiaries", {
+          withCredentials: true,
+        });
+        setBeneficiaries(response.data);
+      } catch (error: any) {
+        console.error("Error fetching beneficiaries:", error);
+      }
+    }
+
+    fetchBeneficiaries();
+  }, []);
 
   // Calculate transfer limits
-  const dailyLimit = 10000 // This should come from your backend
-  const monthlyLimit = 50000 // This should come from your backend
-  const currentDayUsage = 0 // This should be calculated from transfer history
-  const currentMonthUsage = 0 // This should be calculated from transfer history
+  const dailyLimit = 10000;
+  const monthlyLimit = 50000;
+  const currentDayUsage = 0;
+  const currentMonthUsage = 0;
 
   // Form state for new transfer
   const [newTransfer, setNewTransfer] = useState({
@@ -38,45 +57,45 @@ export const useTransfersState = () => {
     date: new Date().toISOString(),
     frequency: "once" as const,
     endDate: "",
-  })
+  });
 
   // Form state for batch transfers
-  const [batchTransfers, setBatchTransfers] = useState<any[]>([{ beneficiaryId: "", amount: "", reason: "" }])
+  const [batchTransfers, setBatchTransfers] = useState<any[]>([
+    { beneficiaryId: "", amount: "", reason: "" },
+  ]);
 
   const handleTransferChange = (field: string, value: any) => {
-    setNewTransfer((prev) => ({ ...prev, [field]: value }))
-  }
+    setNewTransfer((prev) => ({ ...prev, [field]: value }));
+  };
 
   const submitTransfer = async (isRecurring: boolean) => {
-    // Implement your API call here
-    const selectedAccount = accounts.find((acc) => acc.value === newTransfer.accountFrom)
+    const selectedAccount = accounts.find((acc) => acc.value === newTransfer.accountFrom);
     if (!selectedAccount) {
-      throw new Error("Account not found")
+      throw new Error("Account not found");
     }
 
     if (!newTransfer.amount || Number.parseFloat(newTransfer.amount) <= 0) {
-      throw new Error("Invalid amount")
+      throw new Error("Invalid amount");
     }
 
     if (Number.parseFloat(newTransfer.amount) > selectedAccount.balance) {
-      throw new Error("Insufficient funds")
+      throw new Error("Insufficient funds");
     }
 
-    // Add your API call here
-    // const response = await axios.post('/api/transfers', { ...newTransfer, isRecurring })
-
-    // For now, just update the local state
     const transfer: Transfer = {
       id: `tr${Date.now()}`,
       beneficiaryId: newTransfer.beneficiaryId,
-      beneficiaryName: beneficiaries.find((b) => b.id === newTransfer.beneficiaryId)?.name || "",
+      beneficiaryName:
+        beneficiaries.find((b) => b.id === newTransfer.beneficiaryId)?.name || "",
       accountFrom: newTransfer.accountFrom,
-      accountTo: beneficiaries.find((b) => b.id === newTransfer.beneficiaryId)?.accountNumber || "",
+      accountTo:
+        beneficiaries.find((b) => b.id === newTransfer.beneficiaryId)?.accountNumber ||
+        "",
       amount: Number.parseFloat(newTransfer.amount),
       reason: newTransfer.reason,
       date: newTransfer.date,
       status: "pending",
-    }
+    };
 
     if (isRecurring) {
       const scheduledTransfer: ScheduledTransfer = {
@@ -84,10 +103,10 @@ export const useTransfersState = () => {
         frequency: newTransfer.frequency,
         nextDate: newTransfer.date,
         endDate: newTransfer.endDate || undefined,
-      }
-      setScheduledTransfers((prev) => [scheduledTransfer, ...prev])
+      };
+      setScheduledTransfers((prev) => [scheduledTransfer, ...prev]);
     } else {
-      setTransferHistory((prev) => [transfer, ...prev])
+      setTransferHistory((prev) => [transfer, ...prev]);
     }
 
     // Reset form
@@ -99,10 +118,10 @@ export const useTransfersState = () => {
       date: new Date().toISOString(),
       frequency: "once",
       endDate: "",
-    })
+    });
 
-    return true
-  }
+    return true;
+  };
 
   const limits = {
     daily: {
@@ -113,7 +132,7 @@ export const useTransfersState = () => {
       limit: monthlyLimit,
       used: currentMonthUsage,
     },
-  }
+  };
 
   const actions = {
     handleTransferChange,
@@ -122,7 +141,7 @@ export const useTransfersState = () => {
     setTransferHistory,
     setScheduledTransfers,
     setBeneficiaries,
-  }
+  };
 
   return {
     accounts,
@@ -134,6 +153,5 @@ export const useTransfersState = () => {
     batchTransfers,
     limits,
     actions,
-  }
-}
-
+  };
+};

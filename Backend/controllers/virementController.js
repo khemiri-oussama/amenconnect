@@ -1,69 +1,115 @@
 // controllers/virementController.js
-const mongoose = require("mongoose");
-const Virement = require("../models/virement");
-const Compte = require("../models/Compte");
-const User = require("../models/User");
+const Virement = require('../models/Virement');
+const Compte = require('../models/Compte');
 
-// Function to create a new virement using compte IDs
-exports.makeVirement = async (req, res) => {
-  const {
-    sourceCompteId,       // New field: source account ID
-    destinationCompteId,  // New field: destination account ID
-    amount,
-    currency,
-    transferType,         // 'internal' or 'external'
-    reason,
-    beneficiaryName,
-    beneficiaryBank
-  } = req.body;
-
+exports.createVirement = async (req, res) => {
   try {
-    // Get the user from the JWT middleware (assumes req.user is populated)
-    const userId = req.user.id;
-
-    // Validate that the source compte exists and belongs to the user.
-    const sourceCompte = await Compte.findOne({ _id: sourceCompteId, userId });
-    if (!sourceCompte) {
-      return res.status(404).json({ message: "Source account not found or not associated with this user." });
-    }
-
-    // Validate that the destination compte exists.
-    // For internal transfers, you might check if the destination account exists in your system.
-    const destinationCompte = await Compte.findById(destinationCompteId);
-    if (!destinationCompte) {
-      return res.status(404).json({ message: "Destination account not found." });
-    }
-
-    // Example additional validation: Check if the source account has sufficient balance.
-    if (sourceCompte.solde < amount) {
-      return res.status(400).json({ message: "Insufficient balance in the source account." });
-    }
-
-    // Create the new Virement document.
-    const newVirement = new Virement({
-      user: userId,  // Associate the transfer with the logged-in user.
-      sourceAccount: sourceCompteId,      // Now using compte IDs
-      destinationAccount: destinationCompteId,
-      amount,
-      currency: currency || 'TND', // Default to 'TND' if not provided.
-      transferType,              // Should be either 'internal' or 'external'
-      reason,
+    const {
+      beneficiaryId,
       beneficiaryName,
-      beneficiaryBank
-      // transferDate and status have default values in the schema.
+      accountFrom,
+      accountTo,
+      amount,
+      reason,
+      date,
+      frequency,
+      nextDate,
+      endDate,
+    } = req.body;
+
+    // Find the user's account based on the RIB and user ID (assumed to be set by your auth middleware)
+    const compte = await Compte.findOne({ RIB: accountFrom, userId: req.user._id });
+    if (!compte) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+    
+
+    if (compte.solde < amount) {
+      return res.status(400).json({ message: "Insufficient funds" });
+    }
+
+    // For immediate transfers, deduct the transfer amount from the account balance
+    if (frequency === 'once') {
+      compte.solde -= amount;
+      await compte.save();
+    }
+
+    // Create a new virement document
+    const newVirement = new Virement({
+      userId: req.user._id,
+      beneficiaryId,
+      beneficiaryName,
+      accountFrom,
+      accountTo,
+      amount,
+      reason,
+      date,
+      status: 'pending',
+      frequency,
+      nextDate: frequency !== 'once' ? nextDate : undefined,
+      endDate: frequency !== 'once' ? endDate : undefined,
     });
 
     await newVirement.save();
+    return res.status(201).json(newVirement);
+  } catch (error) {
+    console.error("Error creating virement:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-    // Optionally, update the account balances here if that logic is part of your workflow.
-    // e.g., subtract from sourceCompte.solde and add to destinationCompte.solde for internal transfers.
+exports.getVirements = async (req, res) => {
+  try {
+    const virements = await Virement.find({ userId: req.user._id });
+    return res.status(200).json(virements);
+  } catch (error) {
+    console.error("Error fetching virements:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-    res.status(201).json({
-      message: "Virement created successfully.",
-      virement: newVirement
-    });
-  } catch (err) {
-    console.error("Make Virement error:", err);
-    res.status(500).json({ message: "Server error." });
+exports.getVirementById = async (req, res) => {
+  try {
+    const virement = await Virement.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!virement) {
+      return res.status(404).json({ message: "Virement not found" });
+    }
+    return res.status(200).json(virement);
+  } catch (error) {
+    console.error("Error fetching virement:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.updateVirementStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    // Update the transfer status (e.g., from pending to completed)
+    const virement = await Virement.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
+      { status },
+      { new: true }
+    );
+    if (!virement) {
+      return res.status(404).json({ message: "Virement not found" });
+    }
+    return res.status(200).json(virement);
+  } catch (error) {
+    console.error("Error updating virement:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.deleteVirement = async (req, res) => {
+  try {
+    const virement = await Virement.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
+    if (!virement) {
+      return res.status(404).json({ message: "Virement not found" });
+    }
+    return res.status(200).json({ message: "Virement deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting virement:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

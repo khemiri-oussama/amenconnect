@@ -1,20 +1,62 @@
-//models/virement.js
+// models/Virement.js
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-// Define the schema for the "virement" collection
-const virementSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
-  sourceAccount: { type: String, required: true },
-  destinationAccount: { type: String, required: true },
-  amount: { type: Number, required: true },
-  currency: { type: String, default: 'TND' },
-  transferDate: { type: Date, default: Date.now },
-  status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
-  transferType: { type: String, enum: ['internal', 'external'], required: true },
-  reason: String,
-  beneficiaryName: String,
-  beneficiaryBank: String
-}, { timestamps: true });
+const VirementSchema = new Schema(
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    beneficiaryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Beneficiary', // Adjust if you have a Beneficiary model
+      required: true,
+    },
+    beneficiaryName: {
+      type: String,
+      required: true,
+    },
+    accountFrom: {
+      type: String,
+      required: true,
+    },
+    accountTo: {
+      type: String,
+      required: true,
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    reason: {
+      type: String,
+      required: true,
+    },
+    date: {
+      type: Date,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'completed', 'failed'],
+      default: 'pending',
+    },
+    // For scheduled transfers, the following fields are optional:
+    frequency: {
+      type: String,
+      enum: ['once', 'daily', 'weekly', 'monthly', 'quarterly', 'yearly'],
+      default: 'once',
+    },
+    nextDate: {
+      type: Date,
+    },
+    endDate: {
+      type: Date,
+    },
+  },
+  { timestamps: true }
+);
 
-// Export the model using CommonJS syntax
-module.exports = mongoose.model('virement', virementSchema);
+module.exports = mongoose.model('Virement', VirementSchema);
