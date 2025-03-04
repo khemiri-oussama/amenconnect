@@ -1,0 +1,383 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+
+.accueil-kiosk-container {
+  font-family: "Outfit", sans-serif;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.background-white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  z-index: -2;
+}
+
+.background-svg {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1080px;
+  height: 1920px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.accueil-kiosk-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.accueil-kiosk-back-btn {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #121660;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.accueil-kiosk-back-btn ion-icon {
+  font-size: 1.5rem;
+}
+
+.accueil-kiosk-header {
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.accueil-kiosk-welcome {
+  margin-bottom: 1rem;
+}
+
+.accueil-kiosk-title {
+  color: #121660;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+.accueil-kiosk-subtitle {
+  color: #121660;
+  font-size: 1.5rem;
+  opacity: 0.8;
+}
+
+.accueil-kiosk-balance-card {
+  background: linear-gradient(to right, #121660, #181e92);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(18, 22, 96, 0.3);
+}
+
+.accueil-kiosk-balance-icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.5rem;
+}
+
+.accueil-kiosk-balance-icon ion-icon {
+  font-size: 2rem;
+  color: white;
+}
+
+.accueil-kiosk-balance-details {
+  flex: 1;
+}
+
+.accueil-kiosk-balance-label {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.accueil-kiosk-balance-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.accueil-kiosk-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.accueil-kiosk-section {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.accueil-kiosk-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.accueil-kiosk-section-title {
+  color: #121660;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.accueil-kiosk-section-title ion-icon {
+  font-size: 1.75rem;
+}
+
+.accueil-kiosk-accounts-list,
+.accueil-kiosk-cards-list,
+.accueil-kiosk-transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.accueil-kiosk-account-item,
+.accueil-kiosk-card-item,
+.accueil-kiosk-transaction-item {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background-color: #f8f8f8;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.accueil-kiosk-account-item:hover,
+.accueil-kiosk-card-item:hover,
+.accueil-kiosk-transaction-item:hover {
+  background-color: #f0f0f0;
+}
+
+.accueil-kiosk-account-icon,
+.accueil-kiosk-card-icon,
+.accueil-kiosk-transaction-icon {
+  background-color: rgba(18, 22, 96, 0.1);
+  border-radius: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.accueil-kiosk-account-icon ion-icon,
+.accueil-kiosk-card-icon ion-icon,
+.accueil-kiosk-transaction-icon ion-icon {
+  font-size: 1.75rem;
+  color: #121660;
+}
+
+.accueil-kiosk-account-details,
+.accueil-kiosk-card-details,
+.accueil-kiosk-transaction-details {
+  flex: 1;
+}
+
+.accueil-kiosk-account-name,
+.accueil-kiosk-card-number,
+.accueil-kiosk-transaction-description {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #121660;
+  margin-bottom: 0.25rem;
+}
+
+.accueil-kiosk-account-number,
+.accueil-kiosk-card-expiry,
+.accueil-kiosk-transaction-date {
+  font-size: 1rem;
+  color: #666;
+}
+
+.accueil-kiosk-account-balance,
+.accueil-kiosk-transaction-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #121660;
+}
+
+.accueil-kiosk-transaction-amount.credit {
+  color: #47ce65;
+}
+
+.accueil-kiosk-transaction-amount.debit {
+  color: #e74c3c;
+}
+
+.accueil-kiosk-chart-container {
+  height: 300px;
+  width: 100%;
+}
+
+.accueil-kiosk-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.accueil-kiosk-action-button {
+  --background: linear-gradient(to right, #121660, #181e92);
+  --color: white;
+  --border-radius: 1rem;
+  --padding-top: 1.25rem;
+  --padding-bottom: 1.25rem;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: 0 4px 10px rgba(18, 22, 96, 0.2);
+}
+
+.accueil-kiosk-action-button ion-icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.accueil-kiosk-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.5rem;
+  color: #121660;
+}
+
+@media (min-width: 768px) {
+  .accueil-kiosk-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .accueil-kiosk-chart {
+    grid-column: span 2;
+  }
+
+  .accueil-kiosk-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .accueil-kiosk-title {
+    font-size: 2.5rem;
+  }
+
+  .accueil-kiosk-subtitle {
+    font-size: 1.25rem;
+  }
+
+  .accueil-kiosk-balance-amount {
+    font-size: 2rem;
+  }
+
+  .accueil-kiosk-section-title {
+    font-size: 1.5rem;
+  }
+
+  .accueil-kiosk-section-title ion-icon {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .accueil-kiosk-back-btn {
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .accueil-kiosk-header {
+    margin-top: 4rem;
+  }
+
+  .accueil-kiosk-title {
+    font-size: 2rem;
+  }
+
+  .accueil-kiosk-subtitle {
+    font-size: 1rem;
+  }
+
+  .accueil-kiosk-balance-icon {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .accueil-kiosk-balance-icon ion-icon {
+    font-size: 1.5rem;
+  }
+
+  .accueil-kiosk-balance-label {
+    font-size: 1.25rem;
+  }
+
+  .accueil-kiosk-balance-amount {
+    font-size: 1.75rem;
+  }
+
+  .accueil-kiosk-account-icon,
+  .accueil-kiosk-card-icon,
+  .accueil-kiosk-transaction-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .accueil-kiosk-account-icon ion-icon,
+  .accueil-kiosk-card-icon ion-icon,
+  .accueil-kiosk-transaction-icon ion-icon {
+    font-size: 1.25rem;
+  }
+
+  .accueil-kiosk-account-name,
+  .accueil-kiosk-card-number,
+  .accueil-kiosk-transaction-description {
+    font-size: 1rem;
+  }
+
+  .accueil-kiosk-account-balance,
+  .accueil-kiosk-transaction-amount {
+    font-size: 1.25rem;
+  }
+}
+
