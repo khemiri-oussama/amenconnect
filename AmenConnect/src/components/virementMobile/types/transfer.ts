@@ -26,4 +26,6 @@ export interface ScheduledTransfer {
 }
 
 
-
+export interface TransferFrequency{
+  frequency : string;
+}
