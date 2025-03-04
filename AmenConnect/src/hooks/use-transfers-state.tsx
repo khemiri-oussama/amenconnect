@@ -1,3 +1,4 @@
+// hooks/use-transfers-state.tsx
 "use client"
 
 import { useState, useEffect } from "react";
@@ -14,7 +15,7 @@ export const useTransfersState = () => {
   // Map Compte to Account
   const accounts: Account[] = profile?.comptes.map(mapCompteToAccount) || [];
 
-  // Get the main account
+  // Get the main account (using 'iban' because the Account type doesn't have 'RIB')
   const mainAccount = accounts.find(
     (account) =>
       account.label.toLowerCase().includes("courant") ||
@@ -51,7 +52,7 @@ export const useTransfersState = () => {
   // Form state for new transfer
   const [newTransfer, setNewTransfer] = useState({
     beneficiaryId: "",
-    accountFrom: mainAccount?.RIB || "",
+    accountFrom: mainAccount?.iban || "", // Use 'iban' instead of 'RIB'
     amount: "",
     reason: "",
     date: new Date().toISOString(),
@@ -112,7 +113,7 @@ export const useTransfersState = () => {
     // Reset form
     setNewTransfer({
       beneficiaryId: "",
-      accountFrom: mainAccount?.RIB || "",
+      accountFrom: mainAccount?.iban || "",
       amount: "",
       reason: "",
       date: new Date().toISOString(),

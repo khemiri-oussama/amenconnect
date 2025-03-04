@@ -104,27 +104,27 @@ const VirementsDesktop: React.FC = () => {
   }
 
   const submitCsvTransfers = async () => {
-    //Implementation for submitting CSV transfers
+    // Implementation for submitting CSV transfers
     console.log("Submitting CSV transfers")
   }
 
   const addBatchTransferRow = () => {
-    //Implementation for adding a row to batch transfers
+    // Implementation for adding a row to batch transfers
     console.log("Adding batch transfer row")
   }
 
   const removeBatchTransferRow = (index: number) => {
-    //Implementation for removing a row from batch transfers
+    // Implementation for removing a row from batch transfers
     console.log("Removing batch transfer row at index:", index)
   }
 
   const updateBatchTransferRow = (index: number, updatedRow: any) => {
-    //Implementation for updating a row in batch transfers
+    // Implementation for updating a row in batch transfers
     console.log("Updating batch transfer row at index:", index, "with data:", updatedRow)
   }
 
   const submitBatchTransfers = async () => {
-    //Implementation for submitting batch transfers
+    // Implementation for submitting batch transfers
     console.log("Submitting batch transfers")
   }
 
@@ -141,7 +141,7 @@ const VirementsDesktop: React.FC = () => {
   }
 
   return (
-    <IonPage className={`virements-desktop`}>
+    <IonPage className="virements-desktop">
       <IonHeader>
         <IonToolbar>
           <Navbar currentPage="virements" />
@@ -178,7 +178,10 @@ const VirementsDesktop: React.FC = () => {
             <IonIcon icon={calendarOutline} />
             Virements Programmés
           </IonChip>
-          <IonChip color={selectedTab === "history" ? "primary" : "medium"} onClick={() => setSelectedTab("history")}>
+          <IonChip
+            color={selectedTab === "history" ? "primary" : "medium"}
+            onClick={() => setSelectedTab("history")}
+          >
             <IonIcon icon={documentTextOutline} />
             Historique
           </IonChip>
@@ -267,22 +270,33 @@ const VirementsDesktop: React.FC = () => {
               />
             )}
 
-            {selectedTab === "history" && <HistoryView transferHistory={transferHistory} />}
+            {selectedTab === "history" && (
+              <HistoryView transferHistory={transferHistory} />
+            )}
 
             {selectedTab === "beneficiaries" && (
               <BeneficiariesView
                 beneficiaries={beneficiaries}
                 onNewBeneficiary={() => console.log("New beneficiary")}
-                onTransferToBeneficiary={handleTransferToBeneficiary}
-                onEditBeneficiary={(id) => console.log("Edit beneficiary", id)}
-                onDeleteBeneficiary={(id) => console.log("Delete beneficiary", id)}
+                onTransferToBeneficiary={(id: string) =>
+                  console.log("Transfer to beneficiary", id)
+                }
+                onEditBeneficiary={(id: string) =>
+                  console.log("Edit beneficiary", id)
+                }
+                onDeleteBeneficiary={(id: string) =>
+                  console.log("Delete beneficiary", id)
+                }
               />
             )}
           </motion.div>
         </AnimatePresence>
 
         {/* Modals */}
-        <IonModal isOpen={showTransferModal} onDidDismiss={() => setShowTransferModal(false)}>
+        <IonModal
+          isOpen={showTransferModal}
+          onDidDismiss={() => setShowTransferModal(false)}
+        >
           <TransferModal
             isOpen={showTransferModal}
             isRecurring={isRecurring}
@@ -309,4 +323,3 @@ const VirementsDesktop: React.FC = () => {
 }
 
 export default VirementsDesktop
-
