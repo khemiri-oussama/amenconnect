@@ -444,4 +444,104 @@ ion-modal ion-datetime {
     min-height: 120px;
   }
 }
+/* Custom styles for SimpleTransferModal */
+
+/* Fix for IonSelectOption text visibility */
+.custom-select {
+  --color: white;
+  --placeholder-color: rgba(255, 255, 255, 0.6);
+}
+
+/* These styles target the popover that appears when selecting options */
+ion-select-popover {
+  --background: #1e1e1e !important;
+  --ion-background-color: #1e1e1e !important;
+}
+
+ion-select-popover ion-item {
+  --background: #1e1e1e !important;
+  --color: white !important;
+}
+
+ion-select-popover ion-radio {
+  --color: white !important;
+  --color-checked: var(--primary-green) !important;
+}
+
+ion-select-popover .select-interface-option {
+  --color: white !important;
+  color: white !important;
+  background-color: #1e1e1e !important;
+}
+
+ion-select-popover .alert-radio-label {
+  color: white !important;
+}
+
+/* Fix for IonDatetime */
+.custom-datetime {
+  --background: #1e1e1e;
+  --color: white;
+  color: white;
+}
+
+ion-datetime-button {
+  --color: white;
+}
+
+ion-datetime {
+  --background: #1e1e1e;
+  --ion-color-step-100: #2d2d2d;
+  --ion-color-step-150: #363636;
+  --ion-color-step-200: #414141;
+  --ion-color-step-250: #4d4d4d;
+  --ion-color-step-300: #595959;
+  --ion-color-step-350: #656565;
+  --ion-color-step-400: #717171;
+  --ion-color-step-450: #7d7d7d;
+  --ion-color-step-500: #898989;
+  --ion-color-step-550: #949494;
+  --ion-color-step-600: #a0a0a0;
+  --ion-color-step-650: #acacac;
+  --ion-color-step-700: #b8b8b8;
+  --ion-color-step-750: #c4c4c4;
+  --ion-color-step-800: #d0d0d0;
+  --ion-color-step-850: #dbdbdb;
+  --ion-color-step-900: #e7e7e7;
+  --ion-color-step-950: #f3f3f3;
+
+  --ion-text-color: white;
+  --ion-text-color-rgb: 255, 255, 255;
+
+  --ion-color-primary: var(--primary-green);
+  --ion-color-primary-rgb: 71, 206, 101;
+
+  color: white;
+}
+
+/* Calendar specific styles */
+ion-datetime .calendar-day {
+  color: white !important;
+}
+
+ion-datetime .calendar-day.calendar-day-active {
+  color: black !important;
+}
+
+ion-datetime .datetime-time {
+  color: white !important;
+}
+
+/* Popover styles for date picker */
+ion-popover ion-datetime {
+  --background: #1e1e1e;
+  --ion-background-color: #1e1e1e;
+  color: white;
+}
+
+/* Make sure buttons in the datetime are visible */
+ion-datetime .datetime-buttons button {
+  color: var(--primary-green);
+}
+
 

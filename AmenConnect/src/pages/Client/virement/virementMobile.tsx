@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
+import React, { useState } from "react"
 import {
   IonContent,
   IonPage,
@@ -24,63 +23,77 @@ import ScheduledTransfersModal from "../../../components/virementMobile/Schedule
 import TransferHistoryItem from "../../../components/virementMobile/TransferHistoryItem"
 import EmptyState from "../../../components/virementMobile/EmptyState"
 import Toast from "../../../components/virementMobile/Toast"
-
+import { useAuth } from "../../../AuthContext"
 // Types
-import type { ScheduledTransfer } from "../../../components/virementMobile/types/transfer"
-type TransferFrequency = "once" | "daily" | "weekly" | "monthly" | "quarterly" | "yearly"
-
-// Données simulées
-const myAccounts = [
-  { id: "account1", label: "Compte Courant", iban: "FR76 1234 5678 9012 3456 7890 123", balance: 2500.75 },
-  { id: "account2", label: "Compte Épargne", iban: "FR76 9876 5432 1098 7654 3210 987", balance: 15000.5 },
-]
-
-const beneficiaries = [
-  { id: "benef1", name: "Jean Dupont", iban: "FR76 1111 2222 3333 4444 5555 666" },
-  { id: "benef2", name: "Marie Martin", iban: "FR76 6666 7777 8888 9999 0000 111" },
-  { id: "benef3", name: "Entreprise ABC", iban: "FR76 2222 3333 4444 5555 6666 777" },
-]
-
-const initialScheduledTransfers: ScheduledTransfer[] = [
-  {
-    id: "transfer1",
-    fromAccount: "Compte Courant - FR76 1234 5678 9012 3456 7890 123",
-    toAccount: "FR76 1111 2222 3333 4444 5555 666",
-    beneficiaryName: "Jean Dupont",
-    amount: 750,
-    reference: "Loyer Avril",
-    status: "pending",
-    nextDate: "2025-04-01",
-    frequency: "once",
-  },
-  {
-    id: "transfer2",
-    fromAccount: "Compte Courant - FR76 1234 5678 9012 3456 7890 123",
-    toAccount: "FR76 6666 7777 8888 9999 0000 111",
-    beneficiaryName: "Marie Martin",
-    amount: 50,
-    reference: "Abonnement",
-    status: "pending",
-    nextDate: "2025-04-15",
-    frequency: "monthly",
-    remainingOccurrences: 11,
-  },
-  {
-    id: "transfer3",
-    fromAccount: "Compte Épargne - FR76 9876 5432 1098 7654 3210 987",
-    toAccount: "FR76 2222 3333 4444 5555 6666 777",
-    beneficiaryName: "Entreprise ABC",
-    amount: 1200,
-    reference: "Facture #A12345",
-    status: "pending",
-    nextDate: "2025-04-10",
-    frequency: "quarterly",
-    endDate: "2026-04-10",
-  },
-]
+import type { TransferFrequency, ScheduledTransfer } from "../../../components/virementMobile/types/transfer"
 
 const VirementsMobile: React.FC = () => {
   const history = useHistory()
+  // Moved hook call inside component
+  const { profile, authLoading } = useAuth()
+  const account =
+    profile?.comptes && profile.comptes.length > 0 ? profile.comptes[0] : null
+
+  // Simulated data using account from hook
+  const myAccounts = [
+    {
+      id: account?.numéroCompte,
+      label: account?.type,
+      iban: account?.RIB,
+      balance: account?.solde,
+    },
+    {
+      id: account?.numéroCompte,
+      label: account?.type,
+      iban: account?.RIB,
+      balance: account?.solde,
+    },
+  ]
+
+  const beneficiaries = [
+    { id: "benef1", name: "Jean Dupont", iban: "FR76 1111 2222 3333 4444 5555 666" },
+    { id: "benef2", name: "Marie Martin", iban: "FR76 6666 7777 8888 9999 0000 111" },
+    { id: "benef3", name: "Entreprise ABC", iban: "FR76 2222 3333 4444 5555 6666 777" },
+  ]
+
+  const initialScheduledTransfers: ScheduledTransfer[] = [
+    {
+      id: "transfer1",
+      fromAccount: "Compte Courant - FR76 1234 5678 9012 3456 7890 123",
+      toAccount: "FR76 1111 2222 3333 4444 5555 666",
+      beneficiaryName: "Jean Dupont",
+      amount: 750,
+      reference: "Loyer Avril",
+      status: "pending",
+      nextDate: "2025-04-01",
+      frequency: "once",
+    },
+    {
+      id: "transfer2",
+      fromAccount: "Compte Courant - FR76 1234 5678 9012 3456 7890 123",
+      toAccount: "FR76 6666 7777 8888 9999 0000 111",
+      beneficiaryName: "Marie Martin",
+      amount: 50,
+      reference: "Abonnement",
+      status: "pending",
+      nextDate: "2025-04-15",
+      frequency: "monthly",
+      remainingOccurrences: 11,
+    },
+    {
+      id: "transfer3",
+      fromAccount: "Compte Épargne - FR76 9876 5432 1098 7654 3210 987",
+      toAccount: "FR76 2222 3333 4444 5555 6666 777",
+      beneficiaryName: "Entreprise ABC",
+      amount: 1200,
+      reference: "Facture #A12345",
+      status: "pending",
+      nextDate: "2025-04-10",
+      frequency: "quarterly",
+      endDate: "2026-04-10",
+    },
+  ]
+
   const [selectedSegment, setSelectedSegment] = useState<string>("historique")
   const [showSimpleTransferModal, setShowSimpleTransferModal] = useState(false)
   const [showBatchTransferModal, setShowBatchTransferModal] = useState(false)
@@ -103,12 +116,11 @@ const VirementsMobile: React.FC = () => {
   }
 
   const submitSimpleTransfer = (transfer: any) => {
+    const accountData = myAccounts.find((a) => a.id === transfer.fromAccount)
     const newTransfer: ScheduledTransfer = {
       id: `transfer${Date.now()}`,
       fromAccount:
-        myAccounts.find((a) => a.id === transfer.fromAccount)?.label +
-          " - " +
-          myAccounts.find((a) => a.id === transfer.fromAccount)?.iban || "",
+        (accountData?.label || "") + " - " + (accountData?.iban || ""),
       toAccount: beneficiaries.find((b) => b.id === transfer.toAccount)?.iban || "",
       beneficiaryName: beneficiaries.find((b) => b.id === transfer.toAccount)?.name || "",
       amount: Number.parseFloat(transfer.amount),
@@ -124,20 +136,20 @@ const VirementsMobile: React.FC = () => {
   }
 
   const submitBatchTransfer = (batchTransfer: any) => {
-    const newTransfers = batchTransfer.beneficiaries.map((b: any) => ({
-      id: `transfer${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      fromAccount:
-        myAccounts.find((a) => a.id === batchTransfer.fromAccount)?.label +
-          " - " +
-          myAccounts.find((a) => a.id === batchTransfer.fromAccount)?.iban || "",
-      toAccount: beneficiaries.find((benef) => benef.id === b.beneficiary)?.iban || "",
-      beneficiaryName: beneficiaries.find((benef) => benef.id === b.beneficiary)?.name || "",
-      amount: Number.parseFloat(b.amount),
-      reference: b.reference,
-      status: "pending",
-      nextDate: new Date(batchTransfer.transferDate).toISOString().split("T")[0],
-      frequency: "once" as TransferFrequency,
-    }))
+    const newTransfers = batchTransfer.beneficiaries.map((b: any) => {
+      const accountData = myAccounts.find((a) => a.id === batchTransfer.fromAccount)
+      return {
+        id: `transfer${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        fromAccount:
+          (accountData?.label || "") + " - " + (accountData?.iban || ""),
+        toAccount: beneficiaries.find((benef) => benef.id === b.beneficiary)?.iban || "",
+        beneficiaryName: beneficiaries.find((benef) => benef.id === b.beneficiary)?.name || "",
+        amount: Number.parseFloat(b.amount),
+        reference: b.reference,
+        status: "pending",
+        nextDate: new Date(batchTransfer.transferDate).toISOString().split("T")[0],
+      }
+    })
 
     setTransfers([...transfers, ...newTransfers])
     setShowBatchTransferModal(false)
@@ -145,19 +157,18 @@ const VirementsMobile: React.FC = () => {
   }
 
   const submitRecurringTransfer = (recurringTransfer: any) => {
+    const accountData = myAccounts.find((a) => a.id === recurringTransfer.fromAccount)
     const newTransfer: ScheduledTransfer = {
       id: `transfer${Date.now()}`,
       fromAccount:
-        myAccounts.find((a) => a.id === recurringTransfer.fromAccount)?.label +
-          " - " +
-          myAccounts.find((a) => a.id === recurringTransfer.fromAccount)?.iban || "",
+        (accountData?.label || "") + " - " + (accountData?.iban || ""),
       toAccount: beneficiaries.find((b) => b.id === recurringTransfer.toAccount)?.iban || "",
       beneficiaryName: beneficiaries.find((b) => b.id === recurringTransfer.toAccount)?.name || "",
       amount: Number.parseFloat(recurringTransfer.amount),
       reference: recurringTransfer.reference,
       status: "pending",
       nextDate: new Date(recurringTransfer.startDate).toISOString().split("T")[0],
-      frequency: recurringTransfer.frequency as TransferFrequency,
+      frequency: "recurringTransfer.frequency as TransferFrequency", // Adjust this as needed
     }
 
     if (recurringTransfer.endType === "occurrences") {
@@ -189,10 +200,9 @@ const VirementsMobile: React.FC = () => {
     <IonPage>
       <IonContent fullscreen className="ion-padding-horizontal dark-theme">
         <div className="status-bar"></div>
-
         <h1 className="page-title">Virements</h1>
 
-        {/* Options de virement */}
+        {/* Transfer options */}
         <div className="transfer-options">
           <button className="transfer-card" onClick={() => setShowSimpleTransferModal(true)}>
             <div className="transfer-icon">
@@ -235,7 +245,7 @@ const VirementsMobile: React.FC = () => {
           </IonSegmentButton>
         </IonSegment>
 
-        {/* Section Historique */}
+        {/* Historique section */}
         {selectedSegment === "historique" && (
           <div className="history-section">
             <h2>Historique</h2>
@@ -253,7 +263,7 @@ const VirementsMobile: React.FC = () => {
           </div>
         )}
 
-        {/* Section Virements à signer */}
+        {/* Virements à signer section */}
         {selectedSegment === "a-signer" && (
           <div className="history-section">
             <h2>Virements à signer</h2>
@@ -331,4 +341,3 @@ const VirementsMobile: React.FC = () => {
 }
 
 export default VirementsMobile
-
