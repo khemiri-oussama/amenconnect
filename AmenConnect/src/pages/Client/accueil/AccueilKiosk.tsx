@@ -90,11 +90,7 @@ const AccueilKiosk: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <NavbarKiosk currentPage="accueil" />
-        </IonToolbar>
-      </IonHeader>
+      <NavbarKiosk currentPage="accueil" />
       <IonContent fullscreen>
         <div className="accueil-kiosk-container">
           <div className="background-white"></div>
