@@ -7,6 +7,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   padding: 0;
   font-family: "Outfit", sans-serif;
+  position: relative;
 }
 
 .navbar-kiosk-container {
@@ -31,6 +32,7 @@
 .navbar-kiosk-links {
   display: flex;
   gap: 0.5rem;
+  position: relative;
 }
 
 .navbar-kiosk-link {
@@ -72,6 +74,62 @@
   background-color: rgba(18, 22, 96, 0.05);
 }
 
+.navbar-kiosk-dropdown-container {
+  position: relative;
+}
+
+.navbar-kiosk-profile-button {
+  position: relative;
+}
+
+.navbar-kiosk-dropdown-icon {
+  font-size: 1rem;
+  margin-left: 0.25rem;
+  transition: transform 0.2s ease;
+}
+
+.navbar-kiosk-dropdown-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu styling - now works for both regular and portal versions */
+.navbar-kiosk-dropdown-menu,
+.navbar-kiosk-dropdown-menu-portal {
+  width: 200px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.navbar-kiosk-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  color: #e74c3c;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.2s ease;
+}
+
+.navbar-kiosk-dropdown-item:hover {
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+.navbar-kiosk-dropdown-item ion-icon {
+  font-size: 1.25rem;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .navbar-kiosk-toolbar {
@@ -97,6 +155,16 @@
   .navbar-kiosk-label {
     font-size: 0.9rem;
   }
+
+  .navbar-kiosk-dropdown-menu,
+  .navbar-kiosk-dropdown-menu-portal {
+    width: 180px;
+  }
+
+  .navbar-kiosk-dropdown-item {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 600px) {
@@ -118,6 +186,11 @@
 
   .navbar-kiosk-label {
     font-size: 0.8rem;
+  }
+
+  .navbar-kiosk-dropdown-menu,
+  .navbar-kiosk-dropdown-menu-portal {
+    width: 160px;
   }
 }
 
@@ -158,6 +231,27 @@
 
   .navbar-kiosk-label {
     font-size: 0.7rem;
+  }
+
+  .navbar-kiosk-dropdown-container {
+    position: static;
+  }
+
+  .navbar-kiosk-dropdown-menu,
+  .navbar-kiosk-dropdown-menu-portal {
+    position: fixed !important;
+    bottom: 70px !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    border-radius: 12px 12px 0 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .navbar-kiosk-dropdown-item {
+    justify-content: center;
+    padding: 1rem;
   }
 }
 
