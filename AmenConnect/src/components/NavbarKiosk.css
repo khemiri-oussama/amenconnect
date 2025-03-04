@@ -1,0 +1,163 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+
+.navbar-kiosk-toolbar {
+  --background: white;
+  --border-color: transparent;
+  --min-height: 80px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  font-family: "Outfit", sans-serif;
+}
+
+.navbar-kiosk-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 1.5rem;
+}
+
+.navbar-kiosk-logo-container {
+  display: flex;
+  align-items: center;
+  height: 80px;
+}
+
+.navbar-kiosk-logo {
+  height: 50px;
+  cursor: pointer;
+}
+
+.navbar-kiosk-links {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.navbar-kiosk-link {
+  position: relative;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  color: #666;
+  cursor: pointer;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.navbar-kiosk-link-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-kiosk-icon {
+  font-size: 1.75rem;
+}
+
+.navbar-kiosk-label {
+  font-size: 1rem;
+}
+
+.navbar-kiosk-link.active {
+  color: #121660;
+  background-color: rgba(18, 22, 96, 0.08);
+}
+
+.navbar-kiosk-link:hover {
+  background-color: rgba(18, 22, 96, 0.05);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .navbar-kiosk-toolbar {
+    --min-height: 70px;
+  }
+
+  .navbar-kiosk-logo-container {
+    height: 70px;
+  }
+
+  .navbar-kiosk-logo {
+    height: 40px;
+  }
+
+  .navbar-kiosk-link {
+    padding: 0.75rem 1rem;
+  }
+
+  .navbar-kiosk-icon {
+    font-size: 1.5rem;
+  }
+
+  .navbar-kiosk-label {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar-kiosk-container {
+    padding: 0 1rem;
+  }
+
+  .navbar-kiosk-links {
+    gap: 0.25rem;
+  }
+
+  .navbar-kiosk-link {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .navbar-kiosk-icon {
+    font-size: 1.25rem;
+  }
+
+  .navbar-kiosk-label {
+    font-size: 0.8rem;
+  }
+}
+
+/* For very small screens, we can make the navbar fixed at the bottom */
+@media (max-width: 480px) {
+  .navbar-kiosk-toolbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    --min-height: 60px;
+    z-index: 1000;
+  }
+
+  .navbar-kiosk-container {
+    flex-direction: row;
+    padding: 0;
+  }
+
+  .navbar-kiosk-logo-container {
+    display: none;
+  }
+
+  .navbar-kiosk-links {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .navbar-kiosk-link {
+    flex: 1;
+    border-radius: 0;
+    padding: 0.5rem 0;
+  }
+
+  .navbar-kiosk-icon {
+    font-size: 1.25rem;
+  }
+
+  .navbar-kiosk-label {
+    font-size: 0.7rem;
+  }
+}
+
