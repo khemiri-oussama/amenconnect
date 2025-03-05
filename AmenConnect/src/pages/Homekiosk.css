@@ -102,15 +102,16 @@
 }
 
 .homekiosk-btn-account {
-  background: linear-gradient(to right, #47ce65, #3db954);
-  color: white;
+  background: linear-gradient(to right, #ffffff, #ffffff);
+  color: rgb(73, 60, 193);
   margin-bottom: 2.5rem;
-  border: 2px solid #47ce65;
+  border: 2px solid #4749ce;
   box-shadow: 0 4px 10px rgba(71, 206, 101, 0.3);
 }
 
 .homekiosk-btn-account:hover {
-  background: linear-gradient(to right, #3db954, #339e47);
+  background: linear-gradient(to right, #4749ce, #339e47);
+  color: rgb(255, 255, 255);
 }
 
 .homekiosk-options {
