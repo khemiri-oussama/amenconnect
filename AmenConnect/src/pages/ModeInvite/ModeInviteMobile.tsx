@@ -100,7 +100,7 @@ const ModeInviteMobile: React.FC = () => {
           <h1 className="mode-invite-mobile-title">Bienvenue chez Amen Bank</h1>
           <IonSearchbar
             value={searchText}
-            onIonChange={(e) => setSearchText(e.detail.value!)}
+            onIonInput={(e) => setSearchText(e.detail.value!)}
             placeholder="Rechercher un service"
             className="mode-invite-mobile-searchbar"
           />
