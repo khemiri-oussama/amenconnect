@@ -242,6 +242,7 @@
 .acf-form-field textarea {
   width: 100%;
   padding: 8px 12px;
+  color: #000;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: "Roboto", sans-serif;
