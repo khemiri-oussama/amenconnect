@@ -14,14 +14,12 @@ import SignatureCanvas from "react-signature-canvas"
 
 interface AccountCreationFormProps {
   onBack: () => void
-  resetTimer?: () => void // Add resetTimer as an optional prop
+  resetTimer?: () => void
 }
 
 const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, resetTimer }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [formData, setFormData] = useState<FormData>({
-    // Form data remains the same
-    // Page 1 - Personal Information
     nom: "",
     prenom: "",
     dateNaissance: "",
@@ -54,7 +52,7 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
     procurationPersonneUSA: "NON",
     detentionSocieteAmericaine: "NON",
 
-    // Page 2 - Additional Information
+    // Page 2
     connuAmenBank: "Internet",
     connuAmenBankAutre: "",
 
