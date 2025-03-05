@@ -83,14 +83,6 @@ const NavbarKiosk: React.FC<NavbarKioskProps> = ({ currentPage }) => {
     <>
       <IonToolbar className="navbar-kiosk-toolbar">
         <div className="navbar-kiosk-container">
-          <div className="navbar-kiosk-logo-container">
-            <img
-              src="amen_logo.png"
-              alt="Amen Bank Logo"
-              className="navbar-kiosk-logo"
-              onClick={() => history.push("/accueil")}
-            />
-          </div>
 
           <div className="navbar-kiosk-links">
             {navItems.map((item) => (

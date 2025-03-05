@@ -94,6 +94,12 @@
   font-weight: bold;
 }
 
+.Logo{
+  width: 100%;
+  height: 20%;
+
+}
+
 /* Account Card */
 .account-card-mobile {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
