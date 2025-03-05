@@ -14,11 +14,13 @@ import SignatureCanvas from "react-signature-canvas"
 
 interface AccountCreationFormProps {
   onBack: () => void
+  resetTimer?: () => void // Add resetTimer as an optional prop
 }
 
-const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => {
+const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, resetTimer }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [formData, setFormData] = useState<FormData>({
+    // Form data remains the same
     // Page 1 - Personal Information
     nom: "",
     prenom: "",
@@ -135,6 +137,35 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   // Update the ref declaration to use the correct type
   const signatureCanvasRef = useRef<SignatureCanvasRef>(null)
   const signatureAreaRef = useRef<HTMLDivElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+
+  // Add event listeners to reset the inactivity timer
+  useEffect(() => {
+    const formElement = formRef.current
+
+    if (formElement && resetTimer) {
+      // Function to reset timer on any interaction with the form
+      const handleFormInteraction = () => {
+        resetTimer()
+      }
+
+      // Add event listeners for common form interactions
+      formElement.addEventListener("click", handleFormInteraction)
+      formElement.addEventListener("input", handleFormInteraction)
+      formElement.addEventListener("change", handleFormInteraction)
+      formElement.addEventListener("keydown", handleFormInteraction)
+      formElement.addEventListener("touchstart", handleFormInteraction)
+
+      // Clean up event listeners on unmount
+      return () => {
+        formElement.removeEventListener("click", handleFormInteraction)
+        formElement.removeEventListener("input", handleFormInteraction)
+        formElement.removeEventListener("change", handleFormInteraction)
+        formElement.removeEventListener("keydown", handleFormInteraction)
+        formElement.removeEventListener("touchstart", handleFormInteraction)
+      }
+    }
+  }, [resetTimer])
 
   // Update canvas size on window resize
   useEffect(() => {
@@ -165,6 +196,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
 
   // Check if signature exists after each stroke
   const handleSignatureChange = () => {
+    // Reset inactivity timer when signature changes
+    if (resetTimer) resetTimer()
+
     if (signatureCanvasRef.current) {
       const isEmpty = signatureCanvasRef.current.isEmpty()
       setHasSignature(!isEmpty)
@@ -180,6 +214,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const clearSignature = () => {
+    // Reset inactivity timer when signature is cleared
+    if (resetTimer) resetTimer()
+
     if (signatureCanvasRef.current) {
       signatureCanvasRef.current.clear()
       setHasSignature(false)
@@ -188,6 +225,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    // Reset inactivity timer on input change
+    if (resetTimer) resetTimer()
+
     const { name, value } = e.target
     setFormData({
       ...formData,
@@ -196,6 +236,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const handleNestedInputChange = (category: keyof FormData, field: string, value: string) => {
+    // Reset inactivity timer on nested input change
+    if (resetTimer) resetTimer()
+
     // Fix for spread types error - use type assertion to ensure TypeScript knows it's an object
     const currentValue = formData[category] as Record<string, any>
 
@@ -209,6 +252,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Reset inactivity timer on radio change
+    if (resetTimer) resetTimer()
+
     const { name, value } = e.target
     setFormData({
       ...formData,
@@ -217,6 +263,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Reset inactivity timer on checkbox change
+    if (resetTimer) resetTimer()
+
     const { name, checked } = e.target
 
     if (name.includes(".")) {
@@ -316,6 +365,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const goToNextPage = () => {
+    // Reset inactivity timer when navigating to next page
+    if (resetTimer) resetTimer()
+
     if (currentPage === 1) {
       if (validatePage1()) {
         setCurrentPage(2)
@@ -338,6 +390,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const goToPreviousPage = () => {
+    // Reset inactivity timer when navigating to previous page
+    if (resetTimer) resetTimer()
+
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1)
       setFormErrors([])
@@ -346,6 +401,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Reset inactivity timer when file is selected
+    if (resetTimer) resetTimer()
+
     const { name, files } = e.target
     if (files && files.length > 0) {
       setFormData({
@@ -356,6 +414,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const handleSubmit = (e: React.FormEvent) => {
+    // Reset inactivity timer when form is submitted
+    if (resetTimer) resetTimer()
+
     e.preventDefault()
 
     // Validate based on current page
@@ -393,10 +454,16 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const toggleSignatureTools = () => {
+    // Reset inactivity timer when signature tools are toggled
+    if (resetTimer) resetTimer()
+
     setShowSignatureTools(!showSignatureTools)
   }
 
   const handlePenColorChange = (color: string) => {
+    // Reset inactivity timer when pen color is changed
+    if (resetTimer) resetTimer()
+
     setPenColor(color)
     if (signatureCanvasRef.current) {
       // Use type assertion to access the penColor property
@@ -405,6 +472,9 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
   }
 
   const handlePenSizeChange = (size: number) => {
+    // Reset inactivity timer when pen size is changed
+    if (resetTimer) resetTimer()
+
     setPenSize(size)
     if (signatureCanvasRef.current) {
       // Use type assertion to access the dotSize property
@@ -462,7 +532,7 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
           </div>
         </div>
 
-        <form className="acf-paper-form" onSubmit={handleSubmit}>
+        <form className="acf-paper-form" onSubmit={handleSubmit} ref={formRef}>
           {currentPage === 1 && (
             <Page1Component
               formData={formData}

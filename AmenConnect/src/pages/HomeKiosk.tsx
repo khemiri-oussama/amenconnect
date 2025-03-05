@@ -144,11 +144,11 @@ const HomeKiosk: React.FC = () => {
               )}
             </div>
 
-            {/* Account Form Modal Popup */}
+            {/* Account Form Modal Popup - Pass resetTimer to the AccountCreationForm */}
             {showAccountForm && (
               <div className="modal-overlay" onClick={handleBackToOptions}>
                 <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-                  <AccountCreationForm onBack={handleBackToOptions} />
+                  <AccountCreationForm onBack={handleBackToOptions} resetTimer={resetTimer} />
                 </div>
               </div>
             )}
