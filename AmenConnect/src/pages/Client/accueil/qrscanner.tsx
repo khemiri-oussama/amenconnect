@@ -30,6 +30,7 @@ const QRScanner: React.FC = () => {
             qrbox: { width: 250, height: 250 },
             aspectRatio: 1,
             supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+            videoConstraints: { facingMode: { exact: "environment" } },
           },
           false,
         )

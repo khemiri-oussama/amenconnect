@@ -1,15 +1,15 @@
 "use client"
 import type React from "react"
 import { useMemo } from "react"
-import { IonContent, IonPage, IonIcon, IonRippleEffect, IonButton, IonToolbar, IonHeader } from "@ionic/react"
+import { IonContent, IonPage, IonIcon, IonRippleEffect, IonButton, IonImg } from "@ionic/react"
 import {
+  printOutline,
   walletOutline,
   cardOutline,
   pieChartOutline,
   trendingUpOutline,
   trendingDownOutline,
   timeOutline,
-  peopleOutline,
   globeOutline,
 } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
@@ -17,6 +17,10 @@ import { useHistory } from "react-router-dom"
 import { useAuth } from "../../../AuthContext"
 import NavbarKiosk from "../../../components/NavbarKiosk"
 import "./AccueilKiosk.css"
+
+// Import jsPDF and autoTable
+import jsPDF from "jspdf"
+import "jspdf-autotable"
 
 interface Account {
   _id: string
@@ -84,6 +88,264 @@ const AccueilKiosk: React.FC = () => {
     history.push(`/Compte/${accountId}`)
   }
 
+  // Function to generate and print the PDF statement
+// Updated handlePrintStatement with enhanced styling
+
+const defaultBankBranding = {
+  name: "Amen Bank",
+  logo: "amen_logo.png", // Ensure this path is accessible
+  primaryColor: [0, 51, 102], // Dark blue
+  secondaryColor: [0, 85, 165], // Slightly lighter blue
+  address: ["Avenue Mohamed V", "Tunis 1002", "Tunisie"],
+  website: "www.amenbank.com.tn",
+  phone: "(+216) 71 148 000",
+  email: "contact@amenbank.com.tn",
+}
+
+const defaultStatementConfig = {
+  showLogo: true,
+  showFooter: true,
+  showPageNumbers: true,
+  showBankInfo: true,
+  dateFormat: "fr-FR",
+  locale: "en-US",
+  currency: "TND",
+  theme: {
+    headerColor: [0, 51, 102],
+    textColor: [33, 33, 33],
+    accentColor: [0, 102, 204],
+    tableHeaderColor: [0, 51, 102],
+    alternateRowColor: [240, 240, 240],
+  },
+}
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat(defaultStatementConfig.locale, {
+    style: "currency",
+    currency: defaultStatementConfig.currency,
+  }).format(amount)
+}
+
+const handlePrintStatement = async () => {
+  try {
+    // Use the first card from the cards array as card details (if available)
+    const cardDetails = cards[0] || {
+      _id: "inconnu",
+      CardNumber: "0000000000000000",
+      ExpiryDate: "00/00",
+      CardHolder: `${prenom} ${nom}`,
+    }
+
+    // Calculate total balance, total credits, and debits from recent transactions
+    const totalBalanceFormatted = totalBalance.toFixed(2)
+    const totalCredit = recentTransactions
+      .filter((t) => t.type === "credit")
+      .reduce((sum, t) => sum + t.amount, 0)
+    const totalDebit = recentTransactions
+      .filter((t) => t.type === "debit")
+      .reduce((sum, t) => sum + t.amount, 0)
+    const netBalance = totalCredit - totalDebit
+
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    })
+
+    // ─── Background Pattern ──────────────────────────────
+    const pageWidth = doc.internal.pageSize.getWidth()
+    const pageHeight = doc.internal.pageSize.getHeight()
+    doc.setFillColor(250, 250, 250)
+    doc.rect(0, 0, pageWidth, pageHeight, "F")
+    doc.setDrawColor(230, 230, 230)
+    for (let y = 0; y < pageHeight; y += 10) {
+      doc.line(0, y, pageWidth, y)
+    }
+
+    // ─── Header ──────────────────────────────
+    const headerHeight = 40
+    const headerColor = defaultStatementConfig.theme.headerColor
+    doc.setFillColor(headerColor[0], headerColor[1], headerColor[2])
+    doc.rect(0, 0, pageWidth, headerHeight, "F")
+
+    // Bank contact info (Top Left)
+    doc.setFont("helvetica", "normal")
+    doc.setFontSize(9)
+    doc.setTextColor(255, 255, 255)
+    const bankInfo = [
+      defaultBankBranding.name,
+      ...defaultBankBranding.address,
+      `Tél: ${defaultBankBranding.phone}`,
+      `Email: ${defaultBankBranding.email}`,
+      `Site: ${defaultBankBranding.website}`,
+    ]
+    doc.text(bankInfo, 10, 10)
+
+    // Title (Centered)
+    doc.setFont("helvetica", "bold")
+    doc.setFontSize(20)
+    doc.text("Relevé de Compte", pageWidth / 2, 20, { align: "center" })
+
+    // Bank logo (Top Right)
+    if (defaultStatementConfig.showLogo) {
+      try {
+        const img = new Image()
+        img.crossOrigin = "anonymous"
+        await new Promise((resolve, reject) => {
+          img.onload = resolve
+          img.onerror = reject
+          img.src = defaultBankBranding.logo
+        })
+        // Position logo within header
+        doc.addImage(img, "PNG", pageWidth - 55, 10, 45, 20)
+      } catch (error) {
+        console.error("Erreur de chargement du logo:", error)
+      }
+    }
+
+    // ─── Statement Period (Below Header) ──────────────────────────────
+    const today = new Date()
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+    doc.setFont("helvetica", "normal")
+    doc.setFontSize(10)
+    doc.setTextColor(
+      defaultStatementConfig.theme.textColor[0],
+      defaultStatementConfig.theme.textColor[1],
+      defaultStatementConfig.theme.textColor[2]
+    )
+    doc.text(
+      `Période: ${firstDayOfMonth.toLocaleDateString(defaultStatementConfig.locale)} - ${today.toLocaleDateString(
+        defaultStatementConfig.locale
+      )}`,
+      15,
+      headerHeight + 10
+    )
+
+    // ─── Card Information Box ──────────────────────────────
+    const cardBoxX = 15,
+      cardBoxY = headerHeight + 15,
+      cardBoxWidth = 180,
+      cardBoxHeight = 35
+    doc.setFillColor(255, 255, 255)
+    doc.roundedRect(cardBoxX, cardBoxY, cardBoxWidth, cardBoxHeight, 3, 3, "F")
+    // Dashed border for card box
+    doc.setDrawColor(defaultStatementConfig.theme.accentColor[0], defaultStatementConfig.theme.accentColor[1], defaultStatementConfig.theme.accentColor[2])
+    doc.setLineDash([2, 2])
+    doc.roundedRect(cardBoxX, cardBoxY, cardBoxWidth, cardBoxHeight, 3, 3, "D")
+    doc.setLineDash([])
+
+    const cardInfoY = cardBoxY + 10
+    doc.setFont("helvetica", "normal")
+    doc.setFontSize(12)
+    doc.setTextColor(
+      defaultStatementConfig.theme.textColor[0],
+      defaultStatementConfig.theme.textColor[1],
+      defaultStatementConfig.theme.textColor[2]
+    )
+    doc.text(`Titulaire: ${cardDetails.CardHolder}`, cardBoxX + 5, cardInfoY)
+    doc.text(`Carte: **** **** **** ${cardDetails.CardNumber.slice(-4)}`, cardBoxX + 5, cardInfoY + 8)
+    doc.text(`Solde Total: ${formatCurrency(totalBalance)}`, cardBoxX + 5, cardInfoY + 16)
+
+    // ─── Summary Section ──────────────────────────────
+    const summaryBoxY = cardBoxY + cardBoxHeight + 10
+    doc.setFillColor(245, 245, 245)
+    doc.roundedRect(15, summaryBoxY, 180, 40, 3, 3, "F")
+    doc.setFont("helvetica", "bold")
+    doc.setFontSize(14)
+    doc.text("Résumé des opérations", 20, summaryBoxY + 12)
+
+    doc.setFont("helvetica", "normal")
+    doc.setFontSize(11)
+    const summaryY = summaryBoxY + 22
+    doc.setTextColor(0, 102, 0)
+    doc.text("Total crédits:", 25, summaryY)
+    doc.text(formatCurrency(totalCredit), 110, summaryY)
+    doc.setTextColor(204, 0, 0)
+    doc.text("Total débits:", 25, summaryY + 8)
+    doc.text(formatCurrency(totalDebit), 110, summaryY + 8)
+    doc.setTextColor(
+      defaultStatementConfig.theme.textColor[0],
+      defaultStatementConfig.theme.textColor[1],
+      defaultStatementConfig.theme.textColor[2]
+    )
+    doc.text("Solde net:", 25, summaryY + 16)
+    doc.setTextColor(netBalance >= 0 ? 0 : 204, netBalance >= 0 ? 102 : 0, netBalance >= 0 ? 0 : 0)
+    doc.text(formatCurrency(netBalance), 110, summaryY + 16)
+
+    // ─── Transactions Table ──────────────────────────────
+    const tableHead = [["Date", "Description", "Type", "Montant"]]
+    const tableData = recentTransactions.map((t) => [
+      t.date,
+      t.description,
+      t.type === "credit" ? "+" : "-",
+      formatCurrency(t.amount),
+    ])
+
+    doc.autoTable({
+      startY: summaryBoxY + 50,
+      head: tableHead,
+      body: tableData,
+      theme: "grid",
+      styles: {
+        fontSize: 10,
+        cellPadding: 6,
+        lineColor: [200, 200, 200],
+        lineWidth: 0.1,
+      },
+      headStyles: {
+        fillColor: defaultStatementConfig.theme.tableHeaderColor,
+        textColor: [255, 255, 255],
+        fontSize: 11,
+        fontStyle: "bold",
+        halign: "center",
+      },
+      columnStyles: {
+        0: { halign: "center" },
+        2: { halign: "center" },
+        3: { halign: "right" },
+      },
+      alternateRowStyles: {
+        fillColor: defaultStatementConfig.theme.alternateRowColor,
+      },
+    })
+
+    // ─── Footer ──────────────────────────────
+    if (defaultStatementConfig.showFooter) {
+      const pageCount = (doc.internal as any).getNumberOfPages()
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i)
+        doc.setFillColor(headerColor[0], headerColor[1], headerColor[2])
+        doc.rect(0, pageHeight - 20, pageWidth, 20, "F")
+        doc.setFont("helvetica", "normal")
+        doc.setFontSize(9)
+        doc.setTextColor(255, 255, 255)
+        if (defaultStatementConfig.showPageNumbers) {
+          doc.text(`Page ${i} sur ${pageCount}`, pageWidth / 2, pageHeight - 7, { align: "center" })
+        }
+        doc.text(
+          `Généré le ${new Date().toLocaleDateString(defaultStatementConfig.locale)} à ${new Date().toLocaleTimeString(
+            defaultStatementConfig.locale
+          )}`,
+          10,
+          pageHeight - 7
+        )
+      }
+    }
+
+    // ─── Open Print Dialog ──────────────────────────────
+    doc.autoPrint()
+    const blobUrl = doc.output("bloburl")
+    const printWindow = window.open(blobUrl)
+    if (printWindow) {
+      printWindow.focus()
+    }
+  } catch (error) {
+    console.error("Erreur lors de la génération du PDF:", error)
+  }
+}
+
+  
+
   if (authLoading) {
     return <div className="accueil-kiosk-loading">Chargement...</div>
   }
@@ -103,8 +365,8 @@ const AccueilKiosk: React.FC = () => {
           </svg>
 
           <div className="accueil-kiosk-content">
-
             <div className="accueil-kiosk-header">
+              <IonImg class="Logo" src="amen_logo.png" alt="Amen Bank Logo"></IonImg>
               <div className="accueil-kiosk-welcome">
                 <h1 className="accueil-kiosk-title">
                   Bienvenu, {prenom} {nom}
@@ -246,9 +508,14 @@ const AccueilKiosk: React.FC = () => {
             </div>
 
             <div className="accueil-kiosk-actions">
-              <IonButton expand="block" className="accueil-kiosk-action-button">
-                <IonIcon slot="start" icon={peopleOutline} />
-                Virement
+              {/* When the button is clicked, it calls handlePrintStatement */}
+              <IonButton
+                expand="block"
+                className="accueil-kiosk-action-button"
+                onClick={handlePrintStatement}
+              >
+                <IonIcon slot="start" icon={printOutline} />
+                Relevé de compte
               </IonButton>
               <IonButton expand="block" className="accueil-kiosk-action-button">
                 <IonIcon slot="start" icon={cardOutline} />
@@ -267,4 +534,3 @@ const AccueilKiosk: React.FC = () => {
 }
 
 export default AccueilKiosk
-
