@@ -49,7 +49,7 @@ const HomeKiosk: React.FC = () => {
   }
 
   const handleGuestMode = () => {
-    console.log("Mode invite selected")
+    ionRouter.push("/ModeInvite")
     resetTimer()
   }
 
