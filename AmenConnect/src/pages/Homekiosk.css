@@ -101,6 +101,18 @@
   background: linear-gradient(to right, #121660, #181e92);
 }
 
+.homekiosk-btn-account {
+  background: linear-gradient(to right, #47ce65, #3db954);
+  color: white;
+  margin-bottom: 2.5rem;
+  border: 2px solid #47ce65;
+  box-shadow: 0 4px 10px rgba(71, 206, 101, 0.3);
+}
+
+.homekiosk-btn-account:hover {
+  background: linear-gradient(to right, #3db954, #339e47);
+}
+
 .homekiosk-options {
   display: flex;
   flex-direction: column;
@@ -194,5 +206,47 @@
 
 .animate-staggered:nth-child(2) {
   animation-delay: 0.3s;
+}
+
+.animate-transition {
+  transition: opacity 0.3s ease;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.modal-container {
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  border-radius: 8px;
+  overflow: hidden;
+  animation: scaleIn 0.3s ease-out;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 

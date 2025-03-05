@@ -27,6 +27,7 @@ import Login from './pages/Login/Login';
 import ModeInvite from './pages/ModeInvite/ModeInvite';
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword/ResetPassword'));
+const AccountCreationForm = lazy(() => import('./pages/AccountCreationForm'));
 const QRScanner = lazy(() => import('./pages/Client/accueil/qrscanner'));
 const Otp = lazy(() => import('./pages/otp/otp'));
 
@@ -66,6 +67,7 @@ const AppContent: React.FC = () => {
           <Route exact path="/ResetPassword" component={ResetPassword} />
           <Route exact path="/ModeInvite" component={ModeInvite} />
           <Route exact path="/qr-scanner" component={QRScanner} />
+          <Route exact path="/accountcreation" component={AccountCreationForm} />
           <Route
             exact
             path="/otp"

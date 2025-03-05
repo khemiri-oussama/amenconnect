@@ -4,10 +4,12 @@ import type React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { IonContent, IonPage, IonImg, useIonRouter } from "@ionic/react"
 import "./Homekiosk.css"
+import AccountCreationForm from "./AccountCreationForm"
 
 const HomeKiosk: React.FC = () => {
   const [active, setActive] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
+  const [showAccountForm, setShowAccountForm] = useState(false)
   const ionRouter = useIonRouter()
 
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null)
@@ -20,6 +22,7 @@ const HomeKiosk: React.FC = () => {
     inactivityTimer.current = setTimeout(() => {
       setActive(false)
       setShowOptions(false)
+      setShowAccountForm(false)
       if (videoRef.current) {
         videoRef.current.play().catch((error) => console.error("Erreur lors de la lecture de la vidéo :", error))
       }
@@ -54,6 +57,18 @@ const HomeKiosk: React.FC = () => {
     console.log("Se connecter selected")
     // Navigate to the login route
     ionRouter.push("/login")
+    resetTimer()
+  }
+
+  const handleAccountCreation = () => {
+    setShowOptions(false)
+    setShowAccountForm(true)
+    resetTimer()
+  }
+
+  const handleBackToOptions = () => {
+    setShowAccountForm(false)
+    setShowOptions(true)
     resetTimer()
   }
 
@@ -114,6 +129,12 @@ const HomeKiosk: React.FC = () => {
                       Se connecter
                     </button>
                   </div>
+                  <button
+                    className="homekiosk-btn homekiosk-btn-account animate-staggered"
+                    onClick={handleAccountCreation}
+                  >
+                    Demande d'ouverture de compte
+                  </button>
                   <p className="homekiosk-message animate-fade-in">
                     La réussite est à
                     <br />
@@ -122,6 +143,15 @@ const HomeKiosk: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Account Form Modal Popup */}
+            {showAccountForm && (
+              <div className="modal-overlay" onClick={handleBackToOptions}>
+                <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+                  <AccountCreationForm onBack={handleBackToOptions} />
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="homekiosk-video-container" style={{ width: "100vw", height: "100vh" }}>
@@ -145,3 +175,4 @@ const HomeKiosk: React.FC = () => {
 }
 
 export default HomeKiosk
+
