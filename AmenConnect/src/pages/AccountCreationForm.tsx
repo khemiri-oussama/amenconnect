@@ -355,7 +355,7 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack }) => 
 
         <div className="acf-paper-header">
           <div className="acf-bank-logo">
-            <img src="favicon.png" alt="Amen Bank Logo" />
+            <img src="amen_logo.png" alt="Amen Bank Logo" />
           </div>
           <div className="acf-document-title">
             <h1>CONVENTION DE GESTION DE COMPTE DE DÉPÔT</h1>

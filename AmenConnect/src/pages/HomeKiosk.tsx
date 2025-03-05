@@ -133,7 +133,7 @@ const HomeKiosk: React.FC = () => {
                     className="homekiosk-btn homekiosk-btn-account animate-staggered"
                     onClick={handleAccountCreation}
                   >
-                    Demande d'ouverture de compte
+                    Devenir Client
                   </button>
                   <p className="homekiosk-message animate-fade-in">
                     La réussite est à
