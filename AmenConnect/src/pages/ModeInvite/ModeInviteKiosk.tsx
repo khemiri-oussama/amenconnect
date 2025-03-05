@@ -169,7 +169,7 @@ const ModeInviteKiosk: React.FC = () => {
                 <h1 className="kiosk-title">Bienvenue chez Amen Bank</h1>
                 <IonSearchbar
                   value={searchText}
-                  onIonChange={(e) => setSearchText(e.detail.value!)}
+                  onIonInput={(e) => setSearchText(e.detail.value!)}
                   placeholder="Rechercher un service"
                   className="kiosk-searchbar animate-fade-in"
                 />
