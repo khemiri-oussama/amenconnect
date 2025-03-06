@@ -1,6 +1,6 @@
 import type React from "react"
 import type { FormData, SignatureCanvasRef } from "./types"
-
+import ReCAPTCHA from "react-google-recaptcha"
 interface Page4Props {
   formData: FormData
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void
@@ -19,6 +19,7 @@ interface Page4Props {
   hasSignature: boolean
   signaturePreview: string | null
   formErrors: string[]
+  handleCaptchaChange: (token: string | null) => void
 }
 
 const Page4Component: React.FC<Page4Props> = ({
@@ -39,6 +40,7 @@ const Page4Component: React.FC<Page4Props> = ({
   hasSignature,
   signaturePreview,
   formErrors,
+  handleCaptchaChange,
 }) => {
   return (
     <>
@@ -308,22 +310,10 @@ const Page4Component: React.FC<Page4Props> = ({
       <section className="acf-form-section">
         <h3 className="acf-section-title">Captcha</h3>
         <div className="acf-captcha">
-          <div className="acf-captcha-image">
-            <img src="/placeholder.svg?height=60&width=180" alt="Captcha" />
-          </div>
-          <div className="acf-form-field">
-            <label htmlFor="captcha">
-              Saisissez les lettres ci-dessus<span className="required">**</span>
-            </label>
-            <input
-              type="text"
-              id="captcha"
-              name="captcha"
-              value={formData.captcha}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
+          <ReCAPTCHA
+            sitekey="6LekFesqAAAAAEW5F4sh4bCYsmaOCwLZse11n4o0"
+            onChange={handleCaptchaChange}
+          />
         </div>
       </section>
     </>
