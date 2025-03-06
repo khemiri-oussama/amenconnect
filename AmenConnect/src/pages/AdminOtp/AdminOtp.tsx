@@ -1,11 +1,43 @@
 "use client"
 
-import type React from "react"
-import { IonContent, IonPage, IonInput, IonButton, IonText, IonLabel, IonImg, IonIcon } from "@ionic/react"
-import { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, memo, useCallback } from "react"
+import {
+  IonContent,
+  IonPage,
+  IonButton,
+  IonText,
+  IonLabel,
+  IonImg,
+  IonIcon,
+  IonInput,
+} from "@ionic/react"
 import { useHistory } from "react-router-dom"
 import { lockClosed } from "ionicons/icons"
 import "./../AdminLogin/AdminLogin.css" // Reusing the same CSS
+
+// Memoized OTP Input Component
+const MemoizedOtpInput = memo(
+  ({
+    otp,
+    onOtpChange,
+  }: {
+    otp: string
+    onOtpChange: (value: string) => void
+  }) => {
+    return (
+      <IonInput
+        type="text"
+        inputMode="numeric"
+        maxlength={6}
+        value={otp}
+        onIonChange={(e) => onOtpChange(e.detail.value || "")}
+        className="admin-input"
+        placeholder="000000"
+        required
+      />
+    )
+  }
+)
 
 export default function AdminOtp() {
   const [otp, setOtp] = useState<string>("")
@@ -15,7 +47,7 @@ export default function AdminOtp() {
   const history = useHistory()
   const timerRef = useRef<NodeJS.Timeout>()
 
-  // Timer countdown effect with useRef to prevent re-renders affecting the OTP input
+  // Timer countdown effect
   useEffect(() => {
     if (timeLeft <= 0) return
 
@@ -49,12 +81,7 @@ export default function AdminOtp() {
 
     try {
       // Replace with your actual OTP verification logic
-      // await verifyAdminOtp(otp)
-
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // If successful, redirect to admin dashboard
       history.push("/Dashboard")
     } catch (error) {
       setErrorMessage("Code de vérification incorrect. Veuillez réessayer.")
@@ -68,11 +95,7 @@ export default function AdminOtp() {
 
     try {
       // Replace with your actual resend OTP logic
-      // await resendAdminOtp()
-
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000))
-
       // Reset timer
       setTimeLeft(120)
       setErrorMessage("")
@@ -83,12 +106,12 @@ export default function AdminOtp() {
     }
   }
 
-  // Handle OTP input change with a separate function to ensure value is preserved
-  const handleOtpChange = (value: string) => {
-    // Only allow numeric input and max 6 digits
+  // useCallback to ensure a stable reference for the onChange handler
+  const handleOtpChange = useCallback((value: string) => {
+    // Allow only numeric characters and limit to 6 digits
     const numericValue = value.replace(/[^0-9]/g, "").slice(0, 6)
     setOtp(numericValue)
-  }
+  }, [])
 
   return (
     <IonPage>
@@ -107,23 +130,17 @@ export default function AdminOtp() {
           <div className="admin-form-section">
             <div className="admin-form-container">
               <h1 className="admin-title">Authentification à deux facteurs</h1>
-              <p className="admin-subtitle">Veuillez saisir le code de vérification envoyé à votre appareil</p>
+              <p className="admin-subtitle">
+                Veuillez saisir le code de vérification envoyé à votre appareil
+              </p>
 
               <form onSubmit={handleVerifyOtp} className="admin-login-form">
                 <div className="admin-input-group">
                   <IonLabel className="admin-input-label">Code de vérification</IonLabel>
                   <div className="admin-input-wrapper">
                     <IonIcon icon={lockClosed} className="admin-input-icon" />
-                    <IonInput
-                      type="text"
-                      inputMode="numeric"
-                      maxlength={6}
-                      value={otp}
-                      onIonChange={(e) => handleOtpChange(e.detail.value!)}
-                      className="admin-input"
-                      placeholder="000000"
-                      required
-                    />
+                    {/* Use the memoized OTP input */}
+                    <MemoizedOtpInput otp={otp} onOtpChange={handleOtpChange} />
                   </div>
                 </div>
 
@@ -175,4 +192,3 @@ export default function AdminOtp() {
     </IonPage>
   )
 }
-
