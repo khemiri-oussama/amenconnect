@@ -99,7 +99,7 @@ const ModeInviteDesktop: React.FC = () => {
   }, [])
 
   return (
-    <IonPage className="mode-invite-desktop dark">
+    <IonPage className="mode-invite-desktop">
       <IonContent ref={contentRef} fullscreen scrollEvents={true}>
         <div className="mode-invite-desktop-background">
           <div className="mode-invite-desktop-gradient-1"></div>
