@@ -44,6 +44,7 @@ const SecuritySettingsMobile = lazy(() => import('./pages/Client/accueil/MenuMob
 
 // Lazy load admin pages
 const AdminLogin = lazy(() => import('./pages/AdminLogin/AdminLogin'));
+const AdminOtp = lazy (() => import('./pages/AdminOtp/AdminOtp'));
 const Dashboard = lazy(() => import('./pages/Admin/Dashboard/Dashboard'));
 const UserManagement = lazy(() => import('./pages/Admin/Gestion Utilisateur/UserManagement'));
 const SurveillanceMonitoring = lazy(() => import('./pages/Admin/SurveillanceMonitoring/SurveillanceMonitoring'));
@@ -66,6 +67,7 @@ const AppContent: React.FC = () => {
           {/* Public Routes */}
           <Route exact path="/home" component={Home} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/admin/otp" component={AdminOtp} />
           <Route exact path="/admin/login" component={AdminLogin} />
           <Route exact path="/ForgotPassword" component={ForgotPassword} />
           <Route exact path="/ResetPassword" component={ResetPassword} />

@@ -246,5 +246,42 @@
       font-size: 2rem;
     }
   }
+  /* Add these additional styles to your AdminLogin.css file */
+
+.admin-otp-timer {
+    text-align: center;
+    margin-top: -1rem;
+    font-size: 0.9rem;
+  }
+  
+  .admin-resend-button {
+    --background: transparent;
+    --background-hover: rgba(30, 41, 59, 0.05);
+    --color: #1e293b;
+    --border-color: #1e293b;
+    --border-radius: 8px;
+    --padding-top: 1.25rem;
+    --padding-bottom: 1.25rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  
+  .admin-resend-button:disabled {
+    --background: transparent;
+    --color: #94a3b8;
+    --border-color: #cbd5e1;
+    opacity: 0.7;
+  }
+  
+  /* OTP input styling for a more code-like appearance */
+  .admin-input[inputmode="numeric"] {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    font-family: monospace;
+    font-size: 1.2rem;
+    letter-spacing: 0.5rem;
+    text-align: center;
+  }
+  
   
   
