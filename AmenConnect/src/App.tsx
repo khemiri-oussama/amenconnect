@@ -4,8 +4,10 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Route, Redirect } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';
+import { AdminAuthProvider, useAdminAuth } from './AdminAuthContext';
 import { CarteProvider } from './CarteContext';
 import PrivateRoute from './PrivateRoute';
+import AdminPrivateRoute from './AdminPrivateRoute'; // A separate private route for admin pages
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -41,6 +43,7 @@ const ProfileMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/Profi
 const SecuritySettingsMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/SecuritySettingsMobile'));
 
 // Lazy load admin pages
+const AdminLogin = lazy(() => import('./pages/AdminLogin/AdminLogin'));
 const Dashboard = lazy(() => import('./pages/Admin/Dashboard/Dashboard'));
 const UserManagement = lazy(() => import('./pages/Admin/Gestion Utilisateur/UserManagement'));
 const SurveillanceMonitoring = lazy(() => import('./pages/Admin/SurveillanceMonitoring/SurveillanceMonitoring'));
@@ -50,19 +53,20 @@ const InteractiveTotemManagement = lazy(() => import('./pages/Admin/Gestion des 
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, pendingUser } = useAuth();
+  const { isAuthenticated: adminAuthenticated } = useAdminAuth();
 
   useEffect(() => {
-    // You can add additional side effects if needed
-  }, [isAuthenticated]);
+    // Additional side effects can be added here
+  }, [isAuthenticated, adminAuthenticated]);
 
   return (
     <IonReactRouter>
-      {/* Wrap your routes with Suspense and a fallback UI */}
       <Suspense fallback={<div>Loading...</div>}>
         <IonRouterOutlet>
-          {/* Public routes */}
+          {/* Public Routes */}
           <Route exact path="/home" component={Home} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/admin/login" component={AdminLogin} />
           <Route exact path="/ForgotPassword" component={ForgotPassword} />
           <Route exact path="/ResetPassword" component={ResetPassword} />
           <Route exact path="/ModeInvite" component={ModeInvite} />
@@ -76,15 +80,13 @@ const AppContent: React.FC = () => {
             }
           />
 
-          {/* Protected routes */}
+          {/* Protected Client Routes */}
           <PrivateRoute
             exact
             path="/accueil"
             component={Accueil}
             isAuthenticated={isAuthenticated}
           />
-            
-            
           <PrivateRoute
             exact
             path="/compte"
@@ -122,36 +124,36 @@ const AppContent: React.FC = () => {
             isAuthenticated={isAuthenticated}
           />
 
-          {/* Admin routes */}
-          <PrivateRoute
-            path="/Dashboard"
+          {/* Protected Admin Routes */}
+          <AdminPrivateRoute
+            path="/Admin/Dashboard"
             component={Dashboard}
-            isAuthenticated={isAuthenticated}
+            isAuthenticated={adminAuthenticated}
           />
-          <PrivateRoute
-            path="/UserManagement"
+          <AdminPrivateRoute
+            path="/Admin/UserManagement"
             component={UserManagement}
-            isAuthenticated={isAuthenticated}
+            isAuthenticated={adminAuthenticated}
           />
-          <PrivateRoute
-            path="/SurveillanceMonitoring"
+          <AdminPrivateRoute
+            path="/Admin/SurveillanceMonitoring"
             component={SurveillanceMonitoring}
-            isAuthenticated={isAuthenticated}
+            isAuthenticated={adminAuthenticated}
           />
-          <PrivateRoute
-            path="/PermissionsManagement"
+          <AdminPrivateRoute
+            path="/Admin/PermissionsManagement"
             component={PermissionsManagement}
-            isAuthenticated={isAuthenticated}
+            isAuthenticated={adminAuthenticated}
           />
-          <PrivateRoute
-            path="/AuthenticationSecurity"
+          <AdminPrivateRoute
+            path="/Admin/AuthenticationSecurity"
             component={AuthenticationSecurity}
-            isAuthenticated={isAuthenticated}
+            isAuthenticated={adminAuthenticated}
           />
-          <PrivateRoute
-            path="/InteractiveTotemManagement"
+          <AdminPrivateRoute
+            path="/Admin/InteractiveTotemManagement"
             component={InteractiveTotemManagement}
-            isAuthenticated={isAuthenticated}
+            isAuthenticated={adminAuthenticated}
           />
 
           <Route exact path="/" render={() => <Redirect to="/home" />} />
@@ -163,11 +165,13 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => (
   <AuthProvider>
-    <CarteProvider>
-      <IonApp>
-        <AppContent />
-      </IonApp>
-    </CarteProvider>
+    <AdminAuthProvider>
+      <CarteProvider>
+        <IonApp>
+          <AppContent />
+        </IonApp>
+      </CarteProvider>
+    </AdminAuthProvider>
   </AuthProvider>
 );
 
