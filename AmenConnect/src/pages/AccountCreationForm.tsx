@@ -489,7 +489,7 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
 
         <div className="acf-paper-header">
           <div className="acf-bank-logo">
-            <img src="/placeholder.svg?height=80&width=80" alt="Amen Bank Logo" />
+            <img src="/amen_logo.png?height=80&width=80" alt="Amen Bank Logo" />
           </div>
           <div className="acf-document-title">
             <h1>CONVENTION DE GESTION DE COMPTE</h1>

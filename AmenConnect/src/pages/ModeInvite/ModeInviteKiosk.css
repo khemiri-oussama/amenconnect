@@ -1,0 +1,393 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+
+.mode-invite-kiosk {
+  --ion-color-primary: #47ce65;
+  --ion-color-secondary: #ffcc00;
+  --ion-color-tertiary: #6a64ff;
+  --ion-color-success: #2fdf75;
+  --ion-color-warning: #ffd534;
+  --ion-color-danger: #ff4961;
+  --ion-color-light: #f4f5f8;
+  --ion-color-medium: #989aa2;
+  --ion-background-color: #ffffff;
+  --ion-text-color: #121660;
+  font-family: "Outfit", sans-serif;
+  background-color: var(--ion-background-color);
+  color: var(--ion-text-color);
+  height: 100%;
+  width: 100%;
+}
+
+/* Base styles */
+
+.kiosk-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Background elements */
+.background-white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  z-index: -2;
+}
+
+.background-svg {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1080px;
+  height: 1920px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+/* Content layout */
+.kiosk-content {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.kiosk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.kiosk-logo {
+  display: flex;
+  align-items: center;
+}
+
+.kiosk-logo-image {
+  width: 180px;
+  height: auto;
+}
+
+.kiosk-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.kiosk-nav-button {
+  --color: #121660;
+  --color-hover: var(--ion-color-primary);
+  font-weight: 500;
+  text-transform: none;
+  font-size: 1.2rem;
+}
+
+/* Main content */
+.kiosk-main {
+  flex: 1;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.kiosk-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #121660;
+}
+
+.kiosk-searchbar {
+  --background: rgba(18, 22, 96, 0.1);
+  --color: #121660;
+  --placeholder-color: rgba(18, 22, 96, 0.5);
+  --icon-color: rgba(18, 22, 96, 0.5);
+  --clear-button-color: rgba(18, 22, 96, 0.5);
+  --border-radius: 25px;
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+
+.kiosk-grid {
+  margin-top: 1rem;
+}
+
+/* Cards */
+.kiosk-card {
+  --background: rgba(255, 255, 255, 0.9);
+  --color: #121660;
+  border-radius: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.kiosk-card:hover,
+.kiosk-card:active {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.kiosk-card ion-card-header {
+  padding-bottom: 0;
+}
+
+.kiosk-card-icon {
+  font-size: 3rem;
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.kiosk-card ion-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #121660;
+  text-align: center;
+}
+
+.kiosk-card ion-card-content {
+  flex-grow: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.kiosk-card-button {
+  --color: var(--ion-color-primary);
+  font-weight: 500;
+  text-transform: none;
+  font-size: 1.2rem;
+}
+
+/* Footer */
+.kiosk-footer {
+  border-top: 1px solid rgba(18, 22, 96, 0.1);
+  padding-top: 2rem;
+}
+
+.kiosk-footer h3 {
+  color: #121660;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.kiosk-footer p,
+.kiosk-footer ul {
+  color: rgba(18, 22, 96, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.kiosk-footer ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.kiosk-footer ul li {
+  margin-bottom: 0.5rem;
+}
+
+.kiosk-footer ul a {
+  color: var(--ion-color-primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.kiosk-footer ul a:hover {
+  color: var(--ion-color-primary-shade);
+}
+
+.kiosk-copyright {
+  display: block;
+  text-align: center;
+  color: rgba(18, 22, 96, 0.5);
+  font-size: 0.875rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(18, 22, 96, 0.1);
+}
+
+/* Back button */
+.kiosk-back-button {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  --color: #121660;
+  --background: rgba(255, 255, 255, 0.8);
+  --border-radius: 25px;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+/* Modal */
+.kiosk-modal {
+  --background: var(--ion-background-color);
+  --width: 90%;
+  --max-width: 800px;
+  --height: 80%;
+  --border-radius: 16px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.kiosk-modal ion-header {
+  --background: var(--ion-background-color);
+}
+
+.kiosk-modal ion-toolbar {
+  --background: var(--ion-background-color);
+  --color: #121660;
+}
+
+.kiosk-modal ion-content {
+  --background: var(--ion-background-color);
+  --color: #121660;
+}
+
+/* Video container */
+.kiosk-video-container {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-staggered {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.delay-0 {
+  animation-delay: 0.1s;
+}
+.delay-1 {
+  animation-delay: 0.15s;
+}
+.delay-2 {
+  animation-delay: 0.2s;
+}
+.delay-3 {
+  animation-delay: 0.25s;
+}
+.delay-4 {
+  animation-delay: 0.3s;
+}
+.delay-5 {
+  animation-delay: 0.35s;
+}
+.delay-6 {
+  animation-delay: 0.4s;
+}
+.delay-7 {
+  animation-delay: 0.45s;
+}
+
+/* Fade-in Animation for sections */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(20vh);
+  visibility: hidden;
+  transition: opacity 0.6s ease-out, transform 1.2s ease-out;
+  will-change: opacity, visibility;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .kiosk-title {
+    font-size: 2.5rem;
+  }
+
+  .kiosk-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .kiosk-nav {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kiosk-card ion-card-title {
+    font-size: 1.25rem;
+  }
+
+  .kiosk-card-icon {
+    font-size: 2.5rem;
+  }
+
+  .kiosk-back-button {
+    bottom: 1rem;
+    left: 1rem;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .kiosk-title {
+    font-size: 2rem;
+  }
+
+  .kiosk-logo-image {
+    width: 150px;
+  }
+
+  .kiosk-content {
+    padding: 1rem;
+  }
+
+  .kiosk-card-icon {
+    font-size: 2rem;
+  }
+
+  .kiosk-card ion-card-title {
+    font-size: 1.1rem;
+  }
+
+  .kiosk-card-button {
+    font-size: 1rem;
+  }
+
+  .kiosk-footer h3 {
+    font-size: 1.1rem;
+  }
+}
+

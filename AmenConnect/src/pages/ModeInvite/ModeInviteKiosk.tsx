@@ -40,6 +40,14 @@ import {
   chevronForwardOutline,
 } from "ionicons/icons"
 import "./ModeInviteKiosk.css"
+import CurrencyExchange from "./CurrencyExchange"
+import CreditSimulator from "./CreditSimulator"
+import ContactInfo from "./ContactInfo"
+import AboutSection from "./AboutSection"
+import ContactUs from "./contact-us"
+import SicavEtBourse from "./sicav-et-bourse"
+import Informations from "./informations"
+import NosOffres from "./nos-offres"
 
 const ModeInviteKiosk: React.FC = () => {
   const history = useHistory()
@@ -133,6 +141,34 @@ const ModeInviteKiosk: React.FC = () => {
       contentRef.current?.removeEventListener("ionScroll", handleScroll)
     }
   }, [])
+
+  const renderModalContent = () => {
+    switch (selectedSection) {
+      case "Devises":
+        return <CurrencyExchange />
+      case "Simulateur de crédit":
+        return <CreditSimulator />
+      case "Adresses et contacts":
+        return <ContactInfo />
+      case "À propos":
+        return <AboutSection />
+      case "Nous contacter":
+        return <ContactUs />
+      case "Sicav et Bourse":
+        return <SicavEtBourse />
+      case "Informations":
+        return <Informations />
+      case "Nos offres":
+        return <NosOffres />
+      default:
+        return (
+          <div>
+            <p>Contenu détaillé pour {selectedSection}</p>
+            <p>Cette section est en cours de développement.</p>
+          </div>
+        )
+    }
+  }
 
   return (
     <IonPage className="mode-invite-kiosk">
@@ -252,10 +288,7 @@ const ModeInviteKiosk: React.FC = () => {
                   </IonButtons>
                 </IonToolbar>
               </IonHeader>
-              <IonContent className="ion-padding">
-                <p>Contenu détaillé pour {selectedSection}</p>
-                {/* Add more detailed content here based on the selected section */}
-              </IonContent>
+              <IonContent className="ion-padding">{renderModalContent()}</IonContent>
             </IonModal>
           </div>
         ) : (
