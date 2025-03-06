@@ -28,12 +28,10 @@ const Page1Component: React.FC<Page1Props> = ({
   useEffect(() => {
     // Get all states (governorates) for Tunisia using its ISO code "TN"
     const states = State.getStatesOfCountry("TN")
-    console.log("States for TN:", states)
 
     // Iterate through each state and combine all the cities
     const combinedCities = states.reduce((acc, state) => {
       const cities = City.getCitiesOfState("TN", state.isoCode)
-      console.log(`Cities for ${state.name}:`, cities)
       // Use a type assertion to safely access 'postalCode'
       const mappedCities = cities.map(city => ({
         name: city.name,
@@ -41,8 +39,7 @@ const Page1Component: React.FC<Page1Props> = ({
       }))
       return acc.concat(mappedCities)
     }, [] as { name: string; postalCode: string }[])
-
-    console.log("All cities in Tunisia:", combinedCities)
+    
     setAllCities(combinedCities)
   }, [])
 
