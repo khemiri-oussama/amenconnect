@@ -1,150 +1,224 @@
+"use client"
+
 import type React from "react"
 import { useState } from "react"
+import { IonPage, IonIcon, IonInput, IonToggle, IonRange } from "@ionic/react"
 import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonItem,
-  IonLabel,
-  IonToggle,
-  IonButton,
-  IonIcon,
-  IonList,
-  IonListHeader,
-  IonInput,
-  IonRange,
-} from "@ionic/react"
-import { lockClosedOutline, timerOutline, shieldOutline, saveOutline, logOutOutline } from "ionicons/icons"
-import "./AuthenticationSecurity.css"
-import NavbarAdmin from "../../../components/NavbarAdmin"
+  lockClosedOutline,
+  timerOutline,
+  shieldOutline,
+  saveOutline,
+  logOutOutline,
+  notificationsOutline,
+} from "ionicons/icons"
+import "./authenticationSecurity.css"
+import SidebarAdmin from "../../../components/sidebarAdmin"
+import { useAdminAuth } from "../../../AdminAuthContext"
 
 const AuthenticationSecurity: React.FC = () => {
+  const { authLoading } = useAdminAuth()
   const [activeTab, setActiveTab] = useState<"2fa" | "sessions" | "policies">("2fa")
 
+  if (authLoading) {
+    return <div className="admin-loading">Loading...</div>
+  }
+
   const render2FAConfig = () => (
-    <div className="as-2fa-config">
-      <IonList>
-        <IonItem>
-          <IonLabel>Enable 2FA</IonLabel>
-          <IonToggle slot="end" />
-        </IonItem>
-        <IonItem>
-          <IonLabel>SMS Authentication</IonLabel>
-          <IonToggle slot="end" />
-        </IonItem>
-        <IonItem>
-          <IonLabel>Email Authentication</IonLabel>
-          <IonToggle slot="end" />
-        </IonItem>
-        <IonItem>
-          <IonLabel>Google Authenticator</IonLabel>
-          <IonToggle slot="end" />
-        </IonItem>
-      </IonList>
-      <IonButton expand="block" className="as-save-button">
-        <IonIcon slot="start" icon={saveOutline} />
-        Save 2FA Settings
-      </IonButton>
+    <div className="admin-form-container">
+      <div className="admin-security-list">
+        <div className="admin-security-item">
+          <div className="admin-security-label">Enable 2FA</div>
+          <IonToggle className="admin-toggle" />
+        </div>
+
+        <div className="admin-security-item">
+          <div className="admin-security-label">SMS Authentication</div>
+          <IonToggle className="admin-toggle" />
+        </div>
+
+        <div className="admin-security-item">
+          <div className="admin-security-label">Email Authentication</div>
+          <IonToggle className="admin-toggle" />
+        </div>
+
+        <div className="admin-security-item">
+          <div className="admin-security-label">Google Authenticator</div>
+          <IonToggle className="admin-toggle" />
+        </div>
+      </div>
+
+      <div className="admin-form-actions">
+        <button type="button" className="admin-button primary">
+          <IonIcon icon={saveOutline} />
+          <span>Save 2FA Settings</span>
+        </button>
+      </div>
     </div>
   )
 
   const renderSessionManagement = () => (
-    <div className="as-session-management">
-      <IonItem>
-        <IonLabel>Inactivity Timeout (minutes)</IonLabel>
-        <IonRange min={5} max={60} step={5} snaps={true} pin={true} />
-      </IonItem>
-      <IonList>
-        <IonListHeader>
-          <IonLabel>Active Sessions</IonLabel>
-        </IonListHeader>
-        {[1, 2, 3].map((_, index) => (
-          <IonItem key={index} className="as-session-item">
-            <IonLabel>
-              <h2>Session #{index + 1}</h2>
-              <p>Device: {index % 2 === 0 ? "Desktop" : "Mobile"}</p>
-              <p>IP: 192.168.1.{100 + index}</p>
-              <p>Last Active: {new Date().toLocaleString()}</p>
-            </IonLabel>
-            <IonButton fill="clear" color="danger">
-              <IonIcon slot="icon-only" icon={logOutOutline} />
-            </IonButton>
-          </IonItem>
-        ))}
-      </IonList>
+    <div className="admin-form-container">
+      <div className="admin-security-list">
+        <div className="admin-security-item range-item">
+          <div className="admin-security-label">Inactivity Timeout (minutes)</div>
+          <div className="admin-range-wrapper">
+            <IonRange min={5} max={60} step={5} snaps={true} pin={true} className="admin-range" />
+          </div>
+        </div>
+      </div>
+
+      <div className="admin-section-title">
+        <h3>Active Sessions</h3>
+      </div>
+
+      <div className="admin-table-container">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Session</th>
+              <th>Device</th>
+              <th>IP Address</th>
+              <th>Last Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[1, 2, 3].map((_, index) => (
+              <tr key={index}>
+                <td>Session #{index + 1}</td>
+                <td>{index % 2 === 0 ? "Desktop" : "Mobile"}</td>
+                <td>192.168.1.{100 + index}</td>
+                <td>{new Date().toLocaleString()}</td>
+                <td>
+                  <div className="admin-action-buttons">
+                    <button className="admin-icon-button delete" title="Terminate Session">
+                      <IonIcon icon={logOutOutline} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 
   const renderSecurityPolicies = () => (
-    <div className="as-security-policies">
-      <IonList>
-        <IonItem>
-          <IonLabel>Minimum Password Length</IonLabel>
-          <IonInput type="number" min={8} max={32} value={12} />
-        </IonItem>
-        <IonItem>
-          <IonLabel>Require Uppercase</IonLabel>
-          <IonToggle slot="end" />
-        </IonItem>
-        <IonItem>
-          <IonLabel>Require Numbers</IonLabel>
-          <IonToggle slot="end" />
-        </IonItem>
-        <IonItem>
-          <IonLabel>Require Special Characters</IonLabel>
-          <IonToggle slot="end" />
-        </IonItem>
-        <IonItem>
-          <IonLabel>Max Failed Attempts</IonLabel>
-          <IonInput type="number" min={3} max={10} value={5} />
-        </IonItem>
-        <IonItem>
-          <IonLabel>Lockout Duration (minutes)</IonLabel>
-          <IonInput type="number" min={5} max={60} value={30} />
-        </IonItem>
-      </IonList>
-      <IonButton expand="block" className="as-save-button">
-        <IonIcon slot="start" icon={saveOutline} />
-        Save Security Policies
-      </IonButton>
+    <div className="admin-form-container">
+      <form className="admin-security-form">
+        <div className="admin-form-group">
+          <label className="admin-form-label">Minimum Password Length</label>
+          <div className="admin-input-wrapper">
+            <IonInput type="number" min={8} max={32} value={12} className="admin-input"></IonInput>
+          </div>
+        </div>
+
+        <div className="admin-security-list">
+          <div className="admin-security-item">
+            <div className="admin-security-label">Require Uppercase</div>
+            <IonToggle className="admin-toggle" />
+          </div>
+
+          <div className="admin-security-item">
+            <div className="admin-security-label">Require Numbers</div>
+            <IonToggle className="admin-toggle" />
+          </div>
+
+          <div className="admin-security-item">
+            <div className="admin-security-label">Require Special Characters</div>
+            <IonToggle className="admin-toggle" />
+          </div>
+        </div>
+
+        <div className="admin-form-group">
+          <label className="admin-form-label">Max Failed Attempts</label>
+          <div className="admin-input-wrapper">
+            <IonInput type="number" min={3} max={10} value={5} className="admin-input"></IonInput>
+          </div>
+        </div>
+
+        <div className="admin-form-group">
+          <label className="admin-form-label">Lockout Duration (minutes)</label>
+          <div className="admin-input-wrapper">
+            <IonInput type="number" min={5} max={60} value={30} className="admin-input"></IonInput>
+          </div>
+        </div>
+
+        <div className="admin-form-actions">
+          <button type="button" className="admin-button primary">
+            <IonIcon icon={saveOutline} />
+            <span>Save Security Policies</span>
+          </button>
+        </div>
+      </form>
     </div>
   )
 
   return (
-    <IonPage className="as-page">
-      <IonHeader>
-        <NavbarAdmin currentPage="AuthenticationSecurity" />
-      </IonHeader>
-      <IonContent className="as-content ion-padding">
-        <IonCard className="as-card">
-          <IonCardHeader className="as-card-header">
-            <IonCardTitle className="as-card-title">Authentication and Security</IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent className="as-card-content">
-            <div className="as-tabs">
-              <IonButton fill={activeTab === "2fa" ? "solid" : "clear"} onClick={() => setActiveTab("2fa")}>
-                <IonIcon slot="start" icon={lockClosedOutline} />
-                2FA Config
-              </IonButton>
-              <IonButton fill={activeTab === "sessions" ? "solid" : "clear"} onClick={() => setActiveTab("sessions")}>
-                <IonIcon slot="start" icon={timerOutline} />
-                Sessions
-              </IonButton>
-              <IonButton fill={activeTab === "policies" ? "solid" : "clear"} onClick={() => setActiveTab("policies")}>
-                <IonIcon slot="start" icon={shieldOutline} />
-                Policies
-              </IonButton>
+    <IonPage>
+      <div className="admin-dashboard-layout">
+        {/* Sidebar Component */}
+        <SidebarAdmin currentPage="Security" />
+
+        {/* Main Content */}
+        <div className="admin-dashboard-content">
+          {/* Header */}
+          <div className="admin-dashboard-header">
+            <div className="admin-header-title">
+              <h1>Authentication & Security</h1>
+              <p>Manage authentication methods and security policies</p>
             </div>
-            {activeTab === "2fa" && render2FAConfig()}
-            {activeTab === "sessions" && renderSessionManagement()}
-            {activeTab === "policies" && renderSecurityPolicies()}
-          </IonCardContent>
-        </IonCard>
-      </IonContent>
+            <div className="admin-header-actions">
+              <div className="admin-notification-badge">
+                <IonIcon icon={notificationsOutline} className="admin-header-icon" />
+                <span className="admin-badge">2</span>
+              </div>
+              <div className="admin-profile-menu">
+                <div className="admin-profile-avatar">
+                  <span>A</span>
+                </div>
+                <span className="admin-profile-name">Admin</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Card */}
+          <div className="admin-content-card">
+            {/* Tabs */}
+            <div className="admin-tabs">
+              <button
+                className={`admin-tab ${activeTab === "2fa" ? "active" : ""}`}
+                onClick={() => setActiveTab("2fa")}
+              >
+                <IonIcon icon={lockClosedOutline} />
+                <span>2FA Configuration</span>
+              </button>
+              <button
+                className={`admin-tab ${activeTab === "sessions" ? "active" : ""}`}
+                onClick={() => setActiveTab("sessions")}
+              >
+                <IonIcon icon={timerOutline} />
+                <span>Session Management</span>
+              </button>
+              <button
+                className={`admin-tab ${activeTab === "policies" ? "active" : ""}`}
+                onClick={() => setActiveTab("policies")}
+              >
+                <IonIcon icon={shieldOutline} />
+                <span>Security Policies</span>
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="admin-tab-content">
+              {activeTab === "2fa" && render2FAConfig()}
+              {activeTab === "sessions" && renderSessionManagement()}
+              {activeTab === "policies" && renderSecurityPolicies()}
+            </div>
+          </div>
+        </div>
+      </div>
     </IonPage>
   )
 }

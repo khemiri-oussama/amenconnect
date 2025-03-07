@@ -1,125 +1,230 @@
-.um-page {
-    --background: #1e1e1e;
+/* User List Styles */
+.admin-user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.admin-search-icon {
+  position: absolute;
+  left: 1rem;
+  color: #64748b;
+  font-size: 1.25rem;
+  z-index: 1;
+}
+
+.admin-searchbar {
+  flex: 1;
+  --background: white;
+  --color: #1e293b;
+  --placeholder-color: #94a3b8;
+  --icon-color: transparent;
+  --border-radius: 8px;
+  --box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding-left: 2.5rem;
+}
+
+.admin-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.admin-filter-chip {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.admin-filter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+}
+
+.admin-select-filter {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --placeholder-color: #1e293b;
+  max-width: 120px;
+}
+
+.admin-role-badge,
+.admin-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-role-badge.client {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.admin-role-badge.employé {
+  background-color: #f3e8ff;
+  color: #9333ea;
+}
+
+.admin-role-badge.admin {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.admin-status-badge.actif {
+  background-color: rgba(47, 255, 89, 0.15);
+  color: #16a34a;
+}
+
+.admin-status-badge.inactif {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.admin-icon-button.edit {
+  color: #0284c7;
+  background-color: #e0f2fe;
+  border-color: #e0f2fe;
+}
+
+.admin-icon-button.edit:hover {
+  background-color: #0284c7;
+  border-color: #0284c7;
+  color: white;
+}
+
+.admin-icon-button.delete {
+  color: #ef4444;
+  background-color: #fee2e2;
+  border-color: #fee2e2;
+}
+
+.admin-icon-button.delete:hover {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: white;
+}
+
+.admin-no-results {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* Form Styles */
+.admin-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.admin-user-form,
+.admin-reset-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.admin-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.admin-button.primary {
+  background-color: #1e293b;
+  color: white;
+}
+
+.admin-button.primary:hover {
+  background-color: #334155;
+}
+
+.admin-button.secondary {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.admin-button.secondary:hover {
+  background-color: #e2e8f0;
+}
+
+/* Tabs with Icons */
+.admin-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-tab ion-icon {
+  font-size: 1.25rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .admin-filters {
+    flex-direction: column;
   }
-  
-  .um-toolbar {
-    --background: #2c2c2c;
-    --color: #ffffff;
+
+  .admin-filter-chips {
+    flex-direction: column;
+    width: 100%;
   }
-  
-  .um-content {
-    --background: #1e1e1e;
-  }
-  
-  .um-card {
-    --background: #2c2c2c;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-  }
-  
-  .um-card-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .um-card-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: 0.5px;
-  }
-  
-  .um-card-content {
-    padding: 20px;
-  }
-  
-  .um-tabs {
-    display: flex;
+
+  .admin-filter-chip {
+    width: 100%;
     justify-content: space-between;
-    margin-bottom: 20px;
   }
-  
-  .um-tabs ion-button {
-    --color: #ffffff;
-    --color-activated: #47ce65;
-    --color-focused: #47ce65;
+
+  .admin-form-actions {
+    flex-direction: column;
   }
-  
-  .um-user-list {
-    margin-top: 20px;
+
+  .admin-button {
+    width: 100%;
   }
-  
-  .um-filters {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+
+  .admin-tab span {
+    display: none;
   }
-  
-  .um-searchbar {
-    flex-grow: 1;
-    --background: #3a3a3a;
-    --color: #ffffff;
-    --placeholder-color: rgba(255, 255, 255, 0.6);
-    border-radius: 8px;
-    margin-right: 10px;
+
+  .admin-tab ion-icon {
+    font-size: 1.5rem;
   }
-  
-  .um-filter-chip {
-    --background: #3a3a3a;
-    --color: #ffffff;
-  }
-  
-  .um-user-items {
-    background: transparent;
-  }
-  
-  .um-user-item {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-  
-  .um-user-item ion-label h2 {
-    font-weight: 600;
-    font-size: 1.1rem;
-  }
-  
-  .um-user-item ion-badge {
-    margin-right: 8px;
-  }
-  
-  .um-user-form,
-  .um-reset-form {
-    margin-top: 20px;
-  }
-  
-  .um-form-item {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    border-radius: 8px;
-    margin-bottom: 16px;
-  }
-  
-  .um-submit-btn {
-    margin-top: 20px;
-    --background: #47ce65;
-    --color: #ffffff;
-    font-weight: 600;
-  }
-  
-  /* Adjust the color of inputs and selects */
-  .um-form-item ion-input,
-  .um-form-item ion-select {
-    --color: #ffffff;
-    --placeholder-color: rgba(255, 255, 255, 0.6);
-  }
-  
-  /* Style for the popover select interface */
-  ion-select-popover {
-    --background: #3a3a3a;
-    --color: #ffffff;
-  }
-  
-  
+}
+
