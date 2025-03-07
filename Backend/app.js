@@ -16,6 +16,8 @@ const qrLoginRoutes = require("./routes/qrLogin"); // Import QR login routes
 const paymentRoutes = require('./routes/paymentRoutes');
 const virementRoutes = require('./routes/virementRoutes');
 const beneficiaryRoutes = require('./routes/beneficiaryRoutes');
+
+const adminRoutes = require('./routes/adminAuthRoutes');
 // Import Passport
 const passport = require("./config/passport");
 
@@ -43,6 +45,8 @@ app.use("/auth", authRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/virements', virementRoutes);
 app.use('/api/beneficiaries', beneficiaryRoutes);
+
+app.use('/api/admin', adminRoutes);
 
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
