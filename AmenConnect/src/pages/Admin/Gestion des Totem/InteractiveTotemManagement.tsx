@@ -2,31 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonItem,
-  IonLabel,
-  IonBadge,
-  IonButton,
-  IonIcon,
-  IonList,
-  IonSelect,
-  IonSelectOption,
-  IonProgressBar,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonModal,
-  IonTextarea,
-  IonToolbar, // Added import for IonToolbar
-  IonTitle, // Added import for IonTitle
-} from "@ionic/react"
+import { IonPage, IonIcon, IonSelect, IonSelectOption, IonProgressBar, IonModal, IonTextarea } from "@ionic/react"
 import {
   refreshOutline,
   powerOutline,
@@ -34,14 +10,21 @@ import {
   thermometerOutline,
   cloudUploadOutline,
   closeCircleOutline,
+  notificationsOutline,
 } from "ionicons/icons"
 import "./InteractiveTotemManagement.css"
-import NavbarAdmin from "../../../components/NavbarAdmin"
+import SidebarAdmin from "../../../components/sidebarAdmin"
+import { useAdminAuth } from "../../../AdminAuthContext"
 
 const InteractiveTotemManagement: React.FC = () => {
+  const { authLoading } = useAdminAuth()
   const [activeTab, setActiveTab] = useState<"status" | "maintenance" | "incidents">("status")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedTotem, setSelectedTotem] = useState<string | null>(null)
+
+  if (authLoading) {
+    return <div className="admin-loading">Loading...</div>
+  }
 
   const totems = [
     { id: "TM001", status: "online", version: "1.2.3", temperature: 42 },
@@ -50,153 +33,197 @@ const InteractiveTotemManagement: React.FC = () => {
   ]
 
   const renderDeviceStatus = () => (
-    <div className="itm-device-status">
-      <IonGrid>
-        <IonRow className="itm-header-row">
-          <IonCol>Totem ID</IonCol>
-          <IonCol>Status</IonCol>
-          <IonCol>Version</IonCol>
-          <IonCol>Temperature</IonCol>
-          <IonCol>Actions</IonCol>
-        </IonRow>
-        {totems.map((totem) => (
-          <IonRow key={totem.id} className="itm-totem-row">
-            <IonCol>{totem.id}</IonCol>
-            <IonCol>
-              <IonBadge color={totem.status === "online" ? "success" : "danger"}>{totem.status}</IonBadge>
-            </IonCol>
-            <IonCol>{totem.version}</IonCol>
-            <IonCol>
-              <IonIcon icon={thermometerOutline} />
-              {totem.status === "online" ? `${totem.temperature}°C` : "N/A"}
-            </IonCol>
-            <IonCol>
-              <IonButton fill="clear" size="small" disabled={totem.status === "offline"}>
-                <IonIcon slot="icon-only" icon={refreshOutline} />
-              </IonButton>
-              <IonButton fill="clear" size="small" disabled={totem.status === "offline"}>
-                <IonIcon slot="icon-only" icon={powerOutline} />
-              </IonButton>
-            </IonCol>
-          </IonRow>
-        ))}
-      </IonGrid>
+    <div className="admin-table-container">
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th>Totem ID</th>
+            <th>Status</th>
+            <th>Version</th>
+            <th>Temperature</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {totems.map((totem) => (
+            <tr key={totem.id}>
+              <td>{totem.id}</td>
+              <td>
+                <span className={`admin-status-badge ${totem.status === "online" ? "online" : "offline"}`}>
+                  {totem.status}
+                </span>
+              </td>
+              <td>{totem.version}</td>
+              <td>
+                <div className="admin-temp-display">
+                  <IonIcon icon={thermometerOutline} />
+                  <span>{totem.status === "online" ? `${totem.temperature}°C` : "N/A"}</span>
+                </div>
+              </td>
+              <td>
+                <div className="admin-action-buttons">
+                  <button className="admin-icon-button" disabled={totem.status === "offline"} title="Refresh">
+                    <IonIcon icon={refreshOutline} />
+                  </button>
+                  <button className="admin-icon-button" disabled={totem.status === "offline"} title="Power">
+                    <IonIcon icon={powerOutline} />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 
   const renderRemoteMaintenance = () => (
-    <div className="itm-remote-maintenance">
-      <IonList>
-        <IonItem>
-          <IonLabel>Select Totem</IonLabel>
-          <IonSelect placeholder="Choose a totem">
+    <div className="admin-maintenance-container">
+      <div className="admin-form-group">
+        <label className="admin-form-label">Select Totem</label>
+        <div className="admin-select-wrapper">
+          <IonSelect placeholder="Choose a totem" className="admin-select">
             {totems.map((totem) => (
               <IonSelectOption key={totem.id} value={totem.id}>
                 {totem.id}
               </IonSelectOption>
             ))}
           </IonSelect>
-        </IonItem>
-        <IonItem>
-          <IonLabel>Action</IonLabel>
-          <IonSelect placeholder="Choose an action">
+        </div>
+      </div>
+
+      <div className="admin-form-group">
+        <label className="admin-form-label">Action</label>
+        <div className="admin-select-wrapper">
+          <IonSelect placeholder="Choose an action" className="admin-select">
             <IonSelectOption value="update">Update Software</IonSelectOption>
             <IonSelectOption value="restart">Restart Totem</IonSelectOption>
             <IonSelectOption value="diagnose">Run Diagnostics</IonSelectOption>
           </IonSelect>
-        </IonItem>
-      </IonList>
-      <IonButton expand="block" className="itm-action-button">
-        <IonIcon slot="start" icon={cloudUploadOutline} />
-        Execute Action
-      </IonButton>
-      <IonCard className="itm-progress-card">
-        <IonCardContent>
-          <IonLabel>Update Progress</IonLabel>
-          <IonProgressBar value={0.5}></IonProgressBar>
-        </IonCardContent>
-      </IonCard>
+        </div>
+      </div>
+
+      <button className="admin-action-button">
+        <IonIcon icon={cloudUploadOutline} />
+        <span>Execute Action</span>
+      </button>
+
+      <div className="admin-progress-card">
+        <h3 className="admin-progress-title">Update Progress</h3>
+        <div className="admin-progress-container">
+          <IonProgressBar value={0.5} className="admin-progress-bar"></IonProgressBar>
+          <span className="admin-progress-value">50%</span>
+        </div>
+      </div>
     </div>
   )
 
   const renderIncidentLog = () => (
-    <div className="itm-incident-log">
-      <IonList>
-        {[1, 2, 3].map((_, index) => (
-          <IonItem
-            key={index}
-            className="itm-incident-item"
-            button
-            onClick={() => {
-              setSelectedTotem(`TM00${index + 1}`)
-              setIsModalOpen(true)
-            }}
-          >
-            <IonIcon icon={bugOutline} slot="start" />
-            <IonLabel>
-              <h2>Incident #{1000 + index}</h2>
-              <p>
-                Totem: TM00{index + 1} | Date: {new Date().toLocaleString()}
-              </p>
-              <p>Type: {index % 2 === 0 ? "Hardware Failure" : "Software Error"}</p>
-            </IonLabel>
-            <IonBadge color={index % 2 === 0 ? "warning" : "danger"} slot="end">
-              {index % 2 === 0 ? "Open" : "Critical"}
-            </IonBadge>
-          </IonItem>
-        ))}
-      </IonList>
+    <div className="admin-incidents-container">
+      {[1, 2, 3].map((_, index) => (
+        <div
+          key={index}
+          className="admin-incident-item"
+          onClick={() => {
+            setSelectedTotem(`TM00${index + 1}`)
+            setIsModalOpen(true)
+          }}
+        >
+          <div className="admin-incident-icon">
+            <IonIcon icon={bugOutline} />
+          </div>
+          <div className="admin-incident-content">
+            <h3 className="admin-incident-title">Incident #{1000 + index}</h3>
+            <p className="admin-incident-details">
+              Totem: TM00{index + 1} | Date: {new Date().toLocaleString()}
+            </p>
+            <p className="admin-incident-type">Type: {index % 2 === 0 ? "Hardware Failure" : "Software Error"}</p>
+          </div>
+          <div className={`admin-incident-badge ${index % 2 === 0 ? "warning" : "critical"}`}>
+            {index % 2 === 0 ? "Open" : "Critical"}
+          </div>
+        </div>
+      ))}
     </div>
   )
 
   return (
-    <IonPage className="itm-page">
-      <IonHeader>
-        <NavbarAdmin currentPage="InteractiveTotemManagement" />
-      </IonHeader>
-      <IonContent className="itm-content ion-padding">
-        <IonCard className="itm-card">
-          <IonCardHeader className="itm-card-header">
-            <IonCardTitle className="itm-card-title">Interactive Totem Management</IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent className="itm-card-content">
-            <div className="itm-tabs">
-              <IonButton fill={activeTab === "status" ? "solid" : "clear"} onClick={() => setActiveTab("status")}>
-                Device Status
-              </IonButton>
-              <IonButton
-                fill={activeTab === "maintenance" ? "solid" : "clear"}
+    <IonPage>
+      <div className="admin-dashboard-layout">
+        {/* Sidebar Component */}
+        <SidebarAdmin currentPage="Totems" />
+
+        {/* Main Content */}
+        <div className="admin-dashboard-content">
+          {/* Header */}
+          <div className="admin-dashboard-header">
+            <div className="admin-header-title">
+              <h1>Gestion des Totems Interactifs</h1>
+              <p>Surveillez et gérez vos totems à distance</p>
+            </div>
+            <div className="admin-header-actions">
+              <div className="admin-notification-badge">
+                <IonIcon icon={notificationsOutline} className="admin-header-icon" />
+                <span className="admin-badge">3</span>
+              </div>
+              <div className="admin-profile-menu">
+                <div className="admin-profile-avatar">
+                  <span>A</span>
+                </div>
+                <span className="admin-profile-name">Admin</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Card */}
+          <div className="admin-content-card">
+            {/* Tabs */}
+            <div className="admin-tabs">
+              <button
+                className={`admin-tab ${activeTab === "status" ? "active" : ""}`}
+                onClick={() => setActiveTab("status")}
+              >
+                État des Appareils
+              </button>
+              <button
+                className={`admin-tab ${activeTab === "maintenance" ? "active" : ""}`}
                 onClick={() => setActiveTab("maintenance")}
               >
-                Remote Maintenance
-              </IonButton>
-              <IonButton fill={activeTab === "incidents" ? "solid" : "clear"} onClick={() => setActiveTab("incidents")}>
-                Incident Log
-              </IonButton>
+                Maintenance à Distance
+              </button>
+              <button
+                className={`admin-tab ${activeTab === "incidents" ? "active" : ""}`}
+                onClick={() => setActiveTab("incidents")}
+              >
+                Journal d'Incidents
+              </button>
             </div>
-            {activeTab === "status" && renderDeviceStatus()}
-            {activeTab === "maintenance" && renderRemoteMaintenance()}
-            {activeTab === "incidents" && renderIncidentLog()}
-          </IonCardContent>
-        </IonCard>
-      </IonContent>
-      <IonModal isOpen={isModalOpen} onDidDismiss={() => setIsModalOpen(false)}>
-        <IonHeader>
-          <IonToolbar>
-            {" "}
-            {/* Added IonToolbar */}
-            <IonTitle>Incident Details - {selectedTotem}</IonTitle> {/* Added IonTitle */}
-            <IonButton slot="end" onClick={() => setIsModalOpen(false)}>
-              <IonIcon slot="icon-only" icon={closeCircleOutline} />
-            </IonButton>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <IonTextarea rows={10} placeholder="Enter incident details here..." />
-          <IonButton expand="block" className="itm-save-button">
-            Save Incident Report
-          </IonButton>
-        </IonContent>
+
+            {/* Tab Content */}
+            <div className="admin-tab-content">
+              {activeTab === "status" && renderDeviceStatus()}
+              {activeTab === "maintenance" && renderRemoteMaintenance()}
+              {activeTab === "incidents" && renderIncidentLog()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Incident Modal */}
+      <IonModal isOpen={isModalOpen} onDidDismiss={() => setIsModalOpen(false)} className="admin-modal">
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">Détails de l'Incident - {selectedTotem}</h2>
+          <button className="admin-modal-close" onClick={() => setIsModalOpen(false)}>
+            <IonIcon icon={closeCircleOutline} />
+          </button>
+        </div>
+        <div className="admin-modal-content">
+          <div className="admin-form-group">
+            <label className="admin-form-label">Description de l'Incident</label>
+            <IonTextarea rows={10} placeholder="Entrez les détails de l'incident ici..." className="admin-textarea" />
+          </div>
+          <button className="admin-action-button">Enregistrer le Rapport d'Incident</button>
+        </div>
       </IonModal>
     </IonPage>
   )
