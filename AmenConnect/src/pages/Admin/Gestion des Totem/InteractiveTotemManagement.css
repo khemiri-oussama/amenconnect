@@ -1,167 +1,387 @@
-.itm-page {
-    --background: #1e1e1e;
+/* Table Styles */
+.admin-table-container {
+  width: 100%;
+  overflow-x: auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  background-color: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover {
+  background-color: #f8fafc;
+}
+
+.admin-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-status-badge.online {
+  background-color: rgba(47, 255, 89, 0.15);
+  color: #16a34a;
+}
+
+.admin-status-badge.offline {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.admin-temp-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-icon-button:hover:not(:disabled) {
+  background-color: #1e293b;
+  color: white;
+}
+
+.admin-icon-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Tabs */
+.admin-content-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.admin-tabs {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.admin-tab {
+  padding: 1rem 1.5rem;
+  font-weight: 500;
+  color: #64748b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.admin-tab:hover {
+  color: #1e293b;
+}
+
+.admin-tab.active {
+  color: #1e293b;
+}
+
+.admin-tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #2fff59;
+}
+
+.admin-tab-content {
+  padding: 1.5rem;
+}
+
+/* Maintenance Form */
+.admin-maintenance-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.admin-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.admin-form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.admin-select-wrapper {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.admin-select {
+  width: 100%;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  --placeholder-color: #94a3b8;
+}
+
+.admin-action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #1e293b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 1.5rem;
+}
+
+.admin-action-button:hover {
+  background-color: #334155;
+}
+
+.admin-progress-card {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.admin-progress-title {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.admin-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-progress-bar {
+  flex: 1;
+  height: 8px;
+  --progress-background: #e2e8f0;
+  --buffer-background: #e2e8f0;
+  --progress-background-active: #2fff59;
+}
+
+.admin-progress-value {
+  font-weight: 600;
+  color: #1e293b;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Incidents */
+.admin-incidents-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-incident-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.admin-incident-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.admin-incident-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #fee2e2;
+  color: #ef4444;
+  border-radius: 8px;
+  font-size: 1.25rem;
+}
+
+.admin-incident-content {
+  flex: 1;
+}
+
+.admin-incident-title {
+  margin: 0;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.admin-incident-details,
+.admin-incident-type {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.admin-incident-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-incident-badge.warning {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.admin-incident-badge.critical {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+/* Modal */
+.admin-modal {
+  --width: 600px;
+  --height: auto;
+  --border-radius: 12px;
+  --box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.admin-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.admin-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-modal-close:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.admin-modal-content {
+  padding: 1.5rem;
+}
+
+.admin-textarea {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-tabs {
+    flex-direction: column;
   }
-  
-  .itm-content {
-    --background: #1e1e1e;
+
+  .admin-tab {
+    text-align: left;
+    padding: 0.75rem 1rem;
   }
-  
-  .itm-card {
-    --background: #2c2c2c;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    margin: 16px 0;
+
+  .admin-tab.active::after {
+    height: 100%;
+    width: 3px;
+    top: 0;
+    bottom: auto;
   }
-  
-  .itm-card-header {
-    padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .admin-incident-item {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .itm-card-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: 0.5px;
+
+  .admin-incident-badge {
+    align-self: flex-start;
+    margin-top: 0.5rem;
   }
-  
-  .itm-card-content {
-    padding: 20px;
-  }
-  
-  .itm-tabs {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-  }
-  
-  .itm-tabs ion-button {
-    --color: #ffffff;
-    --color-activated: #47ce65;
-    --color-focused: #47ce65;
-  }
-  
-  .itm-device-status ion-grid {
-    --ion-grid-padding: 0;
-  }
-  
-  .itm-header-row,
-  .itm-totem-row {
-    background-color: #3a3a3a;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    padding: 12px;
-    align-items: center;
-  }
-  
-  .itm-header-row {
-    font-weight: bold;
-    color: #ffffff;
-  }
-  
-  .itm-totem-row {
-    color: #e0e0e0;
-  }
-  
-  .itm-remote-maintenance ion-item,
-  .itm-incident-log ion-item {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    --border-color: rgba(255, 255, 255, 0.1);
-    margin-bottom: 12px;
-    border-radius: 8px;
-  }
-  
-  .itm-action-button,
-  .itm-save-button {
-    --background: #47ce65;
-    --color: #ffffff;
-    margin-top: 20px;
-  }
-  
-  .itm-progress-card {
-    --background: #3a3a3a;
-    margin-top: 20px;
-  }
-  
-  .itm-incident-item h2 {
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  
-  .itm-incident-item p {
-    margin: 2px 0;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-  }
-  
-  /* Improve readability of small text */
-  ion-label,
-  ion-select,
-  ion-badge {
-    --color: #ffffff;
-  }
-  
-  /* Add some animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  .itm-card {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-  
-  /* Enhance the appearance of badges */
-  ion-badge {
-    --padding-start: 8px;
-    --padding-end: 8px;
-    --padding-top: 4px;
-    --padding-bottom: 4px;
-  }
-  
-  /* Add a subtle transition to buttons */
-  ion-button {
-    transition: opacity 0.3s ease;
-  }
-  
-  ion-button:hover {
-    opacity: 0.9;
-  }
-  
-  /* Style the progress bar */
-  ion-progress-bar {
-    --progress-background: #47ce65;
-    --buffer-background: #505050;
-  }
-  
-  /* Add some padding to the content */
-  ion-content {
-    --padding-top: 16px;
-    --padding-bottom: 16px;
-  }
-  
-  /* Style the modal */
-  ion-modal ion-content {
-    --background: #2c2c2c;
-  }
-  
-  ion-modal ion-toolbar {
-    --background: #3a3a3a;
-    --color: #ffffff;
-  }
-  
-  ion-modal ion-textarea {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    --placeholder-color: rgba(255, 255, 255, 0.6);
-    border-radius: 8px;
-    margin-bottom: 16px;
-  }
-  
-  
+}
+
