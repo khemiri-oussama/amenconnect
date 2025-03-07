@@ -33,10 +33,11 @@ export function useAdminLogin() {
       // and redirect to the admin dashboard.
       if (response.data.message) {
         setPendingAdmin({ email });
-        history.replace("/admin/dashboard");
+        history.replace("/admin/otp");
       } else {
         throw new Error("Réponse inattendue.");
       }
+      
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || "Erreur inattendue.");
     } finally {

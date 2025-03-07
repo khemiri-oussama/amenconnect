@@ -12,11 +12,13 @@ const adminSchema = new mongoose.Schema(
       unique: true,
       match: [/^\d{8}$/, 'CIN must be exactly 8 digits']
     },
+    otp: {
+      hash: { type: String, default: null },
+      expires: { type: Date, default: null },
+    },
     email: { type: String, required: true, unique: true },
     // Phone number field – you can add further validations if needed
-    phone: { type: String, required: true },
     // Date de naissance (birth date)
-    dateDeNaissance: { type: Date, required: true },
     password: { type: String, required: true },
     role: { 
       type: String, 
