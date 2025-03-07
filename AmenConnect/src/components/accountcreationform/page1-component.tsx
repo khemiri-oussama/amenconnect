@@ -1,7 +1,8 @@
 // Page1Component.tsx
 import React, { useState, useEffect } from "react"
 import type { FormData } from "./types"
-import { State, City } from "country-state-city" // Note: 'Country' is not used
+import tunisiaLocations from "./tunisiaLocations.json" // adjust the path as needed
+
 
 interface Page1Props {
   formData: FormData
@@ -14,35 +15,30 @@ interface Page1Props {
   formErrors: string[]
 }
 
+
 const Page1Component: React.FC<Page1Props> = ({
   formData,
   handleInputChange,
   handleRadioChange,
   formErrors,
 }) => {
-  // Local state to hold all cities with a custom postalCode property.
   const [allCities, setAllCities] = useState<
     { name: string; postalCode: string }[]
   >([])
 
+
   useEffect(() => {
-    // Get all states (governorates) for Tunisia using its ISO code "TN"
-    const states = State.getStatesOfCountry("TN")
-    console.log("States for TN:", states)
-
-    // Iterate through each state and combine all the cities
-    const combinedCities = states.reduce((acc, state) => {
-      const cities = City.getCitiesOfState("TN", state.isoCode)
-      console.log(`Cities for ${state.name}:`, cities)
-      // Use a type assertion to safely access 'postalCode'
-      const mappedCities = cities.map(city => ({
-        name: city.name,
-        postalCode: (city as any).postalCode || "N/A"
-      }))
-      return acc.concat(mappedCities)
-    }, [] as { name: string; postalCode: string }[])
-
-    console.log("All cities in Tunisia:", combinedCities)
+    // Combine cities from all states in the JSON file
+    const combinedCities = tunisiaLocations.states.reduce(
+      (acc: { name: string; postalCode: string }[], state: any) => {
+        const cities = state.cities.map((city: any) => ({
+          name: city.name,
+          postalCode: city.postalCode || "N/A",
+        }))
+        return acc.concat(cities)
+      },
+      []
+    )
     setAllCities(combinedCities)
   }, [])
 
@@ -54,31 +50,28 @@ const Page1Component: React.FC<Page1Props> = ({
 
   // Handler to update both 'ville' and 'codePostal' based on the dropdown selection
   const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = e.target.value // Expected format: "City - PostalCode"
+    const selected = e.target.value
     if (selected === "") {
-      // Clear both fields if no selection
       handleInputChange({
         ...e,
-        target: { ...e.target, name: "ville", value: "" }
+        target: { ...e.target, name: "ville", value: "" },
       })
       handleInputChange({
         ...e,
-        target: { ...e.target, name: "codePostal", value: "" }
+        target: { ...e.target, name: "codePostal", value: "" },
       })
       return
     }
     const [city, postalCode] = selected.split(" - ")
-    // Update form data for both fields
     handleInputChange({
       ...e,
-      target: { ...e.target, name: "ville", value: city }
+      target: { ...e.target, name: "ville", value: city },
     })
     handleInputChange({
       ...e,
-      target: { ...e.target, name: "codePostal", value: postalCode }
+      target: { ...e.target, name: "codePostal", value: postalCode },
     })
   }
-
   return (
     <section className="acf-form-section">
       <h3 className="acf-section-title">Informations Personnelles</h3>
