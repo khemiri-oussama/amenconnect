@@ -1,156 +1,119 @@
-.pm-page {
-    --background: #1e1e1e;
+
+
+/* Permissions Matrix Styles */
+.admin-permissions-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.permissions-table th,
+.permissions-table td {
+  text-align: center;
+}
+
+.permissions-table td:first-child {
+  text-align: left;
+}
+
+.checkbox-cell {
+  padding: 0.5rem;
+}
+
+.permission-checkbox {
+  --size: 1.25rem;
+  --background-checked: #1e293b;
+  --border-color-checked: #1e293b;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Access Rules Form Styles */
+.admin-rules-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.datetime-label {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-datetime {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  --background: white;
+  padding: 0.5rem;
+}
+
+.toggle-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-toggle {
+  --background: #e2e8f0;
+  --background-checked: #1e293b;
+  --handle-background: white;
+  --handle-background-checked: white;
+}
+
+/* Audit Log Styles */
+.admin-audit-log {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.audit-event {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.audit-icon {
+  color: #64748b;
+  font-size: 1.25rem;
+}
+
+/* Role Badge Styles */
+.admin-role-badge.admin {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.admin-role-badge.manager {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.admin-role-badge.user {
+  background-color: #f3e8ff;
+  color: #9333ea;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .permissions-table {
+    display: block;
+    overflow-x: auto;
   }
-  
-  .pm-content {
-    --background: #1e1e1e;
+
+  .admin-rules-form {
+    width: 100%;
   }
-  
-  .pm-card {
-    --background: #2c2c2c;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    margin: 16px 0;
+
+  .toggle-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
-  
-  .pm-card-header {
-    padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .admin-toggle {
+    align-self: flex-start;
   }
-  
-  .pm-card-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: 0.5px;
-  }
-  
-  .pm-card-content {
-    padding: 20px;
-  }
-  
-  .pm-tabs {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-  }
-  
-  .pm-tabs ion-button {
-    --color: #ffffff;
-    --color-activated: #47ce65;
-    --color-focused: #47ce65;
-  }
-  
-  .pm-role-matrix ion-grid {
-    --ion-grid-padding: 0;
-  }
-  
-  .pm-role-matrix ion-row {
-    background-color: #3a3a3a;
-    margin-bottom: 8px;
-    border-radius: 8px;
-  }
-  
-  .pm-role-matrix ion-col {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    color: #ffffff;
-  }
-  
-  .pm-role-matrix ion-checkbox {
-    --background-checked: #47ce65;
-    --border-color-checked: #47ce65;
-  }
-  
-  .pm-save-button {
-    --background: #47ce65;
-    --color: #ffffff;
-    margin-top: 20px;
-  }
-  
-  .pm-access-rules ion-item {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    --border-color: rgba(255, 255, 255, 0.1);
-    margin-bottom: 12px;
-    border-radius: 8px;
-  }
-  
-  .pm-access-rules ion-select,
-  .pm-access-rules ion-datetime,
-  .pm-access-rules ion-input {
-    --color: #ffffff;
-    --placeholder-color: rgba(255, 255, 255, 0.6);
-  }
-  
-  .pm-audit-log ion-item {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    margin-bottom: 12px;
-    border-radius: 8px;
-  }
-  
-  .pm-audit-item ion-icon {
-    color: #47ce65;
-    margin-right: 12px;
-  }
-  
-  .pm-audit-item h2 {
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  
-  .pm-audit-item p {
-    margin: 2px 0;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-  }
-  
-  /* Improve readability of small text */
-  ion-label,
-  ion-select,
-  ion-datetime,
-  ion-input {
-    --color: #ffffff;
-  }
-  
-  /* Add some animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  .pm-card {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-  
-  /* Enhance the appearance of toggles */
-  ion-toggle {
-    --background: #505050;
-    --background-checked: #47ce65;
-    --handle-background: #ffffff;
-  }
-  
-  /* Add a subtle transition to buttons */
-  ion-button {
-    transition: opacity 0.3s ease;
-  }
-  
-  ion-button:hover {
-    opacity: 0.9;
-  }
-  
-  /* Add some padding to the content */
-  ion-content {
-    --padding-top: 16px;
-    --padding-bottom: 16px;
-  }
-  
-  
+}
+
