@@ -15,4 +15,6 @@ router.post('/logout', adminAuthMiddleware, adminAuthController.logout);
 // Optional: Admin registration endpoint
 router.post('/register', adminAuthController.register);
 
+// New profile endpoint
+router.get('/profile', adminAuthMiddleware, adminAuthController.getProfile);
 module.exports = router;

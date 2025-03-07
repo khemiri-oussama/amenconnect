@@ -7,6 +7,7 @@ const swaggerSpecs = require("./config/swagger");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 
+
 // Import routes
 const authRoutes = require("./routes/authRoutes");
 const ipRoutes = require("./routes/ipRoutes");
@@ -47,6 +48,7 @@ app.use('/api/virements', virementRoutes);
 app.use('/api/beneficiaries', beneficiaryRoutes);
 
 app.use('/api/admin', adminRoutes);
+
 
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));

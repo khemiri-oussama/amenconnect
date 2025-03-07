@@ -1,23 +1,5 @@
 import type React from "react"
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonIcon,
-  IonBadge,
-} from "@ionic/react"
+import { IonPage, IonIcon } from "@ionic/react"
 import {
   peopleOutline,
   swapHorizontalOutline,
@@ -25,11 +7,19 @@ import {
   trendingUpOutline,
   pieChartOutline,
   warningOutline,
+  notificationsOutline,
 } from "ionicons/icons"
 import "./Dashboard.css"
-import NavbarAdmin from "../../../components/NavbarAdmin"
+import { useAdminAuth } from "../../../AdminAuthContext"
+import SidebarAdmin from "../../../components/sidebarAdmin"
 
 const Dashboard: React.FC = () => {
+  const { isAuthenticated, authLoading } = useAdminAuth()
+
+  if (authLoading) {
+    return <div className="admin-loading">Loading...</div>
+  }
+
   const stats = [
     { title: "Utilisateurs Actifs", value: 1250, icon: peopleOutline },
     { title: "Transactions en Temps Réel", value: 356, icon: swapHorizontalOutline },
@@ -45,66 +35,84 @@ const Dashboard: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <NavbarAdmin currentPage="Dashboard" />
-      </IonHeader>
-      <IonContent className="dashboard-content ion-padding">
-        <IonGrid>
-          <IonRow>
+      <div className="admin-dashboard-layout">
+        {/* Sidebar Component */}
+        <SidebarAdmin currentPage="Dashboard" />
+
+        {/* Main Content */}
+        <div className="admin-dashboard-content">
+          {/* Header */}
+          <div className="admin-dashboard-header">
+            <div className="admin-header-title">
+              <h1>Tableau de Bord</h1>
+              <p>Bienvenue sur votre espace administrateur</p>
+            </div>
+            <div className="admin-header-actions">
+              <div className="admin-notification-badge">
+                <IonIcon icon={notificationsOutline} className="admin-header-icon" />
+                <span className="admin-badge">3</span>
+              </div>
+              <div className="admin-profile-menu">
+                <div className="admin-profile-avatar">
+                  <span>A</span>
+                </div>
+                <span className="admin-profile-name">Admin</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="admin-stats-grid">
             {stats.map((stat, index) => (
-              <IonCol size="4" key={index}>
-                <IonCard className="dashboard-card stat-card">
-                  <IonCardHeader>
-                    <IonIcon icon={stat.icon} className="stat-icon" />
-                    <IonCardTitle className="dashboard-card-title">{stat.title}</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    <p className="dashboard-stat">{stat.value.toLocaleString()}</p>
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
+              <div className="admin-stat-card" key={index}>
+                <div className="admin-stat-icon">
+                  <IonIcon icon={stat.icon} />
+                </div>
+                <div className="admin-stat-content">
+                  <h3 className="admin-stat-value">{stat.value.toLocaleString()}</h3>
+                  <p className="admin-stat-title">{stat.title}</p>
+                </div>
+              </div>
             ))}
-          </IonRow>
-          <IonRow>
+          </div>
+
+          {/* Charts */}
+          <div className="admin-charts-grid">
             {charts.map((chart, index) => (
-              <IonCol size="6" key={index}>
-                <IonCard className="dashboard-card chart-card">
-                  <IonCardHeader>
-                    <IonIcon icon={chart.icon} className="chart-icon" />
-                    <IonCardTitle className="dashboard-card-title">{chart.title}</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    <div className="dashboard-chart">Graphique ici</div>
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
+              <div className="admin-chart-card" key={index}>
+                <div className="admin-card-header">
+                  <IonIcon icon={chart.icon} className="admin-card-icon" />
+                  <h3 className="admin-card-title">{chart.title}</h3>
+                </div>
+                <div className="admin-chart-placeholder">
+                  <div className="admin-chart-visual"></div>
+                </div>
+              </div>
             ))}
-          </IonRow>
-          <IonRow>
-            <IonCol>
-              <IonCard className="dashboard-card alert-card">
-                <IonCardHeader>
-                  <IonIcon icon={warningOutline} className="alert-icon" />
-                  <IonCardTitle className="dashboard-card-title">Alertes Urgentes</IonCardTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                  <IonList className="dashboard-alert-list">
-                    {alerts.map((alert, index) => (
-                      <IonItem className="dashboard-alert-item" key={index}>
-                        <IonIcon icon={warningOutline} slot="start" />
-                        <IonLabel>{alert}</IonLabel>
-                        <IonBadge color="danger" slot="end">
-                          Urgent
-                        </IonBadge>
-                      </IonItem>
-                    ))}
-                  </IonList>
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
+          </div>
+
+          {/* Alerts */}
+          <div className="admin-alerts-card">
+            <div className="admin-card-header">
+              <IonIcon icon={warningOutline} className="admin-card-icon alert" />
+              <h3 className="admin-card-title">Alertes Urgentes</h3>
+            </div>
+            <div className="admin-alerts-list">
+              {alerts.map((alert, index) => (
+                <div className="admin-alert-item" key={index}>
+                  <div className="admin-alert-icon">
+                    <IonIcon icon={warningOutline} />
+                  </div>
+                  <div className="admin-alert-content">
+                    <p>{alert}</p>
+                  </div>
+                  <div className="admin-alert-badge">Urgent</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </IonPage>
   )
 }

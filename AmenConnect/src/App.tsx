@@ -128,32 +128,33 @@ const AppContent: React.FC = () => {
 
           {/* Protected Admin Routes */}
           <AdminPrivateRoute
-            path="/Admin/Dashboard"
+            exact
+            path="/admin/dashboard"
             component={Dashboard}
             isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
-            path="/Admin/UserManagement"
+            path="/admin/userManagement"
             component={UserManagement}
             isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
-            path="/Admin/SurveillanceMonitoring"
+            path="/admin/surveillanceMonitoring"
             component={SurveillanceMonitoring}
             isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
-            path="/Admin/PermissionsManagement"
+            path="/admin/permissionsManagement"
             component={PermissionsManagement}
             isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
-            path="/Admin/AuthenticationSecurity"
+            path="/admin/authenticationSecurity"
             component={AuthenticationSecurity}
             isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
-            path="/Admin/InteractiveTotemManagement"
+            path="/admin/interactiveTotemManagement"
             component={InteractiveTotemManagement}
             isAuthenticated={adminAuthenticated}
           />

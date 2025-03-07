@@ -35,9 +35,9 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const fetchAdminProfile = async () => {
     try {
-      const response = await axios.get("/admin/profile", { withCredentials: true });
+      const response = await axios.get("/api/admin/profile", { withCredentials: true });
       if (response.data && response.data.admin) {
-        setAdminProfile(response.data);
+        setAdminProfile(response.data.admin);
         setIsAuthenticated(true);
       } else {
         setAdminProfile(null);
@@ -51,12 +51,14 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
       setAuthLoading(false);
     }
   };
+  
 
   const refreshAdminProfile = async () => {
     try {
-      const response = await axios.get("/admin/profile", { withCredentials: true });
+      const response = await axios.get("/api/admin/profile", { withCredentials: true });
       if (response.data && response.data.admin) {
-        setAdminProfile(response.data);
+        setAdminProfile(response.data.admin);
+        setIsAuthenticated(true); // Ensure the user is marked as authenticated
       } else {
         setAdminProfile(null);
         setIsAuthenticated(false);
