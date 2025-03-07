@@ -214,12 +214,21 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Video container */
+.kiosk-video-container {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 /* Modal */
 .mode-invite-desktop-modal {
   --background: var(--ion-background-color);
-  --width: 90%;
-  --max-width: 600px;
-  --height: 80%;
+  --width: 100%;
+  --max-width: 1300px;
+  --height: 90%;
   --border-radius: 16px;
   --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
