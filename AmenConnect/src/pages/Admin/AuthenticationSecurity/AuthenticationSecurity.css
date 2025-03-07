@@ -1,139 +1,94 @@
-.as-page {
-    --background: #1e1e1e;
+
+
+/* Security List Styles */
+.admin-security-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-security-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.admin-security-label {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.admin-toggle {
+  --background: #e2e8f0;
+  --background-checked: #1e293b;
+  --handle-background: white;
+  --handle-background-checked: white;
+}
+
+/* Range Styles */
+.range-item {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.admin-range-wrapper {
+  width: 100%;
+}
+
+.admin-range {
+  --bar-background: #e2e8f0;
+  --bar-background-active: #1e293b;
+  --knob-background: #1e293b;
+  --pin-background: #1e293b;
+  --pin-color: white;
+  width: 100%;
+}
+
+/* Section Title */
+.admin-section-title {
+  margin: 1.5rem 0 1rem;
+}
+
+.admin-section-title h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+/* Security Form */
+.admin-security-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .admin-security-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
-  
-  .as-content {
-    --background: #1e1e1e;
+
+  .admin-toggle {
+    align-self: flex-start;
   }
-  
-  .as-card {
-    --background: #2c2c2c;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    margin: 16px 0;
+
+  .admin-tab span {
+    display: none;
   }
-  
-  .as-card-header {
-    padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .as-card-title {
+
+  .admin-tab ion-icon {
     font-size: 1.5rem;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: 0.5px;
   }
-  
-  .as-card-content {
-    padding: 20px;
-  }
-  
-  .as-tabs {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-  }
-  
-  .as-tabs ion-button {
-    --color: #ffffff;
-    --color-activated: #47ce65;
-    --color-focused: #47ce65;
-  }
-  
-  .as-2fa-config ion-item,
-  .as-session-management ion-item,
-  .as-security-policies ion-item {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    --border-color: rgba(255, 255, 255, 0.1);
-    margin-bottom: 12px;
-    border-radius: 8px;
-  }
-  
-  .as-save-button {
-    --background: #47ce65;
-    --color: #ffffff;
-    margin-top: 20px;
-  }
-  
-  .as-session-item h2 {
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  
-  .as-session-item p {
-    margin: 2px 0;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-  }
-  
-  /* Improve readability of small text */
-  ion-label,
-  ion-select,
-  ion-input {
-    --color: #ffffff;
-  }
-  
-  /* Add some animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  .as-card {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-  
-  /* Enhance the appearance of toggles */
-  ion-toggle {
-    --background: #505050;
-    --background-checked: #47ce65;
-    --handle-background: #ffffff;
-  }
-  
-  /* Add a subtle transition to buttons */
-  ion-button {
-    transition: opacity 0.3s ease;
-  }
-  
-  ion-button:hover {
-    opacity: 0.9;
-  }
-  
-  /* Style the range slider */
-  ion-range {
-    --bar-background: #505050;
-    --bar-background-active: #47ce65;
-    --knob-background: #ffffff;
-  }
-  
-  /* Add some padding to the content */
-  ion-content {
-    --padding-top: 16px;
-    --padding-bottom: 16px;
-  }
-  
-  /* Style the list headers */
-  ion-list-header {
-    --color: #ffffff;
-    font-weight: 600;
-    font-size: 1.1rem;
-    padding-top: 16px;
-    padding-bottom: 8px;
-  }
-  
-  /* Style the inputs */
-  ion-input {
-    --background: #505050;
-    --padding-start: 12px;
-    --padding-end: 12px;
-    border-radius: 8px;
-  }
-  
-  
+}
+

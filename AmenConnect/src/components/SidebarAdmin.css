@@ -1,0 +1,79 @@
+/* Sidebar Styles */
+.admin-dashboard-sidebar {
+    width: 280px;
+    background-color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    color: white;
+  }
+  
+  .admin-dashboard-sidebar::after {
+    content: "";
+    position: absolute;
+    bottom: -100px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(47, 255, 89, 0.2) 0%, rgba(47, 255, 89, 0) 70%);
+    border-radius: 50%;
+    filter: blur(50px);
+    z-index: 1;
+  }
+  
+  .admin-logo-container {
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .admin-logo {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .admin-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: auto;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .admin-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .admin-nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .admin-nav-item.active {
+    background-color: rgba(47, 255, 89, 0.15);
+    color: #2fff59;
+  }
+  
+  .admin-nav-icon {
+    font-size: 1.25rem;
+  }
+  
+  .admin-sidebar-footer {
+    margin-top: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .admin-nav-item.logout {
+    color: #f87171;
+  }

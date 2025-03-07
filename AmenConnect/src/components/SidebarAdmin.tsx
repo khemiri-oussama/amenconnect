@@ -12,7 +12,7 @@ import {
   shieldOutline,
   desktopOutline,
 } from "ionicons/icons"
-
+import "./SidebarAdmin.css"
 interface SidebarAdminProps {
   currentPage: string
 }
@@ -23,7 +23,6 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ currentPage }) => {
   const navItems = [
     { title: "Dashboard", icon: homeOutline, path: "/admin/dashboard" },
     { title: "Utilisateurs", icon: peopleOutline, path: "/admin/userManagement" },
-    { title: "Transactions", icon: swapHorizontalOutline, path: "/admin/transactions" },
     { title: "Surveillance", icon: shieldOutline, path: "/admin/SurveillanceMonitoring" },
     { title: "Permissions", icon: settingsOutline, path: "/admin/PermissionsManagement" },
     { title: "Sécurité", icon: shieldOutline, path: "/admin/AuthenticationSecurity" },
