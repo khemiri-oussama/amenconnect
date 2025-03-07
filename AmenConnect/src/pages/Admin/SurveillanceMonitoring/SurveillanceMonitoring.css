@@ -1,300 +1,173 @@
-.sm-page {
-    --background: #1e1e1e;
+
+
+/* Monitoring Styles */
+.admin-monitoring-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-map-container {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.admin-transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-transaction-item {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.admin-transaction-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 1rem;
+}
+
+.admin-transaction-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-transaction-content {
+  flex: 1;
+}
+
+.admin-transaction-title {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.admin-transaction-details {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.admin-transaction-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-transaction-status.success {
+  background-color: rgba(47, 255, 89, 0.15);
+  color: #16a34a;
+}
+
+.admin-transaction-status.warning {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.admin-transaction-status.error {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+/* Logs Styles */
+.admin-logs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.admin-log-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-log-icon {
+  font-size: 1.25rem;
+}
+
+/* Alerts Styles */
+.admin-alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-alert-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.admin-security-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-alert-icon {
+  font-size: 1.25rem;
+}
+
+.admin-alert-icon.warning {
+  color: #d97706;
+}
+
+.range-group {
+  padding: 0 0.5rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .admin-filter-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .sm-toolbar {
-    --background: #2c2c2c;
-    --color: #ffffff;
+
+  .admin-transaction-item {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .sm-content {
-    --background: #1e1e1e;
+
+  .admin-transaction-avatar {
+    margin-bottom: 0.75rem;
   }
-  
-  .sm-card {
-    --background: #2c2c2c;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    margin: 16px 0;
+
+  .admin-transaction-content {
+    margin-bottom: 0.75rem;
+    width: 100%;
   }
-  
-  .sm-card-header {
-    padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .admin-tab span {
+    display: none;
   }
-  
-  .sm-card-title {
+
+  .admin-tab ion-icon {
     font-size: 1.5rem;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: 0.5px;
   }
-  
-  .sm-card-content {
-    padding: 20px;
-  }
-  
-  .sm-tabs {
-    background: #3a3a3a;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .sm-tabs ion-segment-button {
-    --color: #ffffff;
-    --color-checked: #47ce65;
-    --indicator-color: #47ce65;
-  }
-  
-  .sm-monitoring {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .sm-map-container {
-    height: 400px;
-    background-color: #3a3a3a;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #ffffff;
-    font-weight: 500;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .sm-transactions-stream {
-    background-color: #3a3a3a;
-    border-radius: 12px;
-    padding: 20px;
-  }
-  
-  .sm-section-title {
-    color: #ffffff;
-    font-size: 1.2rem;
-    margin-bottom: 16px;
-    font-weight: 600;
-  }
-  
-  .sm-transaction-list {
-    background: transparent;
-  }
-  
-  .sm-transaction-item {
-    --background: #505050;
-    --color: #ffffff;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    --padding-start: 12px;
-    --padding-end: 12px;
-    --padding-top: 12px;
-    --padding-bottom: 12px;
-  }
-  
-  .sm-logs {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .sm-log-filters {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .sm-filter-item {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    border-radius: 8px;
-  }
-  
-  .sm-filter-button {
-    --background: #47ce65;
-    --color: #ffffff;
-    margin-top: 24px;
-  }
-  
-  .sm-log-list {
-    background: transparent;
-  }
-  
-  .sm-log-item {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    border-radius: 8px;
-    margin-bottom: 12px;
-  }
-  
-  .sm-alerts {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .sm-alert-list {
-    background: transparent;
-  }
-  
-  .sm-alert-item {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    border-radius: 8px;
-    margin-bottom: 12px;
-  }
-  
-  .sm-alert-range {
-    --bar-background: #505050;
-    --bar-background-active: #47ce65;
-    --knob-background: #ffffff;
-  }
-  
-  .sm-alert-input {
-    --background: #505050;
-    --color: #ffffff;
-    --placeholder-color: rgba(255, 255, 255, 0.6);
-    border-radius: 4px;
-    padding: 0 8px;
-  }
-  
-  .sm-save-alerts {
-    --background: #47ce65;
-    --color: #ffffff;
-    margin-top: 20px;
-  }
-  
-  /* Adjust the color of inputs and selects */
-  .sm-filter-item ion-input,
-  .sm-filter-item ion-select,
-  .sm-filter-item ion-datetime {
-    --color: #ffffff;
-    --placeholder-color: rgba(255, 255, 255, 0.6);
-  }
-  
-  /* Style for the popover select interface */
-  ion-select-popover {
-    --background: #3a3a3a;
-    --color: #ffffff;
-  }
-  
-  /* Add some hover effects */
-  .sm-transaction-item:hover,
-  .sm-log-item:hover,
-  .sm-alert-item:hover {
-    --background: #606060;
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Improve readability of small text */
-  .sm-transaction-item p,
-  .sm-log-item p {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-  }
-  
-  /* Add some animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  .sm-card {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-  
-  /* Enhance the appearance of chips */
-  ion-chip {
-    --background: rgba(71, 206, 101, 0.1);
-    --color: #47ce65;
-  }
-  
-  /* Style the segment buttons */
-  ion-segment-button {
-    --indicator-box-shadow: none;
-    --indicator-height: 3px;
-    --padding-top: 8px;
-    --padding-bottom: 8px;
-  }
-  
-  /* Add a subtle transition to toggles */
-  ion-toggle {
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Enhance the appearance of the range slider */
-  ion-range {
-    --bar-height: 4px;
-    --knob-size: 24px;
-  }
-  
-  /* Add some spacing to the icons in list items */
-  .sm-log-item ion-icon,
-  .sm-alert-item ion-icon {
-    margin-right: 12px;
-  }
-  
-  /* Style the notes for the range slider */
-  .sm-alert-range ion-note {
-    color: rgba(255, 255, 255, 0.6);
-  }
-  
-  /* Add a subtle box shadow to the map container */
-  .sm-map-container {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Style the avatar in transaction items */
-  .sm-transaction-item ion-avatar {
-    --border-radius: 8px;
-  }
-  
-  /* Add a transition to buttons */
-  ion-button {
-    transition: opacity 0.3s ease;
-  }
-  
-  ion-button:hover {
-    opacity: 0.9;
-  }
-  
-  /* Enhance the appearance of the datetime picker */
-  ion-datetime {
-    --background: #3a3a3a;
-    --color: #ffffff;
-    border-radius: 8px;
-  }
-  
-  /* Add a subtle transition to list items */
-  ion-item {
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Style the toolbar title */
-  ion-title {
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-  
-  /* Add some padding to the content */
-  ion-content {
-    --padding-top: 16px;
-    --padding-bottom: 16px;
-  }
-  
-  /* Enhance the appearance of badges */
-  ion-badge {
-    --padding-start: 8px;
-    --padding-end: 8px;
-    --padding-top: 4px;
-    --padding-bottom: 4px;
-    font-weight: 500;
-  }
-  
-  
+}
+
