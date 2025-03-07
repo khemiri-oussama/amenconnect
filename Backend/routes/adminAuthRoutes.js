@@ -7,6 +7,8 @@ const adminAuthMiddleware = require('../middleware/adminAuthMiddleware');
 // Admin login endpoint
 router.post('/login', adminAuthController.login);
 
+router.post('/verify-otp', adminAuthController.verifyOTP);
+
 // Protected admin logout endpoint
 router.post('/logout', adminAuthMiddleware, adminAuthController.logout);
 

@@ -1,6 +1,7 @@
+// AdminOtp.tsx
 "use client"
 
-import React, { useState, useEffect, useRef, memo, useCallback } from "react"
+import React, { useState, useEffect, useRef, memo, useCallback } from "react";
 import {
   IonContent,
   IonPage,
@@ -10,10 +11,12 @@ import {
   IonImg,
   IonIcon,
   IonInput,
-} from "@ionic/react"
-import { useHistory } from "react-router-dom"
-import { lockClosed } from "ionicons/icons"
-import "./../AdminLogin/AdminLogin.css" // Reusing the same CSS
+} from "@ionic/react";
+import { useHistory } from "react-router-dom";
+import { lockClosed } from "ionicons/icons";
+import axios from "axios";
+import { useAdminAuth } from "../../AdminAuthContext";
+import "./../AdminLogin/AdminLogin.css";
 
 // Memoized OTP Input Component
 const MemoizedOtpInput = memo(
@@ -21,8 +24,8 @@ const MemoizedOtpInput = memo(
     otp,
     onOtpChange,
   }: {
-    otp: string
-    onOtpChange: (value: string) => void
+    otp: string;
+    onOtpChange: (value: string) => void;
   }) => {
     return (
       <IonInput
@@ -35,83 +38,102 @@ const MemoizedOtpInput = memo(
         placeholder="000000"
         required
       />
-    )
+    );
   }
-)
+);
 
 export default function AdminOtp() {
-  const [otp, setOtp] = useState<string>("")
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] = useState<string>("")
-  const [timeLeft, setTimeLeft] = useState<number>(120) // 2 minutes countdown
-  const history = useHistory()
-  const timerRef = useRef<NodeJS.Timeout>()
+  const [otp, setOtp] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [timeLeft, setTimeLeft] = useState<number>(120); // 2 minutes countdown
+  const history = useHistory();
+  const timerRef = useRef<NodeJS.Timeout>();
+  const { pendingAdmin } = useAdminAuth();
 
   // Timer countdown effect
   useEffect(() => {
-    if (timeLeft <= 0) return
+    if (timeLeft <= 0) return;
 
     timerRef.current = setTimeout(() => {
-      setTimeLeft((prev) => prev - 1)
-    }, 1000)
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
 
     return () => {
       if (timerRef.current) {
-        clearTimeout(timerRef.current)
+        clearTimeout(timerRef.current);
       }
-    }
-  }, [timeLeft])
+    };
+  }, [timeLeft]);
 
   // Format time as MM:SS
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-  }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
+  // Verify OTP by calling backend endpoint
   const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (otp.length !== 6) {
-      setErrorMessage("Veuillez entrer un code à 6 chiffres")
-      return
+      setErrorMessage("Veuillez entrer un code à 6 chiffres");
+      return;
     }
 
-    setIsLoading(true)
+    if (!pendingAdmin || !pendingAdmin.email) {
+      setErrorMessage("Aucune adresse email trouvée. Veuillez réessayer.");
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
-      // Replace with your actual OTP verification logic
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      history.push("/Dashboard")
-    } catch (error) {
-      setErrorMessage("Code de vérification incorrect. Veuillez réessayer.")
+      await axios.post(
+        "/api/admin/verify-otp",
+        { email: pendingAdmin.email, otp },
+        { withCredentials: true }
+      );
+      // If successful, redirect to the admin dashboard
+      history.push("/Admin/Dashboard");
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || "Code de vérification incorrect. Veuillez réessayer.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
+  // Resend OTP by calling backend endpoint
   const handleResendOtp = async () => {
-    setIsLoading(true)
+    if (!pendingAdmin || !pendingAdmin.email) {
+      setErrorMessage("Aucune adresse email trouvée. Veuillez réessayer.");
+      return;
+    }
+    setIsLoading(true);
 
     try {
-      // Replace with your actual resend OTP logic
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      // Reset timer
-      setTimeLeft(120)
-      setErrorMessage("")
-    } catch (error) {
-      setErrorMessage("Erreur lors de l'envoi du code. Veuillez réessayer.")
+      await axios.post(
+        "/api/admin/resend-otp",
+        { email: pendingAdmin.email },
+        { withCredentials: true }
+      );
+      // Reset timer and clear error messages after successful resend
+      setTimeLeft(120);
+      setErrorMessage("");
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || "Erreur lors de l'envoi du code. Veuillez réessayer.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   // useCallback to ensure a stable reference for the onChange handler
   const handleOtpChange = useCallback((value: string) => {
     // Allow only numeric characters and limit to 6 digits
-    const numericValue = value.replace(/[^0-9]/g, "").slice(0, 6)
-    setOtp(numericValue)
-  }, [])
+    const numericValue = value.replace(/[^0-9]/g, "").slice(0, 6);
+    setOtp(numericValue);
+  }, []);
 
   return (
     <IonPage>
@@ -190,5 +212,5 @@ export default function AdminOtp() {
         </div>
       </IonContent>
     </IonPage>
-  )
+  );
 }
