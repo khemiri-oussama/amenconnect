@@ -1,7 +1,7 @@
 import type React from "react"
 import { IonToolbar, IonRippleEffect } from "@ionic/react"
 import { useHistory } from "react-router-dom"
-import "./Navbar.css"
+
 
 interface NavbarProps {
   currentPage: string
@@ -13,13 +13,13 @@ const NavbarAdmin: React.FC<NavbarProps> = ({ currentPage }) => {
   return (
     <IonToolbar className="custom-toolbar">
       <div className="navbar-logo-container" >
-        <img src="amen_logo.png" alt="Amen Bank Logo" className="navbar-logo" onClick={() => history.push("/Dashboard")}style={{ cursor: "pointer" }} />
+        <img src="amen_logo.png" alt="Amen Bank Logo" className="navbar-logo" onClick={() => history.push("/admin/dashboard")}style={{ cursor: "pointer" }} />
       </div>
 
       <div className="navbar-links">
         <button 
           className={`navbar-link ion-activatable ${currentPage === "Dashboard" ? "active" : ""}`} 
-          onClick={() => history.push("/Dashboard")}
+          onClick={() => history.push("/admin/dashboard")}
         >
           Dashboard
           <IonRippleEffect />
@@ -27,7 +27,7 @@ const NavbarAdmin: React.FC<NavbarProps> = ({ currentPage }) => {
 
         <button 
           className={`navbar-link ion-activatable ${currentPage === "UserManagement" ? "active" : ""}`} 
-          onClick={() => history.push("/UserManagement")}
+          onClick={() => history.push("/admin/userManagement")}
         >
           Gestion des utilisateur
           <IonRippleEffect />

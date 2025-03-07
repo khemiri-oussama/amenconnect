@@ -191,6 +191,20 @@ exports.logout = async (req, res) => {
   }
 };
 
+exports.getProfile = async (req, res) => {
+  try {
+    // req.admin is set by the adminAuthMiddleware from the JWT token
+    const admin = await Admin.findById(req.admin.id).select('-password -otp');
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found." });
+    }
+    res.json({ admin });
+  } catch (err) {
+    console.error("Error fetching admin profile:", err);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
 // In controllers/adminAuthController.js
 exports.register = async (req, res) => {
   const { name, cin, email, phone, dateDeNaissance, password } = req.body;

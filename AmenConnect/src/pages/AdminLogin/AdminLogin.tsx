@@ -1,4 +1,4 @@
-// AdminLogin.tsx (frontend component)
+// AdminLogin.tsx
 "use client"
 
 import type React from "react"

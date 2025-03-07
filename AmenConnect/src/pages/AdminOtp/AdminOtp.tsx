@@ -49,7 +49,7 @@ export default function AdminOtp() {
   const [timeLeft, setTimeLeft] = useState<number>(120); // 2 minutes countdown
   const history = useHistory();
   const timerRef = useRef<NodeJS.Timeout>();
-  const { pendingAdmin } = useAdminAuth();
+  const { pendingAdmin, refreshAdminProfile } = useAdminAuth();
 
   // Timer countdown effect
   useEffect(() => {
@@ -73,36 +73,42 @@ export default function AdminOtp() {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Verify OTP by calling backend endpoint
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
+// Verify OTP by calling backend endpoint
+const handleVerifyOtp = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (otp.length !== 6) {
-      setErrorMessage("Veuillez entrer un code à 6 chiffres");
-      return;
-    }
+  if (otp.length !== 6) {
+    setErrorMessage("Veuillez entrer un code à 6 chiffres");
+    return;
+  }
 
-    if (!pendingAdmin || !pendingAdmin.email) {
-      setErrorMessage("Aucune adresse email trouvée. Veuillez réessayer.");
-      return;
-    }
+  if (!pendingAdmin || !pendingAdmin.email) {
+    setErrorMessage("Aucune adresse email trouvée. Veuillez réessayer.");
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    try {
-      await axios.post(
-        "/api/admin/verify-otp",
-        { email: pendingAdmin.email, otp },
-        { withCredentials: true }
-      );
-      // If successful, redirect to the admin dashboard
-      history.push("/Admin/Dashboard");
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Code de vérification incorrect. Veuillez réessayer.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  try {
+    await axios.post(
+      "/api/admin/verify-otp",
+      { email: pendingAdmin.email, otp },
+      { withCredentials: true }
+    );
+    // Refresh the admin profile using fetchAdminProfile
+    await refreshAdminProfile();
+
+    // Then redirect to the dashboard
+    history.push("/admin/dashboard");
+  } catch (error: any) {
+    setErrorMessage(
+      error.response?.data?.message || "Code de vérification incorrect. Veuillez réessayer."
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   // Resend OTP by calling backend endpoint
   const handleResendOtp = async () => {
