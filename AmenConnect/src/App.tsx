@@ -8,6 +8,7 @@ import { AdminAuthProvider, useAdminAuth } from './AdminAuthContext';
 import { CarteProvider } from './CarteContext';
 import PrivateRoute from './PrivateRoute';
 import AdminPrivateRoute from './AdminPrivateRoute'; // A separate private route for admin pages
+import JitsiMeetComponent from "./components/JitsiMeetComponent";
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -76,6 +77,7 @@ const AppContent: React.FC = () => {
           <Route exact path="/ModeInvite" component={ModeInvite} />
           <Route exact path="/qr-scanner" component={QRScanner} />
           <Route exact path="/accountcreation" component={AccountCreationForm} />
+          <Route path="/video/:roomId" component={JitsiMeetComponent} />
           <Route
             exact
             path="/otp"
