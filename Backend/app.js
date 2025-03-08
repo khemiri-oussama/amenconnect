@@ -17,6 +17,7 @@ const qrLoginRoutes = require("./routes/qrLogin"); // Import QR login routes
 const paymentRoutes = require('./routes/paymentRoutes');
 const virementRoutes = require('./routes/virementRoutes');
 const beneficiaryRoutes = require('./routes/beneficiaryRoutes');
+const videoConferenceRoutes = require("./routes/videoConferenceRoutes");
 
 const adminRoutes = require('./routes/adminAuthRoutes');
 // Import Passport
@@ -46,6 +47,7 @@ app.use("/auth", authRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/virements', virementRoutes);
 app.use('/api/beneficiaries', beneficiaryRoutes);
+app.use("/api/video-requests", videoConferenceRoutes);
 
 app.use('/api/admin', adminRoutes);
 
