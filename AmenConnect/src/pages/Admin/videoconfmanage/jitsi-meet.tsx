@@ -31,8 +31,36 @@ const JitsiMeetComponent: React.FC<JitsiMeetComponentProps> = ({
   // Generate a secure room name if not provided
   const secureRoomName = roomName || `secure-${Math.random().toString(36).substring(2, 15)}`
 
-  // Build the Jitsi URL with configuration parameters
-  const jitsiUrl = `https://meet.jit.si/${secureRoomName}#config.prejoinPageEnabled=false&config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.subject=${encodeURIComponent(subject)}&userInfo.displayName=${encodeURIComponent(displayName)}&userInfo.email=${encodeURIComponent(email)}&interfaceConfig.TOOLBAR_BUTTONS=["microphone","camera","closedcaptions","desktop","fullscreen","fodeviceselection","hangup","profile","chat","recording","livestreaming","etherpad","sharedvideo","settings","raisehand","videoquality","filmstrip","feedback","stats","shortcuts","tileview","videobackgroundblur","download","help","mute-everyone","security"]&interfaceConfig.SETTINGS_SECTIONS=["devices","language","moderator","profile","calendar"]&interfaceConfig.SHOW_JITSI_WATERMARK=false&interfaceConfig.SHOW_WATERMARK_FOR_GUESTS=false&interfaceConfig.SHOW_BRAND_WATERMARK=false&interfaceConfig.GENERATE_ROOMNAMES_ON_WELCOME_PAGE=false&interfaceConfig.DISPLAY_WELCOME_PAGE_CONTENT=false`
+  // ==============================
+  // JWT Token & Tenant Configuration
+  // ==============================
+  // IMPORTANT: Use the encoded JWT (a string) generated on your backend.
+  const tenant = "vpaas-magic-cookie-3aaa5c6dc3d342e0b40703fe93348e6a" // Replace with your JaaS tenant name.
+  const token = "eyJraWQiOiJ2cGFhcy1tYWdpYy1jb29raWUtM2FhYTVjNmRjM2QzNDJlMGI0MDcwM2ZlOTMzNDhlNmEvZjk1MTY3LVNBTVBMRV9BUFAiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJqaXRzaSIsImlzcyI6ImNoYXQiLCJpYXQiOjE3NDE0NDc1MDAsImV4cCI6MTc0MTQ1NDcwMCwibmJmIjoxNzQxNDQ3NDk1LCJzdWIiOiJ2cGFhcy1tYWdpYy1jb29raWUtM2FhYTVjNmRjM2QzNDJlMGI0MDcwM2ZlOTMzNDhlNmEiLCJjb250ZXh0Ijp7ImZlYXR1cmVzIjp7ImxpdmVzdHJlYW1pbmciOnRydWUsIm91dGJvdW5kLWNhbGwiOnRydWUsInNpcC1vdXRib3VuZC1jYWxsIjpmYWxzZSwidHJhbnNjcmlwdGlvbiI6dHJ1ZSwicmVjb3JkaW5nIjp0cnVlfSwidXNlciI6eyJoaWRkZW4tZnJvbS1yZWNvcmRlciI6ZmFsc2UsIm1vZGVyYXRvciI6dHJ1ZSwibmFtZSI6ImtoZW1pcmlvdXNzYW1hMDAiLCJpZCI6Imdvb2dsZS1vYXV0aDJ8MTE2NDU1MjU3ODM1MTU1ODAzNTAzIiwiYXZhdGFyIjoiIiwiZW1haWwiOiJraGVtaXJpb3Vzc2FtYTAwQGdtYWlsLmNvbSJ9fSwicm9vbSI6IioifQ.TWnqSFB6kiWXMk2k5xiIBabRaAL6LY9nvDKCu--qvwwsGxIpB9_-yLThedSS86W9fQHwj7z15s9juRE_i3Wet7et7jQMp8bQNVcS3APKcyZF0_caVqi6xMOuixjzOYxSJNs1rKlyIggd4koestAQEd7E3se8pkJPoxeuVSHLa4tf4hIaUg64Uwyi8_I0K83JlmvjE3eQEtBBdbjyYEXT7TF_V-1-2PEpig5gecOPLFJgER-EDlh6YTZyWLUGZQ5qta_hCtnjyTAnf1cKykIkVHlRKc9kb7Cio8fArArTNrenZEXtCk-0d4NMUBF0gcE0-EItCyfaTS35FFFVzU5ufg" // Replace with your actual encoded JWT.
+
+  // ==============================
+  // Construct the URL for your JaaS meeting
+  // ==============================
+  // For JaaS, the base URL is different from the default meet.jit.si.
+  const baseUrl = `https://8x8.vc/${tenant}/${secureRoomName}`
+
+  // The hash parameters configure the meeting. They are appended after the query string.
+  const hashParams = `#config.prejoinPageEnabled=false` +
+    `&config.startWithAudioMuted=false` +
+    `&config.startWithVideoMuted=false` +
+    `&config.subject=${encodeURIComponent(subject)}` +
+    `&userInfo.displayName=${encodeURIComponent(displayName)}` +
+    `&userInfo.email=${encodeURIComponent(email)}` +
+    `&interfaceConfig.TOOLBAR_BUTTONS=["microphone","camera","closedcaptions","desktop","fullscreen","fodeviceselection","hangup","profile","chat","recording","livestreaming","etherpad","sharedvideo","settings","raisehand","videoquality","filmstrip","feedback","stats","shortcuts","tileview","videobackgroundblur","download","help","mute-everyone","security"]` +
+    `&interfaceConfig.SETTINGS_SECTIONS=["devices","language","moderator","profile","calendar"]` +
+    `&interfaceConfig.SHOW_JITSI_WATERMARK=false` +
+    `&interfaceConfig.SHOW_WATERMARK_FOR_GUESTS=false` +
+    `&interfaceConfig.SHOW_BRAND_WATERMARK=false` +
+    `&interfaceConfig.GENERATE_ROOMNAMES_ON_WELCOME_PAGE=false` +
+    `&interfaceConfig.DISPLAY_WELCOME_PAGE_CONTENT=false`
+
+  // Append the JWT token as a query parameter.
+  const jitsiUrl = `${baseUrl}?jwt=${token}${hashParams}`
 
   useEffect(() => {
     // Handle iframe load events
@@ -55,8 +83,8 @@ const JitsiMeetComponent: React.FC<JitsiMeetComponentProps> = ({
 
     // Set up message listener for communication with the Jitsi iframe
     const handleMessage = (event: MessageEvent) => {
-      // Only handle messages from Jitsi
-      if (event.origin !== "https://meet.jit.si") return
+      // Adjust the origin check if needed; here we check for our JaaS domain.
+      if (!event.origin.includes("8x8.vc")) return
 
       try {
         const data = JSON.parse(event.data)
@@ -65,8 +93,6 @@ const JitsiMeetComponent: React.FC<JitsiMeetComponentProps> = ({
         if (data.event === "videoConferenceLeft" || data.event === "readyToClose") {
           if (onClose) onClose()
         }
-
-        // You can handle more events here as needed
         console.log("Jitsi event:", data)
       } catch (e) {
         // Not a JSON message or other error
@@ -89,8 +115,6 @@ const JitsiMeetComponent: React.FC<JitsiMeetComponentProps> = ({
   const handleRetry = () => {
     setIsLoading(true)
     setError(null)
-
-    // Force iframe reload
     if (iframeRef.current) {
       const src = iframeRef.current.src
       iframeRef.current.src = ""
@@ -137,4 +161,3 @@ const JitsiMeetComponent: React.FC<JitsiMeetComponentProps> = ({
 }
 
 export default JitsiMeetComponent
-
