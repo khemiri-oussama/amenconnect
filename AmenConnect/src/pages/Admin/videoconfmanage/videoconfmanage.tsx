@@ -16,10 +16,11 @@ import {
   linkOutline,
   peopleOutline,
 } from "ionicons/icons"
-import SidebarAdmin from "../../../components/sidebarAdmin"
+import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
 import JitsiMeetComponent from "./jitsi-meet"
 import "./videoconfmanage.css"
+import AdminPageHeader from "../adminpageheader"
 
 // Define an interface for the video conference request objects
 interface VideoConferenceRequest {
@@ -444,25 +445,10 @@ const VideoConferenceManagement = () => {
           {/* Main Content */}
           <div className="admin-dashboard-content">
             {/* Header */}
-            <div className="admin-dashboard-header">
-              <div className="admin-header-title">
-                <h1>Gestion des Visioconférences</h1>
-                <p>Gérez les demandes de visioconférence et assistez les clients</p>
-              </div>
-              <div className="admin-header-actions">
-                <div className="admin-notification-badge">
-                  <IonIcon icon={notificationsOutline} className="admin-header-icon" />
-                  <span className="admin-badge">3</span>
-                </div>
-                <div className="admin-profile-menu">
-                  <div className="admin-profile-avatar">
-                    <span>A</span>
-                  </div>
-                  <span className="admin-profile-name">Admin</span>
-                </div>
-              </div>
-            </div>
-
+            <AdminPageHeader
+                title="Gestion des Visioconférences"
+                subtitle="Gérez les demandes de visioconférence et assistez les clients"
+            />
             {/* Main Card */}
             <div className="admin-content-card">
               {/* Tabs */}

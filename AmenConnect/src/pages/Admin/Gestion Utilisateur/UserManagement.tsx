@@ -9,13 +9,13 @@ import {
   keyOutline,
   createOutline,
   trashOutline,
-  notificationsOutline,
   searchOutline,
   filterOutline,
 } from "ionicons/icons"
 import "./UserManagement.css"
-import SidebarAdmin from "../../../components/sidebarAdmin"
+import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
+import AdminPageHeader from "../adminpageheader"
 
 const UserManagement: React.FC = () => {
   const { authLoading } = useAdminAuth()
@@ -236,24 +236,10 @@ const UserManagement: React.FC = () => {
         {/* Main Content */}
         <div className="admin-dashboard-content">
           {/* Header */}
-          <div className="admin-dashboard-header">
-            <div className="admin-header-title">
-              <h1>Gestion des Utilisateurs</h1>
-              <p>Gérez les comptes utilisateurs et leurs permissions</p>
-            </div>
-            <div className="admin-header-actions">
-              <div className="admin-notification-badge">
-                <IonIcon icon={notificationsOutline} className="admin-header-icon" />
-                <span className="admin-badge">3</span>
-              </div>
-              <div className="admin-profile-menu">
-                <div className="admin-profile-avatar">
-                  <span>A</span>
-                </div>
-                <span className="admin-profile-name">Admin</span>
-              </div>
-            </div>
-          </div>
+          <AdminPageHeader
+            title="Gestion des Utilisateurs"
+            subtitle="Gérez les comptes utilisateurs et leurs permissions"
+          />
 
           {/* Main Card */}
           <div className="admin-content-card">

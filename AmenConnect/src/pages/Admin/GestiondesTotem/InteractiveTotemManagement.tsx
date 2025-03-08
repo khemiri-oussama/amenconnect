@@ -13,9 +13,9 @@ import {
   notificationsOutline,
 } from "ionicons/icons"
 import "./InteractiveTotemManagement.css"
-import SidebarAdmin from "../../../components/sidebarAdmin"
+import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
-
+import AdminPageHeader from "../adminpageheader"
 const InteractiveTotemManagement: React.FC = () => {
   const { authLoading } = useAdminAuth()
   const [activeTab, setActiveTab] = useState<"status" | "maintenance" | "incidents">("status")
@@ -156,24 +156,10 @@ const InteractiveTotemManagement: React.FC = () => {
         {/* Main Content */}
         <div className="admin-dashboard-content">
           {/* Header */}
-          <div className="admin-dashboard-header">
-            <div className="admin-header-title">
-              <h1>Gestion des Totems Interactifs</h1>
-              <p>Surveillez et gérez vos totems à distance</p>
-            </div>
-            <div className="admin-header-actions">
-              <div className="admin-notification-badge">
-                <IonIcon icon={notificationsOutline} className="admin-header-icon" />
-                <span className="admin-badge">3</span>
-              </div>
-              <div className="admin-profile-menu">
-                <div className="admin-profile-avatar">
-                  <span>A</span>
-                </div>
-                <span className="admin-profile-name">Admin</span>
-              </div>
-            </div>
-          </div>
+          <AdminPageHeader
+            title="Gestion des Totems Interactifs"
+            subtitle="Surveillez et gérez vos totems à distance"
+          />
 
           {/* Main Card */}
           <div className="admin-content-card">
