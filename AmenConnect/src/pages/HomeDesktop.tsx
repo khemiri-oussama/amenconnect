@@ -1,6 +1,5 @@
 import type React from "react"
 import { useEffect, useRef } from "react"
-import HelpDeskButton from "../components/HelpDeskButton"
 import {
   IonContent,
   IonPage,
@@ -165,7 +164,6 @@ const HomeDesktop: React.FC = () => {
                 </IonCard>
               </div>
             </section>
-            <HelpDeskButton />
             {/* Additional Services */}
             <section className="home-desktop-services fade-in-section">
               <h2 className="home-desktop-services-title">Nos Services Bancaires</h2>
