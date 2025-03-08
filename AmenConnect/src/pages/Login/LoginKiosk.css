@@ -352,3 +352,58 @@
   }
 }
 
+.loginkiosk-subtitle {
+  color: #121660;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.loginkiosk-instruction {
+  color: #555;
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.loginkiosk-input-container {
+  position: relative;
+}
+
+.loginkiosk-input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #121660;
+  font-size: 1.5rem;
+}
+
+.loginkiosk-input-container .loginkiosk-input {
+  padding-left: 3rem;
+}
+
+.success-message {
+  background-color: rgba(71, 206, 101, 0.1);
+  border: 1px solid #47ce65;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .loginkiosk-subtitle {
+    font-size: 2rem;
+  }
+
+  .loginkiosk-instruction {
+    font-size: 1rem;
+  }
+}
+
+
