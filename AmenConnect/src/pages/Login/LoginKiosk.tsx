@@ -1,27 +1,29 @@
-// LoginKiosk.tsx
 "use client"
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { IonContent, IonPage, IonImg, useIonRouter, IonIcon } from "@ionic/react";
-import { arrowBack, eyeOutline, eyeOffOutline, phonePortrait } from "ionicons/icons";
-import { QRCodeSVG } from "qrcode.react";
-import { useLogin } from "../../hooks/useLogin"; // Import the useLogin hook
-import "./LoginKiosk.css";
+import type React from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
+import { IonContent, IonPage, IonImg, useIonRouter, IonIcon } from "@ionic/react"
+import { arrowBack, eyeOutline, eyeOffOutline, phonePortrait } from "ionicons/icons"
+import { QRCodeSVG } from "qrcode.react"
+import { useLogin } from "../../hooks/useLogin" // Import the useLogin hook
+import ForgotPasswordKiosk from "../ForgotPassword/ForgotPasswordKiosk"
+import "./LoginKiosk.css"
 
 const LoginKiosk: React.FC = () => {
-  const [showLoginForm, setShowLoginForm] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const ionRouter = useIonRouter();
+  const [showLoginForm, setShowLoginForm] = useState(false)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const ionRouter = useIonRouter()
 
   // Ref for managing inactivity timer
-  const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
+  const inactivityTimer = useRef<NodeJS.Timeout | null>(null)
   // Ref to focus on the username input when the form is shown
-  const usernameInputRef = useRef<HTMLInputElement | null>(null);
+  const usernameInputRef = useRef<HTMLInputElement | null>(null)
 
   // Generate a unique session ID for the QR code when the component loads
-  const sessionId = useRef(Math.random().toString(36).substring(2, 15));
+  const sessionId = useRef(Math.random().toString(36).substring(2, 15))
 
   // Create a QR session in the database
   useEffect(() => {
@@ -34,104 +36,133 @@ const LoginKiosk: React.FC = () => {
           },
           credentials: "include",
           body: JSON.stringify({ sessionId: sessionId.current }),
-        });
+        })
         if (!response.ok) {
-          console.error("Failed to create QR session");
+          console.error("Failed to create QR session")
         }
       } catch (err) {
-        console.error("Error creating QR session:", err);
+        console.error("Error creating QR session:", err)
       }
-    };
-    createSession();
-  }, []);
+    }
+    createSession()
+  }, [])
 
   // Reset inactivity timer (session timeout)
   const resetTimer = useCallback(() => {
     if (inactivityTimer.current) {
-      clearTimeout(inactivityTimer.current);
+      clearTimeout(inactivityTimer.current)
     }
     inactivityTimer.current = setTimeout(() => {
-      ionRouter.push("/home");
-    }, 60000);
-  }, [ionRouter]);
+      ionRouter.push("/home")
+    }, 60000)
+  }, [ionRouter])
 
   const handleUserInteraction = useCallback(() => {
-    resetTimer();
-  }, [resetTimer]);
+    resetTimer()
+  }, [resetTimer])
 
   // Use the useLogin hook for email/password login
-  const { isLoading, errorMessage, login } = useLogin();
+  const { isLoading, errorMessage, login } = useLogin()
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await login(username, password);
-    resetTimer();
-  };
+    e.preventDefault()
+    await login(username, password)
+    resetTimer()
+  }
 
   const handleBack = () => {
-    if (showLoginForm) {
-      setShowLoginForm(false);
+    if (showForgotPassword) {
+      setShowForgotPassword(false)
+      setShowLoginForm(true)
+    } else if (showLoginForm) {
+      setShowLoginForm(false)
     } else {
-      ionRouter.push("/");
+      ionRouter.push("/")
     }
-  };
+  }
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+    setShowPassword(!showPassword)
+  }
 
   const showIdentifierLogin = () => {
-    setShowLoginForm(true);
-    resetTimer();
-  };
+    setShowLoginForm(true)
+    setShowForgotPassword(false)
+    resetTimer()
+  }
+
+  const showForgotPasswordForm = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setShowForgotPassword(true)
+    setShowLoginForm(false)
+    resetTimer()
+  }
+
+  const handleForgotPasswordSubmit = async (email: string) => {
+    try {
+      const response = await fetch("/api/password/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Une erreur s'est produite")
+      }
+
+      // Success - the email was sent
+      return
+    } catch (error: any) {
+      throw error
+    }
+  }
 
   // Embed the session ID in the QR code URL for the mobile app to scan
-  const qrCodeData = `http://localhost:8200/auth?session=${sessionId.current}`;
+  const qrCodeData = `http://localhost:8200/auth?session=${sessionId.current}`
 
   // Polling: periodically check if the mobile app has authenticated the session.
   // When authenticated, redirect the kiosk to /accueil.
   useEffect(() => {
     const intervalId = setInterval(async () => {
       try {
-        const response = await fetch(
-          `/api/qr-login/${sessionId.current}?t=${Date.now()}`, 
-          {
-            credentials: "include",
-            cache: "no-store"
-          }
-        );
-        console.log("Polling response status:", response.status);
+        const response = await fetch(`/api/qr-login/${sessionId.current}?t=${Date.now()}`, {
+          credentials: "include",
+          cache: "no-store",
+        })
+        console.log("Polling response status:", response.status)
         if (response.ok) {
-          const data = await response.json();
-          console.log("Polling response data:", data);
+          const data = await response.json()
+          console.log("Polling response data:", data)
           if (data.status === "authenticated") {
-            console.log("Session authenticated, redirecting to accueil...");
-            clearInterval(intervalId);
-            window.location.href="/accueil";
+            console.log("Session authenticated, redirecting to accueil...")
+            clearInterval(intervalId)
+            window.location.href = "/accueil"
           }
         }
       } catch (error) {
-        console.error("Polling error:", error);
+        console.error("Polling error:", error)
       }
-    }, 3000);
-    return () => clearInterval(intervalId);
-  }, [ionRouter]);
-  
+    }, 3000)
+    return () => clearInterval(intervalId)
+  }, [ionRouter])
 
   useEffect(() => {
-    document.addEventListener("touchstart", handleUserInteraction);
-    document.addEventListener("click", handleUserInteraction);
+    document.addEventListener("touchstart", handleUserInteraction)
+    document.addEventListener("click", handleUserInteraction)
 
     if (showLoginForm && usernameInputRef.current) {
-      usernameInputRef.current.focus();
+      usernameInputRef.current.focus()
     }
 
     return () => {
-      document.removeEventListener("touchstart", handleUserInteraction);
-      document.removeEventListener("click", handleUserInteraction);
-      if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
-    };
-  }, [handleUserInteraction, showLoginForm]);
+      document.removeEventListener("touchstart", handleUserInteraction)
+      document.removeEventListener("click", handleUserInteraction)
+      if (inactivityTimer.current) clearTimeout(inactivityTimer.current)
+    }
+  }, [handleUserInteraction, showLoginForm])
 
   return (
     <IonPage>
@@ -145,104 +176,107 @@ const LoginKiosk: React.FC = () => {
               stroke="#47CE65"
             />
           </svg>
+          
           <div className="loginkiosk-content">
-            <div className="loginkiosk-back-button" onClick={handleBack}>
-              <IonIcon icon={arrowBack} />
-              <span>Retour</span>
-            </div>
-            <div className="loginkiosk-logo">
-              <IonImg src="favicon.png" alt="Amen Bank Logo" className="loginkiosk-img" />
-            </div>
-            <h1 className="loginkiosk-title">Connexion</h1>
-            {!showLoginForm ? (
-              <div className="loginkiosk-qr-section animate-fade-in">
-                <div className="loginkiosk-qr-container">
-                  <div className="loginkiosk-qr-instructions">
-                    <IonIcon icon={phonePortrait} className="loginkiosk-qr-icon" />
-                    <p>Scannez ce code QR avec votre application mobile</p>
-                  </div>
-                  <div className="loginkiosk-qr-code">
-                    <QRCodeSVG
-                      value={qrCodeData}
-                      size={280}
-                      level="H"
-                      includeMargin={true}
-                      bgColor="#ffffff"
-                      fgColor="#121660"
-                    />
-                  </div>
-                  <button onClick={showIdentifierLogin} className="loginkiosk-alt-login">
-                    Continuez avec identifiant
-                  </button>
+          <div className="loginkiosk-back-button" onClick={handleBack}>
+                  <IonIcon icon={arrowBack} />
+                  <span>Retour</span>
+          </div>
+            {!showForgotPassword ? (
+              <>
+                
+                <div className="loginkiosk-logo">
+                  <IonImg src="favicon.png" alt="Amen Bank Logo" className="loginkiosk-img" />
                 </div>
-              </div>
-            ) : (
-              <form className="loginkiosk-form animate-fade-in" onSubmit={handleLogin}>
-                <div className="loginkiosk-form-group">
-                  <label htmlFor="username" className="loginkiosk-label">
-                    Identifiant
-                  </label>
-                  <input
-                    ref={usernameInputRef}
-                    type="text"
-                    id="username"
-                    className="loginkiosk-input"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Entrez votre identifiant"
-                    required
-                  />
-                </div>
-                <div className="loginkiosk-form-group">
-                  <label htmlFor="password" className="loginkiosk-label">
-                    Mot de passe
-                  </label>
-                  <div className="loginkiosk-password-container">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      id="password"
-                      className="loginkiosk-input"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Entrez votre mot de passe"
-                      required
-                    />
-                    <div className="loginkiosk-password-toggle" onClick={togglePasswordVisibility}>
-                      <IonIcon icon={showPassword ? eyeOffOutline : eyeOutline} />
+                <h1 className="loginkiosk-title">Connexion</h1>
+                {!showLoginForm ? (
+                  <div className="loginkiosk-qr-section animate-fade-in">
+                    <div className="loginkiosk-qr-container">
+                      <div className="loginkiosk-qr-instructions">
+                        <IonIcon icon={phonePortrait} className="loginkiosk-qr-icon" />
+                        <p>Scannez ce code QR avec votre application mobile</p>
+                      </div>
+                      <div className="loginkiosk-qr-code">
+                        <QRCodeSVG
+                          value={qrCodeData}
+                          size={280}
+                          level="H"
+                          includeMargin={true}
+                          bgColor="#ffffff"
+                          fgColor="#121660"
+                        />
+                      </div>
+                      <button onClick={showIdentifierLogin} className="loginkiosk-alt-login">
+                        Continuez avec identifiant
+                      </button>
                     </div>
                   </div>
-                </div>
-                {errorMessage && (
-                  <p className="error-message" style={{ color: "red" }}>
-                    {errorMessage}
-                  </p>
+                ) : (
+                  <form className="loginkiosk-form animate-fade-in" onSubmit={handleLogin}>
+                    <div className="loginkiosk-form-group">
+                      <label htmlFor="username" className="loginkiosk-label">
+                        Identifiant
+                      </label>
+                      <input
+                        ref={usernameInputRef}
+                        type="text"
+                        id="username"
+                        className="loginkiosk-input"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Entrez votre identifiant"
+                        required
+                      />
+                    </div>
+                    <div className="loginkiosk-form-group">
+                      <label htmlFor="password" className="loginkiosk-label">
+                        Mot de passe
+                      </label>
+                      <div className="loginkiosk-password-container">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          id="password"
+                          className="loginkiosk-input"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Entrez votre mot de passe"
+                          required
+                        />
+                        <div className="loginkiosk-password-toggle" onClick={togglePasswordVisibility}>
+                          <IonIcon icon={showPassword ? eyeOffOutline : eyeOutline} />
+                        </div>
+                      </div>
+                    </div>
+                    {errorMessage && (
+                      <p className="error-message" style={{ color: "red" }}>
+                        {errorMessage}
+                      </p>
+                    )}
+                    <button type="submit" className="loginkiosk-btn" disabled={isLoading}>
+                      {isLoading ? "Connexion en cours..." : "Se connecter"}
+                    </button>
+                    <div className="loginkiosk-forgot-password">
+                      <a href="#" onClick={showForgotPasswordForm}>
+                        Mot de passe oublié ?
+                      </a>
+                    </div>
+                  </form>
                 )}
-                <button type="submit" className="loginkiosk-btn" disabled={isLoading}>
-                  {isLoading ? "Connexion en cours..." : "Se connecter"}
-                </button>
-                <div className="loginkiosk-forgot-password">
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      console.log("Forgot password");
-                    }}
-                  >
-                    Mot de passe oublié ?
-                  </a>
-                </div>
-              </form>
+                <p className="loginkiosk-message">
+                  La réussite est à
+                  <br />
+                  portée de clic.
+                </p>
+              </>
+            ) : (
+              <ForgotPasswordKiosk onBack={handleBack} onSubmit={handleForgotPasswordSubmit} />
             )}
-            <p className="loginkiosk-message">
-              La réussite est à
-              <br />
-              portée de clic.
-            </p>
           </div>
         </div>
       </IonContent>
     </IonPage>
-  );
-};
+  )
+}
 
-export default LoginKiosk;
+export default LoginKiosk
+
