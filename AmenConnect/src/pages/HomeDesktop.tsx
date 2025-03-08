@@ -165,7 +165,7 @@ const HomeDesktop: React.FC = () => {
                 </IonCard>
               </div>
             </section>
-
+            <HelpDeskButton />
             {/* Additional Services */}
             <section className="home-desktop-services fade-in-section">
               <h2 className="home-desktop-services-title">Nos Services Bancaires</h2>
@@ -198,7 +198,7 @@ const HomeDesktop: React.FC = () => {
                   innovants et sécurisés.
                 </p>
               </div>
-              <HelpDeskButton />
+              
               <div className="home-desktop-footer-section">
                 <h3>Contactez-nous</h3>
                 <p>Email: contact@amenbank.com</p>

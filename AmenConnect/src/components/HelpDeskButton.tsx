@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   IonButton,
   IonIcon,
@@ -35,6 +35,20 @@ const HelpDeskButton: React.FC = () => {
   ])
   const [inputValue, setInputValue] = useState("")
   const [connecting, setConnecting] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+
+  // Add scroll listener to handle visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      // Always keep the button visible
+      setIsVisible(true)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
   const handleOpenModal = () => {
     setShowModal(true)
@@ -212,6 +226,8 @@ const HelpDeskButton: React.FC = () => {
         )
     }
   }
+
+  if (!isVisible) return null
 
   return (
     <>
