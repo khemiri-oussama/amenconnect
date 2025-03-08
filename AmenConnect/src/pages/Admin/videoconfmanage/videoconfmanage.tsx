@@ -21,6 +21,18 @@ import { useAdminAuth } from "../../../AdminAuthContext"
 import JitsiMeetComponent from "./jitsi-meet"
 import "./videoconfmanage.css"
 
+// Define an interface for the video conference request objects
+interface VideoConferenceRequest {
+  _id: string
+  name: string
+  email: string
+  subject: string
+  phone: string
+  status: "pending" | "active" | "completed" | "declined"
+  roomId?: string
+  createdAt: string
+}
+
 // Helper function to generate a secure room ID
 const generateRoomId = (length = 20) => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -37,14 +49,14 @@ const VideoConferenceManagement = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedConference, setSelectedConference] = useState<any>(null)
+  const [selectedConference, setSelectedConference] = useState<VideoConferenceRequest | null>(null)
   const [isJitsiOpen, setIsJitsiOpen] = useState(false)
   const [currentRoom, setCurrentRoom] = useState("")
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState("")
   const [toastColor, setToastColor] = useState("success")
   const [showShareModal, setShowShareModal] = useState(false)
-  const [conferences, setConferences] = useState([])
+  const [conferences, setConferences] = useState<VideoConferenceRequest[]>([])
 
   // Fetch video conference requests from the backend API when the component mounts
   useEffect(() => {
@@ -89,7 +101,7 @@ const VideoConferenceManagement = () => {
     return matchesSearch && matchesStatus
   })
 
-  const handleAcceptConference = (conference) => {
+  const handleAcceptConference = (conference: VideoConferenceRequest) => {
     setSelectedConference(conference)
     setIsModalOpen(true)
   }
@@ -121,13 +133,13 @@ const VideoConferenceManagement = () => {
     }
   }
 
-  const joinVideoConference = (conference) => {
+  const joinVideoConference = (conference: VideoConferenceRequest) => {
     setSelectedConference(conference)
-    setCurrentRoom(conference.roomId)
+    setCurrentRoom(conference.roomId || "")
     setIsJitsiOpen(true)
   }
 
-  const endVideoConference = (conferenceId) => {
+  const endVideoConference = (conferenceId: string) => {
     // Update the conference status to completed
     const updatedConferences = conferences.map((conf) => {
       if (conf._id === conferenceId) {
@@ -522,7 +534,7 @@ const VideoConferenceManagement = () => {
                     <button
                       className="admin-copy-button"
                       onClick={() => {
-                        navigator.clipboard.writeText(selectedConference.roomId)
+                        navigator.clipboard.writeText(selectedConference.roomId!)
                         setToastMessage("ID de la salle copié")
                         setToastColor("success")
                         setShowToast(true)
