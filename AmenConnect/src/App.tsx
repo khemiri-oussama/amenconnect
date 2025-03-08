@@ -25,6 +25,7 @@ setupIonicReact();
 
 // Lazy load public pages
 import Home from './pages/Home';
+
 import Login from './pages/Login/Login';
 import ModeInvite from './pages/ModeInvite/ModeInvite';
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
