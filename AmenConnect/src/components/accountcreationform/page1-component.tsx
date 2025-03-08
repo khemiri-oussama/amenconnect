@@ -1,8 +1,7 @@
 // Page1Component.tsx
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import type { FormData } from "./types"
 import tunisiaLocations from "./tunisiaLocations.json" // adjust the path as needed
-
 
 interface Page1Props {
   formData: FormData
@@ -15,41 +14,38 @@ interface Page1Props {
   formErrors: string[]
 }
 
-
 const Page1Component: React.FC<Page1Props> = ({
   formData,
   handleInputChange,
   handleRadioChange,
   formErrors,
 }) => {
-  const [allCities, setAllCities] = useState<
-    { name: string; postalCode: string }[]
-  >([])
+  // Local state to track the selected state.
+  const [selectedState, setSelectedState] = useState<string>("")
 
+  // When a state is selected, update the local state and clear any previously selected city.
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const stateName = e.target.value
+    setSelectedState(stateName)
+    // Clear any previously selected city by setting ville and codePostal to empty.
+    handleInputChange({
+      ...e,
+      target: { ...e.target, name: "ville", value: "" },
+    })
+    handleInputChange({
+      ...e,
+      target: { ...e.target, name: "codePostal", value: "" },
+    })
+  }
 
-  useEffect(() => {
-    // Combine cities from all states in the JSON file
-    const combinedCities = tunisiaLocations.states.reduce(
-      (acc: { name: string; postalCode: string }[], state: any) => {
-        const cities = state.cities.map((city: any) => ({
-          name: city.name,
-          postalCode: city.postalCode || "N/A",
-        }))
-        return acc.concat(cities)
-      },
-      []
-    )
-    setAllCities(combinedCities)
-  }, [])
+  // Find the list of cities for the selected state.
+  const selectedStateObj = tunisiaLocations.states.find(
+    (state) => state.name === selectedState
+  )
+  const cities = selectedStateObj ? selectedStateObj.cities : []
 
-  // Create the selected value from formData (combining ville and codePostal)
-  const selectedLocation =
-    formData.ville && formData.codePostal
-      ? `${formData.ville} - ${formData.codePostal}`
-      : ""
-
-  // Handler to update both 'ville' and 'codePostal' based on the dropdown selection
-  const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  // When a city is selected, update both ville and codePostal in the formData.
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = e.target.value
     if (selected === "") {
       handleInputChange({
@@ -62,6 +58,7 @@ const Page1Component: React.FC<Page1Props> = ({
       })
       return
     }
+    // Expecting the value to be in the format "cityName - postalCode"
     const [city, postalCode] = selected.split(" - ")
     handleInputChange({
       ...e,
@@ -72,6 +69,13 @@ const Page1Component: React.FC<Page1Props> = ({
       target: { ...e.target, name: "codePostal", value: postalCode },
     })
   }
+
+  // Combine the selected city and postal code for display in the city dropdown.
+  const selectedLocation =
+    formData.ville && formData.codePostal
+      ? `${formData.ville} - ${formData.codePostal}`
+      : ""
+
   return (
     <section className="acf-form-section">
       <h3 className="acf-section-title">Informations Personnelles</h3>
@@ -260,26 +264,54 @@ const Page1Component: React.FC<Page1Props> = ({
         </div>
       </div>
 
-      {/* Dropdown for City and Postal Code */}
+      {/* State Dropdown */}
       <div className="acf-form-row">
         <div className="acf-form-field">
-          <label htmlFor="location">Ville et Code postal</label>
+          <label htmlFor="state">État / Région</label>
           <select
-            id="location"
-            name="location"
-            value={selectedLocation}
-            onChange={handleLocationChange}
+            id="state"
+            name="state"
+            value={selectedState}
+            onChange={handleStateChange}
           >
-            <option value="">Sélectionner</option>
-            {allCities.map((city, idx) => (
-              <option key={idx} value={`${city.name} - ${city.postalCode}`}>
-                {city.name} - {city.postalCode}
+            <option value="">Sélectionner un état</option>
+            {tunisiaLocations.states.map((state, index) => (
+              <option key={index} value={state.name}>
+                {state.name}
               </option>
             ))}
           </select>
-          {allCities.length === 0 && (
+        </div>
+      </div>
+
+      {/* City Dropdown (dependent on selected state) */}
+      <div className="acf-form-row">
+        <div className="acf-form-field">
+          <label htmlFor="city">Ville et Code postal</label>
+          <select
+            id="city"
+            name="city"
+            value={selectedLocation}
+            onChange={handleCityChange}
+            disabled={!selectedState}
+          >
+            <option value="">
+              {selectedState
+                ? "Sélectionner une ville"
+                : "Sélectionnez d'abord un état"}
+            </option>
+            {cities.map((city: any, index: number) => (
+              <option
+                key={index}
+                value={`${city.name} - ${city.postalCode || "N/A"}`}
+              >
+                {city.name} - {city.postalCode || "N/A"}
+              </option>
+            ))}
+          </select>
+          {selectedState && cities.length === 0 && (
             <p style={{ color: "red", fontSize: "0.9em" }}>
-              Aucune ville trouvée. Veuillez vérifier les données du pays.
+              Aucune ville trouvée pour cet état.
             </p>
           )}
         </div>
