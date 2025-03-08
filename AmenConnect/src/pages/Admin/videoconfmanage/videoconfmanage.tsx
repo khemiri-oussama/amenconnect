@@ -63,7 +63,7 @@ const VideoConferenceManagement = () => {
     const fetchVideoConferenceRequests = async () => {
       try {
         const response = await fetch("/api/video-requests", {
-          credentials: "include", // Include credentials if needed
+          credentials: "include",
         })
         if (!response.ok) {
           throw new Error("Network response was not ok")
@@ -82,86 +82,108 @@ const VideoConferenceManagement = () => {
     return <div className="admin-loading">Loading...</div>
   }
 
+  // Local filtering remains unchanged
   const filteredConferences = conferences.filter((conference) => {
-    // Filter by tab using the API fields
     if (activeTab === "pending" && conference.status !== "pending") return false
     if (activeTab === "active" && conference.status !== "active") return false
     if (activeTab === "history" && conference.status !== "completed") return false
 
-    // Search filter (using name, email, subject)
     const matchesSearch =
       searchQuery === "" ||
       conference.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       conference.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       conference.subject.toLowerCase().includes(searchQuery.toLowerCase())
 
-    // Status filter (only applies to history tab)
     const matchesStatus = statusFilter === "all" || conference.status.toLowerCase() === statusFilter.toLowerCase()
 
     return matchesSearch && matchesStatus
   })
 
+  // === New functions for DB operations ===
+
+  // Refuse a conference (delete from DB)
+  const refuseConference = async (conference: VideoConferenceRequest) => {
+    try {
+      const response = await fetch(`/api/video-requests/${conference._id}`, {
+        method: "DELETE",
+        credentials: "include",
+      })
+      if (!response.ok) {
+        throw new Error("Failed to delete conference")
+      }
+      // Remove it locally
+      setConferences(conferences.filter((conf) => conf._id !== conference._id))
+      setToastMessage("Demande refusée et supprimée")
+      setToastColor("warning")
+      setShowToast(true)
+    } catch (error) {
+      console.error("Error refusing conference:", error)
+    }
+  }
+
+  // Accept a conference (update status to "active" and set roomId)
+  const acceptConference = async (conference: VideoConferenceRequest) => {
+    try {
+      const roomId = conference.roomId || generateRoomId()
+      const response = await fetch(`/api/video-requests/${conference._id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "active", roomId }),
+      })
+      if (!response.ok) {
+        throw new Error("Failed to update conference status")
+      }
+      const data = await response.json()
+      const updatedConference = data.conference
+      setConferences(conferences.map((conf) => (conf._id === updatedConference._id ? updatedConference : conf)))
+      setSelectedConference(updatedConference)
+      setCurrentRoom(roomId)
+      setIsJitsiOpen(true)
+      setToastMessage("Conférence démarrée avec succès")
+      setToastColor("success")
+      setShowToast(true)
+    } catch (error) {
+      console.error("Error accepting conference:", error)
+    }
+  }
+
+  // Finish a conference (update status to "completed")
+  const finishConference = async (conference: VideoConferenceRequest) => {
+    try {
+      const response = await fetch(`/api/video-requests/${conference._id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "completed" }),
+      })
+      if (!response.ok) {
+        throw new Error("Failed to update conference status")
+      }
+      const data = await response.json()
+      const updatedConference = data.conference
+      setConferences(conferences.map((conf) => (conf._id === updatedConference._id ? updatedConference : conf)))
+      setToastMessage("Conférence terminée avec succès")
+      setToastColor("success")
+      setShowToast(true)
+    } catch (error) {
+      console.error("Error finishing conference:", error)
+    }
+  }
+
+  // === End of DB functions ===
+
+  // For the modal, you can now call acceptConference instead of startVideoConference
   const handleAcceptConference = (conference: VideoConferenceRequest) => {
     setSelectedConference(conference)
     setIsModalOpen(true)
   }
 
-  const startVideoConference = () => {
-    // Close the modal
-    setIsModalOpen(false)
-
-    if (selectedConference) {
-      // Generate a room ID if one doesn't exist
-      const roomId = selectedConference.roomId || generateRoomId()
-
-      // Update the conference status to active locally
-      const updatedConferences = conferences.map((conf) => {
-        if (conf._id === selectedConference._id) {
-          return { ...conf, status: "active", roomId: roomId }
-        }
-        return conf
-      })
-
-      setConferences(updatedConferences)
-      setCurrentRoom(roomId)
-      setIsJitsiOpen(true)
-
-      // Show success toast
-      setToastMessage("Conférence démarrée avec succès")
-      setToastColor("success")
-      setShowToast(true)
-    }
-  }
-
-  const joinVideoConference = (conference: VideoConferenceRequest) => {
-    setSelectedConference(conference)
-    setCurrentRoom(conference.roomId || "")
-    setIsJitsiOpen(true)
-  }
-
-  const endVideoConference = (conferenceId: string) => {
-    // Update the conference status to completed
-    const updatedConferences = conferences.map((conf) => {
-      if (conf._id === conferenceId) {
-        return { ...conf, status: "completed" }
-      }
-      return conf
-    })
-
-    setConferences(updatedConferences)
-
-    // Close Jitsi if it's the current conference
-    if (selectedConference && selectedConference._id === conferenceId) {
-      setIsJitsiOpen(false)
-      setCurrentRoom("")
-    }
-
-    // Show success toast
-    setToastMessage("Conférence terminée avec succès")
-    setToastColor("success")
-    setShowToast(true)
-  }
-
+  // The Jitsi close remains unchanged
   const handleJitsiClose = () => {
     setIsJitsiOpen(false)
     setCurrentRoom("")
@@ -187,6 +209,8 @@ const VideoConferenceManagement = () => {
   const openShareModal = () => {
     setShowShareModal(true)
   }
+
+  // --- Rendering functions remain similar ---
 
   const renderPendingRequests = () => (
     <div className="admin-conference-list">
@@ -229,27 +253,12 @@ const VideoConferenceManagement = () => {
               <div className="admin-conference-actions">
                 <button
                   className="admin-button secondary"
-                  onClick={() => {
-                    // Update the conference status to declined locally
-                    const updatedConferences = conferences.map((conf) => {
-                      if (conf._id === conference._id) {
-                        return { ...conf, status: "declined" }
-                      }
-                      return conf
-                    })
-
-                    setConferences(updatedConferences)
-
-                    // Show notification
-                    setToastMessage("Demande refusée")
-                    setToastColor("warning")
-                    setShowToast(true)
-                  }}
+                  onClick={() => refuseConference(conference)}
                 >
                   <IonIcon icon={closeCircleOutline} />
                   <span>Refuser</span>
                 </button>
-                <button className="admin-button primary" onClick={() => handleAcceptConference(conference)}>
+                <button className="admin-button primary" onClick={() => acceptConference(conference)}>
                   <IonIcon icon={checkmarkCircleOutline} />
                   <span>Accepter</span>
                 </button>
@@ -312,7 +321,7 @@ const VideoConferenceManagement = () => {
                   <IonIcon icon={callOutline} />
                   <span>Rejoindre</span>
                 </button>
-                <button className="admin-button secondary" onClick={() => endVideoConference(conference._id)}>
+                <button className="admin-button secondary" onClick={() => finishConference(conference)}>
                   <IonIcon icon={closeCircleOutline} />
                   <span>Terminer</span>
                 </button>
@@ -560,7 +569,7 @@ const VideoConferenceManagement = () => {
                   Annuler
                 </button>
                 {selectedConference.status !== "completed" && (
-                  <button className="admin-button primary" onClick={startVideoConference}>
+                  <button className="admin-button primary" onClick={() => acceptConference(selectedConference)}>
                     {selectedConference.status === "active" ? "Rejoindre la conférence" : "Démarrer la conférence"}
                   </button>
                 )}
