@@ -159,7 +159,7 @@ const AuthenticationSecurity: React.FC = () => {
     <IonPage>
       <div className="admin-dashboard-layout">
         {/* Sidebar Component */}
-        <SidebarAdmin currentPage="Security" />
+        <SidebarAdmin currentPage="Sécurité" />
 
         {/* Main Content */}
         <div className="admin-dashboard-content">

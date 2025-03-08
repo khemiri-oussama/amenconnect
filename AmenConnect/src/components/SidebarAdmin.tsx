@@ -1,8 +1,9 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import { IonImg, IonIcon } from "@ionic/react"
 import { useHistory } from "react-router-dom"
+import axios from "axios"
 import {
   homeOutline,
   peopleOutline,
@@ -13,6 +14,7 @@ import {
   desktopOutline,
 } from "ionicons/icons"
 import "./SidebarAdmin.css"
+
 interface SidebarAdminProps {
   currentPage: string
 }
@@ -29,9 +31,14 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ currentPage }) => {
     { title: "Totems", icon: desktopOutline, path: "/admin/InteractiveTotemManagement" },
   ]
 
-  const handleLogout = () => {
-    // Add your logout logic here
-    history.push("/admin/login")
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/admin/logout", {}, { withCredentials: true })
+      window.location.href ="/admin/login"
+    } catch (error) {
+      console.error("Logout error:", error)
+      // Optionally, display an error message to the user here
+    }
   }
 
   return (
@@ -64,4 +71,3 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ currentPage }) => {
 }
 
 export default SidebarAdmin
-
