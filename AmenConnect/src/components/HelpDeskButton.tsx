@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import {
   IonButton,
   IonIcon,
@@ -19,7 +18,13 @@ import {
   IonInput,
   IonText,
 } from "@ionic/react"
-import { chatbubbleEllipsesOutline, closeOutline, videocamOutline, sendOutline, arrowBackOutline } from "ionicons/icons"
+import {
+  chatbubbleEllipsesOutline,
+  closeOutline,
+  videocamOutline,
+  sendOutline,
+  arrowBackOutline,
+} from "ionicons/icons"
 import "./HelpDeskButton.css"
 
 interface Message {
@@ -29,9 +34,9 @@ interface Message {
 
 const HelpDeskButton: React.FC = () => {
   const [showModal, setShowModal] = useState(false)
-  const [activeOption, setActiveOption] = useState<"main" | "chat" | "video" | "video-form" | "waiting-approval">(
-    "main",
-  )
+  const [activeOption, setActiveOption] = useState<
+    "main" | "chat" | "video" | "video-form" | "waiting-approval"
+  >("main")
   const [messages, setMessages] = useState<Message[]>([
     { content: "Bonjour ! Comment puis-je vous aider aujourd'hui ?", sender: "bot" },
   ])
@@ -45,10 +50,12 @@ const HelpDeskButton: React.FC = () => {
     phone: "",
   })
 
-  // Add scroll listener to handle visibility
+  // Optionally, you can store the generated roomId from the API
+  const [roomId, setRoomId] = useState<string | null>(null)
+
+  // Keep the button visible on scroll
   useEffect(() => {
     const handleScroll = () => {
-      // Always keep the button visible
       setIsVisible(true)
     }
 
@@ -81,7 +88,8 @@ const HelpDeskButton: React.FC = () => {
       setMessages((prev) => [
         ...prev,
         {
-          content: "Merci pour votre message. Un de nos conseillers va vous répondre dans les plus brefs délais.",
+          content:
+            "Merci pour votre message. Un de nos conseillers va vous répondre dans les plus brefs délais.",
           sender: "bot",
         },
       ])
@@ -101,23 +109,50 @@ const HelpDeskButton: React.FC = () => {
     }))
   }
 
-  const handleFormSubmit = () => {
-    // Here you would typically send the form data to your backend
-    console.log("Form submitted:", formData)
+  const handleFormSubmit = async () => {
+    // Optional: reset any previous roomId
+    setRoomId(null)
+    
+    try {
+      // Change to waiting approval state
+      setActiveOption("waiting-approval")
 
-    // Change to waiting approval state
-    setActiveOption("waiting-approval")
+      // Send a POST request to your backend API
+      const response = await fetch("/api/video-requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      
 
-    // Simulate admin response after 5 seconds (in a real app, this would be a websocket or polling)
-    setTimeout(() => {
-      setConnecting(true)
-      setActiveOption("video")
+      if (!response.ok) {
+        throw new Error("Erreur lors de la soumission de la demande.")
+      }
 
-      // Simulate connection
+      const data = await response.json()
+      console.log("Demande de vidéoconférence créée:", data)
+
+      // Save the roomId returned from the API if needed
+      if (data.request && data.request.roomId) {
+        setRoomId(data.request.roomId)
+      }
+
+      // Simulate admin response after 5 seconds (replace with real logic as needed)
       setTimeout(() => {
-        setConnecting(false)
-      }, 3000)
-    }, 5000)
+        setConnecting(true)
+        setActiveOption("video")
+
+        // Simulate connection established after 3 seconds
+        setTimeout(() => {
+          setConnecting(false)
+        }, 3000)
+      }, 5000)
+    } catch (error) {
+      console.error("Erreur lors de la soumission de la demande:", error)
+      // Optionally, show an error message to the user here
+    }
   }
 
   const renderContent = () => {
@@ -145,7 +180,9 @@ const HelpDeskButton: React.FC = () => {
                 {messages.map((message, index) => (
                   <div
                     key={index}
-                    className={`help-desk-message ${message.sender === "user" ? "help-desk-message-user" : "help-desk-message-bot"}`}
+                    className={`help-desk-message ${
+                      message.sender === "user" ? "help-desk-message-user" : "help-desk-message-bot"
+                    }`}
                   >
                     {message.content}
                   </div>
@@ -209,6 +246,12 @@ const HelpDeskButton: React.FC = () => {
                   <IonText color="medium" className="help-desk-video-subtitle">
                     Cliquez sur le bouton ci-dessous pour démarrer la vidéoconférence
                   </IonText>
+                  {/* Optionally, you can pass the roomId to your video conferencing component */}
+                  {roomId && (
+                    <IonText color="medium" className="help-desk-video-room">
+                      Salle: {roomId}
+                    </IonText>
+                  )}
                   <IonButton className="help-desk-start-video-button" onClick={startVideoCall}>
                     Démarrer la vidéoconférence
                   </IonButton>
@@ -383,4 +426,3 @@ const HelpDeskButton: React.FC = () => {
 }
 
 export default HelpDeskButton
-
