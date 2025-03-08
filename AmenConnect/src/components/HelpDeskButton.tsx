@@ -1,5 +1,5 @@
 "use client"
-
+import { v4 as uuidv4 } from "uuid";
 import React, { useState, useEffect } from "react"
 import {
   IonButton,
@@ -109,51 +109,56 @@ const HelpDeskButton: React.FC = () => {
     }))
   }
 
+
+
   const handleFormSubmit = async () => {
-    // Optional: reset any previous roomId
-    setRoomId(null)
+        // Optionally, reset any previous roomId in state
+        setRoomId(null);
+    // Generate a unique roomId on the front-end
+    const newRoomId = uuidv4();
+  
+    // Include the roomId in your formData payload
+    const payload = { ...formData, roomId: newRoomId };
+  
+
     
     try {
       // Change to waiting approval state
-      setActiveOption("waiting-approval")
-
-      // Send a POST request to your backend API
+      setActiveOption("waiting-approval");
+  
+      // Send a POST request to your backend API with the roomId included
       const response = await fetch("/api/video-requests", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
       
-
       if (!response.ok) {
-        throw new Error("Erreur lors de la soumission de la demande.")
+        throw new Error("Erreur lors de la soumission de la demande.");
       }
-
-      const data = await response.json()
-      console.log("Demande de vidéoconférence créée:", data)
-
-      // Save the roomId returned from the API if needed
-      if (data.request && data.request.roomId) {
-        setRoomId(data.request.roomId)
-      }
-
+  
+      const data = await response.json();
+      console.log("Demande de vidéoconférence créée:", data);
+  
+  
       // Simulate admin response after 5 seconds (replace with real logic as needed)
       setTimeout(() => {
-        setConnecting(true)
-        setActiveOption("video")
-
+        setConnecting(true);
+        setActiveOption("video");
+  
         // Simulate connection established after 3 seconds
         setTimeout(() => {
-          setConnecting(false)
-        }, 3000)
-      }, 5000)
+          setConnecting(false);
+        }, 3000);
+      }, 5000);
     } catch (error) {
-      console.error("Erreur lors de la soumission de la demande:", error)
+      console.error("Erreur lors de la soumission de la demande:", error);
       // Optionally, show an error message to the user here
     }
-  }
+  };
+  
 
   const renderContent = () => {
     switch (activeOption) {

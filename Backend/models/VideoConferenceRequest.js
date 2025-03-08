@@ -28,7 +28,6 @@ const VideoConferenceRequestSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    default: uuidv4, // This will generate a unique roomId automatically
   },
   status: {
     type: String,
