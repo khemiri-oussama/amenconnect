@@ -1,0 +1,505 @@
+@import "../Dashboard/Dashboard.css";
+
+/* Conference List Styles */
+.admin-conference-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-conference-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-conference-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-conference-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-conference-card.active-card {
+  border-left: 4px solid #2fff59;
+}
+
+.admin-conference-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-conference-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #fee2e2;
+  color: #ef4444;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.admin-conference-icon.active {
+  background-color: rgba(47, 255, 89, 0.15);
+  color: #16a34a;
+}
+
+.admin-conference-title {
+  flex: 1;
+}
+
+.admin-conference-title h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.admin-conference-id {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.admin-conference-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-conference-badge.pending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.admin-conference-badge.active {
+  background-color: rgba(47, 255, 89, 0.15);
+  color: #16a34a;
+}
+
+.admin-conference-details {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-conference-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.admin-conference-detail ion-icon {
+  font-size: 1rem;
+}
+
+.admin-conference-actions {
+  padding: 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+  border-top: 1px solid #e2e8f0;
+}
+
+.admin-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  flex: 1;
+}
+
+.admin-button.primary {
+  background-color: #1e293b;
+  color: white;
+}
+
+.admin-button.primary:hover {
+  background-color: #334155;
+}
+
+.admin-button.secondary {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.admin-button.secondary:hover {
+  background-color: #e2e8f0;
+}
+
+/* No Results */
+.admin-no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.admin-no-results-icon {
+  width: 60px;
+  height: 60px;
+  background-color: #f1f5f9;
+  color: #64748b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-no-results h3 {
+  margin: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.admin-no-results p {
+  margin: 0;
+  color: #64748b;
+  max-width: 400px;
+}
+
+/* Modal Styles */
+.admin-conference-details-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-detail-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-detail-group label {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.admin-detail-group span {
+  color: #1e293b;
+}
+
+.admin-copy-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-copy-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #1e293b;
+}
+
+.admin-copy-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-copy-button:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.admin-participants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.admin-participant-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f8fafc;
+  border-radius: 4px;
+  color: #1e293b;
+}
+
+.admin-share-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-share-instructions {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.admin-share-icon {
+  font-size: 1.5rem;
+  color: #64748b;
+}
+
+.admin-share-instructions p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.admin-share-close-button {
+  margin-top: 1rem;
+}
+
+/* Jitsi Meet Styles */
+.admin-jitsi-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #1e293b;
+}
+
+.admin-jitsi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: #1e293b;
+  color: white;
+  z-index: 10;
+}
+
+.admin-jitsi-back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.admin-jitsi-back-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-jitsi-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-jitsi-control-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.admin-jitsi-control-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-jitsi-room-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-jitsi-room-name {
+  font-weight: 500;
+}
+
+.admin-jitsi-participants {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.jitsi-meet-container {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.jitsi-meet-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.jitsi-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1e293b;
+  color: white;
+  z-index: 5;
+}
+
+.jitsi-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: jitsi-spinner 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes jitsi-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.jitsi-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1e293b;
+  color: white;
+  z-index: 5;
+  padding: 2rem;
+  text-align: center;
+}
+
+.jitsi-error-icon {
+  width: 48px;
+  height: 48px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.jitsi-error-icon:before,
+.jitsi-error-icon:after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 4px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+.jitsi-error-icon:before {
+  transform: rotate(45deg);
+}
+
+.jitsi-error-icon:after {
+  transform: rotate(-45deg);
+}
+
+.jitsi-retry-button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: white;
+  color: #1e293b;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.jitsi-retry-button:hover {
+  background-color: #f1f5f9;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .admin-conference-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-conference-actions {
+    flex-direction: column;
+  }
+
+  .admin-button {
+    width: 100%;
+  }
+
+  .admin-jitsi-back-button span,
+  .admin-jitsi-control-button span {
+    display: none;
+  }
+
+  .admin-jitsi-room-name {
+    display: none;
+  }
+}
+
