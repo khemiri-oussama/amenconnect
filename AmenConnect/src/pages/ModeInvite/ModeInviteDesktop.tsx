@@ -47,7 +47,6 @@ import ContactUs from "../../components/modeInviteComponents/contact-us"
 import SicavEtBourse from "../../components/modeInviteComponents/sicav-et-bourse"
 import Informations from "../../components/modeInviteComponents/informations"
 import NosOffres from "../../components/modeInviteComponents/nos-offres"
-import HelpDeskButton from "../../components/HelpDeskButton"
 
 const ModeInviteDesktop: React.FC = () => {
   const contentRef = useRef<HTMLIonContentElement | null>(null)
@@ -236,7 +235,6 @@ const ModeInviteDesktop: React.FC = () => {
           <IonContent className="ion-padding">{renderModalContent()}</IonContent>
         </IonModal>
 
-        <HelpDeskButton />
       </IonContent>
     </IonPage>
   )
