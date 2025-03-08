@@ -51,7 +51,7 @@ const UserManagement = lazy(() => import('./pages/Admin/Gestion Utilisateur/User
 const SurveillanceMonitoring = lazy(() => import('./pages/Admin/SurveillanceMonitoring/SurveillanceMonitoring'));
 const PermissionsManagement = lazy(() => import('./pages/Admin/Permissions/permissionsManagement'));
 const AuthenticationSecurity = lazy(() => import('./pages/Admin/AuthenticationSecurity/AuthenticationSecurity'));
-const InteractiveTotemManagement = lazy(() => import('./pages/Admin/Gestion des Totem/InteractiveTotemManagement'));
+const InteractiveTotemManagement = lazy(() => import('./pages/Admin/GestiondesTotem/InteractiveTotemManagement'));
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, pendingUser } = useAuth();
