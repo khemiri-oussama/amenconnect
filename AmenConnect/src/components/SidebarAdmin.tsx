@@ -1,17 +1,17 @@
 "use client"
 
-import React from "react"
+import type React from "react"
 import { IonImg, IonIcon } from "@ionic/react"
 import { useHistory } from "react-router-dom"
 import axios from "axios"
 import {
   homeOutline,
   peopleOutline,
-  swapHorizontalOutline,
   settingsOutline,
   logOutOutline,
   shieldOutline,
   desktopOutline,
+  videocamOutline,
 } from "ionicons/icons"
 import "./SidebarAdmin.css"
 
@@ -29,12 +29,13 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ currentPage }) => {
     { title: "Permissions", icon: settingsOutline, path: "/admin/PermissionsManagement" },
     { title: "Sécurité", icon: shieldOutline, path: "/admin/AuthenticationSecurity" },
     { title: "Totems", icon: desktopOutline, path: "/admin/InteractiveTotemManagement" },
+    { title: "Visioconférence", icon: videocamOutline, path: "/admin/VideoConferenceManagement" },
   ]
 
   const handleLogout = async () => {
     try {
       await axios.post("/api/admin/logout", {}, { withCredentials: true })
-      window.location.href ="/admin/login"
+      window.location.href = "/admin/login"
     } catch (error) {
       console.error("Logout error:", error)
       // Optionally, display an error message to the user here
@@ -71,3 +72,4 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ currentPage }) => {
 }
 
 export default SidebarAdmin
+
