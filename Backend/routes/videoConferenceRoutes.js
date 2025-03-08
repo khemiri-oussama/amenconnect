@@ -5,4 +5,6 @@ const videoConferenceController = require("../controllers/videoConferenceControl
 // Route pour créer une nouvelle demande de vidéoconférence
 router.post("/", videoConferenceController.createVideoConferenceRequest);
 
+
+router.get("/", videoConferenceController.getVideoConferenceRequests);
 module.exports = router;
