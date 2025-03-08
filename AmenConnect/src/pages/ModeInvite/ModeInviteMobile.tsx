@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import {
   IonContent,
   IonPage,
@@ -42,6 +42,14 @@ import {
   arrowBackOutline,
 } from "ionicons/icons"
 import "./ModeInviteMobile.css"
+import CurrencyExchange from "./CurrencyExchange"
+import CreditSimulator from "./CreditSimulator"
+import ContactInfo from "./ContactInfo"
+import AboutSection from "./AboutSection"
+import ContactUs from "./contact-us"
+import SicavEtBourse from "./sicav-et-bourse"
+import Informations from "./informations"
+import NosOffres from "./nos-offres"
 
 const ModeInviteMobile: React.FC = () => {
   const history = useHistory()
@@ -50,6 +58,35 @@ const ModeInviteMobile: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState<string | null>(null)
   const [showMenu, setShowMenu] = useState(false)
   const pageRef = useRef<HTMLElement | null>(null)
+  const contentRef = useRef<HTMLIonContentElement | null>(null)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollElement = contentRef.current?.shadowRoot?.querySelector(".inner-scroll")
+      if (scrollElement) {
+        const scrollPosition = scrollElement.scrollTop
+        const windowHeight = window.innerHeight
+
+        document.querySelectorAll(".fade-in-section").forEach((element) => {
+          const rect = (element as HTMLElement).getBoundingClientRect()
+          const elementTop = rect.top + scrollPosition
+          const elementVisible = 150
+
+          if (elementTop < scrollPosition + windowHeight - elementVisible) {
+            element.classList.add("is-visible")
+          } else {
+            element.classList.remove("is-visible")
+          }
+        })
+      }
+    }
+
+    contentRef.current?.addEventListener("ionScroll", handleScroll)
+
+    return () => {
+      contentRef.current?.removeEventListener("ionScroll", handleScroll)
+    }
+  }, [])
 
   const handleBackToHome = () => {
     history.push("/")
@@ -73,12 +110,40 @@ const ModeInviteMobile: React.FC = () => {
     setShowModal(true)
   }
 
+  const renderModalContent = () => {
+    switch (selectedSection) {
+      case "Devises":
+        return <CurrencyExchange />
+      case "Simulateur de crédit":
+        return <CreditSimulator />
+      case "Adresses et contacts":
+        return <ContactInfo />
+      case "À propos":
+        return <AboutSection />
+      case "Nous contacter":
+        return <ContactUs />
+      case "Sicav et Bourse":
+        return <SicavEtBourse />
+      case "Informations":
+        return <Informations />
+      case "Nos offres":
+        return <NosOffres />
+      default:
+        return (
+          <div>
+            <p>Contenu détaillé pour {selectedSection}</p>
+            <p>Cette section est en cours de développement.</p>
+          </div>
+        )
+    }
+  }
+
   return (
-    <IonPage ref={pageRef} className="mode-invite-mobile dark">
-      <IonHeader>
+    <IonPage ref={pageRef} className="mode-invite-mobile">
+      <IonHeader className="ion-no-border">
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => history.push("/home")}>
+            <IonButton onClick={handleBackToHome}>
               <IonIcon slot="icon-only" icon={arrowBackOutline} />
             </IonButton>
             <IonButton onClick={() => setShowMenu(true)}>
@@ -94,7 +159,7 @@ const ModeInviteMobile: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen>
+      <IonContent ref={contentRef} fullscreen scrollEvents={true}>
         <div className="mode-invite-mobile-content">
           <IonImg src="/amen_logo.png" alt="Amen Bank Logo" className="mode-invite-mobile-logo" />
           <h1 className="mode-invite-mobile-title">Bienvenue chez Amen Bank</h1>
@@ -107,7 +172,11 @@ const ModeInviteMobile: React.FC = () => {
 
           <div className="mode-invite-mobile-grid">
             {filteredSections.map((section, index) => (
-              <IonCard key={index} className="mode-invite-mobile-card" onClick={() => openModal(section.title)}>
+              <IonCard
+                key={index}
+                className={`mode-invite-mobile-card animate-staggered delay-${index}`}
+                onClick={() => openModal(section.title)}
+              >
                 <IonCardHeader>
                   <IonIcon icon={section.icon} color={section.color} className="mode-invite-mobile-card-icon" />
                   <IonCardTitle>{section.title}</IonCardTitle>
@@ -129,7 +198,7 @@ const ModeInviteMobile: React.FC = () => {
       </IonFooter>
 
       <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} className="mode-invite-mobile-modal">
-        <IonHeader>
+        <IonHeader className="ion-no-border">
           <IonToolbar>
             <IonButtons slot="start">
               <IonBackButton defaultHref="#" onClick={() => setShowModal(false)} />
@@ -142,14 +211,11 @@ const ModeInviteMobile: React.FC = () => {
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="ion-padding">
-          <p>Contenu détaillé pour {selectedSection}</p>
-          {/* Add more detailed content here based on the selected section */}
-        </IonContent>
+        <IonContent className="ion-padding">{renderModalContent()}</IonContent>
       </IonModal>
 
       <IonModal isOpen={showMenu} onDidDismiss={() => setShowMenu(false)} className="mode-invite-mobile-menu">
-        <IonHeader>
+        <IonHeader className="ion-no-border">
           <IonToolbar>
             <IonTitle>Menu</IonTitle>
             <IonButtons slot="end">
