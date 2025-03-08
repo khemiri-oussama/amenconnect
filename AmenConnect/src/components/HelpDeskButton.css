@@ -1,4 +1,19 @@
 /* Help Desk Floating Button */
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .help-desk-floating-button {
   --border-radius: 50%;
   --background: var(--ion-color-primary);
@@ -11,8 +26,9 @@
   width: 60px;
   height: 60px;
   margin: 0;
-  z-index: 1000;
+  z-index: 9999;
   transition: transform 0.3s ease;
+  animation: bounce-in 0.5s ease-out;
 }
 
 .help-desk-floating-button:hover {
