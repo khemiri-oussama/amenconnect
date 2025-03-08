@@ -42,14 +42,14 @@ import {
   arrowBackOutline,
 } from "ionicons/icons"
 import "./ModeInviteMobile.css"
-import CurrencyExchange from "./CurrencyExchange"
-import CreditSimulator from "./CreditSimulator"
-import ContactInfo from "./ContactInfo"
-import AboutSection from "./AboutSection"
-import ContactUs from "./contact-us"
-import SicavEtBourse from "./sicav-et-bourse"
-import Informations from "./informations"
-import NosOffres from "./nos-offres"
+import CurrencyExchange from "../../components/modeInviteComponents/CurrencyExchange"
+import CreditSimulator from "../../components/modeInviteComponents/CreditSimulator"
+import ContactInfo from "../../components/modeInviteComponents/ContactInfo"
+import AboutSection from "../../components/modeInviteComponents/AboutSection"
+import ContactUs from "../../components/modeInviteComponents/contact-us"
+import SicavEtBourse from "../../components/modeInviteComponents/sicav-et-bourse"
+import Informations from "../../components/modeInviteComponents/informations"
+import NosOffres from "../../components/modeInviteComponents/nos-offres"
 
 const ModeInviteMobile: React.FC = () => {
   const history = useHistory()

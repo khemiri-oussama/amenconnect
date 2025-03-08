@@ -1,5 +1,6 @@
 import type React from "react"
 import { useEffect, useRef } from "react"
+import HelpDeskButton from "../components/HelpDeskButton"
 import {
   IonContent,
   IonPage,
@@ -197,6 +198,7 @@ const HomeDesktop: React.FC = () => {
                   innovants et sécurisés.
                 </p>
               </div>
+              <HelpDeskButton />
               <div className="home-desktop-footer-section">
                 <h3>Contactez-nous</h3>
                 <p>Email: contact@amenbank.com</p>
