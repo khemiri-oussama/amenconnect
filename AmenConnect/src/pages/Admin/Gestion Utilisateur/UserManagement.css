@@ -1,3 +1,5 @@
+@import "../GestiondesTotem/InteractiveTotemManagement.css";
+@import "../Dashboard/Dashboard.css";
 /* User List Styles */
 .admin-user-list {
   display: flex;
