@@ -48,6 +48,7 @@ import ContactUs from "../../components/modeInviteComponents/contact-us"
 import SicavEtBourse from "../../components/modeInviteComponents/sicav-et-bourse"
 import Informations from "../../components/modeInviteComponents/informations"
 import NosOffres from "../../components/modeInviteComponents/nos-offres"
+import HelpDeskButton from "../../components/HelpDeskButton"
 
 const ModeInviteKiosk: React.FC = () => {
   const history = useHistory()
@@ -269,7 +270,7 @@ const ModeInviteKiosk: React.FC = () => {
                 <IonText className="kiosk-copyright">© 2025 Amen Bank. Tous droits réservés.</IonText>
               </footer>
             </div>
-
+            <HelpDeskButton />
             <IonButton fill="clear" className="kiosk-back-button" onClick={handleBackToHome}>
               Retour à l'accueil
             </IonButton>
