@@ -1,6 +1,18 @@
 // controllers/videoConferenceController.js
 const VideoConferenceRequest = require("../models/VideoConferenceRequest");
 
+exports.getVideoConferenceRequests = async (req, res, next) => {
+    try {
+      const requests = await VideoConferenceRequest.find().sort({ createdAt: -1 });
+      res.status(200).json({
+        message: "Video conference requests retrieved successfully.",
+        requests,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
 exports.createVideoConferenceRequest = async (req, res, next) => {
   try {
     const { name, email, subject, phone } = req.body;
