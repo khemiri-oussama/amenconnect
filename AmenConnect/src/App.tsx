@@ -51,6 +51,7 @@ const SurveillanceMonitoring = lazy(() => import('./pages/Admin/SurveillanceMoni
 const PermissionsManagement = lazy(() => import('./pages/Admin/Permissions/permissionsManagement'));
 const AuthenticationSecurity = lazy(() => import('./pages/Admin/AuthenticationSecurity/AuthenticationSecurity'));
 const InteractiveTotemManagement = lazy(() => import('./pages/Admin/GestiondesTotem/InteractiveTotemManagement'));
+const VideoConferenceManagement = lazy(() => import('./pages/Admin/videoconfmanage/videoconfmanage'));
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, pendingUser } = useAuth();
@@ -158,6 +159,12 @@ const AppContent: React.FC = () => {
             component={InteractiveTotemManagement}
             isAuthenticated={adminAuthenticated}
           />
+          <AdminPrivateRoute
+            path="/admin/VideoConferenceManagement"
+            component={VideoConferenceManagement}
+            isAuthenticated={adminAuthenticated}
+          />
+
 
           <Route exact path="/" render={() => <Redirect to="/home" />} />
         </IonRouterOutlet>
