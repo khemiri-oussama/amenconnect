@@ -29,13 +29,21 @@ interface Message {
 
 const HelpDeskButton: React.FC = () => {
   const [showModal, setShowModal] = useState(false)
-  const [activeOption, setActiveOption] = useState<"main" | "chat" | "video">("main")
+  const [activeOption, setActiveOption] = useState<"main" | "chat" | "video" | "video-form" | "waiting-approval">(
+    "main",
+  )
   const [messages, setMessages] = useState<Message[]>([
     { content: "Bonjour ! Comment puis-je vous aider aujourd'hui ?", sender: "bot" },
   ])
   const [inputValue, setInputValue] = useState("")
   const [connecting, setConnecting] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    phone: "",
+  })
 
   // Add scroll listener to handle visibility
   useEffect(() => {
@@ -83,11 +91,33 @@ const HelpDeskButton: React.FC = () => {
   }
 
   const startVideoCall = () => {
-    setConnecting(true)
-    // Simulate connection delay
+    setActiveOption("video-form")
+  }
+
+  const handleFormChange = (field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
+
+  const handleFormSubmit = () => {
+    // Here you would typically send the form data to your backend
+    console.log("Form submitted:", formData)
+
+    // Change to waiting approval state
+    setActiveOption("waiting-approval")
+
+    // Simulate admin response after 5 seconds (in a real app, this would be a websocket or polling)
     setTimeout(() => {
-      setConnecting(false)
-    }, 3000)
+      setConnecting(true)
+      setActiveOption("video")
+
+      // Simulate connection
+      setTimeout(() => {
+        setConnecting(false)
+      }, 3000)
+    }, 5000)
   }
 
   const renderContent = () => {
@@ -184,6 +214,116 @@ const HelpDeskButton: React.FC = () => {
                   </IonButton>
                 </div>
               )}
+            </IonContent>
+          </>
+        )
+
+      case "video-form":
+        return (
+          <>
+            <IonHeader>
+              <IonToolbar>
+                <IonButtons slot="start">
+                  <IonButton onClick={() => setActiveOption("main")}>
+                    <IonIcon icon={arrowBackOutline} />
+                  </IonButton>
+                </IonButtons>
+                <IonTitle>Demande de vidéoconférence</IonTitle>
+                <IonButtons slot="end">
+                  <IonButton onClick={handleCloseModal}>
+                    <IonIcon icon={closeOutline} />
+                  </IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent className="help-desk-video-content">
+              <div className="help-desk-form-container">
+                <IonText color="dark" className="help-desk-video-title">
+                  Vos informations
+                </IonText>
+                <IonText color="medium" className="help-desk-video-subtitle">
+                  Veuillez remplir ce formulaire pour être mis en relation avec un conseiller
+                </IonText>
+
+                <div className="help-desk-form">
+                  <div className="help-desk-form-field">
+                    <IonText color="medium">Nom & prénom</IonText>
+                    <IonInput
+                      value={formData.name}
+                      onIonChange={(e) => handleFormChange("name", e.detail.value || "")}
+                      placeholder="John Doe"
+                      className="help-desk-form-input"
+                    />
+                  </div>
+
+                  <div className="help-desk-form-field">
+                    <IonText color="medium">Email</IonText>
+                    <IonInput
+                      type="email"
+                      value={formData.email}
+                      onIonChange={(e) => handleFormChange("email", e.detail.value || "")}
+                      placeholder="john@example.com"
+                      className="help-desk-form-input"
+                    />
+                  </div>
+
+                  <div className="help-desk-form-field">
+                    <IonText color="medium">Sujet</IonText>
+                    <IonInput
+                      value={formData.subject}
+                      onIonChange={(e) => handleFormChange("subject", e.detail.value || "")}
+                      placeholder="Renseignement produit"
+                      className="help-desk-form-input"
+                    />
+                  </div>
+
+                  <div className="help-desk-form-field">
+                    <IonText color="medium">Téléphone</IonText>
+                    <IonInput
+                      type="tel"
+                      value={formData.phone}
+                      onIonChange={(e) => handleFormChange("phone", e.detail.value || "")}
+                      placeholder="12345678"
+                      className="help-desk-form-input"
+                    />
+                  </div>
+
+                  <IonButton
+                    className="help-desk-submit-button"
+                    onClick={handleFormSubmit}
+                    disabled={!formData.name || !formData.email || !formData.subject || !formData.phone}
+                  >
+                    Soumettre la demande
+                  </IonButton>
+                </div>
+              </div>
+            </IonContent>
+          </>
+        )
+
+      case "waiting-approval":
+        return (
+          <>
+            <IonHeader>
+              <IonToolbar>
+                <IonTitle>En attente d'approbation</IonTitle>
+                <IonButtons slot="end">
+                  <IonButton onClick={handleCloseModal}>
+                    <IonIcon icon={closeOutline} />
+                  </IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent className="help-desk-video-content">
+              <div className="help-desk-connecting">
+                <IonSpinner name="crescent" className="help-desk-spinner" />
+                <IonText color="primary" className="help-desk-waiting-title">
+                  Demande en cours de traitement
+                </IonText>
+                <IonText color="medium" className="help-desk-waiting-subtitle">
+                  Un conseiller va examiner votre demande. Veuillez patienter...
+                </IonText>
+              </div>
             </IonContent>
           </>
         )
