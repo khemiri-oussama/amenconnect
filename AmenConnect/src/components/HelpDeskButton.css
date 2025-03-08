@@ -1,0 +1,261 @@
+/* Help Desk Floating Button */
+.help-desk-floating-button {
+  --border-radius: 50%;
+  --background: var(--ion-color-primary);
+  --background-hover: var(--ion-color-primary-shade);
+  --color: #ffffff;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  margin: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.help-desk-floating-button:hover {
+  transform: scale(1.05);
+}
+
+.help-desk-floating-button ion-icon {
+  font-size: 24px;
+}
+
+/* Help Desk Modal */
+.help-desk-modal {
+  --width: 90%;
+  --max-width: 400px;
+  --height: 500px;
+  --border-radius: 16px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  font-family: "Outfit", sans-serif;
+}
+
+.help-desk-modal ion-header ion-toolbar {
+  --background: var(--ion-background-color);
+  --color: var(--ion-text-color);
+  --border-color: rgba(18, 22, 96, 0.1);
+}
+
+.help-desk-modal ion-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ion-text-color);
+}
+
+/* Options Content */
+.help-desk-options-content {
+  --background: var(--ion-background-color);
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+}
+
+.help-desk-option-card {
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.help-desk-option-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+.help-desk-option-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgba(71, 206, 101, 0.1);
+  margin-bottom: 1rem;
+}
+
+.help-desk-option-icon {
+  font-size: 24px;
+  color: var(--ion-color-primary);
+}
+
+.help-desk-option-card ion-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ion-text-color);
+  margin-bottom: 0.5rem;
+}
+
+.help-desk-option-card ion-card-content {
+  color: rgba(18, 22, 96, 0.7);
+  font-size: 0.9rem;
+  padding-top: 0;
+}
+
+/* Chat Content */
+.help-desk-chat-content {
+  --background: var(--ion-background-color);
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.help-desk-messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  padding-bottom: 60px;
+}
+
+.help-desk-message {
+  max-width: 80%;
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  margin-bottom: 0.75rem;
+  word-wrap: break-word;
+}
+
+.help-desk-message-bot {
+  background-color: rgba(18, 22, 96, 0.05);
+  color: var(--ion-text-color);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.help-desk-message-user {
+  background-color: var(--ion-color-primary);
+  color: #ffffff;
+  align-self: flex-end;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.help-desk-input-container {
+  display: flex;
+  align-items: center;
+  background-color: rgba(18, 22, 96, 0.05);
+  border-radius: 24px;
+  padding: 0.25rem 0.5rem;
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 10;
+}
+
+.help-desk-input {
+  --background: transparent;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --placeholder-color: rgba(18, 22, 96, 0.5);
+  --placeholder-opacity: 1;
+}
+
+.help-desk-send-button {
+  --color: var(--ion-color-primary);
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+  margin: 0;
+}
+
+/* Video Content */
+.help-desk-video-content {
+  --background: var(--ion-background-color);
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.help-desk-connecting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.help-desk-spinner {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+}
+
+.help-desk-video-ready {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  background-color: rgba(18, 22, 96, 0.05);
+  border-radius: 16px;
+  width: 100%;
+}
+
+.help-desk-video-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: rgba(71, 206, 101, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.help-desk-video-icon {
+  font-size: 40px;
+  color: var(--ion-color-primary);
+}
+
+.help-desk-video-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.help-desk-video-subtitle {
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.help-desk-start-video-button {
+  --background: var(--ion-color-primary);
+  --background-hover: var(--ion-color-primary-shade);
+  --color: #ffffff;
+  --border-radius: 24px;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .help-desk-floating-button {
+    width: 50px;
+    height: 50px;
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+
+  .help-desk-floating-button ion-icon {
+    font-size: 20px;
+  }
+
+  .help-desk-modal {
+    --width: 100%;
+    --height: 100%;
+    --border-radius: 0;
+  }
+}
+
