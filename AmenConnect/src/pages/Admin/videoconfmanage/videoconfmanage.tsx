@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { IonPage, IonIcon, IonSearchbar, IonModal, IonToast } from "@ionic/react"
 import {
   videocamOutline,
@@ -44,69 +44,43 @@ const VideoConferenceManagement = () => {
   const [toastMessage, setToastMessage] = useState("")
   const [toastColor, setToastColor] = useState("success")
   const [showShareModal, setShowShareModal] = useState(false)
-  const [conferences, setConferences] = useState([
-    {
-      id: "VC001",
-      clientName: "John Doe",
-      clientEmail: "john@example.com",
-      requestTime: "2025-03-08T10:30:00",
-      status: "pending",
-      subject: "Product Inquiry",
-      roomId: "product-inquiry-001",
-    },
-    {
-      id: "VC002",
-      clientName: "Jane Smith",
-      clientEmail: "jane@example.com",
-      requestTime: "2025-03-08T11:15:00",
-      status: "active",
-      subject: "Technical Support",
-      roomId: "tech-support-002",
-    },
-    {
-      id: "VC003",
-      clientName: "Bob Johnson",
-      clientEmail: "bob@example.com",
-      requestTime: "2025-03-08T09:45:00",
-      status: "pending",
-      subject: "Account Issues",
-      roomId: "account-issues-003",
-    },
-    {
-      id: "VC004",
-      clientName: "Alice Williams",
-      clientEmail: "alice@example.com",
-      requestTime: "2025-03-07T14:30:00",
-      status: "completed",
-      subject: "Billing Question",
-      roomId: "billing-question-004",
-    },
-    {
-      id: "VC005",
-      clientName: "Charlie Brown",
-      clientEmail: "charlie@example.com",
-      requestTime: "2025-03-07T16:00:00",
-      status: "completed",
-      subject: "Product Demo",
-      roomId: "product-demo-005",
-    },
-  ])
+  const [conferences, setConferences] = useState([])
+
+  // Fetch video conference requests from the backend API when the component mounts
+  useEffect(() => {
+    const fetchVideoConferenceRequests = async () => {
+      try {
+        const response = await fetch("/api/video-requests", {
+          credentials: "include", // Include credentials if needed
+        })
+        if (!response.ok) {
+          throw new Error("Network response was not ok")
+        }
+        const data = await response.json()
+        setConferences(data.requests)
+      } catch (error) {
+        console.error("Error fetching video conference requests:", error)
+      }
+    }
+
+    fetchVideoConferenceRequests()
+  }, [])
 
   if (authLoading) {
     return <div className="admin-loading">Loading...</div>
   }
 
   const filteredConferences = conferences.filter((conference) => {
-    // Filter by tab
+    // Filter by tab using the API fields
     if (activeTab === "pending" && conference.status !== "pending") return false
     if (activeTab === "active" && conference.status !== "active") return false
     if (activeTab === "history" && conference.status !== "completed") return false
 
-    // Search filter
+    // Search filter (using name, email, subject)
     const matchesSearch =
       searchQuery === "" ||
-      conference.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      conference.clientEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      conference.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      conference.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       conference.subject.toLowerCase().includes(searchQuery.toLowerCase())
 
     // Status filter (only applies to history tab)
@@ -124,17 +98,13 @@ const VideoConferenceManagement = () => {
     // Close the modal
     setIsModalOpen(false)
 
-    // Set the room ID and open Jitsi
     if (selectedConference) {
-      // In a real implementation, you would update the conference status to "active"
-      // via an API call to your backend
-
       // Generate a room ID if one doesn't exist
       const roomId = selectedConference.roomId || generateRoomId()
 
-      // Update the conference status to active
+      // Update the conference status to active locally
       const updatedConferences = conferences.map((conf) => {
-        if (conf.id === selectedConference.id) {
+        if (conf._id === selectedConference._id) {
           return { ...conf, status: "active", roomId: roomId }
         }
         return conf
@@ -160,7 +130,7 @@ const VideoConferenceManagement = () => {
   const endVideoConference = (conferenceId) => {
     // Update the conference status to completed
     const updatedConferences = conferences.map((conf) => {
-      if (conf.id === conferenceId) {
+      if (conf._id === conferenceId) {
         return { ...conf, status: "completed" }
       }
       return conf
@@ -169,7 +139,7 @@ const VideoConferenceManagement = () => {
     setConferences(updatedConferences)
 
     // Close Jitsi if it's the current conference
-    if (selectedConference && selectedConference.id === conferenceId) {
+    if (selectedConference && selectedConference._id === conferenceId) {
       setIsJitsiOpen(false)
       setCurrentRoom("")
     }
@@ -223,34 +193,34 @@ const VideoConferenceManagement = () => {
       {filteredConferences.length > 0 ? (
         <div className="admin-conference-cards">
           {filteredConferences.map((conference) => (
-            <div className="admin-conference-card" key={conference.id}>
+            <div className="admin-conference-card" key={conference._id}>
               <div className="admin-conference-header">
                 <div className="admin-conference-icon">
                   <IonIcon icon={videocamOutline} />
                 </div>
                 <div className="admin-conference-title">
                   <h3>{conference.subject}</h3>
-                  <span className="admin-conference-id">{conference.id}</span>
+                  <span className="admin-conference-id">{conference._id}</span>
                 </div>
                 <div className="admin-conference-badge pending">En attente</div>
               </div>
               <div className="admin-conference-details">
                 <div className="admin-conference-detail">
                   <IonIcon icon={personOutline} />
-                  <span>{conference.clientName}</span>
+                  <span>{conference.name}</span>
                 </div>
                 <div className="admin-conference-detail">
                   <IonIcon icon={timeOutline} />
-                  <span>{new Date(conference.requestTime).toLocaleString()}</span>
+                  <span>{new Date(conference.createdAt).toLocaleString()}</span>
                 </div>
               </div>
               <div className="admin-conference-actions">
                 <button
                   className="admin-button secondary"
                   onClick={() => {
-                    // Update the conference status to declined
+                    // Update the conference status to declined locally
                     const updatedConferences = conferences.map((conf) => {
-                      if (conf.id === conference.id) {
+                      if (conf._id === conference._id) {
                         return { ...conf, status: "declined" }
                       }
                       return conf
@@ -304,25 +274,25 @@ const VideoConferenceManagement = () => {
       {filteredConferences.length > 0 ? (
         <div className="admin-conference-cards">
           {filteredConferences.map((conference) => (
-            <div className="admin-conference-card active-card" key={conference.id}>
+            <div className="admin-conference-card active-card" key={conference._id}>
               <div className="admin-conference-header">
                 <div className="admin-conference-icon active">
                   <IonIcon icon={callOutline} />
                 </div>
                 <div className="admin-conference-title">
                   <h3>{conference.subject}</h3>
-                  <span className="admin-conference-id">{conference.id}</span>
+                  <span className="admin-conference-id">{conference._id}</span>
                 </div>
                 <div className="admin-conference-badge active">En cours</div>
               </div>
               <div className="admin-conference-details">
                 <div className="admin-conference-detail">
                   <IonIcon icon={personOutline} />
-                  <span>{conference.clientName}</span>
+                  <span>{conference.name}</span>
                 </div>
                 <div className="admin-conference-detail">
                   <IonIcon icon={timeOutline} />
-                  <span>Démarré à {new Date(conference.requestTime).toLocaleTimeString()}</span>
+                  <span>Démarré à {new Date(conference.createdAt).toLocaleTimeString()}</span>
                 </div>
               </div>
               <div className="admin-conference-actions">
@@ -330,7 +300,7 @@ const VideoConferenceManagement = () => {
                   <IonIcon icon={callOutline} />
                   <span>Rejoindre</span>
                 </button>
-                <button className="admin-button secondary" onClick={() => endVideoConference(conference.id)}>
+                <button className="admin-button secondary" onClick={() => endVideoConference(conference._id)}>
                   <IonIcon icon={closeCircleOutline} />
                   <span>Terminer</span>
                 </button>
@@ -379,11 +349,11 @@ const VideoConferenceManagement = () => {
             </thead>
             <tbody>
               {filteredConferences.map((conference) => (
-                <tr key={conference.id}>
-                  <td>{conference.id}</td>
-                  <td>{conference.clientName}</td>
+                <tr key={conference._id}>
+                  <td>{conference._id}</td>
+                  <td>{conference.name}</td>
                   <td>{conference.subject}</td>
-                  <td>{new Date(conference.requestTime).toLocaleDateString()}</td>
+                  <td>{new Date(conference.createdAt).toLocaleDateString()}</td>
                   <td>15 min</td>
                   <td>
                     <div className="admin-action-buttons">
@@ -438,7 +408,7 @@ const VideoConferenceManagement = () => {
           <div className="jitsi-meet-wrapper">
             <JitsiMeetComponent
               roomName={currentRoom}
-              displayName={selectedConference?.clientName ? `Admin - ${selectedConference.subject}` : "Admin"}
+              displayName={selectedConference?.name ? `Admin - ${selectedConference.subject}` : "Admin"}
               email=""
               subject={selectedConference?.subject || "Visioconférence"}
               onClose={handleJitsiClose}
@@ -517,8 +487,8 @@ const VideoConferenceManagement = () => {
             {selectedConference?.status === "completed"
               ? "Détails de la conférence"
               : selectedConference?.status === "active"
-                ? "Rejoindre la visioconférence"
-                : "Accepter la demande de visioconférence"}
+              ? "Rejoindre la visioconférence"
+              : "Accepter la demande de visioconférence"}
           </h2>
           <button className="admin-modal-close" onClick={() => setIsModalOpen(false)}>
             <IonIcon icon={closeCircleOutline} />
@@ -529,11 +499,11 @@ const VideoConferenceManagement = () => {
             <div className="admin-conference-details-modal">
               <div className="admin-detail-group">
                 <label>Client:</label>
-                <span>{selectedConference.clientName}</span>
+                <span>{selectedConference.name}</span>
               </div>
               <div className="admin-detail-group">
                 <label>Email:</label>
-                <span>{selectedConference.clientEmail}</span>
+                <span>{selectedConference.email}</span>
               </div>
               <div className="admin-detail-group">
                 <label>Sujet:</label>
@@ -541,7 +511,7 @@ const VideoConferenceManagement = () => {
               </div>
               <div className="admin-detail-group">
                 <label>Demandé le:</label>
-                <span>{new Date(selectedConference.requestTime).toLocaleString()}</span>
+                <span>{new Date(selectedConference.createdAt).toLocaleString()}</span>
               </div>
 
               {selectedConference.roomId && (
@@ -613,8 +583,7 @@ const VideoConferenceManagement = () => {
                 <IonIcon icon={peopleOutline} />
               </div>
               <p>
-                Partagez ce lien avec les personnes que vous souhaitez inviter à la conférence. Ils pourront rejoindre
-                la conférence en cliquant sur le lien.
+                Partagez ce lien avec les personnes que vous souhaitez inviter à la conférence. Ils pourront rejoindre la conférence en cliquant sur le lien.
               </p>
             </div>
 
@@ -639,4 +608,3 @@ const VideoConferenceManagement = () => {
 }
 
 export default VideoConferenceManagement
-
