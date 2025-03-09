@@ -3,6 +3,11 @@ const mongoose = require("mongoose");
 
 const BudgetCategorySchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // Ensure you have a corresponding User model
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -19,12 +24,6 @@ const BudgetCategorySchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // Uncomment the following lines if you need to associate categories with a user:
-    // userId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    //   required: true,
-    // },
   },
   { timestamps: true }
 );

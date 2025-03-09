@@ -1,10 +1,15 @@
 // controllers/budgetCategoryController.js
 const BudgetCategory = require("../models/BudgetCategory");
 
-// Get all categories
+// Get all categories for a given user
 exports.getCategories = async (req, res) => {
+  // Expect userId in the query string: /api/categories?userId=...
+  const { userId } = req.query;
+  if (!userId) {
+    return res.status(400).json({ error: "Missing user id" });
+  }
   try {
-    const categories = await BudgetCategory.find();
+    const categories = await BudgetCategory.find({ userId });
     res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ error: "Error fetching categories" });
@@ -13,12 +18,13 @@ exports.getCategories = async (req, res) => {
 
 // Create a new category
 exports.createCategory = async (req, res) => {
-  const { name, limit, color } = req.body;
-  if (!name || !limit || !color) {
+  const { userId, name, limit, color } = req.body;
+  if (!userId || !name || !limit || !color) {
     return res.status(400).json({ error: "Missing required fields" });
   }
   try {
     const newCategory = new BudgetCategory({
+      userId,
       name,
       limit,
       color,
@@ -31,9 +37,10 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-// Update a category by ID
+// Update a category by ID (optional: verify the category belongs to the user)
 exports.updateCategory = async (req, res) => {
   const { id } = req.params;
+  // Optionally, you can compare req.body.userId or req.user.id with the document's userId
   try {
     const updatedCategory = await BudgetCategory.findByIdAndUpdate(
       id,
@@ -49,7 +56,7 @@ exports.updateCategory = async (req, res) => {
   }
 };
 
-// Delete a category by ID
+// Delete a category by ID (optional: verify the category belongs to the user)
 exports.deleteCategory = async (req, res) => {
   const { id } = req.params;
   try {

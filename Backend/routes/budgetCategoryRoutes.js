@@ -3,10 +3,9 @@ const express = require("express");
 const router = express.Router();
 const budgetCategoryController = require("../controllers/budgetCategoryController");
 
-// GET all categories
 router.get("/", budgetCategoryController.getCategories);
 
-// POST a new category
+// POST a new category (expects userId in the request body)
 router.post("/", budgetCategoryController.createCategory);
 
 // PUT update a category by ID
