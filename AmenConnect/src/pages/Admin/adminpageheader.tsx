@@ -1,8 +1,16 @@
 "use client"
 
-import type React from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { IonIcon } from "@ionic/react"
 import { notificationsOutline } from "ionicons/icons"
+
+interface Notification {
+  id: string
+  title: string
+  message: string
+  time: string
+  read: boolean
+}
 
 interface AdminPageHeaderProps {
   title: string
@@ -10,6 +18,72 @@ interface AdminPageHeaderProps {
 }
 
 const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) => {
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const notificationRef = useRef<HTMLDivElement>(null)
+
+  // Calculate unread notifications count
+  const unreadCount = notifications.filter((notification) => !notification.read).length
+
+  // Toggle notifications dropdown
+  const toggleNotifications = () => {
+    setIsNotificationsOpen(!isNotificationsOpen)
+  }
+
+  // Mark a single notification as read
+  const markAsRead = (id: string) => {
+    setNotifications((prev) =>
+      prev.map((notification) => (notification.id === id ? { ...notification, read: true } : notification))
+    )
+  }
+
+  // Mark all notifications as read
+  const markAllAsRead = () => {
+    setNotifications((prev) => prev.map((notification) => ({ ...notification, read: true })))
+  }
+
+  // Fetch notifications from the backend API
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch("/api/admin/notifications", {
+          credentials: "include",
+        })
+        if (!res.ok) {
+          console.error("Error fetching notifications")
+          return
+        }
+        const data = await res.json()
+        // Transform the backend data to match the Notification interface
+        const formatted = data.notifications.map((notif: any) => ({
+          id: notif._id,
+          title: notif.title || "Nouvelle demande de vidéoconférence",
+          message: notif.message,
+          time: new Date(notif.createdAt).toLocaleString(),
+          read: notif.read,
+        }))
+        setNotifications(formatted)
+      } catch (error) {
+        console.error("Failed to fetch notifications", error)
+      }
+    }
+
+    fetchNotifications()
+  }, [])
+
+  // Close notifications when clicking outside the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setIsNotificationsOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
   return (
     <div className="admin-dashboard-header">
       <div className="admin-header-title">
@@ -17,9 +91,49 @@ const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) =>
         <p>{subtitle}</p>
       </div>
       <div className="admin-header-actions">
-        <div className="admin-notification-badge">
-          <IonIcon icon={notificationsOutline} className="admin-header-icon" />
-          <span className="admin-badge">3</span>
+        <div className="admin-notification-badge" ref={notificationRef}>
+          <div onClick={toggleNotifications} style={{ cursor: "pointer" }}>
+            <IonIcon icon={notificationsOutline} className="admin-header-icon" />
+            <span className="admin-badge">{unreadCount}</span>
+          </div>
+
+          {isNotificationsOpen && (
+            <div className="admin-notifications-dropdown">
+              <div className="admin-notifications-header">
+                <h3>Notifications</h3>
+                {unreadCount > 0 && (
+                  <button className="admin-notifications-mark-all" onClick={markAllAsRead}>
+                    Marquer tout comme lu
+                  </button>
+                )}
+              </div>
+              <div className="admin-notifications-list">
+                {notifications.length > 0 ? (
+                  notifications.map((notification) => (
+                    <div
+                      key={notification.id}
+                      className={`admin-notification-item ${!notification.read ? "admin-notification-unread" : ""}`}
+                      onClick={() => markAsRead(notification.id)}
+                    >
+                      <div className="admin-notification-content">
+                        <div className="admin-notification-title">
+                          <span>{notification.title}</span>
+                          {!notification.read && <span className="admin-notification-dot"></span>}
+                        </div>
+                        <p className="admin-notification-message">{notification.message}</p>
+                        <span className="admin-notification-time">{notification.time}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="admin-notifications-empty">Aucune notification</div>
+                )}
+              </div>
+              <div className="admin-notifications-footer">
+                <button className="admin-notifications-view-all">Voir toutes les notifications</button>
+              </div>
+            </div>
+          )}
         </div>
         <div className="admin-profile-menu">
           <div className="admin-profile-avatar">
@@ -33,4 +147,3 @@ const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) =>
 }
 
 export default AdminPageHeader
-
