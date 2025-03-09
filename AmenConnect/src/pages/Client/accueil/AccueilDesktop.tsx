@@ -1,6 +1,5 @@
-//accueil/AccueilDesktop.tsx
 "use client"
-import React, { useMemo } from "react"
+import React, { useMemo, useState, useEffect } from "react"
 import {
   IonContent,
   IonHeader,
@@ -21,7 +20,15 @@ import {
   peopleOutline,
   globeOutline
 } from "ionicons/icons"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from "recharts"
 import Navbar from "../../../components/Navbar"
 import "./AccueilDesktop.css"
 import { useHistory } from "react-router-dom"
@@ -43,12 +50,13 @@ interface Card {
   CardHolder: string
 }
 
+// Updated Transaction interface to match API response structure
 interface Transaction {
-  id: number
-  description: string
   amount: number
-  date: string
   type: "credit" | "debit"
+  category: string
+  description: string
+  date: string
 }
 
 const AccueilDesktop: React.FC = () => {
@@ -63,8 +71,6 @@ const AccueilDesktop: React.FC = () => {
   // Derive user details from profile data
   const prenom = profile?.user?.prenom || "Utilisateur"
   const nom = profile?.user?.nom || "Foulen"
-  
-  // You can also use real data from the profile for email, phone, etc.
   const email = profile?.user?.email || "foulen@gmail.com"
   const tel = profile?.user?.telephone || "06 12 34 56 78"
 
@@ -83,21 +89,41 @@ const AccueilDesktop: React.FC = () => {
     CardHolder: card.CardHolder
   }))
 
-  // Sample data for budget and transactions (if not coming from API)
+  // Sample data for budget remains hardcoded
   const budgetData = {
     food: { current: 450, max: 600 },
     transport: { current: 200, max: 300 },
     leisure: { current: 150, max: 200 },
     shopping: { current: 300, max: 400 },
-    utilities: { current: 180, max: 250 },
+    utilities: { current: 180, max: 250 }
   }
 
-  const recentTransactions: Transaction[] = [
-    { id: 1, description: "Supermarché", amount: 85.5, date: "2025-01-20", type: "debit" },
-    { id: 2, description: "Salaire", amount: 2500.0, date: "2025-01-15", type: "credit" },
-    { id: 3, description: "Restaurant", amount: 45.0, date: "2025-01-18", type: "debit" },
-    { id: 4, description: "Transport", amount: 30.0, date: "2025-01-17", type: "debit" },
-  ]
+  // Use state to store transactions fetched from the API
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true)
+  const [errorTransactions, setErrorTransactions] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch("/api/historique", {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" }
+        })
+        if (!response.ok) {
+          throw new Error("Failed to fetch transactions")
+        }
+        const data: Transaction[] = await response.json()
+        setTransactions(data)
+      } catch (error) {
+        console.error("Erreur lors de la récupération des transactions:", error)
+        setErrorTransactions("Erreur lors de la récupération des transactions.")
+      } finally {
+        setLoadingTransactions(false)
+      }
+    }
+    fetchTransactions()
+  }, [])
 
   const totalBalance = useMemo(
     () => accounts.reduce((sum, account) => sum + account.solde, 0),
@@ -110,12 +136,11 @@ const AccueilDesktop: React.FC = () => {
     { name: "Mar", income: 2000, expenses: 9800 },
     { name: "Apr", income: 2780, expenses: 3908 },
     { name: "May", income: 1890, expenses: 4800 },
-    { name: "Jun", income: 2390, expenses: 3800 },
+    { name: "Jun", income: 2390, expenses: 3800 }
   ]
 
   const handleAccountClick = (accountId: string) => {
     console.log(`Viewing account ${accountId}...`)
-    // Navigate to account details page
     history.push(`/Compte/${accountId}`)
   }
 
@@ -150,7 +175,9 @@ const AccueilDesktop: React.FC = () => {
         <div className="dashboard-container">
           <div className="welcome-section">
             <div className="welcome-text">
-              <h1 className="welcome-title">Bienvenu, {nom} {prenom}</h1>
+              <h1 className="welcome-title">
+                Bienvenu, {nom} {prenom}
+              </h1>
               <p className="welcome-subtitle">Voici un aperçu de vos finances</p>
             </div>
             <div className="welcome-actions">
@@ -290,7 +317,7 @@ const AccueilDesktop: React.FC = () => {
                   transport: "var(--color-transport)",
                   leisure: "var(--color-leisure)",
                   shopping: "var(--color-shopping)",
-                  utilities: "var(--color-utilities)",
+                  utilities: "var(--color-utilities)"
                 }
                 const percentage = (data.current / data.max) * 100
                 const labels = {
@@ -298,9 +325,8 @@ const AccueilDesktop: React.FC = () => {
                   transport: "Transport",
                   leisure: "Loisirs",
                   shopping: "Shopping",
-                  utilities: "Factures",
+                  utilities: "Factures"
                 }
-
                 return (
                   <div key={category} className="budget-item">
                     <IonRippleEffect />
@@ -321,7 +347,7 @@ const AccueilDesktop: React.FC = () => {
                         className={`budget-progress-bar ${category}`}
                         style={{
                           width: `${percentage}%`,
-                          backgroundColor: colors[category as keyof typeof colors],
+                          backgroundColor: colors[category as keyof typeof colors]
                         }}
                       ></div>
                     </div>
@@ -342,21 +368,31 @@ const AccueilDesktop: React.FC = () => {
                 </a>
               </div>
               <div className="transactions-list">
-                {recentTransactions.map((transaction) => (
-                  <div key={transaction.id} className="transaction-item">
-                    <IonRippleEffect />
-                    <div className="transaction-icon">
-                      <IonIcon icon={transaction.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+                {loadingTransactions ? (
+                  <div>Loading transactions...</div>
+                ) : errorTransactions ? (
+                  <div className="error-message">{errorTransactions}</div>
+                ) : transactions.length > 0 ? (
+                  transactions.map((transaction, index) => (
+                    <div key={index} className="transaction-item">
+                      <IonRippleEffect />
+                      <div className="transaction-icon">
+                        <IonIcon icon={transaction.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+                      </div>
+                      <div className="transaction-details">
+                        <div className="transaction-description">{transaction.description}</div>
+                        <div className="transaction-date">
+                          {new Date(transaction.date).toLocaleString()}
+                        </div>
+                      </div>
+                      <div className={`transaction-amount ${transaction.type}`}>
+                        {transaction.type === "credit" ? "+" : "-"} {transaction.amount.toFixed(2)} TND
+                      </div>
                     </div>
-                    <div className="transaction-details">
-                      <div className="transaction-description">{transaction.description}</div>
-                      <div className="transaction-date">{transaction.date}</div>
-                    </div>
-                    <div className={`transaction-amount ${transaction.type}`}>
-                      {transaction.type === "credit" ? "+" : "-"} {transaction.amount.toFixed(2)} TND
-                    </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <div>Aucune transaction disponible</div>
+                )}
               </div>
             </div>
           </div>

@@ -18,8 +18,13 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const virementRoutes = require('./routes/virementRoutes');
 const beneficiaryRoutes = require('./routes/beneficiaryRoutes');
 const videoConferenceRoutes = require("./routes/videoConferenceRoutes");
+<<<<<<< HEAD
 const adminNotificationsRoutes = require("./routes/adminNotificationsRoutes");
+=======
+const budgetRouter = require('./routes/budgetRoutes');
+>>>>>>> 12b085417813edcf767a25f1481f6ae101d051a9
 const adminRoutes = require('./routes/adminAuthRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 // Import Passport
 const passport = require("./config/passport");
 
@@ -38,6 +43,16 @@ app.use(cors({
 app.use(passport.initialize());
 
 // Mount routes
+
+
+
+
+app.use('/api/compte', transactionRoutes);
+const historiqueRoutes = require('./routes/historiqueRoutes');
+
+// Mount the routes under /api/historique
+app.use('/api/historique',passport.authenticate('jwt', { session: false }), historiqueRoutes);
+app.use('/api/budget', passport.authenticate('jwt', { session: false }), budgetRouter);
 app.use("/api/auth", authRoutes);
 app.use("/api/password", forgotPasswordRoutes);
 app.use("/api/ip", ipRoutes);
