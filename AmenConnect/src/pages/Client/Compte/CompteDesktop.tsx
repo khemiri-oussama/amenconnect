@@ -1,5 +1,5 @@
 "use client"
-import React, { useMemo } from "react"
+import React, { useMemo, useState, useEffect } from "react"
 import {
   IonContent,
   IonHeader,
@@ -26,7 +26,16 @@ import Navbar from "../../../components/Navbar"
 import "./CompteDesktop.css"
 import Profile from "../accueil/MenuDesktop/ProfileMenu"
 import { useAuth } from "../../../AuthContext"
-
+  const [today, setToday] = useState<string>("")
+  useEffect(() => {
+    const currentDate = new Date()
+    const formattedDate = currentDate.toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+    setToday(formattedDate)
+  }, [])
 interface Operation {
   id: number
   type: "credit" | "debit"
@@ -39,38 +48,65 @@ const CompteDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const history = useMemo(() => window.history, []) // Using browser history
 
-  // While auth is loading, show a loading message.
   if (authLoading) {
     return <div>Loading...</div>
   }
 
-  // Use comptes from profile data; if none available, fallback to empty array.
+  // Retrieve the accounts from the profile data
   const accounts = profile?.comptes ?? []
 
-  // Chart and operations sample data remain as is (unless coming from an API)
-  const chartData = [
-    { name: "Jan", revenus: 65, depenses: 28 },
-    { name: "Feb", revenus: 59, depenses: 48 },
-    { name: "Mar", revenus: 80, depenses: 40 },
-    { name: "Apr", revenus: 81, depenses: 69 },
-    { name: "May", revenus: 56, depenses: 36 },
-    { name: "Jun", revenus: 85, depenses: 47 }
-  ]
+  // State for operations fetched from the API.
+  const [operations, setOperations] = useState<Operation[]>([])
+  const [loadingOperations, setLoadingOperations] = useState<boolean>(true)
+  const [errorOperations, setErrorOperations] = useState<string | null>(null)
 
-  const operations: Operation[] = [
-    { id: 1, type: "credit", amount: 500, description: "Dépôt", date: "2025-01-20" },
-    { id: 2, type: "debit", amount: 75.5, description: "Achat en ligne", date: "2025-01-19" },
-    { id: 3, type: "credit", amount: 1200, description: "Salaire", date: "2025-01-15" }
-  ]
+  // Fetch operations from the API.
+  useEffect(() => {
+    const fetchOperations = async () => {
+      try {
+        const response = await fetch("/api/historique", {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        })
+        if (!response.ok) {
+          throw new Error("Failed to fetch operations")
+        }
+        const data: Operation[] = await response.json()
+        setOperations(data)
+      } catch (error) {
+        console.error("Error fetching operations:", error)
+        setErrorOperations("Erreur lors de la récupération des opérations.")
+      } finally {
+        setLoadingOperations(false)
+      }
+    }
+    fetchOperations()
+  }, [])
+
+  // Build chart data by grouping operations by month.
+  const chartData = useMemo(() => {
+    const grouped = operations.reduce((acc, op) => {
+      const month = new Date(op.date).toLocaleString("default", { month: "short" })
+      if (!acc[month]) {
+        acc[month] = { name: month, revenus: 0, depenses: 0 }
+      }
+      if (op.type === "credit") {
+        acc[month].revenus += op.amount
+      } else if (op.type === "debit") {
+        acc[month].depenses += op.amount
+      }
+      return acc
+    }, {} as { [key: string]: { name: string; revenus: number; depenses: number } })
+    return Object.values(grouped)
+  }, [operations])
 
   // Navigate to account details
   const handleAccountClick = (accountId: string) => {
     console.log(`Viewing account ${accountId}...`)
-    // For example, using window.location.href or a router push:
     window.location.href = `/Compte/${accountId}`
   }
 
-  // A sample stat card render function remains as is
+  // A sample stat card render function remains as is.
   const renderStatCard = (
     label: string,
     value: string,
@@ -104,11 +140,15 @@ const CompteDesktop: React.FC = () => {
           <div className="ProfileCom">
             <Profile />
           </div>
-          
+
           <div className="compte-grid">
             {/* Display each account coming from the profile */}
             {accounts.map((account) => (
-              <IonCard key={account._id} className="compte-card" onClick={() => handleAccountClick(account._id)}>
+              <IonCard
+                key={account._id}
+                className="compte-card"
+                onClick={() => handleAccountClick(account._id)}
+              >
                 <IonCardHeader>{account.type}</IonCardHeader>
                 <IonCardContent>
                   <div className="balance">{account.solde.toFixed(2)} TND</div>
@@ -200,27 +240,35 @@ const CompteDesktop: React.FC = () => {
               <IonCardHeader>
                 <div className="operations-header">
                   <span>Opérations</span>
-                  <span className="update-date">Dernière mise à jour : 21/01/2025</span>
+                  <span className="update-date">Dernière mise à jour : {today}</span>
                 </div>
               </IonCardHeader>
               <IonCardContent>
                 <div className="operations-list">
-                  {operations.map((op) => (
-                    <div key={op.id} className="operation-item">
-                      <div className="operation-icon">
-                        <IonIcon icon={op.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+                  {loadingOperations ? (
+                    <div>Loading operations...</div>
+                  ) : errorOperations ? (
+                    <div className="error-message">{errorOperations}</div>
+                  ) : operations.length > 0 ? (
+                    operations.map((op) => (
+                      <div key={op.id} className="operation-item">
+                        <div className="operation-icon">
+                          <IonIcon icon={op.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+                        </div>
+                        <div className="operation-details">
+                          <span className="operation-description">{op.description}</span>
+                          <span className="operation-date">{op.date}</span>
+                        </div>
+                        <div className="operation-amount">
+                          <IonBadge color={op.type === "credit" ? "success" : "danger"}>
+                            {op.type === "credit" ? "+" : "-"} {op.amount} TND
+                          </IonBadge>
+                        </div>
                       </div>
-                      <div className="operation-details">
-                        <span className="operation-description">{op.description}</span>
-                        <span className="operation-date">{op.date}</span>
-                      </div>
-                      <div className="operation-amount">
-                        <IonBadge color={op.type === "credit" ? "success" : "danger"}>
-                          {op.type === "credit" ? "+" : "-"} {op.amount} TND
-                        </IonBadge>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <div>Aucune opération disponible</div>
+                  )}
                 </div>
               </IonCardContent>
             </IonCard>

@@ -47,26 +47,28 @@ interface Transaction {
 }
 
 interface BudgetCategory {
-  id: string
-  name: string
-  limit: number
-  color: string
-  current: number
+  userId: string;
+  id: string;
+  name: string;
+  limit: number;
+  color: string;
+  current: number;
+  _id : string;
+  __v : number;
+  createdAt :Date;
+  updatedAt:Date;
 }
 
 const AccueilDesktop: React.FC = () => {
   const history = useHistory()
-  // Use the complete profile data from AuthContext
   const { profile, authLoading } = useAuth()
 
-  // Use state to store transactions fetched from the API
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true)
   const [errorTransactions, setErrorTransactions] = useState<string | null>(null)
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState<boolean>(false)
   const [budgetCategories, setBudgetCategories] = useState<BudgetCategory[]>([])
 
-  // Initialize user details with default values
   const [prenom, setPrenom] = useState<string>("Utilisateur")
   const [nom, setNom] = useState<string>("Foulen")
   const [email, setEmail] = useState<string>("foulen@gmail.com")
@@ -74,15 +76,14 @@ const AccueilDesktop: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([])
   const [cards, setCards] = useState<Card[]>([])
 
+  // When profile is available, derive user details and set accounts/cards.
   useEffect(() => {
     if (profile) {
-      // Derive user details from profile data
       setPrenom(profile.user?.prenom || "Utilisateur")
       setNom(profile.user?.nom || "Foulen")
       setEmail(profile.user?.email || "foulen@gmail.com")
       setTel(profile.user?.telephone || "06 12 34 56 78")
 
-      // Use comptes and cartes from the profile
       setAccounts(
         (profile.comptes || []).map((compte) => ({
           _id: compte._id,
@@ -107,15 +108,7 @@ const AccueilDesktop: React.FC = () => {
     return <div>Loading...</div>
   }
 
-  // Sample data for budget remains hardcoded
-  const budgetData = {
-    food: { current: 450, max: 600 },
-    transport: { current: 200, max: 300 },
-    leisure: { current: 150, max: 200 },
-    shopping: { current: 300, max: 400 },
-    utilities: { current: 180, max: 250 },
-  }
-
+  // Fetch transactions from the API.
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -138,44 +131,55 @@ const AccueilDesktop: React.FC = () => {
     fetchTransactions()
   }, [])
 
+  // Fetch budget categories from the API once the user profile is available.
   useEffect(() => {
-    // Convert budget data to categories format
-    const categories = Object.entries(budgetData).map(([key, data], index) => {
-      const colors = {
-        food: "#47ce65",
-        transport: "#ffcc00",
-        leisure: "#346fce",
-        shopping: "#f472b6",
-        utilities: "#60a5fa",
+    const fetchBudgetCategories = async () => {
+      try {
+        const response = await fetch(`/api/categories?userId=${profile?.user._id}`)
+        if (!response.ok) {
+          throw new Error("Error fetching budget categories")
+        }
+        const data = await response.json()
+        // Map _id to id for client-side usage.
+        const mappedCategories: BudgetCategory[] = data.map((cat: any) => ({
+          ...cat,
+          id: cat._id,
+        }))
+        setBudgetCategories(mappedCategories)
+      } catch (error) {
+        console.error(error)
       }
-      const labels = {
-        food: "Alimentation",
-        transport: "Transport",
-        leisure: "Loisirs",
-        shopping: "Shopping",
-        utilities: "Factures",
-      }
-      return {
-        id: index.toString(),
-        name: labels[key as keyof typeof labels] || key,
-        limit: data.max,
-        color: colors[key as keyof typeof colors] || "#47ce65",
-        current: data.current,
-      }
-    })
-    setBudgetCategories(categories)
-  }, [budgetData])
+    }
+    if (profile?.user._id) {
+      fetchBudgetCategories()
+    }
+  }, [profile])
 
   const totalBalance = useMemo(() => accounts.reduce((sum, account) => sum + account.solde, 0), [accounts])
 
-  const chartData = [
-    { name: "Jan", income: 4000, expenses: 2400 },
-    { name: "Feb", income: 3000, expenses: 1398 },
-    { name: "Mar", income: 2000, expenses: 9800 },
-    { name: "Apr", income: 2780, expenses: 3908 },
-    { name: "May", income: 1890, expenses: 4800 },
-    { name: "Jun", income: 2390, expenses: 3800 },
-  ]
+// Replace your static chartData with the following useMemo hook.
+const chartData = useMemo(() => {
+  // Group transactions by month.
+  const groupedData = transactions.reduce((acc, transaction) => {
+    const date = new Date(transaction.date);
+    // Get short month name (e.g., Jan, Feb, etc.)
+    const month = date.toLocaleString('default', { month: 'short' });
+    // If not created yet, initialize the month.
+    if (!acc[month]) {
+      acc[month] = { name: month, income: 0, expenses: 0 };
+    }
+    // Add to income or expenses based on transaction type.
+    if (transaction.type === "credit") {
+      acc[month].income += transaction.amount;
+    } else if (transaction.type === "debit") {
+      acc[month].expenses += transaction.amount;
+    }
+    return acc;
+  }, {} as { [month: string]: { name: string; income: number; expenses: number } });
+  // Convert the grouped object into an array.
+  return Object.values(groupedData);
+}, [transactions]);
+
 
   const handleAccountClick = (accountId: string) => {
     console.log(`Viewing account ${accountId}...`)
@@ -206,36 +210,8 @@ const AccueilDesktop: React.FC = () => {
 
   const handleSaveBudgetCategories = (updatedCategories: BudgetCategory[]) => {
     setBudgetCategories(updatedCategories)
-    // Here you would typically save to your backend
+    // Here you would typically save to your backend.
     console.log("Saving updated budget categories:", updatedCategories)
-
-    // Convert back to the format used in the UI
-    // This is a simplified example - you might need to adjust this based on your needs
-    const updatedBudgetData = { ...budgetData }
-    updatedCategories.forEach((category) => {
-      // Find the key in budgetData that corresponds to this category
-      const key = Object.keys(budgetData).find((k) => {
-        const labels = {
-          food: "Alimentation",
-          transport: "Transport",
-          leisure: "Loisirs",
-          shopping: "Shopping",
-          utilities: "Factures",
-        }
-        return labels[k as keyof typeof labels] === category.name
-      })
-
-      if (key) {
-        // Fix: Add type assertion to tell TypeScript this is a valid key
-        ;(updatedBudgetData as any)[key] = {
-          current: category.current,
-          max: category.limit,
-        }
-      }
-    })
-
-    // In a real app, you would update your state or call an API here
-    console.log("Updated budget data:", updatedBudgetData)
   }
 
   return (
@@ -316,33 +292,28 @@ const AccueilDesktop: React.FC = () => {
                 </a>
               </div>
               <div className="chart-container">
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <XAxis dataKey="name" stroke="#888" />
-                    <YAxis stroke="#888" />
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="income" stroke="#82ca9d" fillOpacity={1} fill="url(#colorIncome)" />
-                    <Area
-                      type="monotone"
-                      dataKey="expenses"
-                      stroke="#8884d8"
-                      fillOpacity={1}
-                      fill="url(#colorExpenses)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+  <ResponsiveContainer width="100%" height={300}>
+    <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+      <defs>
+        <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+          <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+        </linearGradient>
+        <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+          <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <XAxis dataKey="name" stroke="#888" />
+      <YAxis stroke="#888" />
+      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+      <Tooltip />
+      <Area type="monotone" dataKey="income" stroke="#82ca9d" fillOpacity={1} fill="url(#colorIncome)" />
+      <Area type="monotone" dataKey="expenses" stroke="#8884d8" fillOpacity={1} fill="url(#colorExpenses)" />
+    </AreaChart>
+  </ResponsiveContainer>
+</div>
+
             </div>
 
             <div className="section-card cards-section">
@@ -390,49 +361,39 @@ const AccueilDesktop: React.FC = () => {
                   Voir les détails
                 </a>
               </div>
-              {Object.entries(budgetData).map(([category, data]) => {
-                const colors = {
-                  food: "var(--color-food)",
-                  transport: "var(--color-transport)",
-                  leisure: "var(--color-leisure)",
-                  shopping: "var(--color-shopping)",
-                  utilities: "var(--color-utilities)",
-                }
-                const percentage = (data.current / data.max) * 100
-                const labels = {
-                  food: "Alimentation",
-                  transport: "Transport",
-                  leisure: "Loisirs",
-                  shopping: "Shopping",
-                  utilities: "Factures",
-                }
-                return (
-                  <div key={category} className="budget-item">
-                    <IonRippleEffect />
-                    <div className="budget-item-header">
-                      <div className="budget-item-label">
-                        <span
-                          className="budget-item-color"
-                          style={{ backgroundColor: colors[category as keyof typeof colors] }}
-                        ></span>
-                        <span>{labels[category as keyof typeof labels]}</span>
+              {budgetCategories.length > 0 ? (
+                budgetCategories.map((category) => {
+                  const percentage = (category.current / category.limit) * 100
+                  return (
+                    <div key={category.id} className="budget-item">
+                      <IonRippleEffect />
+                      <div className="budget-item-header">
+                        <div className="budget-item-label">
+                          <span
+                            className="budget-item-color"
+                            style={{ backgroundColor: category.color }}
+                          ></span>
+                          <span>{category.name}</span>
+                        </div>
+                        <span className="budget-item-amount">
+                          {category.current} / {category.limit} TND
+                        </span>
                       </div>
-                      <span className="budget-item-amount">
-                        {data.current} / {data.max} TND
-                      </span>
+                      <div className="budget-progress">
+                        <div
+                          className="budget-progress-bar"
+                          style={{
+                            width: `${percentage}%`,
+                            backgroundColor: category.color,
+                          }}
+                        ></div>
+                      </div>
                     </div>
-                    <div className="budget-progress">
-                      <div
-                        className={`budget-progress-bar ${category}`}
-                        style={{
-                          width: `${percentage}%`,
-                          backgroundColor: colors[category as keyof typeof colors],
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                )
-              })}
+                  )
+                })
+              ) : (
+                <div>Aucune donnée de budget disponible</div>
+              )}
             </div>
 
             <div className="section-card transactions-section">
@@ -499,6 +460,7 @@ const AccueilDesktop: React.FC = () => {
         <BudgetCategoryManager
           isOpen={isBudgetModalOpen}
           onClose={() => setIsBudgetModalOpen(false)}
+          userId={profile?.user._id||""}
           initialCategories={budgetCategories}
           onSave={handleSaveBudgetCategories}
         />
@@ -508,4 +470,3 @@ const AccueilDesktop: React.FC = () => {
 }
 
 export default AccueilDesktop
-
