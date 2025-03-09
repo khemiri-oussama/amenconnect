@@ -1,3 +1,5 @@
+"use client"
+
 import type React from "react"
 import { IonPage, IonIcon } from "@ionic/react"
 import {
@@ -7,11 +9,11 @@ import {
   trendingUpOutline,
   pieChartOutline,
   warningOutline,
-  notificationsOutline,
 } from "ionicons/icons"
 import "./Dashboard.css"
 import { useAdminAuth } from "../../../AdminAuthContext"
-import SidebarAdmin from "../../../components/sidebarAdmin"
+import SidebarAdmin from "../../../components/SidebarAdmin"
+import AdminPageHeader from "../adminpageheader"
 
 const Dashboard: React.FC = () => {
   const { isAuthenticated, authLoading } = useAdminAuth()
@@ -42,24 +44,7 @@ const Dashboard: React.FC = () => {
         {/* Main Content */}
         <div className="admin-dashboard-content">
           {/* Header */}
-          <div className="admin-dashboard-header">
-            <div className="admin-header-title">
-              <h1>Tableau de Bord</h1>
-              <p>Bienvenue sur votre espace administrateur</p>
-            </div>
-            <div className="admin-header-actions">
-              <div className="admin-notification-badge">
-                <IonIcon icon={notificationsOutline} className="admin-header-icon" />
-                <span className="admin-badge">3</span>
-              </div>
-              <div className="admin-profile-menu">
-                <div className="admin-profile-avatar">
-                  <span>A</span>
-                </div>
-                <span className="admin-profile-name">Admin</span>
-              </div>
-            </div>
-          </div>
+          <AdminPageHeader title="Tableau de Bord" subtitle="Bienvenue sur votre espace administrateur" />
 
           {/* Stats Cards */}
           <div className="admin-stats-grid">

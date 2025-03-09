@@ -22,9 +22,9 @@ import {
   filterOutline,
 } from "ionicons/icons"
 import "./permissionsManagement.css"
-import SidebarAdmin from "../../../components/sidebarAdmin"
+import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
-
+import AdminPageHeader from "../adminpageheader"
 const PermissionsManagement: React.FC = () => {
   const { authLoading } = useAdminAuth()
   const [activeTab, setActiveTab] = useState<"matrix" | "rules" | "audit">("matrix")
@@ -193,25 +193,10 @@ const PermissionsManagement: React.FC = () => {
         {/* Main Content */}
         <div className="admin-dashboard-content">
           {/* Header */}
-          <div className="admin-dashboard-header">
-            <div className="admin-header-title">
-              <h1>Permissions Management</h1>
-              <p>Manage role-based access control and security policies</p>
-            </div>
-            <div className="admin-header-actions">
-              <div className="admin-notification-badge">
-                <IonIcon icon={notificationsOutline} className="admin-header-icon" />
-                <span className="admin-badge">2</span>
-              </div>
-              <div className="admin-profile-menu">
-                <div className="admin-profile-avatar">
-                  <span>A</span>
-                </div>
-                <span className="admin-profile-name">Admin</span>
-              </div>
-            </div>
-          </div>
-
+          <AdminPageHeader
+            title="Permissions Management"
+            subtitle="Manage role-based access control and security policies"
+          />
           {/* Main Card */}
           <div className="admin-content-card">
             {/* Tabs */}

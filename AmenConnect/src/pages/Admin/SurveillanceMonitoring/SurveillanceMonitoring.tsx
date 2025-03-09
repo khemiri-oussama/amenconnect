@@ -23,9 +23,9 @@ import {
   warningOutline,
 } from "ionicons/icons"
 import "./surveillanceMonitoring.css"
-import SidebarAdmin from "../../../components/sidebarAdmin"
+import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
-
+import AdminPageHeader from "../adminpageheader"
 const SurveillanceMonitoring: React.FC = () => {
   const { authLoading } = useAdminAuth()
   const [activeTab, setActiveTab] = useState<"monitoring" | "logs" | "alerts">("monitoring")
@@ -235,24 +235,10 @@ const SurveillanceMonitoring: React.FC = () => {
         {/* Main Content */}
         <div className="admin-dashboard-content">
           {/* Header */}
-          <div className="admin-dashboard-header">
-            <div className="admin-header-title">
-              <h1>Surveillance et Monitoring</h1>
-              <p>Suivez les activités et configurez les alertes du système</p>
-            </div>
-            <div className="admin-header-actions">
-              <div className="admin-notification-badge">
-                <IonIcon icon={notificationsOutline} className="admin-header-icon" />
-                <span className="admin-badge">3</span>
-              </div>
-              <div className="admin-profile-menu">
-                <div className="admin-profile-avatar">
-                  <span>A</span>
-                </div>
-                <span className="admin-profile-name">Admin</span>
-              </div>
-            </div>
-          </div>
+          <AdminPageHeader
+            title="Surveillance et Monitoring"
+            subtitle="Suivez les activités et configurez les alertes du système"
+          />
 
           {/* Main Card */}
           <div className="admin-content-card">
