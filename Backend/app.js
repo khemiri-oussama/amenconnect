@@ -22,9 +22,6 @@ const videoConferenceRoutes = require("./routes/videoConferenceRoutes");
 const adminNotificationsRoutes = require("./routes/adminNotificationsRoutes");
 
 const adminRoutes = require('./routes/adminAuthRoutes');
-
-
-const adminRoutes = require('./routes/adminAuthRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const historiqueRoutes = require('./routes/historiqueRoutes');
 const budgetCategoryRoutes = require("./routes/budgetCategoryRoutes");
