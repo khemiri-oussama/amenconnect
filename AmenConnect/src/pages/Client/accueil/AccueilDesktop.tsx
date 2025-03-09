@@ -1,13 +1,7 @@
 "use client"
-import React, { useMemo, useState, useEffect } from "react"
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonIcon,
-  IonRippleEffect,
-  IonButton
-} from "@ionic/react"
+import type React from "react"
+import { useMemo, useState, useEffect } from "react"
+import { IonContent, IonHeader, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
 import {
   walletOutline,
   cardOutline,
@@ -18,23 +12,16 @@ import {
   settingsOutline,
   timeOutline,
   peopleOutline,
-  globeOutline
+  globeOutline,
 } from "ionicons/icons"
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer
-} from "recharts"
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import Navbar from "../../../components/Navbar"
 import "./AccueilDesktop.css"
 import { useHistory } from "react-router-dom"
 import Profile from "./MenuDesktop/ProfileMenu"
 import { useAuth } from "../../../AuthContext"
 import NotificationDesktop from "./NotificationMenu/NotificationDesktop"
+import BudgetCategoryManager from "../../../components/BudgetCategory/BudgetCategoryManager"
 
 interface Account {
   _id: string
@@ -59,35 +46,66 @@ interface Transaction {
   date: string
 }
 
+interface BudgetCategory {
+  id: string
+  name: string
+  limit: number
+  color: string
+  current: number
+}
+
 const AccueilDesktop: React.FC = () => {
   const history = useHistory()
   // Use the complete profile data from AuthContext
   const { profile, authLoading } = useAuth()
 
+  // Use state to store transactions fetched from the API
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true)
+  const [errorTransactions, setErrorTransactions] = useState<string | null>(null)
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState<boolean>(false)
+  const [budgetCategories, setBudgetCategories] = useState<BudgetCategory[]>([])
+
+  // Initialize user details with default values
+  const [prenom, setPrenom] = useState<string>("Utilisateur")
+  const [nom, setNom] = useState<string>("Foulen")
+  const [email, setEmail] = useState<string>("foulen@gmail.com")
+  const [tel, setTel] = useState<string>("06 12 34 56 78")
+  const [accounts, setAccounts] = useState<Account[]>([])
+  const [cards, setCards] = useState<Card[]>([])
+
+  useEffect(() => {
+    if (profile) {
+      // Derive user details from profile data
+      setPrenom(profile.user?.prenom || "Utilisateur")
+      setNom(profile.user?.nom || "Foulen")
+      setEmail(profile.user?.email || "foulen@gmail.com")
+      setTel(profile.user?.telephone || "06 12 34 56 78")
+
+      // Use comptes and cartes from the profile
+      setAccounts(
+        (profile.comptes || []).map((compte) => ({
+          _id: compte._id,
+          numéroCompte: compte.numéroCompte,
+          solde: compte.solde,
+          type: compte.type,
+        })),
+      )
+
+      setCards(
+        (profile.cartes || []).map((card) => ({
+          _id: card._id,
+          CardNumber: card.CardNumber,
+          ExpiryDate: card.ExpiryDate,
+          CardHolder: card.CardHolder,
+        })),
+      )
+    }
+  }, [profile])
+
   if (authLoading) {
     return <div>Loading...</div>
   }
-
-  // Derive user details from profile data
-  const prenom = profile?.user?.prenom || "Utilisateur"
-  const nom = profile?.user?.nom || "Foulen"
-  const email = profile?.user?.email || "foulen@gmail.com"
-  const tel = profile?.user?.telephone || "06 12 34 56 78"
-
-  // Use comptes and cartes from the profile
-  const accounts: Account[] = (profile?.comptes || []).map((compte) => ({
-    _id: compte._id,
-    numéroCompte: compte.numéroCompte,
-    solde: compte.solde,
-    type: compte.type
-  }))
-
-  const cards: Card[] = (profile?.cartes || []).map((card) => ({
-    _id: card._id,
-    CardNumber: card.CardNumber,
-    ExpiryDate: card.ExpiryDate,
-    CardHolder: card.CardHolder
-  }))
 
   // Sample data for budget remains hardcoded
   const budgetData = {
@@ -95,20 +113,15 @@ const AccueilDesktop: React.FC = () => {
     transport: { current: 200, max: 300 },
     leisure: { current: 150, max: 200 },
     shopping: { current: 300, max: 400 },
-    utilities: { current: 180, max: 250 }
+    utilities: { current: 180, max: 250 },
   }
-
-  // Use state to store transactions fetched from the API
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true)
-  const [errorTransactions, setErrorTransactions] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         const response = await fetch("/api/historique", {
           credentials: "include",
-          headers: { "Content-Type": "application/json" }
+          headers: { "Content-Type": "application/json" },
         })
         if (!response.ok) {
           throw new Error("Failed to fetch transactions")
@@ -125,10 +138,35 @@ const AccueilDesktop: React.FC = () => {
     fetchTransactions()
   }, [])
 
-  const totalBalance = useMemo(
-    () => accounts.reduce((sum, account) => sum + account.solde, 0),
-    [accounts]
-  )
+  useEffect(() => {
+    // Convert budget data to categories format
+    const categories = Object.entries(budgetData).map(([key, data], index) => {
+      const colors = {
+        food: "#47ce65",
+        transport: "#ffcc00",
+        leisure: "#346fce",
+        shopping: "#f472b6",
+        utilities: "#60a5fa",
+      }
+      const labels = {
+        food: "Alimentation",
+        transport: "Transport",
+        leisure: "Loisirs",
+        shopping: "Shopping",
+        utilities: "Factures",
+      }
+      return {
+        id: index.toString(),
+        name: labels[key as keyof typeof labels] || key,
+        limit: data.max,
+        color: colors[key as keyof typeof colors] || "#47ce65",
+        current: data.current,
+      }
+    })
+    setBudgetCategories(categories)
+  }, [budgetData])
+
+  const totalBalance = useMemo(() => accounts.reduce((sum, account) => sum + account.solde, 0), [accounts])
 
   const chartData = [
     { name: "Jan", income: 4000, expenses: 2400 },
@@ -136,7 +174,7 @@ const AccueilDesktop: React.FC = () => {
     { name: "Mar", income: 2000, expenses: 9800 },
     { name: "Apr", income: 2780, expenses: 3908 },
     { name: "May", income: 1890, expenses: 4800 },
-    { name: "Jun", income: 2390, expenses: 3800 }
+    { name: "Jun", income: 2390, expenses: 3800 },
   ]
 
   const handleAccountClick = (accountId: string) => {
@@ -149,7 +187,7 @@ const AccueilDesktop: React.FC = () => {
     value: string,
     change: string,
     icon: string,
-    changeType: "positive" | "negative"
+    changeType: "positive" | "negative",
   ) => (
     <div className="stat-card">
       <div className="stat-icon">
@@ -165,6 +203,40 @@ const AccueilDesktop: React.FC = () => {
       </div>
     </div>
   )
+
+  const handleSaveBudgetCategories = (updatedCategories: BudgetCategory[]) => {
+    setBudgetCategories(updatedCategories)
+    // Here you would typically save to your backend
+    console.log("Saving updated budget categories:", updatedCategories)
+
+    // Convert back to the format used in the UI
+    // This is a simplified example - you might need to adjust this based on your needs
+    const updatedBudgetData = { ...budgetData }
+    updatedCategories.forEach((category) => {
+      // Find the key in budgetData that corresponds to this category
+      const key = Object.keys(budgetData).find((k) => {
+        const labels = {
+          food: "Alimentation",
+          transport: "Transport",
+          leisure: "Loisirs",
+          shopping: "Shopping",
+          utilities: "Factures",
+        }
+        return labels[k as keyof typeof labels] === category.name
+      })
+
+      if (key) {
+        // Fix: Add type assertion to tell TypeScript this is a valid key
+        ;(updatedBudgetData as any)[key] = {
+          current: category.current,
+          max: category.limit,
+        }
+      }
+    })
+
+    // In a real app, you would update your state or call an API here
+    console.log("Updated budget data:", updatedBudgetData)
+  }
 
   return (
     <IonPage>
@@ -192,22 +264,16 @@ const AccueilDesktop: React.FC = () => {
               `${totalBalance.toFixed(2)} TND`,
               "+2.5% depuis le mois dernier",
               walletOutline,
-              "positive"
+              "positive",
             )}
             {renderStatCard(
               "Dépenses du mois",
               "3,240.80 TND",
               "-1.8% depuis le mois dernier",
               pieChartOutline,
-              "negative"
+              "negative",
             )}
-            {renderStatCard(
-              "Économies",
-              "2,180.25 TND",
-              "+5.2% depuis le mois dernier",
-              trendingUpOutline,
-              "positive"
-            )}
+            {renderStatCard("Économies", "2,180.25 TND", "+5.2% depuis le mois dernier", trendingUpOutline, "positive")}
           </div>
 
           <div className="main-grid">
@@ -267,7 +333,13 @@ const AccueilDesktop: React.FC = () => {
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <Tooltip />
                     <Area type="monotone" dataKey="income" stroke="#82ca9d" fillOpacity={1} fill="url(#colorIncome)" />
-                    <Area type="monotone" dataKey="expenses" stroke="#8884d8" fillOpacity={1} fill="url(#colorExpenses)" />
+                    <Area
+                      type="monotone"
+                      dataKey="expenses"
+                      stroke="#8884d8"
+                      fillOpacity={1}
+                      fill="url(#colorExpenses)"
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -306,7 +378,14 @@ const AccueilDesktop: React.FC = () => {
                   <IonIcon icon={pieChartOutline} />
                   Budget
                 </h2>
-                <a href="#" className="section-link">
+                <a
+                  href="#"
+                  className="section-link"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setIsBudgetModalOpen(true)
+                  }}
+                >
                   <IonIcon icon={eyeOutline} />
                   Voir les détails
                 </a>
@@ -317,7 +396,7 @@ const AccueilDesktop: React.FC = () => {
                   transport: "var(--color-transport)",
                   leisure: "var(--color-leisure)",
                   shopping: "var(--color-shopping)",
-                  utilities: "var(--color-utilities)"
+                  utilities: "var(--color-utilities)",
                 }
                 const percentage = (data.current / data.max) * 100
                 const labels = {
@@ -325,7 +404,7 @@ const AccueilDesktop: React.FC = () => {
                   transport: "Transport",
                   leisure: "Loisirs",
                   shopping: "Shopping",
-                  utilities: "Factures"
+                  utilities: "Factures",
                 }
                 return (
                   <div key={category} className="budget-item">
@@ -347,7 +426,7 @@ const AccueilDesktop: React.FC = () => {
                         className={`budget-progress-bar ${category}`}
                         style={{
                           width: `${percentage}%`,
-                          backgroundColor: colors[category as keyof typeof colors]
+                          backgroundColor: colors[category as keyof typeof colors],
                         }}
                       ></div>
                     </div>
@@ -381,9 +460,7 @@ const AccueilDesktop: React.FC = () => {
                       </div>
                       <div className="transaction-details">
                         <div className="transaction-description">{transaction.description}</div>
-                        <div className="transaction-date">
-                          {new Date(transaction.date).toLocaleString()}
-                        </div>
+                        <div className="transaction-date">{new Date(transaction.date).toLocaleString()}</div>
                       </div>
                       <div className={`transaction-amount ${transaction.type}`}>
                         {transaction.type === "credit" ? "+" : "-"} {transaction.amount.toFixed(2)} TND
@@ -419,9 +496,16 @@ const AccueilDesktop: React.FC = () => {
             </div>
           </div>
         </div>
+        <BudgetCategoryManager
+          isOpen={isBudgetModalOpen}
+          onClose={() => setIsBudgetModalOpen(false)}
+          initialCategories={budgetCategories}
+          onSave={handleSaveBudgetCategories}
+        />
       </IonContent>
     </IonPage>
   )
 }
 
 export default AccueilDesktop
+
