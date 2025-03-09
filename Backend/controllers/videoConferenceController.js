@@ -52,14 +52,7 @@ exports.getVideoConferenceRequests = async (req, res, next) => {
       }
   
       // Create a new video conference request
-      const newRequest = new VideoConferenceRequest({
-        name,
-        email,
-        subject,
-        phone,
-        roomId,
-      });
-  
+      const newRequest = new VideoConferenceRequest({ name, email, subject, phone, roomId });
       const savedRequest = await newRequest.save();
   
       // Create an admin notification record for the new request
@@ -68,7 +61,17 @@ exports.getVideoConferenceRequests = async (req, res, next) => {
         message: notificationMessage,
         requestId: savedRequest._id,
       });
-      await adminNotification.save();
+      const savedNotification = await adminNotification.save();
+  
+      // Emit the notification to all connected clients
+      const io = req.app.locals.io;
+      io.emit("new_notification", {
+        id: savedNotification._id,
+        title: savedNotification.title,
+        message: savedNotification.message,
+        time: new Date(savedNotification.createdAt).toLocaleString(),
+        read: savedNotification.read,
+      });
   
       return res.status(201).json({
         message: "Demande de vidéoconférence créée avec succès.",

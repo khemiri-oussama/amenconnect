@@ -12,8 +12,9 @@ import {
   notificationsOutline,
 } from "ionicons/icons"
 import "./authenticationSecurity.css"
-import SidebarAdmin from "../../../components/sidebarAdmin"
+import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
+import AdminPageHeader from "../adminpageheader"
 
 const AuthenticationSecurity: React.FC = () => {
   const { authLoading } = useAdminAuth()
@@ -163,25 +164,8 @@ const AuthenticationSecurity: React.FC = () => {
 
         {/* Main Content */}
         <div className="admin-dashboard-content">
-          {/* Header */}
-          <div className="admin-dashboard-header">
-            <div className="admin-header-title">
-              <h1>Authentication & Security</h1>
-              <p>Manage authentication methods and security policies</p>
-            </div>
-            <div className="admin-header-actions">
-              <div className="admin-notification-badge">
-                <IonIcon icon={notificationsOutline} className="admin-header-icon" />
-                <span className="admin-badge">2</span>
-              </div>
-              <div className="admin-profile-menu">
-                <div className="admin-profile-avatar">
-                  <span>A</span>
-                </div>
-                <span className="admin-profile-name">Admin</span>
-              </div>
-            </div>
-          </div>
+          
+        <AdminPageHeader title="Authentication & Security" subtitle="Manage authentication methods and security policies" />
 
           {/* Main Card */}
           <div className="admin-content-card">

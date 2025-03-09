@@ -1,5 +1,9 @@
 @import "../Dashboard/Dashboard.css";
-
+@import "../AuthenticationSecurity/AuthenticationSecurity.css";
+@import "../GestionUtilisateur/UserManagement.css";
+@import "../GestiondesTotem/InteractiveTotemManagement.css";
+@import "../Permissions/permissionsManagement.css";
+@import "../videoconfmanage/videoconfmanage.css";
 /* Monitoring Styles */
 .admin-monitoring-container {
   display: flex;
