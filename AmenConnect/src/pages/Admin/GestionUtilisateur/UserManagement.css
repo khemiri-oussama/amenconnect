@@ -1,5 +1,9 @@
-@import "../GestiondesTotem/InteractiveTotemManagement.css";
 @import "../Dashboard/Dashboard.css";
+@import "../AuthenticationSecurity/AuthenticationSecurity.css";
+@import "../GestiondesTotem/InteractiveTotemManagement.css";
+@import "../SurveillanceMonitoring/SurveillanceMonitoring.css";
+@import "../Permissions/permissionsManagement.css";
+@import "../videoconfmanage/videoconfmanage.css";
 /* User List Styles */
 .admin-user-list {
   display: flex;
