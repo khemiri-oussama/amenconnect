@@ -1,59 +1,58 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react"
-import { IonIcon } from "@ionic/react"
-import { notificationsOutline } from "ionicons/icons"
+import React, { useState, useRef, useEffect } from "react";
+import { IonIcon } from "@ionic/react";
+import { notificationsOutline } from "ionicons/icons";
+import { io } from "socket.io-client";
 
 interface Notification {
-  id: string
-  title: string
-  message: string
-  time: string
-  read: boolean
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
 }
 
 interface AdminPageHeaderProps {
-  title: string
-  subtitle: string
+  title: string;
+  subtitle: string;
 }
 
 const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) => {
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const notificationRef = useRef<HTMLDivElement>(null)
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const notificationRef = useRef<HTMLDivElement>(null);
 
   // Calculate unread notifications count
-  const unreadCount = notifications.filter((notification) => !notification.read).length
+  const unreadCount = notifications.filter((notification) => !notification.read).length;
 
   // Toggle notifications dropdown
   const toggleNotifications = () => {
-    setIsNotificationsOpen(!isNotificationsOpen)
-  }
+    setIsNotificationsOpen(!isNotificationsOpen);
+  };
 
-  // Mark a single notification as read
+  // Mark a single notification as read (you might want to call an API to persist this)
   const markAsRead = (id: string) => {
     setNotifications((prev) =>
       prev.map((notification) => (notification.id === id ? { ...notification, read: true } : notification))
-    )
-  }
+    );
+  };
 
   // Mark all notifications as read
   const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((notification) => ({ ...notification, read: true })))
-  }
+    setNotifications((prev) => prev.map((notification) => ({ ...notification, read: true })));
+  };
 
-  // Fetch notifications from the backend API
+  // Fetch initial notifications from the backend API
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const res = await fetch("/api/admin/notifications", {
-          credentials: "include",
-        })
+        const res = await fetch("/api/admin/notifications", { credentials: "include" });
         if (!res.ok) {
-          console.error("Error fetching notifications")
-          return
+          console.error("Error fetching notifications");
+          return;
         }
-        const data = await res.json()
+        const data = await res.json();
         // Transform the backend data to match the Notification interface
         const formatted = data.notifications.map((notif: any) => ({
           id: notif._id,
@@ -61,28 +60,43 @@ const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) =>
           message: notif.message,
           time: new Date(notif.createdAt).toLocaleString(),
           read: notif.read,
-        }))
-        setNotifications(formatted)
+        }));
+        setNotifications(formatted);
       } catch (error) {
-        console.error("Failed to fetch notifications", error)
+        console.error("Failed to fetch notifications", error);
       }
-    }
+    };
 
-    fetchNotifications()
-  }, [])
+    fetchNotifications();
+  }, []);
+
+  // Set up Socket.IO connection for real-time notifications
+  useEffect(() => {
+    const socket = io(); // Assumes same origin; adjust if necessary
+
+    socket.on("new_notification", (notification: Notification) => {
+      // Prepend the new notification to the list
+      setNotifications((prev) => [notification, ...prev]);
+    });
+
+    // Cleanup on unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   // Close notifications when clicking outside the dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-        setIsNotificationsOpen(false)
+        setIsNotificationsOpen(false);
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
+    };
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="admin-dashboard-header">
@@ -143,7 +157,7 @@ const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) =>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AdminPageHeader
+export default AdminPageHeader;
