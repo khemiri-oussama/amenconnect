@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect, useRef } from "react"
-import { IonIcon, IonModal, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton } from "@ionic/react"
-import { closeOutline, addOutline, trashOutline, colorPaletteOutline, saveOutline } from "ionicons/icons"
-import "./BudgetCategoryManager.css"
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
+import { IonIcon, IonModal, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton } from "@ionic/react";
+import { closeOutline, addOutline, trashOutline, colorPaletteOutline, saveOutline } from "ionicons/icons";
+import "./BudgetCategoryManager.css";
+import { useAuth } from "../../AuthContext";
 
 interface BudgetCategory {
-  id: string
-  name: string
-  limit: number
-  color: string
-  current: number
+  userId: string;
+  id: string;
+  name: string;
+  limit: number;
+  color: string;
+  current: number;
+  _id : string;
+  __v : number;
+  createdAt :Date;
+  updatedAt:Date;
 }
 
 interface BudgetCategoryManagerProps {
-  isOpen: boolean
-  onClose: () => void
-  initialCategories?: BudgetCategory[]
-  onSave: (categories: BudgetCategory[]) => void
+  isOpen: boolean;
+  onClose: () => void;
+  userId: string;
+  initialCategories?: BudgetCategory[];
+  onSave: (categories: BudgetCategory[]) => void;
 }
 
-const DEFAULT_CATEGORIES: BudgetCategory[] = [
-  { id: "1", name: "Alimentation", limit: 600, color: "#47ce65", current: 450 },
-  { id: "2", name: "Transport", limit: 300, color: "#ffcc00", current: 200 },
-  { id: "3", name: "Loisirs", limit: 200, color: "#346fce", current: 150 },
-  { id: "4", name: "Shopping", limit: 400, color: "#f472b6", current: 300 },
-  { id: "5", name: "Factures", limit: 250, color: "#60a5fa", current: 180 },
-]
 
 const PRESET_COLORS = [
   "#47ce65", // Green
@@ -40,117 +40,173 @@ const PRESET_COLORS = [
   "#f97316", // Orange
   "#14b8a6", // Teal
   "#64748b", // Slate
-]
+];
 
 const BudgetCategoryManager: React.FC<BudgetCategoryManagerProps> = ({
   isOpen,
   onClose,
-  initialCategories,
+  userId,
   onSave,
 }) => {
-  const [categories, setCategories] = useState<BudgetCategory[]>(
-    initialCategories || DEFAULT_CATEGORIES
-  )
-    const [newCategoryName, setNewCategoryName] = useState<string>("")
-  const [newCategoryLimit, setNewCategoryLimit] = useState<number>(500)
-  const [newCategoryColor, setNewCategoryColor] = useState<string>(PRESET_COLORS[0])
-  const [editingCategory, setEditingCategory] = useState<string | null>(null)
-  const [editingName, setEditingName] = useState<string>("")
+  const [categories, setCategories] = useState<BudgetCategory[]>([]);
+  const [newCategoryName, setNewCategoryName] = useState<string>("");
+  const [newCategoryLimit, setNewCategoryLimit] = useState<number>(500);
+  const [newCategoryColor, setNewCategoryColor] = useState<string>(PRESET_COLORS[0]);
+  const [editingCategory, setEditingCategory] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState<string>("");
 
-  const newNameInputRef = useRef<HTMLInputElement>(null)
-  const editNameInputRef = useRef<HTMLInputElement>(null)
+  const newNameInputRef = useRef<HTMLInputElement>(null);
+  const editNameInputRef = useRef<HTMLInputElement>(null);
+  const { profile } = useAuth();
 
+  // Helper function to map fetched category to include `id`
+  const mapCategory = (cat: any): BudgetCategory => ({
+    ...cat,
+    id: cat._id,
+  });
+
+  // Fetch categories from the API when the component mounts or when the profile changes.
   useEffect(() => {
-    if (initialCategories) {
-      setCategories(initialCategories)
+    async function fetchCategories() {
+      try {
+        const response = await fetch(`/api/categories?userId=${profile?.user._id}`);
+        if (!response.ok) {
+          throw new Error("Error fetching categories");
+        }
+        const data = await response.json();
+        // Map each category to have an `id` field.
+        setCategories(data.map(mapCategory));
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }, [initialCategories])
-  
-  
-  
-  
+    if (profile?.user._id) {
+      fetchCategories();
+    }
+  }, [profile, userId]);
 
   useEffect(() => {
     if (editingCategory && editNameInputRef.current) {
-      editNameInputRef.current.focus()
+      editNameInputRef.current.focus();
     }
-  }, [editingCategory])
+  }, [editingCategory]);
 
-  const handleUpdateCategory = (id: string, field: keyof BudgetCategory, value: string | number) => {
-    console.log(`Updating category ${id}, field ${field} to value:`, value)
+  // Update category via API (PUT) and update local state.
+  const handleUpdateCategory = async (id: string, field: keyof BudgetCategory, value: string | number) => {
+    try {
+      const categoryToUpdate = categories.find((cat) => cat.id === id);
+      if (!categoryToUpdate) return;
 
-    // Create a new array with the updated category
-    const updatedCategories = categories.map((category) => {
-      if (category.id === id) {
-        return { ...category, [field]: value }
+      const newCategoryData = { ...categoryToUpdate, [field]: value };
+
+      // Remove extra fields before sending.
+      const { id: _ignore, _id, __v, createdAt, updatedAt, ...payload } = newCategoryData;
+      if (!payload.userId && profile?.user._id) {
+        payload.userId = profile.user._id;
       }
-      return category
-    })
 
-    // Update the state with the new array
-    setCategories(updatedCategories)
-  }
+      // Optimistically update state.
+      setCategories((prev) =>
+        prev.map((cat) => (cat.id === id ? newCategoryData : cat))
+      );
+
+      const response = await fetch(`/api/categories/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Update error details:", errorData);
+        throw new Error("Error updating category");
+      }
+      const data = await response.json();
+      // Map the returned category.
+      const updatedCategory: BudgetCategory = { ...data, id: data._id };
+      setCategories((prev) => prev.map((cat) => (cat.id === id ? updatedCategory : cat)));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const startEditing = (category: BudgetCategory) => {
-    setEditingCategory(category.id)
-    setEditingName(category.name)
-  }
+    setEditingCategory(category.id);
+    setEditingName(category.name);
+  };
 
   const saveEditing = () => {
     if (editingCategory && editingName.trim()) {
-      handleUpdateCategory(editingCategory, "name", editingName)
-      setEditingCategory(null)
+      handleUpdateCategory(editingCategory, "name", editingName);
+      setEditingCategory(null);
     }
-  }
+  };
 
-  const handleAddCategory = () => {
-    if (newCategoryName.trim() === "") return
+  // Create a new category via API (POST) and update local state.
+  const handleAddCategory = async () => {
+    if (newCategoryName.trim() === "") return;
 
-    console.log("Adding new category:", newCategoryName)
-
-    const category = {
-      id: Date.now().toString(),
+    const categoryPayload = {
+      userId: profile?.user._id,
       name: newCategoryName,
       limit: newCategoryLimit,
       color: newCategoryColor,
-      current: 0, // Make sure this is always set
+      current: 0,
+    };
+
+    try {
+      const response = await fetch("/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoryPayload),
+      });
+      if (!response.ok) {
+        throw new Error("Error creating category");
+      }
+      const newCategory = await response.json();
+      // Map the new category.
+      const mappedCategory: BudgetCategory = { ...newCategory, id: newCategory._id };
+      setCategories([...categories, mappedCategory]);
+      setNewCategoryName("");
+      setNewCategoryLimit(500);
+      setNewCategoryColor(PRESET_COLORS[Math.floor(Math.random() * PRESET_COLORS.length)]);
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    // Create a new array with the new category added
-    const updatedCategories = [...categories, category]
-
-    // Update the state with the new array
-    setCategories(updatedCategories)
-
-    // Reset form fields
-    setNewCategoryName("")
-    setNewCategoryLimit(500)
-    setNewCategoryColor(PRESET_COLORS[Math.floor(Math.random() * PRESET_COLORS.length)])
-  }
-
-  const handleDeleteCategory = (id: string) => {
-    // Create a new array without the deleted category
-    const updatedCategories = categories.filter((category) => category.id !== id)
-
-    // Update the state with the new array
-    setCategories(updatedCategories)
-  }
+  // Delete a category via API (DELETE) and update local state.
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      const response = await fetch(`/api/categories/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Error deleting category");
+      }
+      setCategories(categories.filter((category) => category.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleSave = () => {
-    onSave(categories)
-    onClose()
-  }
+    onSave(categories);
+    onClose();
+  };
 
   const handleRangeChange = (id: string, value: string) => {
-    const numValue = Number.parseInt(value, 10)
-    console.log(`Range changed for ${id} to ${numValue}`)
-    handleUpdateCategory(id, "limit", numValue)
-  }
+    const numValue = Number.parseInt(value, 10);
+    handleUpdateCategory(id, "limit", numValue);
+  };
 
   const handleColorSelect = (id: string, color: string) => {
-    console.log(`Color selected for ${id}: ${color}`)
-    handleUpdateCategory(id, "color", color)
-  }
+    handleUpdateCategory(id, "color", color);
+  };
 
   return (
     <IonModal isOpen={isOpen} onDidDismiss={onClose} className="budget-modal">
@@ -302,8 +358,7 @@ const BudgetCategoryManager: React.FC<BudgetCategoryManagerProps> = ({
         </div>
       </IonContent>
     </IonModal>
-  )
-}
+  );
+};
 
-export default BudgetCategoryManager
-
+export default BudgetCategoryManager;
