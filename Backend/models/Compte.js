@@ -46,9 +46,17 @@ const CompteSchema = new Schema(
     IBAN: {
       type: String
     },
-    // New field for domiciliation:
     domiciliation: {
       type: String
+    },
+    // New fields for expenses tracking
+    monthlyExpenses: {
+      type: Number,
+      default: 0
+    },
+    lastMonthExpenses: {
+      type: Number,
+      default: 0
     }
   },
   { timestamps: true }
