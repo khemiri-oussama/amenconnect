@@ -18,7 +18,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const virementRoutes = require('./routes/virementRoutes');
 const beneficiaryRoutes = require('./routes/beneficiaryRoutes');
 const videoConferenceRoutes = require("./routes/videoConferenceRoutes");
-
+const adminNotificationsRoutes = require("./routes/adminNotificationsRoutes");
 const adminRoutes = require('./routes/adminAuthRoutes');
 // Import Passport
 const passport = require("./config/passport");
@@ -48,6 +48,7 @@ app.use('/api/payment', paymentRoutes);
 app.use('/api/virements', virementRoutes);
 app.use('/api/beneficiaries', beneficiaryRoutes);
 app.use("/api/video-requests", videoConferenceRoutes);
+app.use("/api/admin/notifications", adminNotificationsRoutes);
 
 app.use('/api/admin', adminRoutes);
 

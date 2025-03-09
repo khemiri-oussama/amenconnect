@@ -69,6 +69,171 @@
   justify-content: center;
 }
 
+/* Notifications Dropdown */
+.admin-notifications-dropdown {
+  position: absolute;
+  top: 100%;
+  right: -10px;
+  width: 320px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.admin-notifications-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 15px;
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  transform: rotate(45deg);
+  box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.04);
+}
+
+.admin-notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-notifications-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.admin-notifications-mark-all {
+  background: none;
+  border: none;
+  color: #2fff59;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.admin-notifications-list {
+  max-height: 320px;
+  overflow-y: auto;
+
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(47, 255, 89, 0.5) #f1f5f9;
+}
+
+/* Webkit browsers scrollbar styling (Chrome, Safari, Edge) */
+.admin-notifications-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-notifications-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.admin-notifications-list::-webkit-scrollbar-thumb {
+  background: rgba(47, 255, 89, 0.5);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.admin-notifications-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(47, 255, 89, 0.8);
+}
+
+/* Hide scrollbar buttons (arrows) */
+.admin-notifications-list::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Hide scrollbar corner */
+.admin-notifications-list::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.admin-notification-item {
+  padding: 15px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.admin-notification-item:hover {
+  background-color: #f8fafc;
+}
+
+.admin-notification-unread {
+  background-color: rgba(47, 255, 89, 0.05);
+}
+
+.admin-notification-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.admin-notification-title span {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.admin-notification-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #2fff59;
+  border-radius: 50%;
+}
+
+.admin-notification-message {
+  margin: 0;
+  margin-bottom: 5px;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.admin-notification-time {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.admin-notifications-empty {
+  padding: 30px 15px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+.admin-notifications-footer {
+  padding: 10px;
+  text-align: center;
+  border-top: 1px solid #f1f5f9;
+}
+
+.admin-notifications-view-all {
+  background: none;
+  border: none;
+  color: #2fff59;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.admin-notifications-view-all:hover {
+  background-color: rgba(47, 255, 89, 0.1);
+}
+
 .admin-profile-menu {
   display: flex;
   align-items: center;
@@ -311,6 +476,11 @@
   .admin-header-actions {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .admin-notifications-dropdown {
+    right: -80px;
+    width: 300px;
   }
 }
 

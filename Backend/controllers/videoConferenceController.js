@@ -1,5 +1,6 @@
 // controllers/videoConferenceController.js
 const VideoConferenceRequest = require("../models/VideoConferenceRequest");
+const AdminNotification = require("../models/AdminNotification");
 
 exports.updateVideoConferenceStatus = async (req, res, next) => {
     try {
@@ -42,30 +43,38 @@ exports.getVideoConferenceRequests = async (req, res, next) => {
     }
   };
 
-exports.createVideoConferenceRequest = async (req, res, next) => {
-  try {
-    const { name, email, subject, phone, roomId } = req.body;
-
-    if (!name || !email || !subject || !phone || !roomId) {
-      return res.status(400).json({ message: "Tous les champs sont requis, y compris roomId." });
+  exports.createVideoConferenceRequest = async (req, res, next) => {
+    try {
+      const { name, email, subject, phone, roomId } = req.body;
+  
+      if (!name || !email || !subject || !phone || !roomId) {
+        return res.status(400).json({ message: "Tous les champs sont requis, y compris roomId." });
+      }
+  
+      // Create a new video conference request
+      const newRequest = new VideoConferenceRequest({
+        name,
+        email,
+        subject,
+        phone,
+        roomId,
+      });
+  
+      const savedRequest = await newRequest.save();
+  
+      // Create an admin notification record for the new request
+      const notificationMessage = `Nouvelle demande de vidéoconférence de ${name} (Sujet: ${subject}).`;
+      const adminNotification = new AdminNotification({
+        message: notificationMessage,
+        requestId: savedRequest._id,
+      });
+      await adminNotification.save();
+  
+      return res.status(201).json({
+        message: "Demande de vidéoconférence créée avec succès.",
+        request: savedRequest,
+      });
+    } catch (error) {
+      next(error);
     }
-
-    // Create a new request with the provided roomId from the client
-    const newRequest = new VideoConferenceRequest({
-      name,
-      email,
-      subject,
-      phone,
-      roomId,
-    });
-
-    const savedRequest = await newRequest.save();
-
-    return res.status(201).json({
-      message: "Demande de vidéoconférence créée avec succès.",
-      request: savedRequest,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+  };
