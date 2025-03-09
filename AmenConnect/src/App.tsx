@@ -48,7 +48,7 @@ const SecuritySettingsMobile = lazy(() => import('./pages/Client/accueil/MenuMob
 const AdminLogin = lazy(() => import('./pages/AdminLogin/AdminLogin'));
 const AdminOtp = lazy (() => import('./pages/AdminOtp/AdminOtp'));
 const Dashboard = lazy(() => import('./pages/Admin/Dashboard/Dashboard'));
-const UserManagement = lazy(() => import('./pages/Admin/Gestion Utilisateur/UserManagement'));
+const UserManagement = lazy(() => import('./pages/Admin/GestionUtilisateur/UserManagement'));
 const SurveillanceMonitoring = lazy(() => import('./pages/Admin/SurveillanceMonitoring/SurveillanceMonitoring'));
 const PermissionsManagement = lazy(() => import('./pages/Admin/Permissions/permissionsManagement'));
 const AuthenticationSecurity = lazy(() => import('./pages/Admin/AuthenticationSecurity/AuthenticationSecurity'));

@@ -1,4 +1,9 @@
 @import "../Dashboard/Dashboard.css";
+@import "../AuthenticationSecurity/AuthenticationSecurity.css";
+@import "../GestionUtilisateur/UserManagement.css";
+@import "../SurveillanceMonitoring/SurveillanceMonitoring.css";
+@import "../Permissions/permissionsManagement.css";
+@import "../videoconfmanage/videoconfmanage.css";
 /* Table Styles */
 .admin-table-container {
   width: 100%;
