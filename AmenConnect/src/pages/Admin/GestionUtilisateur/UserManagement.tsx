@@ -11,6 +11,9 @@ import {
   trashOutline,
   searchOutline,
   filterOutline,
+  refreshOutline,
+  eyeOutline,
+  eyeOffOutline,
 } from "ionicons/icons"
 import "./UserManagement.css"
 import SidebarAdmin from "../../../components/SidebarAdmin"
@@ -23,6 +26,100 @@ const UserManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [roleFilter, setRoleFilter] = useState("all")
   const [statusFilter, setStatusFilter] = useState("all")
+
+  // Form state
+  const [formData, setFormData] = useState({
+    name: "",
+    cin: "",
+    email: "",
+    password: "",
+    role: "admin",
+    department: "General",
+    permissions: [] as string[],
+  })
+  const [showPassword, setShowPassword] = useState(false)
+
+  // Generate random password
+  const generatePassword = (e: React.MouseEvent) => {
+    e.preventDefault() // Prevent form submission
+    e.stopPropagation() // Stop event propagation
+
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    let password = ""
+    for (let i = 0; i < 10; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    setFormData({ ...formData, password })
+  }
+
+  // Toggle password visibility
+  const togglePasswordVisibility = (e: React.MouseEvent) => {
+    e.preventDefault() // Prevent form submission
+    e.stopPropagation() // Stop event propagation
+    setShowPassword(!showPassword)
+  }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form submission
+    try {
+      const response = await fetch("/api/admin/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert("Admin created successfully!");
+        setActiveTab("list"); // Return to the user list tab
+      } else {
+        alert("Error: " + data.message);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("An error occurred while creating the admin.");
+    }
+  };
+  
+  // Update the handleCinChange function to be more robust
+  const handleCinChange = (e: CustomEvent) => {
+    const value = e.detail.value || ""
+    // Only allow digits
+    const numbersOnly = value.replace(/\D/g, "")
+    setFormData({ ...formData, cin: numbersOnly })
+  }
+
+  // Add a new function to handle keydown events for the CIN input
+  const handleCinKeyDown = (e: React.KeyboardEvent) => {
+    // Allow: backspace, delete, tab, escape, enter, and numbers
+    if (
+      e.key === "Backspace" ||
+      e.key === "Delete" ||
+      e.key === "Tab" ||
+      e.key === "Escape" ||
+      e.key === "Enter" ||
+      // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+      (e.ctrlKey === true && (e.key === "a" || e.key === "c" || e.key === "v" || e.key === "x")) ||
+      // Allow: home, end, left, right
+      e.key === "Home" ||
+      e.key === "End" ||
+      e.key === "ArrowLeft" ||
+      e.key === "ArrowRight" ||
+      // Allow numbers
+      /^[0-9]$/.test(e.key)
+    ) {
+      // Check if adding a number would exceed maxlength
+      if (/^[0-9]$/.test(e.key) && formData.cin.length >= 8) {
+        e.preventDefault()
+      } else {
+        // Let it happen, don't do anything
+        return
+      }
+    } else {
+      // Prevent the default action
+      e.preventDefault()
+    }
+  }
 
   if (authLoading) {
     return <div className="admin-loading">Loading...</div>
@@ -155,41 +252,177 @@ const UserManagement: React.FC = () => {
     </div>
   )
 
+  // Update the renderUserForm function to include all admin schema fields
   const renderUserForm = () => (
     <div className="admin-form-container">
-      <form className="admin-user-form">
+      <form className="admin-user-form" onSubmit={handleSubmit}>
         <div className="admin-form-group">
           <label className="admin-form-label">Nom</label>
           <div className="admin-input-wrapper">
-            <IonInput type="text" required className="admin-input"></IonInput>
+            <IonInput
+              type="text"
+              required
+              className="admin-input"
+              placeholder="Nom complet"
+              value={formData.name}
+              onIonChange={(e) => setFormData({ ...formData, name: e.detail.value || "" })}
+            ></IonInput>
+          </div>
+        </div>
+
+        <div className="admin-form-group">
+          <label className="admin-form-label">CIN</label>
+          <div className="admin-input-wrapper">
+            <IonInput
+              type="tel"
+              required
+              className="admin-input"
+              placeholder="12345678"
+              maxlength={8}
+              value={formData.cin}
+              onIonChange={handleCinChange}
+              onKeyDown={handleCinKeyDown}
+              pattern="[0-9]*"
+              inputmode="numeric"
+            ></IonInput>
+            <small className="admin-input-hint">Le CIN doit contenir exactement 8 chiffres</small>
           </div>
         </div>
 
         <div className="admin-form-group">
           <label className="admin-form-label">Email</label>
           <div className="admin-input-wrapper">
-            <IonInput type="email" required className="admin-input"></IonInput>
+            <IonInput
+              type="email"
+              required
+              className="admin-input"
+              placeholder="admin@example.com"
+              value={formData.email}
+              onIonChange={(e) => setFormData({ ...formData, email: e.detail.value || "" })}
+            ></IonInput>
           </div>
+        </div>
+
+        <div className="admin-form-group">
+          <label className="admin-form-label">Mot de passe</label>
+          <div className="admin-input-wrapper password-input-wrapper">
+            <IonInput
+              type={showPassword ? "text" : "password"}
+              required
+              className="admin-input password-input"
+              readonly
+              value={formData.password}
+            ></IonInput>
+            <div className="password-actions">
+              <button
+                type="button"
+                className="password-action-button generate"
+                onClick={generatePassword}
+                title="Générer un mot de passe"
+              >
+                <IonIcon icon={refreshOutline} />
+              </button>
+              <button
+                type="button"
+                className="password-action-button toggle"
+                onClick={togglePasswordVisibility}
+                title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              >
+                <IonIcon icon={showPassword ? eyeOffOutline : eyeOutline} />
+              </button>
+            </div>
+          </div>
+          <small className="admin-input-hint">Cliquez sur l'icône pour générer un mot de passe aléatoire</small>
         </div>
 
         <div className="admin-form-group">
           <label className="admin-form-label">Rôle</label>
           <div className="admin-select-wrapper">
-            <IonSelect interface="popover" className="admin-select">
-              <IonSelectOption value="client">Client</IonSelectOption>
-              <IonSelectOption value="employee">Employé</IonSelectOption>
+            <IonSelect
+              interface="popover"
+              className="admin-select"
+              value={formData.role}
+              onIonChange={(e) => setFormData({ ...formData, role: e.detail.value })}
+            >
               <IonSelectOption value="admin">Admin</IonSelectOption>
+              <IonSelectOption value="superadmin">Super Admin</IonSelectOption>
+              <IonSelectOption value="manager">Manager</IonSelectOption>
             </IonSelect>
           </div>
         </div>
 
         <div className="admin-form-group">
-          <label className="admin-form-label">Statut</label>
-          <div className="admin-select-wrapper">
-            <IonSelect interface="popover" className="admin-select">
-              <IonSelectOption value="actif">Actif</IonSelectOption>
-              <IonSelectOption value="inactif">Inactif</IonSelectOption>
-            </IonSelect>
+          <label className="admin-form-label">Département</label>
+          <div className="admin-input-wrapper">
+            <IonInput
+              type="text"
+              className="admin-input"
+              placeholder="General"
+              value={formData.department}
+              onIonChange={(e) => setFormData({ ...formData, department: e.detail.value || "General" })}
+            ></IonInput>
+          </div>
+        </div>
+
+        <div className="admin-form-group">
+          <label className="admin-form-label">Permissions</label>
+          <div className="admin-permissions-container">
+            <div className="admin-permission-checkbox">
+              <input
+                type="checkbox"
+                id="perm-users"
+                checked={formData.permissions.includes("users")}
+                onChange={(e) => {
+                  const newPermissions = e.target.checked
+                    ? [...formData.permissions, "users"]
+                    : formData.permissions.filter((p) => p !== "users")
+                  setFormData({ ...formData, permissions: newPermissions })
+                }}
+              />
+              <label htmlFor="perm-users">Gestion des utilisateurs</label>
+            </div>
+            <div className="admin-permission-checkbox">
+              <input
+                type="checkbox"
+                id="perm-content"
+                checked={formData.permissions.includes("content")}
+                onChange={(e) => {
+                  const newPermissions = e.target.checked
+                    ? [...formData.permissions, "content"]
+                    : formData.permissions.filter((p) => p !== "content")
+                  setFormData({ ...formData, permissions: newPermissions })
+                }}
+              />
+              <label htmlFor="perm-content">Gestion du contenu</label>
+            </div>
+            <div className="admin-permission-checkbox">
+              <input
+                type="checkbox"
+                id="perm-settings"
+                checked={formData.permissions.includes("settings")}
+                onChange={(e) => {
+                  const newPermissions = e.target.checked
+                    ? [...formData.permissions, "settings"]
+                    : formData.permissions.filter((p) => p !== "settings")
+                  setFormData({ ...formData, permissions: newPermissions })
+                }}
+              />
+              <label htmlFor="perm-settings">Paramètres système</label>
+            </div>
+            <div className="admin-permission-checkbox">
+              <input
+                type="checkbox"
+                id="perm-reports"
+                checked={formData.permissions.includes("reports")}
+                onChange={(e) => {
+                  const newPermissions = e.target.checked
+                    ? [...formData.permissions, "reports"]
+                    : formData.permissions.filter((p) => p !== "reports")
+                  setFormData({ ...formData, permissions: newPermissions })
+                }}
+              />
+              <label htmlFor="perm-reports">Rapports et statistiques</label>
+            </div>
           </div>
         </div>
 
