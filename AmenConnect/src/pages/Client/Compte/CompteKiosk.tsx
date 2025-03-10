@@ -76,10 +76,7 @@ const CompteKiosk: React.FC = () => {
           </svg>
 
           <div className="compte-kiosk-content">
-            <div className="compte-kiosk-back-btn" onClick={handleBack}>
-              <IonIcon icon={arrowBack} />
-              <span>Retour</span>
-            </div>
+            
 
             <div className="compte-kiosk-header">
               <h1 className="compte-kiosk-title">Mes Comptes</h1>

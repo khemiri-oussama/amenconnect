@@ -22,12 +22,14 @@ import Profile from "./MenuDesktop/ProfileMenu"
 import { useAuth } from "../../../AuthContext"
 import NotificationDesktop from "./NotificationMenu/NotificationDesktop"
 import BudgetCategoryManager from "../../../components/BudgetCategory/BudgetCategoryManager"
+import Compte from "../Compte/Compte"
 
 interface Account {
   _id: string
   numéroCompte: string
   solde: number
   type: string
+  lastMonthExpenses: number
 }
 
 interface Card {
@@ -47,16 +49,16 @@ interface Transaction {
 }
 
 interface BudgetCategory {
-  userId: string;
-  id: string;
-  name: string;
-  limit: number;
-  color: string;
-  current: number;
-  _id : string;
-  __v : number;
-  createdAt :Date;
-  updatedAt:Date;
+  userId: string
+  id: string
+  name: string
+  limit: number
+  color: string
+  current: number
+  _id: string
+  __v: number
+  createdAt: Date
+  updatedAt: Date
 }
 
 const AccueilDesktop: React.FC = () => {
@@ -85,21 +87,23 @@ const AccueilDesktop: React.FC = () => {
       setTel(profile.user?.telephone || "06 12 34 56 78")
 
       setAccounts(
-        (profile.comptes || []).map((compte) => ({
+        (profile.comptes || []).map((compte: any) => ({
           _id: compte._id,
           numéroCompte: compte.numéroCompte,
           solde: compte.solde,
           type: compte.type,
-        })),
+          // Map lastMonthExpenses from compte data, defaulting to 0 if missing.
+          lastMonthExpenses: compte.lastMonthExpenses || 0,
+        }))
       )
 
       setCards(
-        (profile.cartes || []).map((card) => ({
+        (profile.cartes || []).map((card: any) => ({
           _id: card._id,
           CardNumber: card.CardNumber,
           ExpiryDate: card.ExpiryDate,
           CardHolder: card.CardHolder,
-        })),
+        }))
       )
     }
   }, [profile])
@@ -155,31 +159,60 @@ const AccueilDesktop: React.FC = () => {
     }
   }, [profile])
 
-  const totalBalance = useMemo(() => accounts.reduce((sum, account) => sum + account.solde, 0), [accounts])
+  // Calculate total balance across all accounts.
+  const totalBalance = useMemo(
+    () => accounts.reduce((sum, account) => sum + account.solde, 0),
+    [accounts]
+  )
 
-// Replace your static chartData with the following useMemo hook.
-const chartData = useMemo(() => {
-  // Group transactions by month.
-  const groupedData = transactions.reduce((acc, transaction) => {
-    const date = new Date(transaction.date);
-    // Get short month name (e.g., Jan, Feb, etc.)
-    const month = date.toLocaleString('default', { month: 'short' });
-    // If not created yet, initialize the month.
-    if (!acc[month]) {
-      acc[month] = { name: month, income: 0, expenses: 0 };
-    }
-    // Add to income or expenses based on transaction type.
-    if (transaction.type === "credit") {
-      acc[month].income += transaction.amount;
-    } else if (transaction.type === "debit") {
-      acc[month].expenses += transaction.amount;
-    }
-    return acc;
-  }, {} as { [month: string]: { name: string; income: number; expenses: number } });
-  // Convert the grouped object into an array.
-  return Object.values(groupedData);
-}, [transactions]);
+  // Calculate total expenses of the last month from accounts.
+  const totalLastMonthExpenses = useMemo(() => {
+    return accounts.reduce((sum, account) => sum + account.lastMonthExpenses, 0)
+  }, [accounts])
 
+  // Group transactions by month for the chart.
+  const chartData = useMemo(() => {
+    const groupedData = transactions.reduce((acc, transaction) => {
+      const date = new Date(transaction.date)
+      const month = date.toLocaleString("default", { month: "short" })
+      if (!acc[month]) {
+        acc[month] = { name: month, income: 0, expenses: 0 }
+      }
+      if (transaction.type === "credit") {
+        acc[month].income += transaction.amount
+      } else if (transaction.type === "debit") {
+        acc[month].expenses += transaction.amount
+      }
+      return acc
+    }, {} as { [month: string]: { name: string; income: number; expenses: number } })
+    return Object.values(groupedData)
+  }, [transactions])
+
+  // Calculate last month's income, expenses, and savings from transactions.
+  const lastMonthStats = useMemo(() => {
+    const now = new Date()
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+    let income = 0
+    let expense = 0
+    transactions.forEach((tx) => {
+      const txDate = new Date(tx.date)
+      if (
+        txDate.getMonth() === lastMonth.getMonth() &&
+        txDate.getFullYear() === lastMonth.getFullYear()
+      ) {
+        if (tx.type === "credit") {
+          income += tx.amount
+        } else if (tx.type === "debit") {
+          expense += tx.amount
+        }
+      }
+    })
+    return { income, expense, savings: income - expense }
+  }, [transactions])
+
+  // Calculate savings percentage relative to last month's expense.
+  const savingsPercentage =
+    lastMonthStats.expense > 0 ? (lastMonthStats.savings / lastMonthStats.expense) * 100 : 0
 
   const handleAccountClick = (accountId: string) => {
     console.log(`Viewing account ${accountId}...`)
@@ -191,7 +224,7 @@ const chartData = useMemo(() => {
     value: string,
     change: string,
     icon: string,
-    changeType: "positive" | "negative",
+    changeType: "positive" | "negative"
   ) => (
     <div className="stat-card">
       <div className="stat-icon">
@@ -240,16 +273,22 @@ const chartData = useMemo(() => {
               `${totalBalance.toFixed(2)} TND`,
               "+2.5% depuis le mois dernier",
               walletOutline,
-              "positive",
+              "positive"
             )}
             {renderStatCard(
               "Dépenses du mois",
-              "3,240.80 TND",
+              `${totalLastMonthExpenses.toFixed(2)} TND`,
               "-1.8% depuis le mois dernier",
               pieChartOutline,
-              "negative",
+              "negative"
             )}
-            {renderStatCard("Économies", "2,180.25 TND", "+5.2% depuis le mois dernier", trendingUpOutline, "positive")}
+            {renderStatCard(
+              "Économies",
+              `${lastMonthStats.savings.toFixed(2)} TND`,
+              `${savingsPercentage >= 0 ? '+' : ''}${savingsPercentage.toFixed(2)}% depuis le mois dernier`,
+              trendingUpOutline,
+              "positive"
+            )}
           </div>
 
           <div className="main-grid">
@@ -292,28 +331,27 @@ const chartData = useMemo(() => {
                 </a>
               </div>
               <div className="chart-container">
-  <ResponsiveContainer width="100%" height={300}>
-    <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-      <defs>
-        <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-          <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-        </linearGradient>
-        <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-          <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-        </linearGradient>
-      </defs>
-      <XAxis dataKey="name" stroke="#888" />
-      <YAxis stroke="#888" />
-      <CartesianGrid strokeDasharray="3 3" vertical={false} />
-      <Tooltip />
-      <Area type="monotone" dataKey="income" stroke="#82ca9d" fillOpacity={1} fill="url(#colorIncome)" />
-      <Area type="monotone" dataKey="expenses" stroke="#8884d8" fillOpacity={1} fill="url(#colorExpenses)" />
-    </AreaChart>
-  </ResponsiveContainer>
-</div>
-
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <XAxis dataKey="name" stroke="#888" />
+                    <YAxis stroke="#888" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="income" stroke="#82ca9d" fillOpacity={1} fill="url(#colorIncome)" />
+                    <Area type="monotone" dataKey="expenses" stroke="#8884d8" fillOpacity={1} fill="url(#colorExpenses)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </div>
 
             <div className="section-card cards-section">
@@ -365,7 +403,14 @@ const chartData = useMemo(() => {
                 budgetCategories.map((category) => {
                   const percentage = (category.current / category.limit) * 100
                   return (
-                    <div key={category.id} className="budget-item">
+                    <div
+                      key={category.id}
+                      className="budget-item"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setIsBudgetModalOpen(true)
+                      }}
+                    >
                       <IonRippleEffect />
                       <div className="budget-item-header">
                         <div className="budget-item-label">
@@ -421,7 +466,9 @@ const chartData = useMemo(() => {
                       </div>
                       <div className="transaction-details">
                         <div className="transaction-description">{transaction.description}</div>
-                        <div className="transaction-date">{new Date(transaction.date).toLocaleString()}</div>
+                        <div className="transaction-date">
+                          {new Date(transaction.date).toLocaleString()}
+                        </div>
                       </div>
                       <div className={`transaction-amount ${transaction.type}`}>
                         {transaction.type === "credit" ? "+" : "-"} {transaction.amount.toFixed(2)} TND
@@ -438,19 +485,26 @@ const chartData = useMemo(() => {
           <div className="quick-actions-section">
             <h2 className="section-title">Actions Rapides</h2>
             <div className="quick-actions-grid">
-              <IonButton expand="block" className="quick-action-button">
+              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/virement")}>
                 <IonIcon slot="start" icon={peopleOutline} />
                 Virement
               </IonButton>
-              <IonButton expand="block" className="quick-action-button">
+              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/virement")}>
                 <IonIcon slot="start" icon={cardOutline} />
                 Payer une Facture
               </IonButton>
-              <IonButton expand="block" className="quick-action-button">
+              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/virement")}>
                 <IonIcon slot="start" icon={globeOutline} />
                 Transfert International
               </IonButton>
-              <IonButton expand="block" className="quick-action-button">
+              <IonButton
+                expand="block"
+                className="quick-action-button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setIsBudgetModalOpen(true)
+                }}
+              >
                 <IonIcon slot="start" icon={pieChartOutline} />
                 Gérer le Budget
               </IonButton>
@@ -460,7 +514,7 @@ const chartData = useMemo(() => {
         <BudgetCategoryManager
           isOpen={isBudgetModalOpen}
           onClose={() => setIsBudgetModalOpen(false)}
-          userId={profile?.user._id||""}
+          userId={profile?.user._id || ""}
           initialCategories={budgetCategories}
           onSave={handleSaveBudgetCategories}
         />

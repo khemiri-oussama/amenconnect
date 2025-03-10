@@ -10,6 +10,9 @@ import {
   IonImg,
   IonRippleEffect,
   IonSpinner,
+  IonFab,
+  IonFabButton,
+  useIonViewDidEnter,
 } from "@ionic/react"
 import {
   shieldOutline,
@@ -19,14 +22,17 @@ import {
   arrowBack,
   eyeOutline,
   eyeOffOutline,
+  chevronForward,
+  chevronBack,
 } from "ionicons/icons"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import "./CarteKiosk.css"
 import NavbarKiosk from "../../../components/NavbarKiosk"
 import { useAuth, type Carte, type Compte } from "../../../AuthContext"
 import { generateBankStatement, type CardDetails, type Transaction } from "../../../../services/pdf-generator"
 import { useCarte } from "../../../CarteContext"
 import { useHistory } from "react-router-dom"
+import { createGesture } from "@ionic/react"
 
 interface CreditCardTransaction {
   _id: string
@@ -51,9 +57,18 @@ const CarteKiosk: React.FC = () => {
   const [transactions, setTransactions] = useState<CreditCardTransaction[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  
+  // New state for card swiping
+  const [allCards, setAllCards] = useState<Carte[]>([])
+  const [currentCardIndex, setCurrentCardIndex] = useState(0)
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
 
   useEffect(() => {
     if (profile && profile.cartes && profile.cartes.length > 0) {
+      // Store all cards
+      setAllCards(profile.cartes)
+      
+      // Set the first card as default
       const cardFromProfile = profile.cartes[0]
       setCardDetails(cardFromProfile)
       setIsCardLocked(cardFromProfile.cardStatus?.toLowerCase() !== "active")
@@ -64,6 +79,85 @@ const CarteKiosk: React.FC = () => {
     }
     setIsLoading(false)
   }, [profile])
+
+  // Setup swipe gesture detection
+  useIonViewDidEnter(() => {
+    const cardElement = document.querySelector('.carte-kiosk-credit-card')
+    if (cardElement) {
+      const gesture = createGesture({
+        gestureName: "card-swipe", // Add this property with a unique name
+        el: cardElement as HTMLElement,
+        threshold: 15,
+        direction: "x",
+        onStart: () => {},
+        onMove: (detail) => {
+          // Optional: Add visual feedback during swipe
+          if (detail.deltaX > 0) {
+            cardElement.setAttribute(
+              "style",
+              `transform: translateX(${detail.deltaX / 5}px) rotate(${detail.deltaX / 50}deg)`
+            );
+          } else {
+            cardElement.setAttribute(
+              "style",
+              `transform: translateX(${detail.deltaX / 5}px) rotate(${detail.deltaX / 50}deg)`
+            );
+          }
+        },
+        onEnd: (detail) => {
+          cardElement.setAttribute("style", "");
+          // Detect swipe direction and change card if threshold is met
+          if (detail.deltaX > 100 && currentCardIndex > 0) {
+            // Swipe right - go to previous card
+            setSwipeDirection("right");
+            changeCard(currentCardIndex - 1);
+          } else if (detail.deltaX < -100 && currentCardIndex < allCards.length - 1) {
+            // Swipe left - go to next card
+            setSwipeDirection("left");
+            changeCard(currentCardIndex + 1);
+          }
+        },
+      });
+      
+      
+      gesture.enable()
+      
+      // Clean up gesture when component unmounts
+      return () => {
+        gesture.destroy()
+      }
+    }
+  })
+
+  const changeCard = (newIndex: number) => {
+    if (newIndex >= 0 && newIndex < allCards.length) {
+      setCurrentCardIndex(newIndex)
+      const newCard = allCards[newIndex]
+      
+      // Update card details
+      setCardDetails(newCard)
+      setIsCardLocked(newCard.cardStatus?.toLowerCase() !== "active")
+      setTransactions(newCard.creditCardTransactions || [])
+      
+      // Update associated account
+      const associatedAccount = profile?.comptes.find((compte) => compte._id === newCard.comptesId)
+      setAccountDetails(associatedAccount || null)
+    }
+  }
+
+  const goToNextCard = () => {
+    if (currentCardIndex < allCards.length - 1) {
+      setSwipeDirection('left')
+      changeCard(currentCardIndex + 1)
+    }
+  }
+
+  const goToPrevCard = () => {
+    if (currentCardIndex > 0) {
+      setSwipeDirection('right')
+      changeCard(currentCardIndex - 1)
+    }
+  }
 
   const toggleCardNumber = () => {
     setIsCardNumberVisible(!isCardNumberVisible)
@@ -78,6 +172,16 @@ const CarteKiosk: React.FC = () => {
       await updateCarteStatus(cardDetails._id, newStatus)
       setIsCardLocked(newStatus.toLowerCase() !== "active")
       setCardDetails((prev) => (prev ? { ...prev, cardStatus: newStatus } : prev))
+      
+      // Update the card in allCards array
+      setAllCards(prevCards => {
+        return prevCards.map(card => {
+          if (card._id === cardDetails._id) {
+            return { ...card, cardStatus: newStatus }
+          }
+          return card
+        })
+      })
     } catch (err) {
       console.error("Failed to update card status:", err)
     }
@@ -174,56 +278,108 @@ const CarteKiosk: React.FC = () => {
           </svg>
 
           <div className="carte-kiosk-content">
-            <div className="carte-kiosk-back-btn" onClick={handleBack}>
-              <IonIcon icon={arrowBack} />
-              <span>Retour</span>
-            </div>
+            
 
             <div className="carte-kiosk-header">
               <h1 className="carte-kiosk-title">Ma Carte</h1>
               <p className="carte-kiosk-subtitle">Gérez votre carte et vos transactions</p>
+              
+              {/* Card pagination indicator */}
+              {allCards.length > 1 && (
+                <div className="carte-kiosk-pagination">
+                  <span className="carte-kiosk-pagination-text">
+                    Carte {currentCardIndex + 1} sur {allCards.length}
+                  </span>
+                  <div className="carte-kiosk-pagination-dots">
+                    {allCards.map((_, index) => (
+                      <div 
+                        key={index} 
+                        className={`carte-kiosk-pagination-dot ${index === currentCardIndex ? 'active' : ''}`}
+                        onClick={() => changeCard(index)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            <motion.div
-              className="carte-kiosk-card-display"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="carte-kiosk-credit-card">
-                <div className="carte-kiosk-card-body">
-                  <div className="carte-kiosk-card-top">
-                    <IonImg src="../puce.png" className="carte-kiosk-chip" />
-                    <div className="carte-kiosk-card-type">{cardDetails?.TypeCarte}</div>
-                  </div>
-                  <div className="carte-kiosk-card-middle">
-                    <motion.div
-                      className="carte-kiosk-card-number"
-                      animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}
-                    >
-                      {isCardNumberVisible
-                        ? cardDetails?.CardNumber
-                        : cardDetails?.CardNumber.replace(/\d{4}(?=.)/g, "•••• ")}
-                    </motion.div>
-                    <div className="carte-kiosk-toggle-visibility" onClick={toggleCardNumber}>
-                      <IonIcon icon={isCardNumberVisible ? eyeOffOutline : eyeOutline} />
+            <div className="carte-kiosk-card-display">
+              {/* Navigation buttons for cards */}
+              {currentCardIndex > 0 && (
+                <div className="carte-kiosk-nav-button carte-kiosk-prev-button" onClick={goToPrevCard}>
+                  <IonIcon icon={chevronBack} />
+                </div>
+              )}
+              
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentCardIndex}
+                  className="carte-kiosk-credit-card"
+                  initial={{ 
+                    opacity: 0, 
+                    x: swipeDirection === 'left' ? 100 : swipeDirection === 'right' ? -100 : 0,
+                    scale: 0.9 
+                  }}
+                  animate={{ 
+                    opacity: 1, 
+                    x: 0,
+                    scale: 1 
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    x: swipeDirection === 'left' ? -100 : swipeDirection === 'right' ? 100 : 0,
+                    scale: 0.9 
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="carte-kiosk-card-body">
+                    <div className="carte-kiosk-card-top">
+                      <IonImg src="../puce.png" className="carte-kiosk-chip" />
+                      <div className="carte-kiosk-card-type">{cardDetails?.TypeCarte}</div>
+                    </div>
+                    <div className="carte-kiosk-card-middle">
+                      <motion.div
+                        className="carte-kiosk-card-number"
+                        animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}
+                      >
+                        {isCardNumberVisible
+                          ? cardDetails?.CardNumber
+                          : cardDetails?.CardNumber.replace(/\d{4}(?=.)/g, "•••• ")}
+                      </motion.div>
+                      <div className="carte-kiosk-toggle-visibility" onClick={toggleCardNumber}>
+                        <IonIcon icon={isCardNumberVisible ? eyeOffOutline : eyeOutline} />
+                      </div>
+                    </div>
+                    <div className="carte-kiosk-card-bottom">
+                      <div className="carte-kiosk-card-holder">{cardDetails?.CardHolder}</div>
+                      <div className="carte-kiosk-expiry">
+                        <span>Expire à </span>
+                        <span>{cardDetails?.ExpiryDate}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="carte-kiosk-card-bottom">
-                    <div className="carte-kiosk-card-holder">{cardDetails?.CardHolder}</div>
-                    <div className="carte-kiosk-expiry">
-                      <span>Expire à </span>
-                      <span>{cardDetails?.ExpiryDate}</span>
+                  <div className="carte-kiosk-card-footer">
+                    <div className="carte-kiosk-bank-logo">
+                      <IonImg src="../amen_logo.png" className="carte-kiosk-bank-name" />
                     </div>
                   </div>
+                </motion.div>
+              </AnimatePresence>
+              
+              {currentCardIndex < allCards.length - 1 && (
+                <div className="carte-kiosk-nav-button carte-kiosk-next-button" onClick={goToNextCard}>
+                  <IonIcon icon={chevronForward} />
                 </div>
-                <div className="carte-kiosk-card-footer">
-                  <div className="carte-kiosk-bank-logo">
-                    <IonImg src="../amen_logo.png" className="carte-kiosk-bank-name" />
-                  </div>
+              )}
+            </div>
+
+            <div className="carte-kiosk-swipe-hint">
+              {allCards.length > 1 && (
+                <div className="carte-kiosk-swipe-text">
+                  <span>Glissez pour naviguer entre vos cartes</span>
                 </div>
-              </div>
-            </motion.div>
+              )}
+            </div>
 
             <div className="carte-kiosk-quick-actions">
               <IonButton
@@ -426,4 +582,3 @@ const CarteKiosk: React.FC = () => {
 }
 
 export default CarteKiosk
-
