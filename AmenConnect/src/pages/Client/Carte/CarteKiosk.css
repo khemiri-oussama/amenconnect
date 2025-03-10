@@ -78,10 +78,102 @@
   opacity: 0.8;
 }
 
+/* Pagination styles */
+.carte-kiosk-pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.carte-kiosk-pagination-text {
+  font-size: 1rem;
+  color: #121660;
+  margin-bottom: 0.5rem;
+}
+
+.carte-kiosk-pagination-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.carte-kiosk-pagination-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(18, 22, 96, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carte-kiosk-pagination-dot.active {
+  background-color: #121660;
+  transform: scale(1.2);
+}
+
 .carte-kiosk-card-display {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   display: flex;
   justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Navigation buttons */
+.carte-kiosk-nav-button {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.carte-kiosk-nav-button:hover {
+  background-color: #ffffff;
+  transform: scale(1.1);
+}
+
+.carte-kiosk-prev-button {
+  left: 10px;
+}
+
+.carte-kiosk-next-button {
+  right: 10px;
+}
+
+.carte-kiosk-nav-button ion-icon {
+  font-size: 1.25rem;
+  color: #121660;
+}
+
+/* Swipe hint */
+.carte-kiosk-swipe-hint {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.carte-kiosk-swipe-text {
+  font-size: 0.9rem;
+  color: #666;
+  background-color: rgba(18, 22, 96, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.carte-kiosk-swipe-text::before,
+.carte-kiosk-swipe-text::after {
+  content: "⟷";
+  margin: 0 0.5rem;
 }
 
 .carte-kiosk-credit-card {
@@ -98,6 +190,12 @@
   justify-content: space-between;
   position: relative;
   overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.carte-kiosk-credit-card:active {
+  cursor: grabbing;
 }
 
 .carte-kiosk-credit-card::before {
@@ -585,5 +683,9 @@
     font-size: 1rem;
     padding: 0.75rem;
   }
+  
+  .carte-kiosk-nav-button {
+    width: 30px;
+    height: 30px;
+  }
 }
-

@@ -26,16 +26,7 @@ import Navbar from "../../../components/Navbar"
 import "./CompteDesktop.css"
 import Profile from "../accueil/MenuDesktop/ProfileMenu"
 import { useAuth } from "../../../AuthContext"
-  const [today, setToday] = useState<string>("")
-  useEffect(() => {
-    const currentDate = new Date()
-    const formattedDate = currentDate.toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    })
-    setToday(formattedDate)
-  }, [])
+
 interface Operation {
   id: number
   type: "credit" | "debit"
@@ -46,7 +37,18 @@ interface Operation {
 
 const CompteDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
-  const history = useMemo(() => window.history, []) // Using browser history
+
+  // Move the today state inside the component
+  const [today, setToday] = useState<string>("")
+  useEffect(() => {
+    const currentDate = new Date()
+    const formattedDate = currentDate.toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+    setToday(formattedDate)
+  }, [])
 
   if (authLoading) {
     return <div>Loading...</div>
@@ -106,7 +108,7 @@ const CompteDesktop: React.FC = () => {
     window.location.href = `/Compte/${accountId}`
   }
 
-  // A sample stat card render function remains as is.
+  // A sample stat card render function.
   const renderStatCard = (
     label: string,
     value: string,
