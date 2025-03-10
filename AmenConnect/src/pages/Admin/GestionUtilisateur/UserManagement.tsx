@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { IonPage, IonIcon, IonInput, IonSelect, IonSelectOption, IonSearchbar } from "@ionic/react"
 import {
   peopleOutline,
@@ -27,7 +27,11 @@ const UserManagement: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState("all")
   const [statusFilter, setStatusFilter] = useState("all")
 
-  // Form state
+  // State for the admins list fetched from API
+  const [admins, setAdmins] = useState<any[]>([])
+  const [loadingAdmins, setLoadingAdmins] = useState(true)
+
+  // Form state for creating/editing an admin
   const [formData, setFormData] = useState({
     name: "",
     cin: "",
@@ -39,10 +43,27 @@ const UserManagement: React.FC = () => {
   })
   const [showPassword, setShowPassword] = useState(false)
 
+  // Fetch admins from API on component mount
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const response = await fetch("/api/admin/list"); // New API endpoint
+        const data = await response.json();
+        setAdmins(data.admins || []);
+      } catch (error) {
+        console.error("Error fetching admins:", error);
+      } finally {
+        setLoadingAdmins(false);
+      }
+    }
+    fetchAdmins();
+  }, []);
+  
+
   // Generate random password
   const generatePassword = (e: React.MouseEvent) => {
-    e.preventDefault() // Prevent form submission
-    e.stopPropagation() // Stop event propagation
+    e.preventDefault()
+    e.stopPropagation()
 
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
     let password = ""
@@ -54,12 +75,13 @@ const UserManagement: React.FC = () => {
 
   // Toggle password visibility
   const togglePasswordVisibility = (e: React.MouseEvent) => {
-    e.preventDefault() // Prevent form submission
-    e.stopPropagation() // Stop event propagation
+    e.preventDefault()
+    e.stopPropagation()
     setShowPassword(!showPassword)
   }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault()
     try {
       const response = await fetch("/api/admin/register", {
         method: "POST",
@@ -67,56 +89,73 @@ const UserManagement: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+      })
+      const data = await response.json()
+      if (response.ok) {
+        alert("Admin created successfully!")
+        setActiveTab("list")
+        // Optionally, refresh the admins list after adding a new admin:
+        const refreshed = await fetch("/api/admin")
+        const refreshedData = await refreshed.json()
+        setAdmins(refreshedData.admins || [])
+      } else {
+        alert("Error: " + data.message)
+      }
+    } catch (error) {
+      console.error("Registration error:", error)
+      alert("An error occurred while creating the admin.")
+    }
+  }
+  // In your UserManagement component (e.g., UserManagement.tsx)
+const handleDelete = async (adminId: string) => {
+  if (window.confirm("Are you sure you want to delete this admin?")) {
+    try {
+      const response = await fetch(`/api/admin/list/${adminId}`, {
+        method: "DELETE",
+        credentials: "include", // Include cookies for auth
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Admin created successfully!");
-        setActiveTab("list"); // Return to the user list tab
+        alert("Admin deleted successfully");
+        // Remove the deleted admin from your state
+        setAdmins(prev => prev.filter(admin => admin._id !== adminId));
       } else {
         alert("Error: " + data.message);
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      alert("An error occurred while creating the admin.");
+      console.error("Error deleting admin:", error);
+      alert("An error occurred while deleting the admin.");
     }
-  };
-  
-  // Update the handleCinChange function to be more robust
+  }
+};
+
+
   const handleCinChange = (e: CustomEvent) => {
     const value = e.detail.value || ""
-    // Only allow digits
     const numbersOnly = value.replace(/\D/g, "")
     setFormData({ ...formData, cin: numbersOnly })
   }
 
-  // Add a new function to handle keydown events for the CIN input
   const handleCinKeyDown = (e: React.KeyboardEvent) => {
-    // Allow: backspace, delete, tab, escape, enter, and numbers
     if (
       e.key === "Backspace" ||
       e.key === "Delete" ||
       e.key === "Tab" ||
       e.key === "Escape" ||
       e.key === "Enter" ||
-      // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
       (e.ctrlKey === true && (e.key === "a" || e.key === "c" || e.key === "v" || e.key === "x")) ||
-      // Allow: home, end, left, right
       e.key === "Home" ||
       e.key === "End" ||
       e.key === "ArrowLeft" ||
       e.key === "ArrowRight" ||
-      // Allow numbers
       /^[0-9]$/.test(e.key)
     ) {
-      // Check if adding a number would exceed maxlength
       if (/^[0-9]$/.test(e.key) && formData.cin.length >= 8) {
         e.preventDefault()
       } else {
-        // Let it happen, don't do anything
         return
       }
     } else {
-      // Prevent the default action
       e.preventDefault()
     }
   }
@@ -125,27 +164,16 @@ const UserManagement: React.FC = () => {
     return <div className="admin-loading">Loading...</div>
   }
 
-  const users = [
-    { name: "John Doe", email: "john@example.com", role: "Client", status: "Actif" },
-    { name: "Jane Smith", email: "jane@example.com", role: "Employé", status: "Actif" },
-    { name: "Bob Johnson", email: "bob@example.com", role: "Admin", status: "Inactif" },
-    { name: "Alice Williams", email: "alice@example.com", role: "Client", status: "Actif" },
-    { name: "Charlie Brown", email: "charlie@example.com", role: "Employé", status: "Inactif" },
-  ]
-
-  const filteredUsers = users.filter((user) => {
-    // Search filter
+  // Apply filters on the fetched admins list
+  const filteredAdmins = admins.filter((admin) => {
     const matchesSearch =
       searchQuery === "" ||
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-
-    // Role filter
-    const matchesRole = roleFilter === "all" || user.role.toLowerCase() === roleFilter.toLowerCase()
-
-    // Status filter
-    const matchesStatus = statusFilter === "all" || user.status.toLowerCase() === statusFilter.toLowerCase()
-
+      admin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      admin.email.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesRole = roleFilter === "all" || admin.role.toLowerCase() === roleFilter.toLowerCase()
+    const matchesStatus =
+      statusFilter === "all" ||
+      (admin.status && admin.status.toLowerCase() === statusFilter.toLowerCase())
     return matchesSearch && matchesRole && matchesStatus
   })
 
@@ -200,62 +228,72 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
 
-      <div className="admin-table-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Email</th>
-              <th>Rôle</th>
-              <th>Statut</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user, index) => (
-                <tr key={index}>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>
-                    <span className={`admin-role-badge ${user.role.toLowerCase()}`}>{user.role}</span>
-                  </td>
-                  <td>
-                    <span className={`admin-status-badge ${user.status.toLowerCase()}`}>{user.status}</span>
-                  </td>
-                  <td>
-                    <div className="admin-action-buttons">
-                      <button
-                        className="admin-icon-button edit"
-                        onClick={() => setActiveTab("create")}
-                        title="Modifier"
-                      >
-                        <IonIcon icon={createOutline} />
-                      </button>
-                      <button className="admin-icon-button delete" title="Supprimer">
-                        <IonIcon icon={trashOutline} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
+      {loadingAdmins ? (
+        <div className="admin-loading">Chargement des admins...</div>
+      ) : (
+        <div className="admin-table-container">
+          <table className="admin-table">
+            <thead>
               <tr>
-                <td colSpan={5} className="admin-no-results">
-                  Aucun utilisateur trouvé
-                </td>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Statut</th>
+                <th>Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+  {filteredAdmins.length > 0 ? (
+    filteredAdmins.map((admin) => (
+      <tr key={admin._id}>
+        <td>{admin.name}</td>
+        <td>{admin.email}</td>
+        <td>
+          <span className={`admin-role-badge ${admin.role.toLowerCase()}`}>{admin.role}</span>
+        </td>
+        <td>
+          <span className={`admin-status-badge ${admin.status?.toLowerCase() || "actif"}`}>
+            {admin.status || "Actif"}
+          </span>
+        </td>
+        <td>
+          <div className="admin-action-buttons">
+            <button
+              className="admin-icon-button edit"
+              onClick={() => setActiveTab("create")}
+              title="Modifier"
+            >
+              <IonIcon icon={createOutline} />
+            </button>
+            <button
+              className="admin-icon-button delete"
+              title="Supprimer"
+              onClick={() => handleDelete(admin._id)}
+            >
+              <IonIcon icon={trashOutline} />
+            </button>
+          </div>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={5} className="admin-no-results">
+        Aucun administrateur trouvé
+      </td>
+    </tr>
+  )}
+</tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 
-  // Update the renderUserForm function to include all admin schema fields
   const renderUserForm = () => (
     <div className="admin-form-container">
       <form className="admin-user-form" onSubmit={handleSubmit}>
+        {/* ... your existing form fields remain unchanged ... */}
         <div className="admin-form-group">
           <label className="admin-form-label">Nom</label>
           <div className="admin-input-wrapper">
@@ -269,7 +307,6 @@ const UserManagement: React.FC = () => {
             ></IonInput>
           </div>
         </div>
-
         <div className="admin-form-group">
           <label className="admin-form-label">CIN</label>
           <div className="admin-input-wrapper">
@@ -288,7 +325,6 @@ const UserManagement: React.FC = () => {
             <small className="admin-input-hint">Le CIN doit contenir exactement 8 chiffres</small>
           </div>
         </div>
-
         <div className="admin-form-group">
           <label className="admin-form-label">Email</label>
           <div className="admin-input-wrapper">
@@ -302,7 +338,6 @@ const UserManagement: React.FC = () => {
             ></IonInput>
           </div>
         </div>
-
         <div className="admin-form-group">
           <label className="admin-form-label">Mot de passe</label>
           <div className="admin-input-wrapper password-input-wrapper">
@@ -334,7 +369,6 @@ const UserManagement: React.FC = () => {
           </div>
           <small className="admin-input-hint">Cliquez sur l'icône pour générer un mot de passe aléatoire</small>
         </div>
-
         <div className="admin-form-group">
           <label className="admin-form-label">Rôle</label>
           <div className="admin-select-wrapper">
@@ -350,7 +384,6 @@ const UserManagement: React.FC = () => {
             </IonSelect>
           </div>
         </div>
-
         <div className="admin-form-group">
           <label className="admin-form-label">Département</label>
           <div className="admin-input-wrapper">
@@ -363,10 +396,10 @@ const UserManagement: React.FC = () => {
             ></IonInput>
           </div>
         </div>
-
         <div className="admin-form-group">
           <label className="admin-form-label">Permissions</label>
           <div className="admin-permissions-container">
+            {/* Permission checkboxes remain unchanged */}
             <div className="admin-permission-checkbox">
               <input
                 type="checkbox"
@@ -425,7 +458,6 @@ const UserManagement: React.FC = () => {
             </div>
           </div>
         </div>
-
         <div className="admin-form-actions">
           <button type="button" className="admin-button secondary" onClick={() => setActiveTab("list")}>
             Annuler
@@ -447,7 +479,6 @@ const UserManagement: React.FC = () => {
             <IonInput type="email" required className="admin-input"></IonInput>
           </div>
         </div>
-
         <div className="admin-form-actions">
           <button type="button" className="admin-button secondary" onClick={() => setActiveTab("list")}>
             Annuler
@@ -463,20 +494,13 @@ const UserManagement: React.FC = () => {
   return (
     <IonPage>
       <div className="admin-dashboard-layout">
-        {/* Sidebar Component */}
         <SidebarAdmin currentPage="Utilisateurs" />
-
-        {/* Main Content */}
         <div className="admin-dashboard-content">
-          {/* Header */}
           <AdminPageHeader
             title="Gestion des Utilisateurs"
             subtitle="Gérez les comptes utilisateurs et leurs permissions"
           />
-
-          {/* Main Card */}
           <div className="admin-content-card">
-            {/* Tabs */}
             <div className="admin-tabs">
               <button
                 className={`admin-tab ${activeTab === "list" ? "active" : ""}`}
@@ -500,8 +524,6 @@ const UserManagement: React.FC = () => {
                 <span>Réinitialiser le mot de passe</span>
               </button>
             </div>
-
-            {/* Tab Content */}
             <div className="admin-tab-content">
               {activeTab === "list" && renderUserList()}
               {activeTab === "create" && renderUserForm()}
@@ -515,4 +537,3 @@ const UserManagement: React.FC = () => {
 }
 
 export default UserManagement
-
