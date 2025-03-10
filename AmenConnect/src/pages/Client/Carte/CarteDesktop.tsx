@@ -1,5 +1,6 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import type React from "react"
+import { useState, useEffect } from "react"
 import {
   IonPage,
   IonHeader,
@@ -20,8 +21,15 @@ import {
   IonImg,
   IonSpinner,
 } from "@ionic/react"
-import { shieldOutline, notificationsOutline, lockClosedOutline, downloadOutline } from "ionicons/icons"
-import { motion } from "framer-motion"
+import {
+  shieldOutline,
+  notificationsOutline,
+  lockClosedOutline,
+  downloadOutline,
+  chevronForwardOutline,
+  chevronBackOutline,
+} from "ionicons/icons"
+import { motion, AnimatePresence } from "framer-motion"
 import "./CarteDesktop.css"
 import Navbar from "../../../components/Navbar"
 import { useAuth, type Carte, type Compte } from "../../../AuthContext"
@@ -53,25 +61,60 @@ const CarteDesktop: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // New state for card navigation
+  const [allCards, setAllCards] = useState<Carte[]>([])
+  const [currentCardIndex, setCurrentCardIndex] = useState(0)
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null)
+
   useEffect(() => {
     if (profile && profile.cartes && profile.cartes.length > 0) {
-      const cardFromProfile = profile.cartes[0];
-      setCardDetails(cardFromProfile);
+      // Store all cards
+      setAllCards(profile.cartes)
+
+      // Set the first card as default
+      const cardFromProfile = profile.cartes[0]
+      setCardDetails(cardFromProfile)
       // Use a case-insensitive comparison:
-      setIsCardLocked(
-        cardFromProfile.cardStatus?.toLowerCase() !== "active"
-      );
-      setTransactions(cardFromProfile.creditCardTransactions || []);
-  
+      setIsCardLocked(cardFromProfile.cardStatus?.toLowerCase() !== "active")
+      setTransactions(cardFromProfile.creditCardTransactions || [])
+
       // Find the associated account
-      const associatedAccount = profile.comptes.find(
-        (compte) => compte._id === cardFromProfile.comptesId
-      );
-      setAccountDetails(associatedAccount || null);
+      const associatedAccount = profile.comptes.find((compte) => compte._id === cardFromProfile.comptesId)
+      setAccountDetails(associatedAccount || null)
     }
-    setIsLoading(false);
-  }, [profile]);
-  
+    setIsLoading(false)
+  }, [profile])
+
+  const changeCard = (newIndex: number) => {
+    if (newIndex >= 0 && newIndex < allCards.length) {
+      // Set slide direction for animation
+      setSlideDirection(newIndex > currentCardIndex ? "left" : "right")
+      setCurrentCardIndex(newIndex)
+
+      const newCard = allCards[newIndex]
+
+      // Update card details
+      setCardDetails(newCard)
+      setIsCardLocked(newCard.cardStatus?.toLowerCase() !== "active")
+      setTransactions(newCard.creditCardTransactions || [])
+
+      // Update associated account
+      const associatedAccount = profile?.comptes.find((compte) => compte._id === newCard.comptesId)
+      setAccountDetails(associatedAccount || null)
+    }
+  }
+
+  const goToNextCard = () => {
+    if (currentCardIndex < allCards.length - 1) {
+      changeCard(currentCardIndex + 1)
+    }
+  }
+
+  const goToPrevCard = () => {
+    if (currentCardIndex > 0) {
+      changeCard(currentCardIndex - 1)
+    }
+  }
 
   const toggleCardNumber = () => {
     setIsCardNumberVisible(!isCardNumberVisible)
@@ -79,25 +122,32 @@ const CarteDesktop: React.FC = () => {
 
   // Updated toggleCardLock function that calls the API
   const toggleCardLock = async () => {
-    if (!cardDetails) return;
-  
+    if (!cardDetails) return
+
     // Determine the new status using a case-insensitive check
-    const currentStatus = cardDetails.cardStatus?.toLowerCase();
-    const newStatus = currentStatus === "active" ? "Bloquer" : "Active";
+    const currentStatus = cardDetails.cardStatus?.toLowerCase()
+    const newStatus = currentStatus === "active" ? "Bloquer" : "Active"
     try {
       // Call the API to update the card status
-      await updateCarteStatus(cardDetails._id, newStatus);
+      await updateCarteStatus(cardDetails._id, newStatus)
       // Update local state based on the new status
-      setIsCardLocked(newStatus.toLowerCase() !== "active");
-      setCardDetails((prev) =>
-        prev ? { ...prev, cardStatus: newStatus } : prev
-      );
+      setIsCardLocked(newStatus.toLowerCase() !== "active")
+      setCardDetails((prev) => (prev ? { ...prev, cardStatus: newStatus } : prev))
+
+      // Update the card in allCards array
+      setAllCards((prevCards) => {
+        return prevCards.map((card) => {
+          if (card._id === cardDetails._id) {
+            return { ...card, cardStatus: newStatus }
+          }
+          return card
+        })
+      })
     } catch (err) {
-      console.error("Failed to update card status:", err);
+      console.error("Failed to update card status:", err)
       // Optionally, display an error notification to the user here.
     }
-  };
-  
+  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("tn-TN", {
@@ -187,46 +237,105 @@ const CarteDesktop: React.FC = () => {
       <IonContent className="carte-desktop__content">
         <div className="carte-desktop__layout">
           <div className="carte-desktop__left-panel">
-            <motion.div
-              className="carte-desktop__card-display"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <IonCard className="carte-desktop__credit-card">
-                <IonCardContent>
-                  <div className="carte-desktop__card-body">
-                    <IonImg src="../puce.png" className="carte-desktop__chip" />
-                    <div className="typeC">{cardDetails?.TypeCarte}</div>
-                    <motion.div
-                      className="carte-desktop__card-number"
-                      animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}
+            <div className="carte-desktop__card-display-container">
+              {/* Card navigation controls */}
+              {allCards.length > 1 && (
+                <div className="carte-desktop__card-navigation">
+                  <div className="carte-desktop__card-nav-controls">
+                    <IonButton
+                      fill="clear"
+                      className="carte-desktop__nav-button"
+                      onClick={goToPrevCard}
+                      disabled={currentCardIndex === 0}
                     >
-                      {isCardNumberVisible
-                        ? cardDetails?.CardNumber
-                        : cardDetails?.CardNumber.replace(/\d{4}(?=.)/g, "•••• ")}
-                    </motion.div>
-                    <div className="carte-desktop__card-holder">{cardDetails?.CardHolder}</div>
-                  </div>
-                  <div className="carte-desktop__card-footer">
-                    <div className="carte-desktop__expiry">
-                      <span>Expire à </span>
-                      <span>{cardDetails?.ExpiryDate}</span>
+                      <IonIcon icon={chevronBackOutline} />
+                    </IonButton>
+
+                    <div className="carte-desktop__card-indicator">
+                      <span className="carte-desktop__card-count">
+                        {currentCardIndex + 1} / {allCards.length}
+                      </span>
+                      <div className="carte-desktop__card-dots">
+                        {allCards.map((_, index) => (
+                          <div
+                            key={index}
+                            className={`carte-desktop__card-dot ${index === currentCardIndex ? "active" : ""}`}
+                            onClick={() => changeCard(index)}
+                          />
+                        ))}
+                      </div>
                     </div>
-                    <div className="carte-desktop__bank-logo">
-                      <IonImg src="../amen_logo.png" className="carte-desktop__bank-name" />
-                    </div>
+
+                    <IonButton
+                      fill="clear"
+                      className="carte-desktop__nav-button"
+                      onClick={goToNextCard}
+                      disabled={currentCardIndex === allCards.length - 1}
+                    >
+                      <IonIcon icon={chevronForwardOutline} />
+                    </IonButton>
                   </div>
-                </IonCardContent>
-              </IonCard>
-            </motion.div>
+                </div>
+              )}
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentCardIndex}
+                  className="carte-desktop__card-display"
+                  initial={{
+                    opacity: 0,
+                    x: slideDirection === "left" ? 100 : slideDirection === "right" ? -100 : 0,
+                    scale: 0.9,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                    scale: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    x: slideDirection === "left" ? -100 : slideDirection === "right" ? 100 : 0,
+                    scale: 0.9,
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <IonCard className="carte-desktop__credit-card">
+                    <IonCardContent>
+                      <div className="carte-desktop__card-body">
+                        <IonImg src="../puce.png" className="carte-desktop__chip" />
+                        <div className="typeC">{cardDetails?.TypeCarte}</div>
+                        <motion.div
+                          className="carte-desktop__card-number"
+                          animate={{ opacity: isCardNumberVisible ? 1 : 0.5 }}
+                        >
+                          {isCardNumberVisible
+                            ? cardDetails?.CardNumber
+                            : cardDetails?.CardNumber.replace(/\d{4}(?=.)/g, "•••• ")}
+                        </motion.div>
+                        <div className="carte-desktop__card-holder">{cardDetails?.CardHolder}</div>
+                      </div>
+                      <div className="carte-desktop__card-footer">
+                        <div className="carte-desktop__expiry">
+                          <span>Expire à </span>
+                          <span>{cardDetails?.ExpiryDate}</span>
+                        </div>
+                        <div className="carte-desktop__bank-logo">
+                          <IonImg src="../amen_logo.png" className="carte-desktop__bank-name" />
+                        </div>
+                      </div>
+                    </IonCardContent>
+                  </IonCard>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Card visibility toggle button */}
+              <IonButton fill="clear" className="carte-desktop__toggle-number-button" onClick={toggleCardNumber}>
+                {isCardNumberVisible ? "Masquer le numéro" : "Afficher le numéro"}
+              </IonButton>
+            </div>
 
             <div className="carte-desktop__quick-actions">
-              <IonButton
-                expand="block"
-                color={isCardLocked ? "danger" : "success"}
-                onClick={toggleCardLock}
-              >
+              <IonButton expand="block" color={isCardLocked ? "danger" : "success"} onClick={toggleCardLock}>
                 <IonIcon slot="start" icon={lockClosedOutline} />
                 {isCardLocked ? "Débloquer la carte" : "Bloquer la carte"}
               </IonButton>
@@ -234,11 +343,7 @@ const CarteDesktop: React.FC = () => {
                 <IonIcon slot="start" icon={shieldOutline} />
                 Paramètres de sécurité
               </IonButton>
-              <IonButton
-                expand="block"
-                color="success"
-                onClick={handleDownloadStatement}
-              >
+              <IonButton expand="block" color="success" onClick={handleDownloadStatement}>
                 <IonIcon slot="start" icon={downloadOutline} />
                 Télécharger le relevé
               </IonButton>
@@ -246,9 +351,7 @@ const CarteDesktop: React.FC = () => {
 
             <IonCard className="carte-desktop__card-limits">
               <IonCardHeader>
-                <IonCardTitle className="carte-desktop-card_title">
-                  Limites de la carte
-                </IonCardTitle>
+                <IonCardTitle className="carte-desktop-card_title">Limites de la carte</IonCardTitle>
               </IonCardHeader>
               <IonCardContent>
                 <div className="carte-desktop__limit-item">
@@ -262,8 +365,7 @@ const CarteDesktop: React.FC = () => {
                   <IonProgressBar
                     value={
                       cardDetails?.monthlyExpenses
-                        ? cardDetails.monthlyExpenses.current /
-                          cardDetails.monthlyExpenses.limit
+                        ? cardDetails.monthlyExpenses.current / cardDetails.monthlyExpenses.limit
                         : 0
                     }
                     color="success"
@@ -280,8 +382,7 @@ const CarteDesktop: React.FC = () => {
                   <IonProgressBar
                     value={
                       cardDetails?.atmWithdrawal
-                        ? cardDetails.atmWithdrawal.current /
-                          cardDetails.atmWithdrawal.limit
+                        ? cardDetails.atmWithdrawal.current / cardDetails.atmWithdrawal.limit
                         : 0
                     }
                     color="success"
@@ -323,9 +424,7 @@ const CarteDesktop: React.FC = () => {
                     <IonCard className="carte-desktop__balance-card">
                       <IonCardContent>
                         <h4>Solde actuel</h4>
-                        <h2 className="desktop-carte_balance">
-                          {formatCurrency(accountDetails?.solde || 0)}
-                        </h2>
+                        <h2 className="desktop-carte_balance">{formatCurrency(accountDetails?.solde || 0)}</h2>
                       </IonCardContent>
                     </IonCard>
                     <IonCard className="carte-desktop__balance-card">
@@ -334,39 +433,29 @@ const CarteDesktop: React.FC = () => {
                         <h2 className="desktop-carte_balance">
                           {formatCurrency(cardDetails?.pendingTransactions?.amount || 0)}
                         </h2>
-                        <span>
-                          {cardDetails?.pendingTransactions?.count || 0} transactions en attente
-                        </span>
+                        <span>{cardDetails?.pendingTransactions?.count || 0} transactions en attente</span>
                       </IonCardContent>
                     </IonCard>
                   </div>
 
                   <IonCard className="carte-desktop__recent-transactions">
                     <IonCardHeader>
-                      <IonCardTitle className="carte-desktop-card_title">
-                        Transactions récentes
-                      </IonCardTitle>
+                      <IonCardTitle className="carte-desktop-card_title">Transactions récentes</IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
                       <IonList>
                         {transactions.map((transaction) => (
-                          <IonItem
-                            key={transaction._id}
-                            className="carte-desktop__transaction-item"
-                          >
+                          <IonItem key={transaction._id} className="carte-desktop__transaction-item">
                             <IonAvatar slot="start">
                               <div className="carte-desktop__transaction-icon">💳</div>
                             </IonAvatar>
                             <IonLabel>
                               <h2>{transaction.merchant}</h2>
                               <p>
-                                {new Date(transaction.transactionDate).toLocaleDateString()} -{" "}
-                                {transaction.status}
+                                {new Date(transaction.transactionDate).toLocaleDateString()} - {transaction.status}
                               </p>
                               {transaction.description && (
-                                <p className="transaction-description">
-                                  {transaction.description}
-                                </p>
+                                <p className="transaction-description">{transaction.description}</p>
                               )}
                             </IonLabel>
                             <IonChip slot="end" color={transaction.amount < 0 ? "danger" : "success"}>
@@ -405,9 +494,7 @@ const CarteDesktop: React.FC = () => {
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Valable à partir de</h4>
-                          <p className="desktop-carte_data">
-                            {cardDetails?.ExpiryDate.split("/")[1]}/23
-                          </p>
+                          <p className="desktop-carte_data">{cardDetails?.ExpiryDate.split("/")[1]}/23</p>
                         </div>
                         <div className="carte-desktop__detail-item">
                           <h4>Valable jusqu'à</h4>
@@ -419,9 +506,7 @@ const CarteDesktop: React.FC = () => {
 
                   <IonCard className="carte-desktop__security-features">
                     <IonCardHeader>
-                      <IonCardTitle className="carte-desktop-card_title">
-                        Fonctionnalités de sécurité
-                      </IonCardTitle>
+                      <IonCardTitle className="carte-desktop-card_title">Fonctionnalités de sécurité</IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
                       <div className="carte-desktop__features-grid">
@@ -454,3 +539,4 @@ const CarteDesktop: React.FC = () => {
 }
 
 export default CarteDesktop
+
