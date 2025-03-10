@@ -207,10 +207,10 @@ exports.getProfile = async (req, res) => {
 
 // In controllers/adminAuthController.js
 exports.register = async (req, res) => {
-  const { name, cin, email, phone, dateDeNaissance, password } = req.body;
+  const { name, cin, email, password, role, department, permissions } = req.body;
   try {
-    // Create a new admin (add validations as needed)
-    const newAdmin = new Admin({ name, cin, email, phone, dateDeNaissance, password });
+    // Create a new admin with the provided fields
+    const newAdmin = new Admin({ name, cin, email, password, role, department, permissions });
     await newAdmin.save();
     res.status(201).json({ message: "Admin registered successfully." });
   } catch (err) {
@@ -218,4 +218,3 @@ exports.register = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
-

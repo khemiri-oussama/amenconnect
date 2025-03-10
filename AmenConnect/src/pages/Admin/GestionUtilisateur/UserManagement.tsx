@@ -58,7 +58,29 @@ const UserManagement: React.FC = () => {
     e.stopPropagation() // Stop event propagation
     setShowPassword(!showPassword)
   }
-
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form submission
+    try {
+      const response = await fetch("/api/admin/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert("Admin created successfully!");
+        setActiveTab("list"); // Return to the user list tab
+      } else {
+        alert("Error: " + data.message);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("An error occurred while creating the admin.");
+    }
+  };
+  
   // Update the handleCinChange function to be more robust
   const handleCinChange = (e: CustomEvent) => {
     const value = e.detail.value || ""
@@ -233,7 +255,7 @@ const UserManagement: React.FC = () => {
   // Update the renderUserForm function to include all admin schema fields
   const renderUserForm = () => (
     <div className="admin-form-container">
-      <form className="admin-user-form">
+      <form className="admin-user-form" onSubmit={handleSubmit}>
         <div className="admin-form-group">
           <label className="admin-form-label">Nom</label>
           <div className="admin-input-wrapper">
