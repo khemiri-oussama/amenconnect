@@ -2,8 +2,8 @@
   --color: #ffffff;
 }
 
-.carte-desktop__content{
-  background: #1E1E1E;
+.carte-desktop__content {
+  background: #1e1e1e;
 }
 .carte-desktop__layout {
   display: grid;
@@ -18,8 +18,83 @@
   gap: 2rem;
 }
 
+/* Card display container with navigation */
+.carte-desktop__card-display-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.carte-desktop__card-navigation {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.carte-desktop__card-nav-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.carte-desktop__nav-button {
+  --color: #47ce65;
+  --background: rgba(71, 206, 101, 0.1);
+  --border-radius: 50%;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  height: 40px;
+  width: 40px;
+  margin: 0;
+}
+
+.carte-desktop__nav-button[disabled] {
+  --color: rgba(255, 255, 255, 0.3);
+  --background: rgba(255, 255, 255, 0.05);
+}
+
+.carte-desktop__card-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.carte-desktop__card-count {
+  color: #ffffff;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.carte-desktop__card-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.carte-desktop__card-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carte-desktop__card-dot.active {
+  background-color: #47ce65;
+  transform: scale(1.2);
+}
+
+.carte-desktop__toggle-number-button {
+  --color: #ffffff;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
 .carte-desktop__card-display {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   perspective: 1000px;
 }
 
@@ -86,11 +161,11 @@
   margin-bottom: 20px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-.typeC{
-  color:#ffffff;
+.typeC {
+  color: #ffffff;
 }
 .carte-desktop__card-holder {
-  margin-top:-14px;
+  margin-top: -14px;
   color: white;
   font-size: 16px;
   text-transform: uppercase;
@@ -111,13 +186,13 @@
   gap: 4px;
   font-size: 14px;
 }
-.carte-desktop-card_title{
+.carte-desktop-card_title {
   color: #ffffff;
 }
 
 .carte-desktop__bank-name {
   width: 40%;
-  height:40%;
+  height: 40%;
   margin-left: 55%;
   margin-top: -55px;
   opacity: 1;
@@ -324,10 +399,10 @@ ion-progress-bar {
   margin-bottom: 20px;
   color: #ff4d4d;
 }
-.desktop-carte_balance{
+.desktop-carte_balance {
   color: #ffffff;
 }
-.desktop-carte_data{
+.desktop-carte_data {
   color: #2fa6c4;
 }
 .carte-desktop__transaction-item .transaction-description {
@@ -344,4 +419,24 @@ ion-progress-bar {
   margin-top: 2px;
 }
 
+/* Media queries for responsive design */
+@media (max-width: 1200px) {
+  .carte-desktop__layout {
+    grid-template-columns: 350px 1fr;
+  }
+}
+
+@media (max-width: 992px) {
+  .carte-desktop__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .carte-desktop__left-panel {
+    order: 1;
+  }
+
+  .carte-desktop__right-panel {
+    order: 2;
+  }
+}
 
