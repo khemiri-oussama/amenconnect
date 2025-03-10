@@ -204,6 +204,264 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
+// Generate registration email HTML for admin
+const generateAdminRegistrationEmailHTML = (name, email, password) => {
+  return `
+  <!DOCTYPE html>
+  <html lang="fr">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Bienvenue sur l'Admin Panel</title>
+      <style>
+        /* Base styles */
+        body { 
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+          background-color: #f5f7fa; 
+          margin: 0; 
+          padding: 0; 
+          color: #333333;
+          line-height: 1.6;
+        }
+        
+        /* Container */
+        .container { 
+          max-width: 600px; 
+          margin: 30px auto; 
+          background-color: #ffffff; 
+          padding: 0; 
+          border-radius: 8px; 
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+        }
+        
+        /* Header */
+        .header-bg {
+          background-color: #1e293b;
+          padding: 30px 0;
+          text-align: center;
+        }
+        
+        .logo {
+          width: 120px;
+          height: auto;
+          margin: 0 auto;
+          display: block;
+        }
+        
+        .header-title {
+          color: #ffffff;
+          font-size: 24px;
+          font-weight: 600;
+          margin: 15px 0 0;
+          text-align: center;
+        }
+        
+        /* Content */
+        .content {
+          padding: 40px 30px;
+        }
+        
+        .greeting {
+          font-size: 20px;
+          font-weight: 600;
+          margin-bottom: 20px;
+          color: #1e293b;
+        }
+        
+        .message {
+          font-size: 16px;
+          color: #4a5568;
+          margin-bottom: 30px;
+        }
+        
+        /* Credentials box */
+        .credentials-box {
+          background-color: #f8fafc;
+          border-left: 4px solid #3b82f6;
+          padding: 20px;
+          border-radius: 4px;
+          margin: 25px 0;
+        }
+        
+        .credentials-title {
+          font-weight: 600;
+          color: #1e293b;
+          margin-bottom: 15px;
+          font-size: 16px;
+        }
+        
+        .credential-item {
+          margin-bottom: 10px;
+        }
+        
+        .credential-label {
+          font-weight: 600;
+          color: #64748b;
+          display: inline-block;
+          width: 120px;
+        }
+        
+        .credential-value {
+          font-family: monospace;
+          background-color: #ffffff;
+          padding: 5px 10px;
+          border-radius: 4px;
+          border: 1px solid #e2e8f0;
+          font-size: 14px;
+        }
+        
+        /* CTA Button */
+        .cta-container {
+          text-align: center;
+          margin: 35px 0 25px;
+        }
+        
+        .cta-button {
+          display: inline-block;
+          background-color: #1e293b;
+          color: #ffffff;
+          text-decoration: none;
+          padding: 12px 30px;
+          border-radius: 6px;
+          font-weight: 600;
+          font-size: 16px;
+          transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+          background-color: #334155;
+        }
+        
+        /* Security note */
+        .security-note {
+          background-color: #fffbeb;
+          border-left: 4px solid #f59e0b;
+          padding: 15px;
+          border-radius: 4px;
+          margin: 25px 0;
+          font-size: 14px;
+          color: #92400e;
+        }
+        
+        /* Footer */
+        .footer {
+          background-color: #f8fafc;
+          padding: 20px;
+          text-align: center;
+          color: #64748b;
+          font-size: 14px;
+          border-top: 1px solid #e2e8f0;
+        }
+        
+        .footer-links {
+          margin-top: 10px;
+        }
+        
+        .footer-link {
+          color: #3b82f6;
+          text-decoration: none;
+          margin: 0 10px;
+        }
+        
+        /* Responsive adjustments */
+        @media only screen and (max-width: 480px) {
+          .container {
+            margin: 0;
+            border-radius: 0;
+          }
+          
+          .content {
+            padding: 30px 20px;
+          }
+          
+          .header-title {
+            font-size: 22px;
+          }
+          
+          .credential-label {
+            display: block;
+            margin-bottom: 5px;
+          }
+        }
+      </style>
+  </head>
+  <body>
+      <div class="container">
+          <!-- Header -->
+          <div class="header-bg">
+              <img src="https://www.amenbank.com.tn/img/logo.jpg" alt="Logo" class="logo">
+              <h1 class="header-title">Bienvenue sur l'Admin Panel</h1>
+          </div>
+          
+          <!-- Content -->
+          <div class="content">
+              <div class="greeting">Bonjour ${name},</div>
+              
+              <div class="message">
+                  Votre compte administrateur a été créé avec succès. Vous pouvez maintenant accéder à toutes les fonctionnalités de l'Admin Panel.
+              </div>
+              
+              <!-- Credentials Box -->
+              <div class="credentials-box">
+                  <div class="credentials-title">Vos informations de connexion:</div>
+                  
+                  <div class="credential-item">
+                      <span class="credential-label">Email:</span>
+                      <span class="credential-value">${email}</span>
+                  </div>
+                  
+                  <div class="credential-item">
+                      <span class="credential-label">Mot de passe:</span>
+                      <span class="credential-value">${password}</span>
+                  </div>
+              </div>
+              
+              <!-- CTA Button -->
+              <div class="cta-container">
+                  <a href="https://localhost:8200/admin/login" class="cta-button">Se connecter maintenant</a>
+              </div>
+              
+              <!-- Security Note -->
+              <div class="security-note">
+                  <strong>Important:</strong> Pour des raisons de sécurité, veuillez changer votre mot de passe après votre première connexion.
+              </div>
+              
+              <div class="message">
+                  Si vous avez des questions ou besoin d'assistance, n'hésitez pas à contacter notre équipe de support.
+                  <br><br>
+                  Cordialement,<br>
+                  L'équipe Admin
+              </div>
+          </div>
+          
+          <!-- Footer -->
+          <div class="footer">
+              <div>© 2025 Admin Panel. Tous droits réservés.</div>
+              <div class="footer-links">
+                  <a href="#" class="footer-link">Aide</a>
+                  <a href="#" class="footer-link">Confidentialité</a>
+                  <a href="#" class="footer-link">Conditions d'utilisation</a>
+              </div>
+          </div>
+      </div>
+  </body>
+  </html>
+  `;
+};
+
+// Function to send the registration email
+const sendAdminRegistrationEmail = async (email, name, password) => {
+  const mailOptions = {
+    from: `"Admin Panel" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: "Bienvenue sur l'Admin Panel",
+    html: generateAdminRegistrationEmailHTML(name, email, password),
+  };
+
+  return transporter.sendMail(mailOptions);
+};
+
 
 // In controllers/adminAuthController.js
 exports.register = async (req, res) => {
@@ -212,6 +470,15 @@ exports.register = async (req, res) => {
     // Create a new admin with the provided fields
     const newAdmin = new Admin({ name, cin, email, password, role, department, permissions });
     await newAdmin.save();
+
+    // Send registration email with the plain-text password
+    try {
+      await sendAdminRegistrationEmail(email, name, password);
+    } catch (emailError) {
+      console.error("Error sending registration email:", emailError);
+      // Optionally, you might decide to inform the client or simply log the error.
+    }
+
     res.status(201).json({ message: "Admin registered successfully." });
   } catch (err) {
     console.error("Admin registration error:", err);
