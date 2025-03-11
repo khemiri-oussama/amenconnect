@@ -49,7 +49,7 @@ router.get("/:sessionId", async (req, res) => {
 
     if (session.status === "authenticated" && session.user) {
       // Generate a new token for the kiosk
-      const token = jwt.sign({ id: session.user }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign({ id: session.user, sessionId: session.sessionId }, process.env.JWT_SECRET, { expiresIn: "1h" });
       // Set a secure, HTTP-only cookie so that the kiosk browser is authenticated
       res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
       return res.json({ status: session.status, user: session.user, token });
