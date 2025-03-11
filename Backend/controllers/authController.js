@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const { generateRIB, DOMICILIATION } = require("../config/helper");
+const Session = require("../models/Session");
+const crypto = require("crypto");
 
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -218,12 +220,23 @@ exports.verifyOTP = async (req, res) => {
       return res.status(400).json({ message: "Invalid OTP." });
     }
 
-    // Generate a JWT token valid for 1 hour
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
     // Clear OTP data from the user document
     user.otp = { hash: null, expires: null };
     await user.save();
+
+    // --- Create a new session record ---
+    const sessionId = crypto.randomBytes(16).toString('hex');
+    const newSession = new Session({
+      userId: user._id,
+      sessionId,
+      device: req.headers['user-agent'],
+      ipAddress: req.ip,
+    });
+    await newSession.save();
+    // -----------------------------------
+
+    // Generate a JWT token valid for 1 hour
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     // Set the token as an HTTP-only cookie
     res.cookie('token', token, {
