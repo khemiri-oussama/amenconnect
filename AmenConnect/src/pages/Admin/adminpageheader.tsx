@@ -77,11 +77,10 @@ const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) =>
     const socket = io("http://localhost:3000");
   
     socket.on("connect", () => {
-      console.log("Connected to Socket.IO server with id:", socket.id);
+  
     });
   
     socket.on("new_notification", (notification: Notification) => {
-      console.log("Received new notification:", notification);
       setNotifications((prev) => [notification, ...prev]);
     });
   
