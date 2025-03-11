@@ -27,6 +27,7 @@ const transactionRoutes = require('./routes/transactionRoutes');
 const historiqueRoutes = require('./routes/historiqueRoutes');
 const budgetCategoryRoutes = require("./routes/budgetCategoryRoutes");
 const sessionRoutes = require('./routes/sessionRoutes');
+const systemStatsRoute = require('./routes/systemStatsRoute');
 // Import Passport
 const passport = require("./config/passport");
 const adminpassport = require("./config/adminPassport");
@@ -70,6 +71,7 @@ app.use("/api/admin/notifications", adminNotificationsRoutes);
 app.use('/api/admin/list',adminpassport.authenticate('admin-jwt', {session: false}) ,adminListRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/sessions', sessionRoutes);
+app.use('/api/system-stats', systemStatsRoute);
 
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
