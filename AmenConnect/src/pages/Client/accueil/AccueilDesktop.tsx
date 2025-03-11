@@ -22,7 +22,6 @@ import Profile from "./MenuDesktop/ProfileMenu"
 import { useAuth } from "../../../AuthContext"
 import NotificationDesktop from "./NotificationMenu/NotificationDesktop"
 import BudgetCategoryManager from "../../../components/BudgetCategory/BudgetCategoryManager"
-import Compte from "../Compte/Compte"
 
 interface Account {
   _id: string

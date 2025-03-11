@@ -1,5 +1,5 @@
 "use client"
-import type React from "react"
+import React, { useMemo, useState, useEffect } from "react"
 import { IonContent, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
 import {
   walletOutline,
@@ -30,22 +30,51 @@ const CompteKiosk: React.FC = () => {
 
   // Use comptes from profile data; if none available, fallback to empty array.
   const accounts = profile?.comptes ?? []
+  // State for operations fetched from the API.
+  const [operations, setOperations] = useState<Operation[]>([])
+  const [loadingOperations, setLoadingOperations] = useState<boolean>(true)
+  const [errorOperations, setErrorOperations] = useState<string | null>(null)
+  
+  const chartData = useMemo(() => {
+    const grouped = operations.reduce((acc, op) => {
+      const month = new Date(op.date).toLocaleString("default", { month: "short" })
+      if (!acc[month]) {
+        acc[month] = { name: month, revenus: 0, depenses: 0 }
+      }
+      if (op.type === "credit") {
+        acc[month].revenus += op.amount
+      } else if (op.type === "debit") {
+        acc[month].depenses += op.amount
+      }
+      return acc
+    }, {} as { [key: string]: { name: string; revenus: number; depenses: number } })
+    return Object.values(grouped)
+  }, [operations])
 
-  // Chart and operations sample data
-  const chartData = [
-    { name: "Jan", revenus: 65, depenses: 28 },
-    { name: "Feb", revenus: 59, depenses: 48 },
-    { name: "Mar", revenus: 80, depenses: 40 },
-    { name: "Apr", revenus: 81, depenses: 69 },
-    { name: "May", revenus: 56, depenses: 36 },
-    { name: "Jun", revenus: 85, depenses: 47 },
-  ]
+  // Fetch operations from the API.
+  useEffect(() => {
+    const fetchOperations = async () => {
+      try {
+        const response = await fetch("/api/historique", {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        })
+        if (!response.ok) {
+          throw new Error("Failed to fetch operations")
+        }
+        const data: Operation[] = await response.json()
+        setOperations(data)
+      } catch (error) {
+        console.error("Error fetching operations:", error)
+        setErrorOperations("Erreur lors de la récupération des opérations.")
+      } finally {
+        setLoadingOperations(false)
+      }
+    }
+    fetchOperations()
+  }, [])
 
-  const operations: Operation[] = [
-    { id: 1, type: "credit", amount: 500, description: "Dépôt", date: "2025-01-20" },
-    { id: 2, type: "debit", amount: 75.5, description: "Achat en ligne", date: "2025-01-19" },
-    { id: 3, type: "credit", amount: 1200, description: "Salaire", date: "2025-01-15" },
-  ]
+
 
   // Navigate to account details
   const handleAccountClick = (accountId: string) => {

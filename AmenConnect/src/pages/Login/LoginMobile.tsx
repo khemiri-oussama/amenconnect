@@ -100,7 +100,7 @@ const LoginMobile: React.FC = () => {
               )}
 
               <IonText className="login-mobile-forgot-password">
-                <a href="/forgot-password">Mot De Passe oublié ?</a>
+                <a href="/ForgotPassword">Mot De Passe oublié ?</a>
               </IonText>
 
               <IonButton
