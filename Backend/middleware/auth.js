@@ -1,17 +1,20 @@
 // middleware/auth.js
 const jwt = require('jsonwebtoken');
 
-const verifyToken = (req, res, next) => {
-  // Get token from cookies
+const verifyToken = async (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
     return res.status(401).json({ message: 'No token provided.' });
   }
 
   try {
-    // Verify token using JWT_SECRET from environment variables
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach decoded payload (e.g., id and email) to the request
+    // Now check that the session exists
+    const session = await Session.findOne({ sessionId: decoded.sessionId });
+    if (!session) {
+      return res.status(401).json({ message: 'Session has been terminated.' });
+    }
+    req.user = decoded;
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Token is invalid or expired.' });

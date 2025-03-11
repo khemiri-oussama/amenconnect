@@ -1,11 +1,12 @@
-//config/passport.js
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const JwtStrategy   = require('passport-jwt').Strategy;
-const ExtractJwt    = require('passport-jwt').ExtractJwt;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const Session = require('../models/Session'); // Import the Session model
 
+// Local strategy for login using email and password
 passport.use(
   new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
     try {
@@ -36,9 +37,16 @@ const jwtOptions = {
   secretOrKey: process.env.JWT_SECRET,
 };
 
+// JWT strategy with session verification
 passport.use(
   new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
     try {
+      // Check if the session exists using the sessionId from the JWT payload
+      const session = await Session.findOne({ sessionId: jwtPayload.sessionId });
+      if (!session) {
+        return done(null, false, { message: "Session has been terminated." });
+      }
+      // If the session exists, find the user by their ID
       const user = await User.findById(jwtPayload.id);
       if (user) return done(null, user);
       return done(null, false);
