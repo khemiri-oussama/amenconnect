@@ -67,7 +67,7 @@ exports.getVideoConferenceRequests = async (req, res, next) => {
       const io = req.app.locals.io;
       io.emit("new_notification", {
         id: savedNotification._id,
-        title: savedNotification.title,
+        title: savedNotification.title, // Ensure title is set or handle it appropriately
         message: savedNotification.message,
         time: new Date(savedNotification.createdAt).toLocaleString(),
         read: savedNotification.read,
