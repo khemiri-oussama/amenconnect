@@ -1,6 +1,5 @@
-import type React from "react"
-<<<<<<< HEAD
-import { useState } from "react"
+import type React from "react";
+import { useState, useEffect } from "react";
 import {
   IonPage,
   IonIcon,
@@ -8,11 +7,7 @@ import {
   IonSelect,
   IonSelectOption,
   IonSearchbar,
-} from "@ionic/react"
-=======
-import { useState, useEffect } from "react"
-import { IonPage, IonIcon, IonInput, IonSelect, IonSelectOption, IonSearchbar } from "@ionic/react"
->>>>>>> 624972d765f1c036f2b9eec8ff36211cf02dc2ac
+} from "@ionic/react";
 import {
   peopleOutline,
   personAddOutline,
@@ -24,29 +19,25 @@ import {
   refreshOutline,
   eyeOutline,
   eyeOffOutline,
-} from "ionicons/icons"
-import axios from "axios"
-import "./UserManagement.css"
-import SidebarAdmin from "../../../components/SidebarAdmin"
-import { useAdminAuth } from "../../../AdminAuthContext"
-import AdminPageHeader from "../adminpageheader"
+} from "ionicons/icons";
+import axios from "axios";
+import "./UserManagement.css";
+import SidebarAdmin from "../../../components/SidebarAdmin";
+import { useAdminAuth } from "../../../AdminAuthContext";
+import AdminPageHeader from "../adminpageheader";
 
 const UserManagement: React.FC = () => {
-  const { authLoading } = useAdminAuth()
-  const [activeTab, setActiveTab] = useState<"list" | "create" | "reset">("list")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [roleFilter, setRoleFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
+  const { authLoading } = useAdminAuth();
+  const [activeTab, setActiveTab] = useState<"list" | "create" | "reset">("list");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-<<<<<<< HEAD
-  // Form state for creating a user
-=======
   // State for the admins list fetched from API
-  const [admins, setAdmins] = useState<any[]>([])
-  const [loadingAdmins, setLoadingAdmins] = useState(true)
+  const [admins, setAdmins] = useState<any[]>([]);
+  const [loadingAdmins, setLoadingAdmins] = useState(true);
 
   // Form state for creating/editing an admin
->>>>>>> 624972d765f1c036f2b9eec8ff36211cf02dc2ac
   const [formData, setFormData] = useState({
     name: "",
     cin: "",
@@ -55,16 +46,15 @@ const UserManagement: React.FC = () => {
     role: "admin",
     department: "General",
     permissions: [] as string[],
-  })
-  const [showPassword, setShowPassword] = useState(false)
+  });
+  const [showPassword, setShowPassword] = useState(false);
 
-<<<<<<< HEAD
   // New state for password reset (forgot password)
-  const [resetEmail, setResetEmail] = useState<string>("")
-  const [resetErrorMessage, setResetErrorMessage] = useState<string>("")
-  const [resetSuccessMessage, setResetSuccessMessage] = useState<string>("")
-  const [resetIsLoading, setResetIsLoading] = useState<boolean>(false)
-=======
+  const [resetEmail, setResetEmail] = useState<string>("");
+  const [resetErrorMessage, setResetErrorMessage] = useState<string>("");
+  const [resetSuccessMessage, setResetSuccessMessage] = useState<string>("");
+  const [resetIsLoading, setResetIsLoading] = useState<boolean>(false);
+
   // Fetch admins from API on component mount
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -77,38 +67,32 @@ const UserManagement: React.FC = () => {
       } finally {
         setLoadingAdmins(false);
       }
-    }
+    };
     fetchAdmins();
   }, []);
-  
->>>>>>> 624972d765f1c036f2b9eec8ff36211cf02dc2ac
 
   // Generate random password
   const generatePassword = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    let password = ""
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let password = "";
     for (let i = 0; i < 10; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length))
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    setFormData({ ...formData, password })
-  }
+    setFormData({ ...formData, password });
+  };
 
   // Toggle password visibility
   const togglePasswordVisibility = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setShowPassword(!showPassword)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-<<<<<<< HEAD
-    e.preventDefault() // Prevent default form submission
-=======
-    e.preventDefault()
->>>>>>> 624972d765f1c036f2b9eec8ff36211cf02dc2ac
+    e.preventDefault();
     try {
       const response = await fetch("/api/admin/register", {
         method: "POST",
@@ -116,67 +100,51 @@ const UserManagement: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-      })
-      const data = await response.json()
-<<<<<<< HEAD
-      if (response.ok) {
-        alert("Admin created successfully!")
-        setActiveTab("list") // Return to the user list tab
-=======
-      if (response.ok) {
-        alert("Admin created successfully!")
-        setActiveTab("list")
-        // Optionally, refresh the admins list after adding a new admin:
-        const refreshed = await fetch("/api/admin")
-        const refreshedData = await refreshed.json()
-        setAdmins(refreshedData.admins || [])
-      } else {
-        alert("Error: " + data.message)
-      }
-    } catch (error) {
-      console.error("Registration error:", error)
-      alert("An error occurred while creating the admin.")
-    }
-  }
-  // In your UserManagement component (e.g., UserManagement.tsx)
-const handleDelete = async (adminId: string) => {
-  if (window.confirm("Are you sure you want to delete this admin?")) {
-    try {
-      const response = await fetch(`/api/admin/list/${adminId}`, {
-        method: "DELETE",
-        credentials: "include", // Include cookies for auth
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Admin deleted successfully");
-        // Remove the deleted admin from your state
-        setAdmins(prev => prev.filter(admin => admin._id !== adminId));
->>>>>>> 624972d765f1c036f2b9eec8ff36211cf02dc2ac
+        alert("Admin created successfully!");
+        setActiveTab("list");
+        // Optionally, refresh the admins list after adding a new admin:
+        const refreshed = await fetch("/api/admin");
+        const refreshedData = await refreshed.json();
+        setAdmins(refreshedData.admins || []);
       } else {
-        alert("Error: " + data.message)
+        alert("Error: " + data.message);
       }
     } catch (error) {
-<<<<<<< HEAD
-      console.error("Registration error:", error)
-      alert("An error occurred while creating the admin.")
+      console.error("Registration error:", error);
+      alert("An error occurred while creating the admin.");
     }
-  }
+  };
 
-  // Update the handleCinChange function to be more robust
-=======
-      console.error("Error deleting admin:", error);
-      alert("An error occurred while deleting the admin.");
+  const handleDelete = async (adminId: string) => {
+    if (window.confirm("Are you sure you want to delete this admin?")) {
+      try {
+        const response = await fetch(`/api/admin/list/${adminId}`, {
+          method: "DELETE",
+          credentials: "include", // Include cookies for auth
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert("Admin deleted successfully");
+          // Remove the deleted admin from your state
+          setAdmins((prev) => prev.filter((admin) => admin._id !== adminId));
+        } else {
+          alert("Error: " + data.message);
+        }
+      } catch (error) {
+        console.error("Error deleting admin:", error);
+        alert("An error occurred while deleting the admin.");
+      }
     }
-  }
-};
+  };
 
-
->>>>>>> 624972d765f1c036f2b9eec8ff36211cf02dc2ac
   const handleCinChange = (e: CustomEvent) => {
-    const value = e.detail.value || ""
-    const numbersOnly = value.replace(/\D/g, "")
-    setFormData({ ...formData, cin: numbersOnly })
-  }
+    const value = e.detail.value || "";
+    const numbersOnly = value.replace(/\D/g, "");
+    setFormData({ ...formData, cin: numbersOnly });
+  };
 
   const handleCinKeyDown = (e: React.KeyboardEvent) => {
     if (
@@ -185,7 +153,7 @@ const handleDelete = async (adminId: string) => {
       e.key === "Tab" ||
       e.key === "Escape" ||
       e.key === "Enter" ||
-      (e.ctrlKey === true && (e.key === "a" || e.key === "c" || e.key === "v" || e.key === "x")) ||
+      (e.ctrlKey && (e.key === "a" || e.key === "c" || e.key === "v" || e.key === "x")) ||
       e.key === "Home" ||
       e.key === "End" ||
       e.key === "ArrowLeft" ||
@@ -193,77 +161,64 @@ const handleDelete = async (adminId: string) => {
       /^[0-9]$/.test(e.key)
     ) {
       if (/^[0-9]$/.test(e.key) && formData.cin.length >= 8) {
-        e.preventDefault()
+        e.preventDefault();
       } else {
-        return
+        return;
       }
     } else {
-      e.preventDefault()
+      e.preventDefault();
     }
-  }
+  };
 
   // Function to validate email using a simple regex
   const validateEmail = (email: string) => {
-    return /\S+@\S+\.\S+/.test(email)
-  }
+    return /\S+@\S+\.\S+/.test(email);
+  };
 
   // Handler for password reset based on email
   const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setResetErrorMessage("")
-    setResetSuccessMessage("")
-    setResetIsLoading(true)
+    e.preventDefault();
+    setResetErrorMessage("");
+    setResetSuccessMessage("");
+    setResetIsLoading(true);
 
     if (!resetEmail.trim() || !validateEmail(resetEmail)) {
-      setResetErrorMessage("Veuillez saisir une adresse email valide.")
-      setResetIsLoading(false)
-      return
+      setResetErrorMessage("Veuillez saisir une adresse email valide.");
+      setResetIsLoading(false);
+      return;
     }
 
     try {
-      const response = await axios.post("/api/password/forgot-password", { email: resetEmail })
+      const response = await axios.post("/api/password/forgot-password", { email: resetEmail });
       setResetSuccessMessage(
         response.data.message ||
           "Un e-mail de réinitialisation a été envoyé à cette adresse."
-      )
+      );
     } catch (error: any) {
       setResetErrorMessage(
         error.response?.data?.message || "Erreur inattendue lors de la réinitialisation."
-      )
+      );
     } finally {
-      setResetIsLoading(false)
+      setResetIsLoading(false);
     }
-  }
+  };
 
   if (authLoading) {
-    return <div className="admin-loading">Loading...</div>
+    return <div className="admin-loading">Loading...</div>;
   }
 
   // Apply filters on the fetched admins list
   const filteredAdmins = admins.filter((admin) => {
     const matchesSearch =
       searchQuery === "" ||
-<<<<<<< HEAD
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-
-    // Role filter
-    const matchesRole = roleFilter === "all" || user.role.toLowerCase() === roleFilter.toLowerCase()
-
-    // Status filter
-    const matchesStatus =
-      statusFilter === "all" || user.status.toLowerCase() === statusFilter.toLowerCase()
-
-=======
       admin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      admin.email.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesRole = roleFilter === "all" || admin.role.toLowerCase() === roleFilter.toLowerCase()
+      admin.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRole = roleFilter === "all" || admin.role.toLowerCase() === roleFilter.toLowerCase();
     const matchesStatus =
       statusFilter === "all" ||
-      (admin.status && admin.status.toLowerCase() === statusFilter.toLowerCase())
->>>>>>> 624972d765f1c036f2b9eec8ff36211cf02dc2ac
-    return matchesSearch && matchesRole && matchesStatus
-  })
+      (admin.status && admin.status.toLowerCase() === statusFilter.toLowerCase());
+    return matchesSearch && matchesRole && matchesStatus;
+  });
 
   const renderUserList = () => (
     <div className="admin-user-list">
@@ -316,59 +271,12 @@ const handleDelete = async (adminId: string) => {
         </div>
       </div>
 
-<<<<<<< HEAD
-      <div className="admin-table-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Email</th>
-              <th>Rôle</th>
-              <th>Statut</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user, index) => (
-                <tr key={index}>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>
-                    <span className={`admin-role-badge ${user.role.toLowerCase()}`}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`admin-status-badge ${user.status.toLowerCase()}`}>
-                      {user.status}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="admin-action-buttons">
-                      <button
-                        className="admin-icon-button edit"
-                        onClick={() => setActiveTab("create")}
-                        title="Modifier"
-                      >
-                        <IonIcon icon={createOutline} />
-                      </button>
-                      <button className="admin-icon-button delete" title="Supprimer">
-                        <IonIcon icon={trashOutline} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-=======
       {loadingAdmins ? (
         <div className="admin-loading">Chargement des admins...</div>
       ) : (
         <div className="admin-table-container">
           <table className="admin-table">
             <thead>
->>>>>>> 624972d765f1c036f2b9eec8ff36211cf02dc2ac
               <tr>
                 <th>Nom</th>
                 <th>Email</th>
@@ -378,52 +286,52 @@ const handleDelete = async (adminId: string) => {
               </tr>
             </thead>
             <tbody>
-  {filteredAdmins.length > 0 ? (
-    filteredAdmins.map((admin) => (
-      <tr key={admin._id}>
-        <td>{admin.name}</td>
-        <td>{admin.email}</td>
-        <td>
-          <span className={`admin-role-badge ${admin.role.toLowerCase()}`}>{admin.role}</span>
-        </td>
-        <td>
-          <span className={`admin-status-badge ${admin.status?.toLowerCase() || "actif"}`}>
-            {admin.status || "Actif"}
-          </span>
-        </td>
-        <td>
-          <div className="admin-action-buttons">
-            <button
-              className="admin-icon-button edit"
-              onClick={() => setActiveTab("create")}
-              title="Modifier"
-            >
-              <IonIcon icon={createOutline} />
-            </button>
-            <button
-              className="admin-icon-button delete"
-              title="Supprimer"
-              onClick={() => handleDelete(admin._id)}
-            >
-              <IonIcon icon={trashOutline} />
-            </button>
-          </div>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan={5} className="admin-no-results">
-        Aucun administrateur trouvé
-      </td>
-    </tr>
-  )}
-</tbody>
+              {filteredAdmins.length > 0 ? (
+                filteredAdmins.map((admin) => (
+                  <tr key={admin._id}>
+                    <td>{admin.name}</td>
+                    <td>{admin.email}</td>
+                    <td>
+                      <span className={`admin-role-badge ${admin.role.toLowerCase()}`}>{admin.role}</span>
+                    </td>
+                    <td>
+                      <span className={`admin-status-badge ${admin.status?.toLowerCase() || "actif"}`}>
+                        {admin.status || "Actif"}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="admin-action-buttons">
+                        <button
+                          className="admin-icon-button edit"
+                          onClick={() => setActiveTab("create")}
+                          title="Modifier"
+                        >
+                          <IonIcon icon={createOutline} />
+                        </button>
+                        <button
+                          className="admin-icon-button delete"
+                          title="Supprimer"
+                          onClick={() => handleDelete(admin._id)}
+                        >
+                          <IonIcon icon={trashOutline} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="admin-no-results">
+                    Aucun administrateur trouvé
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </div>
       )}
     </div>
-  )
+  );
 
   const renderUserForm = () => (
     <div className="admin-form-container">
@@ -546,7 +454,6 @@ const handleDelete = async (adminId: string) => {
         <div className="admin-form-group">
           <label className="admin-form-label">Permissions</label>
           <div className="admin-permissions-container">
-            {/* Permission checkboxes remain unchanged */}
             <div className="admin-permission-checkbox">
               <input
                 type="checkbox"
@@ -555,8 +462,8 @@ const handleDelete = async (adminId: string) => {
                 onChange={(e) => {
                   const newPermissions = e.target.checked
                     ? [...formData.permissions, "users"]
-                    : formData.permissions.filter((p) => p !== "users")
-                  setFormData({ ...formData, permissions: newPermissions })
+                    : formData.permissions.filter((p) => p !== "users");
+                  setFormData({ ...formData, permissions: newPermissions });
                 }}
               />
               <label htmlFor="perm-users">Gestion des utilisateurs</label>
@@ -569,8 +476,8 @@ const handleDelete = async (adminId: string) => {
                 onChange={(e) => {
                   const newPermissions = e.target.checked
                     ? [...formData.permissions, "content"]
-                    : formData.permissions.filter((p) => p !== "content")
-                  setFormData({ ...formData, permissions: newPermissions })
+                    : formData.permissions.filter((p) => p !== "content");
+                  setFormData({ ...formData, permissions: newPermissions });
                 }}
               />
               <label htmlFor="perm-content">Gestion du contenu</label>
@@ -583,8 +490,8 @@ const handleDelete = async (adminId: string) => {
                 onChange={(e) => {
                   const newPermissions = e.target.checked
                     ? [...formData.permissions, "settings"]
-                    : formData.permissions.filter((p) => p !== "settings")
-                  setFormData({ ...formData, permissions: newPermissions })
+                    : formData.permissions.filter((p) => p !== "settings");
+                  setFormData({ ...formData, permissions: newPermissions });
                 }}
               />
               <label htmlFor="perm-settings">Paramètres système</label>
@@ -597,8 +504,8 @@ const handleDelete = async (adminId: string) => {
                 onChange={(e) => {
                   const newPermissions = e.target.checked
                     ? [...formData.permissions, "reports"]
-                    : formData.permissions.filter((p) => p !== "reports")
-                  setFormData({ ...formData, permissions: newPermissions })
+                    : formData.permissions.filter((p) => p !== "reports");
+                  setFormData({ ...formData, permissions: newPermissions });
                 }}
               />
               <label htmlFor="perm-reports">Rapports et statistiques</label>
@@ -619,9 +526,8 @@ const handleDelete = async (adminId: string) => {
         </div>
       </form>
     </div>
-  )
+  );
 
-  // The updated password reset form (forgot password based on email)
   const renderPasswordReset = () => (
     <div className="admin-form-container">
       <form className="admin-reset-form" onSubmit={handleResetPassword}>
@@ -638,7 +544,6 @@ const handleDelete = async (adminId: string) => {
             ></IonInput>
           </div>
         </div>
-<<<<<<< HEAD
 
         {resetErrorMessage && (
           <div className="admin-error-message">{resetErrorMessage}</div>
@@ -648,8 +553,6 @@ const handleDelete = async (adminId: string) => {
           <div className="admin-success-message">{resetSuccessMessage}</div>
         )}
 
-=======
->>>>>>> 624972d765f1c036f2b9eec8ff36211cf02dc2ac
         <div className="admin-form-actions">
           <button
             type="button"
@@ -664,7 +567,7 @@ const handleDelete = async (adminId: string) => {
         </div>
       </form>
     </div>
-  )
+  );
 
   return (
     <IonPage>
@@ -708,7 +611,7 @@ const handleDelete = async (adminId: string) => {
         </div>
       </div>
     </IonPage>
-  )
-}
+  );
+};
 
-export default UserManagement
+export default UserManagement;
