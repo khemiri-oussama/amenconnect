@@ -236,7 +236,10 @@ exports.verifyOTP = async (req, res) => {
     // -----------------------------------
 
     // Generate a JWT token valid for 1 hour
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { id: user._id, email: user.email, sessionId },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" });
 
     // Set the token as an HTTP-only cookie
     res.cookie('token', token, {

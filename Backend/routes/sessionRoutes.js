@@ -19,14 +19,15 @@ router.get('/', async (req, res) => {
 
 // DELETE /api/sessions/:sessionId - Terminate a specific session
 router.delete('/:sessionId', async (req, res) => {
-  try {
-    const { sessionId } = req.params;
-    await Session.deleteOne({ sessionId });
-    res.status(200).json({ message: "Session terminated successfully." });
-  } catch (error) {
-    console.error("Error terminating session:", error);
-    res.status(500).json({ message: "Error terminating session", error: error.message });
-  }
-});
+    try {
+      const { sessionId } = req.params;
+      await Session.deleteOne({ sessionId });
+      res.status(200).json({ message: "Session terminated successfully." });
+    } catch (error) {
+      console.error("Error terminating session:", error);
+      res.status(500).json({ message: "Error terminating session", error: error.message });
+    }
+  });
+  
 
 module.exports = router;
