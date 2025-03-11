@@ -4,6 +4,8 @@ const Admin = require('../models/Admin');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+const Session = require("../models/Session");
+const crypto = require("crypto");
 
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -119,6 +121,17 @@ exports.verifyOTP = async (req, res) => {
       return res.status(400).json({ message: "Invalid OTP." });
     }
 
+    // --- Create a new session record for the admin ---
+    const sessionId = crypto.randomBytes(16).toString('hex');
+    const newSession = new Session({
+      userId: admin._id, // or use adminId if you prefer a separate field
+      sessionId,
+      device: req.headers['user-agent'],
+      ipAddress: req.ip,
+    });
+    await newSession.save();
+    // --------------------------------------------------
+
     // OTP is verified: generate JWT token valid for 1 hour
     const token = jwt.sign(
       { id: admin._id, email: admin.email, role: admin.role },
@@ -144,6 +157,7 @@ exports.verifyOTP = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
+
 
 // RESEND OTP ENDPOINT: Generate and send a new OTP
 exports.resendOTP = async (req, res) => {
