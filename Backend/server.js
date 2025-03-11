@@ -12,12 +12,22 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 
 // Initialize Socket.IO with CORS configuration
+const allowedOrigins = ["http://localhost:8200", "https://localhost:8200"];
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_ORIGIN || "http://localhost:8200",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"), false);
+    },
     methods: ["GET", "POST"],
   },
 });
+
 
 // Make the Socket.IO instance available in the app
 app.locals.io = io;
