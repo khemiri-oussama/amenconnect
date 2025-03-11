@@ -1,6 +1,6 @@
 "use client"
 import type React from "react"
-import { useMemo } from "react"
+import { useMemo,useState, useEffect } from "react"
 import { IonContent, IonPage, IonIcon, IonRippleEffect, IonButton, IonImg } from "@ionic/react"
 import {
   printOutline,
@@ -45,6 +45,10 @@ interface Transaction {
 }
 
 const AccueilKiosk: React.FC = () => {
+    const [transactions, setTransactions] = useState<Transaction[]>([])
+    const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true)
+    const [errorTransactions, setErrorTransactions] = useState<string | null>(null)
+
   const history = useHistory()
   const { profile, authLoading } = useAuth()
 
@@ -64,7 +68,28 @@ const AccueilKiosk: React.FC = () => {
     ExpiryDate: card.ExpiryDate,
     CardHolder: card.CardHolder,
   }))
-
+  // Fetch transactions from the API.
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch("/api/historique", {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        })
+        if (!response.ok) {
+          throw new Error("Failed to fetch transactions")
+        }
+        const data: Transaction[] = await response.json()
+        setTransactions(data)
+      } catch (error) {
+        console.error("Erreur lors de la récupération des transactions:", error)
+        setErrorTransactions("Erreur lors de la récupération des transactions.")
+      } finally {
+        setLoadingTransactions(false)
+      }
+    }
+    fetchTransactions()
+  }, [])
   const recentTransactions: Transaction[] = [
     { id: 1, description: "Supermarché", amount: 85.5, date: "2025-01-20", type: "debit" },
     { id: 2, description: "Salaire", amount: 2500.0, date: "2025-01-15", type: "credit" },
@@ -74,14 +99,22 @@ const AccueilKiosk: React.FC = () => {
 
   const totalBalance = useMemo(() => accounts.reduce((sum, account) => sum + account.solde, 0), [accounts])
 
-  const chartData = [
-    { name: "Jan", income: 4000, expenses: 2400 },
-    { name: "Feb", income: 3000, expenses: 1398 },
-    { name: "Mar", income: 2000, expenses: 9800 },
-    { name: "Apr", income: 2780, expenses: 3908 },
-    { name: "May", income: 1890, expenses: 4800 },
-    { name: "Jun", income: 2390, expenses: 3800 },
-  ]
+  const chartData = useMemo(() => {
+    const groupedData = transactions.reduce((acc, transaction) => {
+      const date = new Date(transaction.date)
+      const month = date.toLocaleString("default", { month: "short" })
+      if (!acc[month]) {
+        acc[month] = { name: month, income: 0, expenses: 0 }
+      }
+      if (transaction.type === "credit") {
+        acc[month].income += transaction.amount
+      } else if (transaction.type === "debit") {
+        acc[month].expenses += transaction.amount
+      }
+      return acc
+    }, {} as { [month: string]: { name: string; income: number; expenses: number } })
+    return Object.values(groupedData)
+  }, [transactions])
 
   const handleAccountClick = (accountId: string) => {
     console.log(`Viewing account ${accountId}...`)
@@ -488,21 +521,31 @@ const handlePrintStatement = async () => {
                   </h2>
                 </div>
                 <div className="accueil-kiosk-transactions-list">
-                  {recentTransactions.map((transaction) => (
-                    <div key={transaction.id} className="accueil-kiosk-transaction-item">
-                      <IonRippleEffect />
-                      <div className="accueil-kiosk-transaction-icon">
-                        <IonIcon icon={transaction.type === "credit" ? trendingUpOutline : trendingDownOutline} />
-                      </div>
-                      <div className="accueil-kiosk-transaction-details">
-                        <div className="accueil-kiosk-transaction-description">{transaction.description}</div>
-                        <div className="accueil-kiosk-transaction-date">{transaction.date}</div>
-                      </div>
-                      <div className={`accueil-kiosk-transaction-amount ${transaction.type}`}>
-                        {transaction.type === "credit" ? "+" : "-"} {transaction.amount.toFixed(2)} TND
-                      </div>
-                    </div>
-                  ))}
+                                  {loadingTransactions ? (
+                                    <div>Loading transactions...</div>
+                                  ) : errorTransactions ? (
+                                    <div className="error-message">{errorTransactions}</div>
+                                  ) : transactions.length > 0 ? (
+                                    transactions.map((transaction, index) => (
+                                      <div key={index} className="transaction-item">
+                                        <IonRippleEffect />
+                                        <div className="transaction-icon">
+                                          <IonIcon icon={transaction.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+                                        </div>
+                                        <div className="transaction-details">
+                                          <div className="transaction-description">{transaction.description}</div>
+                                          <div className="transaction-date">
+                                            {new Date(transaction.date).toLocaleString()}
+                                          </div>
+                                        </div>
+                                        <div className={`transaction-amount ${transaction.type}`}>
+                                          {transaction.type === "credit" ? "+" : "-"} {transaction.amount.toFixed(2)} TND
+                                        </div>
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div>Aucune transaction disponible</div>
+                                  )}
                 </div>
               </div>
             </div>

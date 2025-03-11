@@ -1,4 +1,3 @@
-//controllers/forgotPasswordController.js
 const User = require("../models/User")
 const crypto = require("crypto")
 const nodemailer = require("nodemailer")
@@ -57,11 +56,25 @@ const generateResetPasswordEmailHTML = (resetLink) => {
 }
 
 exports.forgotPassword = async (req, res) => {
-  const { cin } = req.body
+  const { cin, email } = req.body
+
+  // Ensure at least one identifier is provided
+  if (!cin && !email) {
+    return res.status(400).json({ message: "Veuillez fournir un CIN ou une adresse email." })
+  }
+
+  // Build the query based on which identifier is provided (prioritize email if both exist)
+  let query = {}
+  if (email) {
+    query.email = email
+  } else {
+    query.cin = cin
+  }
+
   try {
-    const user = await User.findOne({ cin })
+    const user = await User.findOne(query)
     if (!user) {
-      return res.status(404).json({ message: "Utilisateur avec ce CIN non trouvé." })
+      return res.status(404).json({ message: "Utilisateur non trouvé." })
     }
 
     // Generate and store token with expiration

@@ -18,8 +18,6 @@ import {
   cardOutline,
   trendingUpOutline,
   trendingDownOutline,
-  eyeOutline,
-  settingsOutline
 } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts"
 import Navbar from "../../../components/Navbar"

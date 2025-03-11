@@ -301,7 +301,7 @@ const HelpDeskButton: React.FC = () => {
                     <IonInput
                       value={formData.name}
                       onIonChange={(e) => handleFormChange("name", e.detail.value || "")}
-                      placeholder="John Doe"
+                      placeholder="Foulen Ben Foulen"
                       className="help-desk-form-input"
                     />
                   </div>
@@ -312,7 +312,7 @@ const HelpDeskButton: React.FC = () => {
                       type="email"
                       value={formData.email}
                       onIonChange={(e) => handleFormChange("email", e.detail.value || "")}
-                      placeholder="john@example.com"
+                      placeholder="Foulen@example.com"
                       className="help-desk-form-input"
                     />
                   </div>

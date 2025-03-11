@@ -9,6 +9,7 @@ import { CarteProvider } from './CarteContext';
 import PrivateRoute from './PrivateRoute';
 import AdminPrivateRoute from './AdminPrivateRoute'; // A separate private route for admin pages
 import JitsiMeetComponent from "./components/JitsiMeetComponent";
+import NotFound from "./components/NotFound"
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -135,41 +136,35 @@ const AppContent: React.FC = () => {
             exact
             path="/admin/dashboard"
             component={Dashboard}
-            isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
             path="/admin/userManagement"
             component={UserManagement}
-            isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
             path="/admin/surveillanceMonitoring"
             component={SurveillanceMonitoring}
-            isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
             path="/admin/permissionsManagement"
             component={PermissionsManagement}
-            isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
             path="/admin/authenticationSecurity"
             component={AuthenticationSecurity}
-            isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
             path="/admin/interactiveTotemManagement"
             component={InteractiveTotemManagement}
-            isAuthenticated={adminAuthenticated}
           />
           <AdminPrivateRoute
             path="/admin/VideoConferenceManagement"
             component={VideoConferenceManagement}
-            isAuthenticated={adminAuthenticated}
           />
 
 
           <Route exact path="/" render={() => <Redirect to="/home" />} />
+          <Route component={NotFound} />
         </IonRouterOutlet>
       </Suspense>
     </IonReactRouter>

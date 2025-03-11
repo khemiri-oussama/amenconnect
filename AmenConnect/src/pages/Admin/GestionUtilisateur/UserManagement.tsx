@@ -1,8 +1,13 @@
-"use client"
-
 import type React from "react"
 import { useState } from "react"
-import { IonPage, IonIcon, IonInput, IonSelect, IonSelectOption, IonSearchbar } from "@ionic/react"
+import {
+  IonPage,
+  IonIcon,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  IonSearchbar,
+} from "@ionic/react"
 import {
   peopleOutline,
   personAddOutline,
@@ -15,6 +20,7 @@ import {
   eyeOutline,
   eyeOffOutline,
 } from "ionicons/icons"
+import axios from "axios"
 import "./UserManagement.css"
 import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
@@ -27,7 +33,7 @@ const UserManagement: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState("all")
   const [statusFilter, setStatusFilter] = useState("all")
 
-  // Form state
+  // Form state for creating a user
   const [formData, setFormData] = useState({
     name: "",
     cin: "",
@@ -38,6 +44,12 @@ const UserManagement: React.FC = () => {
     permissions: [] as string[],
   })
   const [showPassword, setShowPassword] = useState(false)
+
+  // New state for password reset (forgot password)
+  const [resetEmail, setResetEmail] = useState<string>("")
+  const [resetErrorMessage, setResetErrorMessage] = useState<string>("")
+  const [resetSuccessMessage, setResetSuccessMessage] = useState<string>("")
+  const [resetIsLoading, setResetIsLoading] = useState<boolean>(false)
 
   // Generate random password
   const generatePassword = (e: React.MouseEvent) => {
@@ -58,8 +70,9 @@ const UserManagement: React.FC = () => {
     e.stopPropagation() // Stop event propagation
     setShowPassword(!showPassword)
   }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault() // Prevent default form submission
     try {
       const response = await fetch("/api/admin/register", {
         method: "POST",
@@ -67,20 +80,20 @@ const UserManagement: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-      });
-      const data = await response.json();
+      })
+      const data = await response.json()
       if (response.ok) {
-        alert("Admin created successfully!");
-        setActiveTab("list"); // Return to the user list tab
+        alert("Admin created successfully!")
+        setActiveTab("list") // Return to the user list tab
       } else {
-        alert("Error: " + data.message);
+        alert("Error: " + data.message)
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      alert("An error occurred while creating the admin.");
+      console.error("Registration error:", error)
+      alert("An error occurred while creating the admin.")
     }
-  };
-  
+  }
+
   // Update the handleCinChange function to be more robust
   const handleCinChange = (e: CustomEvent) => {
     const value = e.detail.value || ""
@@ -112,12 +125,43 @@ const UserManagement: React.FC = () => {
       if (/^[0-9]$/.test(e.key) && formData.cin.length >= 8) {
         e.preventDefault()
       } else {
-        // Let it happen, don't do anything
         return
       }
     } else {
-      // Prevent the default action
       e.preventDefault()
+    }
+  }
+
+  // Function to validate email using a simple regex
+  const validateEmail = (email: string) => {
+    return /\S+@\S+\.\S+/.test(email)
+  }
+
+  // Handler for password reset based on email
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setResetErrorMessage("")
+    setResetSuccessMessage("")
+    setResetIsLoading(true)
+
+    if (!resetEmail.trim() || !validateEmail(resetEmail)) {
+      setResetErrorMessage("Veuillez saisir une adresse email valide.")
+      setResetIsLoading(false)
+      return
+    }
+
+    try {
+      const response = await axios.post("/api/password/forgot-password", { email: resetEmail })
+      setResetSuccessMessage(
+        response.data.message ||
+          "Un e-mail de réinitialisation a été envoyé à cette adresse."
+      )
+    } catch (error: any) {
+      setResetErrorMessage(
+        error.response?.data?.message || "Erreur inattendue lors de la réinitialisation."
+      )
+    } finally {
+      setResetIsLoading(false)
     }
   }
 
@@ -144,7 +188,8 @@ const UserManagement: React.FC = () => {
     const matchesRole = roleFilter === "all" || user.role.toLowerCase() === roleFilter.toLowerCase()
 
     // Status filter
-    const matchesStatus = statusFilter === "all" || user.status.toLowerCase() === statusFilter.toLowerCase()
+    const matchesStatus =
+      statusFilter === "all" || user.status.toLowerCase() === statusFilter.toLowerCase()
 
     return matchesSearch && matchesRole && matchesStatus
   })
@@ -218,10 +263,14 @@ const UserManagement: React.FC = () => {
                   <td>{user.name}</td>
                   <td>{user.email}</td>
                   <td>
-                    <span className={`admin-role-badge ${user.role.toLowerCase()}`}>{user.role}</span>
+                    <span className={`admin-role-badge ${user.role.toLowerCase()}`}>
+                      {user.role}
+                    </span>
                   </td>
                   <td>
-                    <span className={`admin-status-badge ${user.status.toLowerCase()}`}>{user.status}</span>
+                    <span className={`admin-status-badge ${user.status.toLowerCase()}`}>
+                      {user.status}
+                    </span>
                   </td>
                   <td>
                     <div className="admin-action-buttons">
@@ -252,7 +301,6 @@ const UserManagement: React.FC = () => {
     </div>
   )
 
-  // Update the renderUserForm function to include all admin schema fields
   const renderUserForm = () => (
     <div className="admin-form-container">
       <form className="admin-user-form" onSubmit={handleSubmit}>
@@ -265,7 +313,9 @@ const UserManagement: React.FC = () => {
               className="admin-input"
               placeholder="Nom complet"
               value={formData.name}
-              onIonChange={(e) => setFormData({ ...formData, name: e.detail.value || "" })}
+              onIonChange={(e) =>
+                setFormData({ ...formData, name: e.detail.value || "" })
+              }
             ></IonInput>
           </div>
         </div>
@@ -285,7 +335,9 @@ const UserManagement: React.FC = () => {
               pattern="[0-9]*"
               inputmode="numeric"
             ></IonInput>
-            <small className="admin-input-hint">Le CIN doit contenir exactement 8 chiffres</small>
+            <small className="admin-input-hint">
+              Le CIN doit contenir exactement 8 chiffres
+            </small>
           </div>
         </div>
 
@@ -298,7 +350,9 @@ const UserManagement: React.FC = () => {
               className="admin-input"
               placeholder="admin@example.com"
               value={formData.email}
-              onIonChange={(e) => setFormData({ ...formData, email: e.detail.value || "" })}
+              onIonChange={(e) =>
+                setFormData({ ...formData, email: e.detail.value || "" })
+              }
             ></IonInput>
           </div>
         </div>
@@ -332,7 +386,9 @@ const UserManagement: React.FC = () => {
               </button>
             </div>
           </div>
-          <small className="admin-input-hint">Cliquez sur l'icône pour générer un mot de passe aléatoire</small>
+          <small className="admin-input-hint">
+            Cliquez sur l'icône pour générer un mot de passe aléatoire
+          </small>
         </div>
 
         <div className="admin-form-group">
@@ -342,7 +398,9 @@ const UserManagement: React.FC = () => {
               interface="popover"
               className="admin-select"
               value={formData.role}
-              onIonChange={(e) => setFormData({ ...formData, role: e.detail.value })}
+              onIonChange={(e) =>
+                setFormData({ ...formData, role: e.detail.value })
+              }
             >
               <IonSelectOption value="admin">Admin</IonSelectOption>
               <IonSelectOption value="superadmin">Super Admin</IonSelectOption>
@@ -359,7 +417,9 @@ const UserManagement: React.FC = () => {
               className="admin-input"
               placeholder="General"
               value={formData.department}
-              onIonChange={(e) => setFormData({ ...formData, department: e.detail.value || "General" })}
+              onIonChange={(e) =>
+                setFormData({ ...formData, department: e.detail.value || "General" })
+              }
             ></IonInput>
           </div>
         </div>
@@ -427,7 +487,11 @@ const UserManagement: React.FC = () => {
         </div>
 
         <div className="admin-form-actions">
-          <button type="button" className="admin-button secondary" onClick={() => setActiveTab("list")}>
+          <button
+            type="button"
+            className="admin-button secondary"
+            onClick={() => setActiveTab("list")}
+          >
             Annuler
           </button>
           <button type="submit" className="admin-button primary">
@@ -438,22 +502,42 @@ const UserManagement: React.FC = () => {
     </div>
   )
 
+  // The updated password reset form (forgot password based on email)
   const renderPasswordReset = () => (
     <div className="admin-form-container">
-      <form className="admin-reset-form">
+      <form className="admin-reset-form" onSubmit={handleResetPassword}>
         <div className="admin-form-group">
           <label className="admin-form-label">Email de l'utilisateur</label>
           <div className="admin-input-wrapper">
-            <IonInput type="email" required className="admin-input"></IonInput>
+            <IonInput
+              type="email"
+              required
+              className="admin-input"
+              placeholder="user@example.com"
+              value={resetEmail}
+              onIonChange={(e) => setResetEmail(e.detail.value!)}
+            ></IonInput>
           </div>
         </div>
 
+        {resetErrorMessage && (
+          <div className="admin-error-message">{resetErrorMessage}</div>
+        )}
+
+        {resetSuccessMessage && (
+          <div className="admin-success-message">{resetSuccessMessage}</div>
+        )}
+
         <div className="admin-form-actions">
-          <button type="button" className="admin-button secondary" onClick={() => setActiveTab("list")}>
+          <button
+            type="button"
+            className="admin-button secondary"
+            onClick={() => setActiveTab("list")}
+          >
             Annuler
           </button>
-          <button type="submit" className="admin-button primary">
-            Envoyer le lien de réinitialisation
+          <button type="submit" className="admin-button primary" disabled={resetIsLoading}>
+            {resetIsLoading ? "Envoi en cours..." : "Envoyer le lien de réinitialisation"}
           </button>
         </div>
       </form>
@@ -515,4 +599,3 @@ const UserManagement: React.FC = () => {
 }
 
 export default UserManagement
-
