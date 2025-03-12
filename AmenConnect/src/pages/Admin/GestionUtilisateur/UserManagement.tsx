@@ -269,58 +269,57 @@ const UserManagement: React.FC = () => {
   }
 
   // Handle account request approval
-  const handleApproveRequest = async (requestId: string) => {
-    if (window.confirm("Êtes-vous sûr de vouloir approuver cette demande?")) {
-      try {
-        const response = await fetch(`/api/account-creation/${requestId}/approve`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-
-        if (response.ok) {
-          alert("Demande approuvée avec succès")
-          // Update the status in the local state
-          setAccountRequests((prev) =>
-            prev.map((req) => (req._id === requestId ? { ...req, status: "approved" } : req)),
-          )
-        } else {
-          const data = await response.json()
-          alert("Erreur: " + (data.message || "Une erreur est survenue"))
-        }
-      } catch (error) {
-        console.error("Error approving request:", error)
-        alert("Une erreur est survenue lors de l'approbation de la demande")
+// Function to handle account request approval
+const handleApproveRequest = async (requestId: string) => {
+  if (window.confirm("Êtes-vous sûr de vouloir approuver cette demande?")) {
+    try {
+      const response = await fetch(`/api/account-creation/${requestId}/approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        alert("Demande approuvée avec succès");
+        // Update the status in the local state
+        setAccountRequests((prev) =>
+          prev.map((req) => (req._id === requestId ? { ...req, status: "approved" } : req)),
+        );
+      } else {
+        const data = await response.json();
+        alert("Erreur: " + (data.message || "Une erreur est survenue"));
       }
+    } catch (error) {
+      console.error("Error approving request:", error);
+      alert("Une erreur est survenue lors de l'approbation de la demande");
     }
   }
+};
+
+
+      
 
   // Handle account request rejection
   const handleRejectRequest = async (requestId: string) => {
-    if (window.confirm("Êtes-vous sûr de vouloir rejeter cette demande?")) {
+    if (window.confirm("Are you sure you want to reject this request?")) {
       try {
         const response = await fetch(`/api/account-creation/${requestId}/reject`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-
+          headers: { "Content-Type": "application/json" },
+        });
         if (response.ok) {
-          alert("Demande rejetée avec succès")
+          alert("Demande rejetée avec succès");
           // Update the status in the local state
           setAccountRequests((prev) =>
-            prev.map((req) => (req._id === requestId ? { ...req, status: "rejected" } : req)),
-          )
-        } else {
-          const data = await response.json()
-          alert("Erreur: " + (data.message || "Une erreur est survenue"))
+            prev.map((req) => (req._id === requestId ? { ...req, status:
+              "rejected" } : req)),
+          );
+          } else {
+            const data = await response.json();
+            alert("Erreur: " + (data.message || "Une erreur est survenue"));
+          }
+        } catch (error) {
+          console.error("Error rejecting request:", error);
+          alert("Une erreur est survenue lors du rejet de la demande");
         }
-      } catch (error) {
-        console.error("Error rejecting request:", error)
-        alert("Une erreur est survenue lors du rejet de la demande")
-      }
     }
   }
 

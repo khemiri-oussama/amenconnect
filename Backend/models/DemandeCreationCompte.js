@@ -104,7 +104,8 @@ const demandeCreationSchema = new mongoose.Schema({
   specimenSignature: { type: String },
   ficheProfilClient: { type: String },
   selfiAvecCIN: { type: String },
-  captcha: { type: String }
+  captcha: { type: String },
+  status: { type: String, default: 'pending' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('DemandeCreationCompte', demandeCreationSchema);
