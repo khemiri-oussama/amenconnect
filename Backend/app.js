@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 
 
 // Import routes
+const accountCreationRoutes = require('./routes/accountCreationRoutes');
 const authRoutes = require("./routes/authRoutes");
 const ipRoutes = require("./routes/ipRoutes");
 const forgotPasswordRoutes = require("./routes/forgotPasswordRoutes");
@@ -51,7 +52,7 @@ app.use(adminpassport.initialize());
 
 
 
-
+app.use('/api', accountCreationRoutes);
 app.use('/api/compte', transactionRoutes);
 
 app.use("/api/categories", budgetCategoryRoutes);
