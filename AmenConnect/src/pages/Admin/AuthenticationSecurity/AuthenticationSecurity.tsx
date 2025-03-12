@@ -20,6 +20,32 @@ const AuthenticationSecurity: React.FC = () => {
   const [sessions, setSessions] = useState<any[]>([])
   const [inactivityTimeout, setInactivityTimeout] = useState<number>(15) // default timeout in minutes
 
+  // 2FA state values initialized with defaults; these will be updated from the database
+  const [is2FAEnabled, setIs2FAEnabled] = useState(false)
+  const [smsEnabled, setSmsEnabled] = useState(false)
+  const [emailEnabled, setEmailEnabled] = useState(false)
+  const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false)
+
+  // Fetch 2FA configuration when the 2fa tab is active
+  useEffect(() => {
+    if (activeTab === "2fa") {
+       fetch("/api/2fa", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          // Set toggle states based on the database configuration
+          setIs2FAEnabled(data.is2FAEnabled)
+          setSmsEnabled(data.smsEnabled)
+          setEmailEnabled(data.emailEnabled)
+          setGoogleAuthEnabled(data.googleAuthEnabled)
+        })
+        .catch((error) => console.error("Error fetching 2FA settings:", error))
+    }
+  }, [activeTab])
+
   // Fetch sessions when the "sessions" tab is active
   useEffect(() => {
     if (activeTab === "sessions") {
@@ -52,7 +78,7 @@ const AuthenticationSecurity: React.FC = () => {
         if (response.ok) {
           alert(data.message || "Session terminated successfully.")
           // Remove terminated session from state
-          setSessions(prev => prev.filter(s => s.sessionId !== sessionId))
+          setSessions((prev) => prev.filter((s) => s.sessionId !== sessionId))
         } else {
           alert("Error: " + data.message)
         }
@@ -66,13 +92,27 @@ const AuthenticationSecurity: React.FC = () => {
   const handleTimeoutChange = (value: number) => {
     setInactivityTimeout(value)
     // Optionally, send this value to the server to update the inactivity timeout configuration.
-    // Example:
-    // fetch('/api/settings/inactivity-timeout', {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ timeout: value }),
-    //   credentials: "include"
-    // })
+  }
+
+  const handleSave2FASettings = async () => {
+    const payload = { is2FAEnabled, smsEnabled, emailEnabled, googleAuthEnabled }
+    try {
+      const response = await fetch("/api/2fa", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      })
+      const data = await response.json()
+      if (response.ok) {
+        alert(data.message || "Settings saved successfully")
+      } else {
+        alert("Error: " + data.message)
+      }
+    } catch (error) {
+      console.error("Error saving 2FA settings:", error)
+      alert("An error occurred while saving settings.")
+    }
   }
 
   if (authLoading) {
@@ -84,23 +124,39 @@ const AuthenticationSecurity: React.FC = () => {
       <div className="admin-security-list">
         <div className="admin-security-item">
           <div className="admin-security-label">Enable 2FA</div>
-          <IonToggle className="admin-toggle" />
+          <IonToggle
+            className="admin-toggle"
+            checked={is2FAEnabled}
+            onIonChange={(e) => setIs2FAEnabled(e.detail.checked)}
+          />
         </div>
         <div className="admin-security-item">
           <div className="admin-security-label">SMS Authentication</div>
-          <IonToggle className="admin-toggle" />
+          <IonToggle
+            className="admin-toggle"
+            checked={smsEnabled}
+            onIonChange={(e) => setSmsEnabled(e.detail.checked)}
+          />
         </div>
         <div className="admin-security-item">
           <div className="admin-security-label">Email Authentication</div>
-          <IonToggle className="admin-toggle" />
+          <IonToggle
+            className="admin-toggle"
+            checked={emailEnabled}
+            onIonChange={(e) => setEmailEnabled(e.detail.checked)}
+          />
         </div>
         <div className="admin-security-item">
           <div className="admin-security-label">Google Authenticator</div>
-          <IonToggle className="admin-toggle" />
+          <IonToggle
+            className="admin-toggle"
+            checked={googleAuthEnabled}
+            onIonChange={(e) => setGoogleAuthEnabled(e.detail.checked)}
+          />
         </div>
       </div>
       <div className="admin-form-actions">
-        <button type="button" className="admin-button primary">
+        <button type="button" className="admin-button primary" onClick={handleSave2FASettings}>
           <IonIcon icon={saveOutline} />
           <span>Save 2FA Settings</span>
         </button>
@@ -127,11 +183,9 @@ const AuthenticationSecurity: React.FC = () => {
           </div>
         </div>
       </div>
-
       <div className="admin-section-title">
         <h3>Active Sessions</h3>
       </div>
-
       <div className="admin-table-container">
         <table className="admin-table">
           <thead>

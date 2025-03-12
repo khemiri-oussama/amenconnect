@@ -144,7 +144,7 @@ const SystemLoadChart = () => {
 
     // Update immediately and then every 5 seconds
     updateChartData()
-    const interval = setInterval(updateChartData, 5000)
+    const interval = setInterval(updateChartData, 1000)
     return () => clearInterval(interval)
   }, [])
 
