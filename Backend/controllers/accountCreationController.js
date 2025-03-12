@@ -3,18 +3,7 @@ const DemandeCreationCompte = require('../models/DemandeCreationCompte');
 
 exports.createAccountCreation = async (req, res) => {
   try {
-    // req.body should contain your form fields.
-    // If you use a file upload middleware (e.g., multer), you can map file fields accordingly.
     const demandeData = req.body;
-
-    // Example: if files are handled separately, you could assign file paths
-    // if (req.files) {
-    //   if (req.files.cinRecto) {
-    //     demandeData.cinRecto = req.files.cinRecto[0].path;
-    //   }
-    //   // Do similar mapping for other file fields...
-    // }
-
     const demande = new DemandeCreationCompte(demandeData);
     await demande.save();
     res.status(201).json({ 
@@ -24,5 +13,16 @@ exports.createAccountCreation = async (req, res) => {
   } catch (error) {
     console.error('Error creating demande:', error);
     res.status(500).json({ error: 'Erreur lors de l\'enregistrement de la demande' });
+  }
+};
+
+// New controller function to retrieve all demandes
+exports.getAllDemandes = async (req, res) => {
+  try {
+    const demandes = await DemandeCreationCompte.find();
+    res.status(200).json({ demandes });
+  } catch (error) {
+    console.error('Error retrieving demandes:', error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des demandes' });
   }
 };
