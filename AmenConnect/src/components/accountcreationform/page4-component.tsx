@@ -1,26 +1,28 @@
 import type React from "react"
 import type { FormData, SignatureCanvasRef } from "./types"
 import ReCAPTCHA from "react-google-recaptcha"
+// Remove the handleCaptchaChange property from the interface
 interface Page4Props {
-  formData: FormData
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void
-  handleCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  signatureCanvasRef: React.RefObject<SignatureCanvasRef>
-  signatureAreaRef: React.RefObject<HTMLDivElement>
-  clearSignature: () => void
-  handleSignatureChange: () => void
-  showSignatureTools: boolean
-  toggleSignatureTools: () => void
-  penColor: string
-  penSize: number
-  handlePenColorChange: (color: string) => void
-  handlePenSizeChange: (size: number) => void
-  hasSignature: boolean
-  signaturePreview: string | null
-  formErrors: string[]
-  handleCaptchaChange: (token: string | null) => void
+  formData: FormData;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  handleCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  signatureCanvasRef: React.RefObject<SignatureCanvasRef>;
+  signatureAreaRef: React.RefObject<HTMLDivElement>;
+  clearSignature: () => void;
+  handleSignatureChange: () => void;
+  showSignatureTools: boolean;
+  toggleSignatureTools: () => void;
+  penColor: string;
+  penSize: number;
+  handlePenColorChange: (color: string) => void;
+  handlePenSizeChange: (size: number) => void;
+  hasSignature: boolean;
+  signaturePreview: string | null;
+  formErrors: string[];
+  // Removed: handleCaptchaChange: (token: string | null) => void;
 }
+
 
 const Page4Component: React.FC<Page4Props> = ({
   formData,
@@ -39,8 +41,7 @@ const Page4Component: React.FC<Page4Props> = ({
   handlePenSizeChange,
   hasSignature,
   signaturePreview,
-  formErrors,
-  handleCaptchaChange,
+  formErrors
 }) => {
   return (
     <>
@@ -52,7 +53,6 @@ const Page4Component: React.FC<Page4Props> = ({
             <li>Vérifiez l'exactitude des informations personnelles saisies.</li>
             <li>Assurez-vous que tous les documents requis sont prêts à être téléchargés.</li>
             <li>Signez électroniquement le formulaire en utilisant l'outil de signature ci-dessous.</li>
-            <li>Complétez le captcha pour finaliser votre demande.</li>
           </ol>
         </div>
 
@@ -307,15 +307,6 @@ const Page4Component: React.FC<Page4Props> = ({
         </div>
       </section>
 
-      <section className="acf-form-section">
-        <h3 className="acf-section-title">Captcha</h3>
-        <div className="acf-captcha">
-          <ReCAPTCHA
-            sitekey="6LekFesqAAAAAEW5F4sh4bCYsmaOCwLZse11n4o0"
-            onChange={handleCaptchaChange}
-          />
-        </div>
-      </section>
     </>
   )
 }
