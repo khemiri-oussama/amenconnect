@@ -31,7 +31,7 @@ const systemStatsRoute = require('./routes/systemStatsRoute');
 // Import Passport
 const passport = require("./config/passport");
 const adminpassport = require("./config/adminPassport");
-
+const Twofa = require("./routes/2fa");
 const app = express();
 
 app.use(helmet());
@@ -72,6 +72,7 @@ app.use('/api/admin/list',adminpassport.authenticate('admin-jwt', {session: fals
 app.use('/api/admin', adminRoutes);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/system-stats', systemStatsRoute);
+app.use('/api/2fa', adminpassport.authenticate('admin-jwt', { session: false }), Twofa);
 
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
