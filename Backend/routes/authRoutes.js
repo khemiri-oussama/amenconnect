@@ -11,7 +11,7 @@ const router = express.Router();
 const User = require('../models/User');
 const Compte = require('../models/Compte');
 const Carte = require('../models/Cartes');
-
+const LoginAttempt = require('../models/LoginAttempt');
 // Rate limiters and request validator
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -59,38 +59,34 @@ router.post(
 );
 
 // Login route using Passport Local Strategy with OTP generation
-router.post(
-  '/login',
-  loginLimiter,
-  [
-    body('email').isEmail().withMessage('Valid email is required.'),
-    body('password').notEmpty().withMessage('Password is required.')
-  ],
-  validateRequest,
-  (req, res, next) => {
+router.post( '/login', loginLimiter, [ body('email').isEmail().withMessage('Valid email is required.'), body('password').notEmpty().withMessage('Password is required.') ], validateRequest, (req, res, next) => { const { email } = req.body; const ipAddress = req.ip; const userAgent = req.get('User-Agent');
     passport.authenticate('local', async (err, user, info) => {
       if (err) return next(err);
       if (!user) {
+        // Log a failed login attempt
+        await LoginAttempt.create({ email, ipAddress, userAgent, success: false });
         return res.status(400).json({ message: info.message || 'Invalid credentials.' });
       }
-
-      // Generate OTP upon successful authentication
+      
+      // Log a successful login attempt
+      await LoginAttempt.create({ email, ipAddress, userAgent, success: true });
+      
+      // Continue with generating OTP, etc.
       const otpPlain = generateOTP();
       const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
-
+      
       try {
         const otpHashed = await bcrypt.hash(otpPlain, 10);
-        // Store OTP as an object with hash and expires properties
         user.otp = { hash: otpHashed, expires: otpExpires };
         await user.save();
-
+        
         try {
           await sendOTPEmail(user.email, otpPlain);
         } catch (emailError) {
           console.error("Error sending OTP email:", emailError);
           return res.status(500).json({ message: "Error sending OTP email. Please try again later." });
         }
-
+        
         return res.json({
           message: "OTP sent successfully to your email! Please enter it to verify."
         });
@@ -98,6 +94,7 @@ router.post(
         return next(err);
       }
     })(req, res, next);
+    
   }
 );
 
