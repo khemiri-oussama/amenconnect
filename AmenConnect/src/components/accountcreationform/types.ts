@@ -116,7 +116,6 @@ export interface FormData {
   specimenSignature: File | null
   ficheProfilClient: File | null
   selfiAvecCIN: File | null
-  captcha: string
 }
 
 // Create an extended interface for SignatureCanvas that includes the missing properties

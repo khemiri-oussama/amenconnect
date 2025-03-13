@@ -121,8 +121,7 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
     cinVerso: null,
     specimenSignature: null,
     ficheProfilClient: null,
-    selfiAvecCIN: null,
-    captcha: "",
+    selfiAvecCIN: null
   })
 
   const [penColor, setPenColor] = useState("#000000")
@@ -194,22 +193,22 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
 
   // Check if signature exists after each stroke
   const handleSignatureChange = () => {
-    // Reset inactivity timer when signature changes
-    if (resetTimer) resetTimer()
-
+    if (resetTimer) resetTimer();
+  
     if (signatureCanvasRef.current) {
-      const isEmpty = signatureCanvasRef.current.isEmpty()
-      setHasSignature(!isEmpty)
-
-      // Update preview if signature exists
+      const isEmpty = signatureCanvasRef.current.isEmpty();
+      setHasSignature(!isEmpty);
+  
       if (!isEmpty) {
-        const dataUrl = signatureCanvasRef.current.getTrimmedCanvas().toDataURL("image/png")
-        setSignaturePreview(dataUrl)
+        // Instead of getTrimmedCanvas(), use getCanvas()
+        const dataUrl = signatureCanvasRef.current.getCanvas().toDataURL("image/png");
+        setSignaturePreview(dataUrl);
       } else {
-        setSignaturePreview(null)
+        setSignaturePreview(null);
       }
     }
-  }
+  };
+  
 
   const clearSignature = () => {
     // Reset inactivity timer when signature is cleared
@@ -259,7 +258,7 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
       [name]: value,
     })
   }
-
+  
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Reset inactivity timer on checkbox change
     if (resetTimer) resetTimer()
@@ -355,7 +354,7 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
     if (!formData.specimenSignature) errors.push("Le spécimen de signature est requis")
     if (!formData.ficheProfilClient) errors.push("La fiche profil client est requise")
     if (!formData.selfiAvecCIN) errors.push("Le selfi avec la carte d'identité nationale est requis")
-    if (!formData.captcha) errors.push("Veuillez saisir les lettres du captcha")
+
     if (!hasSignature) errors.push("Veuillez signer le document")
 
     setFormErrors(errors)
@@ -410,46 +409,71 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
       })
     }
   }
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });  
 
-  const handleSubmit = (e: React.FormEvent) => {
-    // Reset inactivity timer when form is submitted
-    if (resetTimer) resetTimer()
-
-    e.preventDefault()
-
-    // Validate based on current page
-    if (currentPage === 1) {
-      if (validatePage1()) {
-        goToNextPage()
+    const handleSubmit = async (e: React.FormEvent) => {
+      if (resetTimer) resetTimer();
+      e.preventDefault();
+    
+      // Validate based on current page
+      if (currentPage === 1 && !validatePage1()) return;
+      if (currentPage === 2 && !validatePage2()) return;
+      if (currentPage === 3 && !validatePage3()) return;
+      if (currentPage === 4 && !validatePage4()) return;
+    
+      // Get signature as a data URL
+      const signatureDataUrl = signatureCanvasRef.current?.getCanvas().toDataURL("image/png");
+    
+      // Create a copy of formData and add the signature
+      const updatedFormData: any = {
+        ...formData,
+        specimenSignature: signatureDataUrl,
+      };
+    
+      // Define the file fields that need to be converted
+      const fileFields = ["cinRecto", "cinVerso", "ficheProfilClient", "selfiAvecCIN"];
+    
+      // Convert each file field to a base64 string if it's a File object
+      for (const field of fileFields) {
+        const fileValue = formData[field as keyof FormData];
+        if (fileValue instanceof File) {
+          try {
+            const base64String = await fileToBase64(fileValue);
+            updatedFormData[field] = base64String;
+          } catch (error) {
+            console.error(`Error converting file ${field}:`, error);
+          }
+        }
       }
-      return
-    } else if (currentPage === 2) {
-      if (validatePage2()) {
-        goToNextPage()
+    
+      try {
+        const response = await fetch("/api/account-creation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedFormData),
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          alert(data.message || "Votre demande a été soumise avec succès. Nous vous contacterons bientôt.");
+          onBack();
+        } else {
+          const errorData = await response.json();
+          alert("Erreur: " + errorData.error);
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("Une erreur est survenue lors de l'envoi de la demande");
       }
-      return
-    } else if (currentPage === 3) {
-      if (validatePage3()) {
-        goToNextPage()
-      }
-      return
-    } else if (currentPage === 4) {
-      if (!validatePage4()) {
-        return
-      }
-    }
-
-    // Get signature as data URL
-    const signatureDataUrl = signatureCanvasRef.current?.getTrimmedCanvas().toDataURL("image/png")
-
-    // Here you would typically send the form data and signature to your backend
-    console.log("Form submitted:", formData)
-    console.log("Signature:", signatureDataUrl)
-
-    // Show confirmation or navigate to a thank you page
-    alert("Votre demande a été soumise avec succès. Nous vous contacterons bientôt.")
-    onBack()
-  }
+    };
+    
+  
 
   const toggleSignatureTools = () => {
     // Reset inactivity timer when signature tools are toggled
@@ -560,27 +584,30 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
             />
           )}
 
-          {currentPage === 4 && (
-            <Page4Component
-              formData={formData}
-              handleInputChange={handleInputChange}
-              handleCheckboxChange={handleCheckboxChange}
-              handleFileChange={handleFileChange}
-              signatureCanvasRef={signatureCanvasRef}
-              signatureAreaRef={signatureAreaRef}
-              clearSignature={clearSignature}
-              handleSignatureChange={handleSignatureChange}
-              showSignatureTools={showSignatureTools}
-              toggleSignatureTools={toggleSignatureTools}
-              penColor={penColor}
-              penSize={penSize}
-              handlePenColorChange={handlePenColorChange}
-              handlePenSizeChange={handlePenSizeChange}
-              hasSignature={hasSignature}
-              signaturePreview={signaturePreview}
-              formErrors={formErrors}
-            />
-          )}
+{currentPage === 4 && (
+  <Page4Component
+    formData={formData}
+    handleInputChange={handleInputChange}
+    handleCheckboxChange={handleCheckboxChange}
+    handleFileChange={handleFileChange}
+    signatureCanvasRef={signatureCanvasRef}
+    signatureAreaRef={signatureAreaRef}
+    clearSignature={clearSignature}
+    handleSignatureChange={handleSignatureChange}
+    showSignatureTools={showSignatureTools}
+    toggleSignatureTools={toggleSignatureTools}
+    penColor={penColor}
+    penSize={penSize}
+    handlePenColorChange={handlePenColorChange}
+    handlePenSizeChange={handlePenSizeChange}
+    hasSignature={hasSignature}
+    signaturePreview={signaturePreview}
+    formErrors={formErrors}
+    // Removed: handleCaptchaChange={handleCaptchaChange}
+  />
+)}
+
+
 
           <div className="acf-form-actions">
             {currentPage > 1 && (
