@@ -46,19 +46,43 @@ exports.updateKiosk = async (req, res) => {
   }
 };
 
-// Shutdown kiosk using child_process
-exports.shutdownKiosk = (req, res) => {
-  // Note: In a production environment, you should secure this endpoint
-  exec("shutdown /s /t 0", (error, stdout, stderr) => {
-    if (error) {
-      return res.status(500).json({ error: error.message });
+
+exports.shutdownKiosk = async (req, res) => {
+  const { totemId } = req.body;
+  if (!totemId) {
+    return res.status(400).json({ error: "Totem ID is required for shutdown." });
+  }
+
+  try {
+    // Find the kiosk using the provided totemId (stored in the "tote" field)
+    const kiosk = await Kiosk.findOne({ tote: totemId });
+    if (!kiosk) {
+      return res.status(404).json({ error: "Kiosk not found." });
     }
-    if (stderr) {
-      return res.status(500).json({ error: stderr });
+    
+    // Check if the kiosk is online before proceeding
+    if (kiosk.status !== "online") {
+      return res.status(400).json({ error: "Kiosk is already offline." });
     }
-    res.json({ message: "Kiosk shutdown initiated." });
-  });
+    
+    // Update kiosk status to offline and reset temperature
+    kiosk.status = "offline";
+    kiosk.temperature = 0;
+    await kiosk.save();
+
+    // Get the Socket.IO instance from the app locals
+    const io = req.app.locals.io;
+    
+    // Emit a shutdown command to the room identified by the kiosk's totemId.
+    // Make sure that each kiosk device joins a room with its totemId when connecting.
+    io.to(totemId).emit("shutdownCommand", { message: "Shutdown your device" });
+
+    res.json({ message: "Shutdown command sent to kiosk device and status updated to offline." });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
+
 
 // Simulated endpoint for refreshing temperature data
 exports.getTemperature = (req, res) => {

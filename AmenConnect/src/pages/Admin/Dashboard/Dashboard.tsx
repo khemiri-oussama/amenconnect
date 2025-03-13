@@ -31,11 +31,12 @@ import {
   Title,
   Tooltip,
   Legend,
+  FontSpec,
 } from "chart.js"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend)
 
-// For Role Distribution, if you have a real API endpoint, update this accordingly.
+// Simulated API for role distribution
 const fetchRoleDistribution = async () => {
   return {
     admins: 10,
@@ -45,7 +46,7 @@ const fetchRoleDistribution = async () => {
   }
 }
 
-// New function to fetch system stats from the real API endpoint
+// Function to fetch system stats from your API endpoint
 const fetchSystemStats = async () => {
   try {
     const response = await fetch("http://localhost:3000/api/system-stats")
@@ -61,7 +62,6 @@ const fetchSystemStats = async () => {
 }
 
 const SystemLoadChart = () => {
-  // State for chart data
   const [chartData, setChartData] = useState({
     labels: [] as string[],
     datasets: [
@@ -104,7 +104,6 @@ const SystemLoadChart = () => {
     ],
   })
 
-  // State variables for current values
   const [currentCpuUsage, setCurrentCpuUsage] = useState<number>(0)
   const [currentRamUsage, setCurrentRamUsage] = useState<number>(0)
   const [cpuStatus, setCpuStatus] = useState<string>("normal")
@@ -114,20 +113,22 @@ const SystemLoadChart = () => {
     const updateChartData = async () => {
       const result = await fetchSystemStats()
 
-      // Update the current usage state variables
+      // Update current usage and status
       setCurrentCpuUsage(result.cpuUsage)
       setCurrentRamUsage(result.ramUsage)
-
-      // Set status based on usage thresholds
-      setCpuStatus(result.cpuUsage > 80 ? "critical" : result.cpuUsage > 60 ? "warning" : "normal")
-      setRamStatus(result.ramUsage > 80 ? "critical" : result.ramUsage > 60 ? "warning" : "normal")
+      setCpuStatus(
+        result.cpuUsage > 80 ? "critical" : result.cpuUsage > 60 ? "warning" : "normal"
+      )
+      setRamStatus(
+        result.ramUsage > 80 ? "critical" : result.ramUsage > 60 ? "warning" : "normal"
+      )
 
       setChartData((prevData) => {
         const newLabels = [...prevData.labels, result.time]
         const newCpuData = [...prevData.datasets[0].data, result.cpuUsage]
         const newRamData = [...prevData.datasets[1].data, result.ramUsage]
 
-        // Keep only the last 10 data points
+        // Limit to the last 10 data points
         const limitedLabels = newLabels.slice(-10)
         const limitedCpuData = newCpuData.slice(-10)
         const limitedRamData = newRamData.slice(-10)
@@ -142,7 +143,6 @@ const SystemLoadChart = () => {
       })
     }
 
-    // Update immediately and then every 5 seconds
     updateChartData()
     const interval = setInterval(updateChartData, 1000)
     return () => clearInterval(interval)
@@ -160,7 +160,7 @@ const SystemLoadChart = () => {
           usePointStyle: true,
           pointStyle: "circle",
           padding: 20,
-          font: { size: 12, weight: "500" as const },
+          font: { size: 12, weight: 500 } as Partial<FontSpec>,
           color: "#64748b",
         },
       },
@@ -189,9 +189,7 @@ const SystemLoadChart = () => {
     },
     scales: {
       x: {
-        grid: {
-          display: false,
-        },
+        grid: { display: false },
         ticks: {
           color: "#94a3b8",
           font: { size: 11 },
@@ -202,10 +200,7 @@ const SystemLoadChart = () => {
       y: {
         min: 0,
         max: 100,
-        grid: {
-          color: "rgba(226, 232, 240, 0.5)",
-          drawBorder: false,
-        },
+        grid: { color: "rgba(226, 232, 240, 0.5)", drawBorder: false },
         ticks: {
           color: "#94a3b8",
           font: { size: 11 },
@@ -215,22 +210,9 @@ const SystemLoadChart = () => {
         },
       },
     },
-    interaction: {
-      mode: "index" as const,
-      intersect: false,
-    },
-    animation: {
-      duration: 800,
-      easing: "easeOutQuart" as const,
-    },
-    elements: {
-      line: {
-        borderWidth: 2,
-      },
-      point: {
-        hitRadius: 8,
-      },
-    },
+    interaction: { mode: "index" as const, intersect: false },
+    animation: { duration: 800, easing: "easeOutQuart" as const },
+    elements: { line: { borderWidth: 2 }, point: { hitRadius: 8 } },
   }
 
   return (
@@ -244,14 +226,23 @@ const SystemLoadChart = () => {
             <div className="metric-header">
               <h4>CPU</h4>
               <div className="metric-status">
-                {cpuStatus === "normal" && <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />}
-                {cpuStatus === "warning" && <IonIcon icon={alertCircleOutline} className="status-icon warning" />}
-                {cpuStatus === "critical" && <IonIcon icon={alertCircleOutline} className="status-icon critical" />}
+                {cpuStatus === "normal" && (
+                  <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
+                )}
+                {cpuStatus === "warning" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon warning" />
+                )}
+                {cpuStatus === "critical" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon critical" />
+                )}
               </div>
             </div>
             <div className="metric-value">{currentCpuUsage}%</div>
             <div className="metric-progress">
-              <div className={`progress-bar ${cpuStatus}`} style={{ width: `${currentCpuUsage}%` }}></div>
+              <div
+                className={`progress-bar ${cpuStatus}`}
+                style={{ width: `${currentCpuUsage}%` }}
+              ></div>
             </div>
           </div>
         </div>
@@ -264,14 +255,23 @@ const SystemLoadChart = () => {
             <div className="metric-header">
               <h4>RAM</h4>
               <div className="metric-status">
-                {ramStatus === "normal" && <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />}
-                {ramStatus === "warning" && <IonIcon icon={alertCircleOutline} className="status-icon warning" />}
-                {ramStatus === "critical" && <IonIcon icon={alertCircleOutline} className="status-icon critical" />}
+                {ramStatus === "normal" && (
+                  <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
+                )}
+                {ramStatus === "warning" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon warning" />
+                )}
+                {ramStatus === "critical" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon critical" />
+                )}
               </div>
             </div>
             <div className="metric-value">{currentRamUsage}%</div>
             <div className="metric-progress">
-              <div className={`progress-bar ${ramStatus}`} style={{ width: `${currentRamUsage}%` }}></div>
+              <div
+                className={`progress-bar ${ramStatus}`}
+                style={{ width: `${currentRamUsage}%` }}
+              ></div>
             </div>
           </div>
         </div>
@@ -284,7 +284,6 @@ const SystemLoadChart = () => {
   )
 }
 
-// Enhanced "Répartition des Rôles" chart (Pie Chart) with real-time updates
 const RoleDistributionChart = () => {
   const [chartData, setChartData] = useState({
     labels: ["Administrateurs", "Modérateurs", "Utilisateurs", "Invités"],
@@ -324,7 +323,6 @@ const RoleDistributionChart = () => {
       }))
     }
 
-    // Update immediately and then every 30 seconds
     updateRoleData()
     const interval = setInterval(updateRoleData, 30000)
     return () => clearInterval(interval)
@@ -341,13 +339,11 @@ const RoleDistributionChart = () => {
           usePointStyle: true,
           pointStyle: "circle",
           padding: 20,
-          font: { size: 12, weight: "500" as const },
+          font: { size: 12, weight: 500 } as Partial<FontSpec>,
           color: "#64748b",
         },
       },
-      title: {
-        display: false,
-      },
+      title: { display: false },
       tooltip: {
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         titleColor: "#1e293b",
@@ -364,10 +360,7 @@ const RoleDistributionChart = () => {
         usePointStyle: true,
       },
     },
-    animation: {
-      animateRotate: true,
-      duration: 800,
-    },
+    animation: { animateRotate: true, duration: 800 },
     cutout: "60%",
   }
 
@@ -379,27 +372,53 @@ const RoleDistributionChart = () => {
 }
 
 const Dashboard = () => {
-  const { isAuthenticated, authLoading } = useAdminAuth()
+  const { authLoading } = useAdminAuth()
   const [stats, setStats] = useState([
-    { title: "Utilisateurs Actifs", value: 1250, icon: peopleOutline },
+    { title: "Utilisateurs Actifs", value: 0, icon: peopleOutline },
     { title: "Transactions en Temps Réel", value: 356, icon: swapHorizontalOutline },
     { title: "Alertes de Sécurité", value: 5, icon: shieldOutline },
   ])
 
+  // Fetch active sessions to update "Utilisateurs Actifs"
   useEffect(() => {
-    // Update stats randomly every 10 seconds to simulate real-time changes
-    const updateStats = () => {
-      setStats((prev) =>
-        prev.map((stat) => {
-          // Random fluctuation between -5% and +5%
+    const fetchActiveUsers = async () => {
+      try {
+        const response = await fetch("/api/sessions", { credentials: "include" })
+        if (response.ok) {
+          const data = await response.json()
+          const activeCount = data.sessions ? data.sessions.length : 0
+          setStats((prevStats) =>
+            prevStats.map((stat) =>
+              stat.title === "Utilisateurs Actifs" ? { ...stat, value: activeCount } : stat
+            )
+          )
+        } else {
+          console.error("Failed to fetch active sessions.")
+        }
+      } catch (error) {
+        console.error("Error fetching sessions:", error)
+      }
+    }
+
+    fetchActiveUsers()
+    const interval = setInterval(fetchActiveUsers, 10000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Update other stats randomly every 10 seconds (excluding "Utilisateurs Actifs")
+  useEffect(() => {
+    const updateOtherStats = () => {
+      setStats((prevStats) =>
+        prevStats.map((stat) => {
+          if (stat.title === "Utilisateurs Actifs") return stat
           const fluctuation = Math.random() * 0.1 - 0.05
           const newValue = Math.round(stat.value * (1 + fluctuation))
           return { ...stat, value: newValue }
-        }),
+        })
       )
     }
 
-    const interval = setInterval(updateStats, 10000)
+    const interval = setInterval(updateOtherStats, 10000)
     return () => clearInterval(interval)
   }, [])
 
@@ -407,18 +426,21 @@ const Dashboard = () => {
     return <div className="admin-loading">Loading...</div>
   }
 
-  const alerts = ["Tentative de connexion suspecte détectée", "Service en panne depuis 5 minutes"]
+  const alerts = [
+    "Tentative de connexion suspecte détectée",
+    "Service en panne depuis 5 minutes",
+  ]
 
   return (
     <IonPage>
       <div className="admin-dashboard-layout">
-        {/* Sidebar Component */}
         <SidebarAdmin currentPage="Dashboard" />
 
-        {/* Main Content */}
         <div className="admin-dashboard-content">
-          {/* Header */}
-          <AdminPageHeader title="Tableau de Bord" subtitle="Bienvenue sur votre espace administrateur" />
+          <AdminPageHeader
+            title="Tableau de Bord"
+            subtitle="Bienvenue sur votre espace administrateur"
+          />
 
           {/* Stats Cards */}
           <div className="admin-stats-grid">
@@ -485,4 +507,3 @@ const Dashboard = () => {
 }
 
 export default Dashboard
-
