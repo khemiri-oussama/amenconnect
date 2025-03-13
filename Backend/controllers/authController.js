@@ -1,12 +1,32 @@
-//cpntrollers/authController.js
+// controllers/authController.js
 const User = require("../models/User");
-const Compte = require("../models/Compte"); // Import the Compte model
+const Compte = require("../models/Compte");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const { generateRIB, DOMICILIATION } = require("../config/helper");
 const Session = require("../models/Session");
 const crypto = require("crypto");
+const UAParser = require('ua-parser-js');
+
+// If your Node version is older than 18, you might need to import node-fetch:
+// const fetch = require("node-fetch");
+
+// Async helper function to fetch IP info
+const getIPInfo = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/api/ip/info");
+    if (!response.ok) {
+      console.error("Failed to fetch IP info");
+      return null;
+    }
+    const data = await response.json();
+    return data.clientIP; // Adjust according to your API's JSON structure
+  } catch (err) {
+    console.error("Error fetching IP info:", err);
+    return null;
+  }
+};
 
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -106,7 +126,6 @@ const compteTypes = {
 
 // **Register New User and Create Accounts**
 exports.register = async (req, res) => {
-  // Expecting "prenom" and "telephone" now instead of "prénom" and "téléphone"
   const { cin, nom, prenom, email, telephone, employeur, adresseEmployeur, password, comptes = ["Compte courant", "Compte épargne"] } = req.body;
 
   try {
@@ -126,19 +145,16 @@ exports.register = async (req, res) => {
       const accountNumber = generateAccountNumber(); // Should be 11 characters
       const rib = generateRIB(accountNumber); // Full RIB string
       return {
-        userId: user._id, // Link to user
+        userId: user._id,
         numéroCompte: accountNumber,
         solde: 0.0,
         type,
         RIB: rib,
-        // If you want to store domiciliation, you may add a new field in your schema (see below)
         domiciliation: DOMICILIATION,
-        // Merge default values for the given type if needed
         ...compteTypes[type],
         historique: []
       };
     });
-
 
     await Compte.insertMany(compteDocuments);
     console.log("Comptes created:", compteDocuments);
@@ -154,36 +170,31 @@ exports.addCompte = async (req, res) => {
   const { userId, type } = req.body;
 
   try {
-    // Validate that the user exists.
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Validate the compte type.
     if (!compteTypes[type]) {
       return res.status(400).json({ message: "Invalid compte type." });
     }
 
-    // Check if the user already has a compte of this type.
     const existingCompte = await Compte.findOne({ userId, type });
     if (existingCompte) {
       return res.status(400).json({ message: "User already has this type of compte." });
     }
 
-    // Generate a new 11-character account number and compute a valid RIB.
-    const accountNumber = generateAccountNumber();  // 11 characters
+    const accountNumber = generateAccountNumber();
     const rib = generateRIB(accountNumber);
 
-    // Create the new compte document.
     const newCompte = new Compte({
       userId,
       numéroCompte: accountNumber,
       solde: 0.0,
       type,
       RIB: rib,
-      domiciliation: DOMICILIATION, // Save the bank and agency information
-      ...compteTypes[type],        // Merge default settings for this type
+      domiciliation: DOMICILIATION,
+      ...compteTypes[type],
       historique: []
     });
 
@@ -195,26 +206,25 @@ exports.addCompte = async (req, res) => {
   }
 };
 
-// Login route (if using Passport's local strategy, this may be handled elsewhere)
 exports.login = async (req, res) => {
   res.status(200).json({ message: "Login route" });
 };
 
 // OTP Verification endpoint
+
 exports.verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
+  
   try {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User not found." });
     }
 
-    // Check if OTP exists and is not expired
     if (!user.otp || !user.otp.expires || new Date() > user.otp.expires) {
       return res.status(400).json({ message: "OTP has expired." });
     }
 
-    // Compare provided OTP with stored OTP hash
     const isOTPMatch = await bcrypt.compare(otp, user.otp.hash);
     if (!isOTPMatch) {
       return res.status(400).json({ message: "Invalid OTP." });
@@ -224,39 +234,54 @@ exports.verifyOTP = async (req, res) => {
     user.otp = { hash: null, expires: null };
     await user.save();
 
-    // --- Create a new session record ---
-    const sessionId = crypto.randomBytes(16).toString('hex');
+    // Fetch the client's IP info asynchronously
+    const clientIP = (await getIPInfo()) || "unknown";
+
+    // Parse the user-agent string using ua-parser-js
+    const parser = new UAParser(req.headers["user-agent"]);
+    const result = parser.getResult();
+
+    // Extract browser and OS information with fallbacks
+    const browserName = result.browser.name || "Unknown Browser";
+    const browserVersion = result.browser.version || "Unknown Version";
+    const osName = result.os.name || "Unknown OS";
+    const osVersion = result.os.version || "Unknown OS Version";
+
+    // Construct a device summary string
+    const deviceSummary = `${browserName} ${browserVersion} on ${osName} ${osVersion}`;
+
+    // Create a new session record with the parsed device information
+    const sessionId = crypto.randomBytes(16).toString("hex");
     const newSession = new Session({
       userId: user._id,
       sessionId,
-      device: req.headers['user-agent'],
-      ipAddress: req.ip,
+      device: deviceSummary,
+      ipAddress: clientIP || "UNKNOWN",
     });
     await newSession.save();
-    // -----------------------------------
 
     // Generate a JWT token valid for 1 hour
     const token = jwt.sign(
       { id: user._id, email: user.email, sessionId },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" });
+      { expiresIn: "1h" }
+    );
 
     // Set the token as an HTTP-only cookie
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === "production",
       maxAge: 3600000,
-      sameSite: 'strict',
+      sameSite: "strict",
     });
 
-    res.json({
-      message: "OTP verified successfully!",
-    });
+    res.json({ message: "OTP verified successfully!" });
   } catch (err) {
     console.error("OTP verification error:", err);
     res.status(500).json({ message: "Server error." });
   }
 };
+
 
 // Resend OTP endpoint
 exports.resendOTP = async (req, res) => {
@@ -267,10 +292,9 @@ exports.resendOTP = async (req, res) => {
       return res.status(400).json({ message: "User not found." });
     }
     const otpPlain = generateOTP();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     const otpHashed = await bcrypt.hash(otpPlain, 10);
 
-    // Store OTP as an object with hash and expires properties
     user.otp = { hash: otpHashed, expires: otpExpires };
     await user.save();
 
@@ -281,16 +305,13 @@ exports.resendOTP = async (req, res) => {
       return res.status(500).json({ message: "Error sending OTP email. Please try again later." });
     }
 
-    res.json({
-      message: "New OTP sent successfully to your email!"
-    });
+    res.json({ message: "New OTP sent successfully to your email!" });
   } catch (err) {
     console.error("Resend OTP error:", err);
     res.status(500).json({ message: "Server error." });
   }
 };
 
-// Logout endpoint
 exports.logout = async (req, res) => {
   try {
     res.clearCookie("token", {
@@ -304,9 +325,7 @@ exports.logout = async (req, res) => {
   }
 };
 
-const Carte = require("../models/Cartes"); // Import the Carte model
-
-
+const Carte = require("../models/Cartes");
 
 // Export OTP helper functions if needed elsewhere
 exports.generateOTP = generateOTP;
