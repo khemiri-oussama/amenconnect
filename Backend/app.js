@@ -33,6 +33,7 @@ const kioskRoutes = require("./routes/kioskRoutes");
 
 
 const mongoOpsRoute = require("./routes/mongoOpsRoute");
+const alertsRouter = require('./routes/alerts');
 // Import Passport
 const passport = require("./config/passport");
 const adminpassport = require("./config/adminPassport");
@@ -80,7 +81,7 @@ app.use('/api/sessions', sessionRoutes);
 app.use('/api/system-stats', systemStatsRoute);
 app.use('/api/2fa', adminpassport.authenticate('admin-jwt', { session: false }), Twofa);
 app.use("/api/mongo-ops", mongoOpsRoute);
-
+app.use('/api/alerts', alertsRouter);
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 app.use("/api/kiosk", adminpassport.authenticate('admin-jwt', { session: false }),kioskRoutes);

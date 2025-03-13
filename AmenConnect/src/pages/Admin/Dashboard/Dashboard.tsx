@@ -426,10 +426,29 @@ const Dashboard = () => {
     return <div className="admin-loading">Loading...</div>
   }
 
-  const alerts = [
-    "Tentative de connexion suspecte détectée",
-    "Service en panne depuis 5 minutes",
-  ]
+  const [alerts, setAlerts] = useState<string[]>([]);
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        const response = await fetch("/api/alerts");
+        if (response.ok) {
+          const data = await response.json();
+          // Assuming your API returns an object with an "alerts" array,
+          // map each alert object to its message property:
+          setAlerts(data.alerts.map((alert: any) => alert.message));
+        } else {
+          console.error("Failed to fetch alerts.");
+        }
+      } catch (error) {
+        console.error("Error fetching alerts:", error);
+      }
+    };
+  
+    fetchAlerts();
+    const interval = setInterval(fetchAlerts, 10000);
+    return () => clearInterval(interval);
+  }, []);
+  
 
   return (
     <IonPage>
@@ -495,18 +514,23 @@ const Dashboard = () => {
               <h3 className="admin-card-title">Alertes Urgentes</h3>
             </div>
             <div className="admin-alerts-list">
-              {alerts.map((alert, index) => (
-                <div className="admin-alert-item" key={index}>
-                  <div className="admin-alert-icon">
-                    <IonIcon icon={warningOutline} />
-                  </div>
-                  <div className="admin-alert-content">
-                    <p>{alert}</p>
-                  </div>
-                  <div className="admin-alert-badge">Urgent</div>
-                </div>
-              ))}
-            </div>
+  {alerts.length ? (
+    alerts.map((alert, index) => (
+      <div className="admin-alert-item" key={index}>
+        <div className="admin-alert-icon">
+          <IonIcon icon={warningOutline} />
+        </div>
+        <div className="admin-alert-content">
+          <p>{alert}</p>
+        </div>
+        <div className="admin-alert-badge">Urgent</div>
+      </div>
+    ))
+  ) : (
+    <p>Aucune alerte urgente.</p>
+  )}
+</div>
+
           </div>
         </div>
       </div>
