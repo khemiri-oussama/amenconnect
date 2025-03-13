@@ -28,6 +28,25 @@ const io = new Server(server, {
   },
 });
 
+// server.js
+io.on('connection', (socket) => {
+  console.log('New client connected:', socket.id);
+  
+  // Listen for a register event where the kiosk sends its unique totemId
+  socket.on('register', (data) => {
+    const { totemId } = data;
+    if (totemId) {
+      // Join a room that is named after the kiosk's totemId
+      socket.join(totemId);
+      console.log(`Socket ${socket.id} joined room ${totemId}`);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
+
 
 // Make the Socket.IO instance available in the app
 app.locals.io = io;
