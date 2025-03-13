@@ -468,4 +468,125 @@ ion-content {
     grid-template-columns: 1fr;
   }
 }
+/* Add these new styles for the account requests tab */
+.admin-status-badge.pending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.admin-status-badge.approved {
+  background-color: rgba(47, 255, 89, 0.15);
+  color: #16a34a;
+}
+
+.admin-status-badge.rejected {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.admin-icon-button.approve {
+  color: #16a34a;
+  background-color: rgba(47, 255, 89, 0.15);
+  border-color: rgba(47, 255, 89, 0.15);
+}
+
+.admin-icon-button.approve:hover {
+  background-color: #16a34a;
+  border-color: #16a34a;
+  color: white;
+}
+
+.admin-icon-button.reject {
+  color: #ef4444;
+  background-color: #fee2e2;
+  border-color: #fee2e2;
+}
+
+.admin-icon-button.reject:hover {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: white;
+}
+
+.admin-icon-button.view {
+  color: #0284c7;
+  background-color: #e0f2fe;
+  border-color: #e0f2fe;
+}
+
+.admin-icon-button.view:hover {
+  background-color: #0284c7;
+  border-color: #0284c7;
+  color: white;
+}
+
+/* Add these styles for the request details modal */
+.request-details-container {
+  padding: 1rem;
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.request-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.request-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.request-notes {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+
+.request-notes p {
+  margin: 0;
+  color: #475569;
+  white-space: pre-wrap;
+}
+
+.request-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+/* Make the modal responsive */
+@media (max-width: 768px) {
+  .request-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .request-header .request-status {
+    margin-top: 0.5rem;
+  }
+
+  .request-actions {
+    grid-template-columns: 1fr;
+  }
+}
 
