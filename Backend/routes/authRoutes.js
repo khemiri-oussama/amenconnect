@@ -12,12 +12,30 @@ const User = require('../models/User');
 const Compte = require('../models/Compte');
 const Carte = require('../models/Cartes');
 const LoginAttempt = require('../models/LoginAttempt');
+const Alert = require('../models/AdminAlert');
 // Rate limiters and request validator
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10,
-  message: 'Too many login attempts from this IP, please try again later.'
+  message: 'Too many login attempts from this IP, please try again later.',
+  handler: async (req, res, next) => {
+    const { email } = req.body;
+    const ipAddress = req.ip;
+    const userAgent = req.get('User-Agent');
+
+    // Log the failed login attempt
+    await LoginAttempt.create({ email, ipAddress, userAgent, success: false });
+
+    // Create an alert record
+    await Alert.create({
+      message: `Tentative de connexion suspecte détectée pour l'email ${email} depuis ${ipAddress}.`
+    });
+
+    // Respond with the rate limit message
+    res.status(429).json({ message: 'Too many login attempts from this IP, please try again later.' });
+  }
 });
+
 
 const verifyOTPLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -58,20 +76,26 @@ router.post(
   }
 );
 
-// Login route using Passport Local Strategy with OTP generation
-router.post( '/login', loginLimiter, [ body('email').isEmail().withMessage('Valid email is required.'), body('password').notEmpty().withMessage('Password is required.') ], validateRequest, (req, res, next) => { const { email } = req.body; const ipAddress = req.ip; const userAgent = req.get('User-Agent');
+router.post(
+  '/login',
+  loginLimiter,
+  [
+    body('email').isEmail().withMessage('Valid email is required.'),
+    body('password').notEmpty().withMessage('Password is required.')
+  ],
+  validateRequest,
+  (req, res, next) => {
+    const { email } = req.body;
+    // No need to get ipAddress and userAgent here since logging happens in the handler
+    
     passport.authenticate('local', async (err, user, info) => {
       if (err) return next(err);
       if (!user) {
-        // Log a failed login attempt
-        await LoginAttempt.create({ email, ipAddress, userAgent, success: false });
+        // Directly send the error response without logging here
         return res.status(400).json({ message: info.message || 'Invalid credentials.' });
       }
       
-      // Log a successful login attempt
-      await LoginAttempt.create({ email, ipAddress, userAgent, success: true });
-      
-      // Continue with generating OTP, etc.
+      // For successful login, proceed with OTP generation etc.
       const otpPlain = generateOTP();
       const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
       
@@ -94,9 +118,9 @@ router.post( '/login', loginLimiter, [ body('email').isEmail().withMessage('Vali
         return next(err);
       }
     })(req, res, next);
-    
   }
 );
+
 
 // Verify OTP route
 router.post(
