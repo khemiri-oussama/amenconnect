@@ -31,6 +31,8 @@ const sessionRoutes = require('./routes/sessionRoutes');
 const systemStatsRoute = require('./routes/systemStatsRoute');
 const kioskRoutes = require("./routes/kioskRoutes");
 
+
+const mongoOpsRoute = require("./routes/mongoOpsRoute");
 // Import Passport
 const passport = require("./config/passport");
 const adminpassport = require("./config/adminPassport");
@@ -77,7 +79,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/system-stats', systemStatsRoute);
 app.use('/api/2fa', adminpassport.authenticate('admin-jwt', { session: false }), Twofa);
-
+app.use("/api/mongo-ops", mongoOpsRoute);
 
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));

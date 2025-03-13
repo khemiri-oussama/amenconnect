@@ -18,7 +18,7 @@ import "./dashboard.css"
 import { useAdminAuth } from "../../../AdminAuthContext"
 import SidebarAdmin from "../../../components/SidebarAdmin"
 import AdminPageHeader from "../adminpageheader"
-
+import MongoOpsChart from "../../../components/MongoOpsChart" 
 // Import chart components and register necessary elements
 import { Line, Pie } from "react-chartjs-2"
 import {
@@ -479,7 +479,15 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-
+          <div className="admin-chart-card">
+  <div className="admin-card-header">
+    <IonIcon icon={trendingUpOutline} className="admin-card-icon" />
+    <h3 className="admin-card-title">Opérations MongoDB</h3>
+  </div>
+  <div className="admin-chart-content">
+    <MongoOpsChart />
+  </div>
+</div>
           {/* Alerts */}
           <div className="admin-alerts-card">
             <div className="admin-card-header">
