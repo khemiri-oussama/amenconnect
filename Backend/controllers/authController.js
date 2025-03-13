@@ -312,18 +312,37 @@ exports.resendOTP = async (req, res) => {
   }
 };
 
+// controllers/authController.js
 exports.logout = async (req, res) => {
   try {
+    // Extract the token from cookies
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ message: "No token provided." });
+    }
+    
+    // Decode the token to retrieve the sessionId
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded token:", decoded); // Log decoded token for debugging
+    
+    // Delete the session using the sessionId from the token payload
+    const deleteResult = await Session.deleteOne({ sessionId: decoded.sessionId });
+    console.log("Delete result:", deleteResult); // Log deletion result
+    
+    // Clear the token cookie from the client
     res.clearCookie("token", {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     });
+    
     res.json({ message: "Logged out successfully." });
   } catch (err) {
+    console.error("Logout error:", err);
     res.status(500).json({ message: "Server error." });
   }
 };
+
 
 const Carte = require("../models/Cartes");
 
