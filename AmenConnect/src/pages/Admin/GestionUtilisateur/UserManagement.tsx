@@ -364,7 +364,7 @@ const handleApproveRequest = async (requestId: string) => {
           <IonIcon icon={searchOutline} className="admin-search-icon" />
           <IonSearchbar
             className="admin-searchbar"
-            placeholder="Rechercher un utilisateur"
+            placeholder="Rechercher un Admin"
             value={searchQuery}
             onIonChange={(e) => setSearchQuery(e.detail.value || "")}
           ></IonSearchbar>
@@ -591,7 +591,7 @@ const handleApproveRequest = async (requestId: string) => {
                   setFormData({ ...formData, permissions: newPermissions })
                 }}
               />
-              <label htmlFor="perm-users">Gestion des utilisateurs</label>
+              <label htmlFor="perm-users">Gestion des Administrateurs</label>
             </div>
             <div className="admin-permission-checkbox">
               <input
@@ -653,7 +653,7 @@ const handleApproveRequest = async (requestId: string) => {
     <div className="admin-form-container">
       <form className="admin-reset-form" onSubmit={handleResetPassword}>
         <div className="admin-form-group">
-          <label className="admin-form-label">Email de l'utilisateur</label>
+          <label className="admin-form-label">Email ou CIN</label>
           <div className="admin-input-wrapper">
             <IonInput
               type="email"
@@ -964,8 +964,8 @@ const handleApproveRequest = async (requestId: string) => {
         <SidebarAdmin currentPage="Utilisateurs" />
         <div className="admin-dashboard-content">
           <AdminPageHeader
-            title="Gestion des Utilisateurs"
-            subtitle="Gérez les comptes utilisateurs et leurs permissions"
+            title="Gestion des Admin"
+            subtitle="Gérez les comptes Admin et leurs permissions"
           />
           <div className="admin-content-card">
             <div className="admin-tabs">
@@ -974,14 +974,14 @@ const handleApproveRequest = async (requestId: string) => {
                 onClick={() => setActiveTab("list")}
               >
                 <IonIcon icon={peopleOutline} />
-                <span>Liste des utilisateurs</span>
+                <span>Liste des Administratuers</span>
               </button>
               <button
                 className={`admin-tab ${activeTab === "create" ? "active" : ""}`}
                 onClick={() => setActiveTab("create")}
               >
                 <IonIcon icon={personAddOutline} />
-                <span>Créer/Éditer un utilisateur</span>
+                <span>Créer/Éditer un Admin</span>
               </button>
               <button
                 className={`admin-tab ${activeTab === "reset" ? "active" : ""}`}
