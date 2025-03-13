@@ -48,6 +48,9 @@ import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
 import AdminPageHeader from "../adminpageheader"
 
+// Import the DocumentPreview component at the top of the file
+import DocumentPreview from "./document-preview";
+
 interface AccountRequest {
   _id: string
   nom?: string
@@ -66,6 +69,12 @@ interface AccountRequest {
   status?: string
   createdAt?: string
   notes?: string
+  // Add these new properties
+  cinRecto?: string
+  cinVerso?: string
+  specimenSignature?: string
+  ficheProfilClient?: string
+  selfiAvecCIN?: string
 }
 
 const UserManagement: React.FC = () => {
@@ -793,6 +802,17 @@ const handleApproveRequest = async (requestId: string) => {
     </div>
   )
 
+  // Add this function inside the UserManagement component, before the return statement
+  const getDocumentsFromRequest = (request: AccountRequest) => {
+    return [
+      { label: "CIN Recto", data: request.cinRecto || null },
+      { label: "CIN Verso", data: request.cinVerso || null },
+      { label: "Spécimen de Signature", data: request.specimenSignature || null },
+      { label: "Fiche Profil Client", data: request.ficheProfilClient || null },
+      { label: "Selfie avec CIN", data: request.selfiAvecCIN || null },
+    ];
+  };
+
   const renderRequestDetailsModal = () => {
     if (!selectedRequest) return null
 
@@ -905,6 +925,11 @@ const handleApproveRequest = async (requestId: string) => {
               </IonList>
             </div>
 
+            <div className="request-section">
+              <h3 className="section-title">Documents fournis</h3>
+              {selectedRequest && <DocumentPreview documents={getDocumentsFromRequest(selectedRequest)} />}
+            </div>
+
             {selectedRequest.notes && (
               <div className="request-section">
                 <h3 className="section-title">Notes</h3>
@@ -1013,4 +1038,3 @@ const handleApproveRequest = async (requestId: string) => {
 }
 
 export default UserManagement
-
