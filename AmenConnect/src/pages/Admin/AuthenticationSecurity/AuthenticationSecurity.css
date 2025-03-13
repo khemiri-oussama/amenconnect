@@ -1,5 +1,9 @@
 @import "../Dashboard/Dashboard.css";
-
+@import "../GestionUtilisateur/UserManagement.css";
+@import "../GestiondesTotem/InteractiveTotemManagement.css";
+@import "../SurveillanceMonitoring/SurveillanceMonitoring.css";
+@import "../Permissions/permissionsManagement.css";
+@import "../videoconfmanage/videoconfmanage.css";
 /* Security List Styles */
 .admin-security-list {
   display: flex;
