@@ -28,6 +28,8 @@ const historiqueRoutes = require('./routes/historiqueRoutes');
 const budgetCategoryRoutes = require("./routes/budgetCategoryRoutes");
 const sessionRoutes = require('./routes/sessionRoutes');
 const systemStatsRoute = require('./routes/systemStatsRoute');
+const kioskRoutes = require("./routes/kioskRoutes");
+
 // Import Passport
 const passport = require("./config/passport");
 const adminpassport = require("./config/adminPassport");
@@ -74,9 +76,10 @@ app.use('/api/sessions', sessionRoutes);
 app.use('/api/system-stats', systemStatsRoute);
 app.use('/api/2fa', adminpassport.authenticate('admin-jwt', { session: false }), Twofa);
 
+
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
-
+app.use("/api/kiosk", adminpassport.authenticate('admin-jwt', { session: false }),kioskRoutes);
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

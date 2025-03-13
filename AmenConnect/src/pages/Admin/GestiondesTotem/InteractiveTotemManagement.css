@@ -362,6 +362,62 @@
   margin-bottom: 1.5rem;
 }
 
+/* Register Totem Form */
+.admin-register-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.admin-register-form {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.admin-form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0;
+}
+
+.admin-form-group-half {
+  flex: 1;
+}
+
+.admin-input {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  --placeholder-color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+
+.admin-input-error {
+  border-color: #ef4444;
+}
+
+.admin-error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.admin-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.admin-toggle-label {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .admin-tabs {
@@ -388,6 +444,11 @@
   .admin-incident-badge {
     align-self: flex-start;
     margin-top: 0.5rem;
+  }
+
+  .admin-form-row {
+    flex-direction: column;
+    gap: 1.5rem;
   }
 }
 
