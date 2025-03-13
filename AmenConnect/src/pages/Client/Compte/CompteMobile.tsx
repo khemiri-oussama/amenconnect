@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   IonContent,
   IonPage,
@@ -13,7 +13,12 @@ import {
   IonRefresher,
   IonRefresherContent,
 } from "@ionic/react";
-import { statsChartOutline, chevronDownCircleOutline } from "ionicons/icons";
+import {
+  statsChartOutline,
+  chevronDownCircleOutline,
+  trendingUpOutline,
+  trendingDownOutline,
+} from "ionicons/icons";
 import {
   AreaChart,
   Area,
@@ -28,30 +33,32 @@ import { useAuth } from "../../../AuthContext";
 import "./CompteMobile.css";
 import NavMobile from "../../../components/NavMobile";
 
-// Sample chart data (replace this with your actual operations data if available)
-const sampleChartData = [
-  { month: "Jan", income: 2, expenses: 1 },
-  { month: "Feb", income: 4, expenses: 2 },
-  { month: "Mar", income: 3, expenses: 4 },
-  { month: "Apr", income: 5, expenses: 3 },
-  { month: "May", income: 7, expenses: 5 },
-  { month: "Jun", income: 6, expenses: 4 },
-];
+interface Operation {
+  id: number;
+  type: "credit" | "debit";
+  amount: number;
+  description: string;
+  date: string;
+}
 
 const CompteMobile: React.FC = () => {
   const [today, setToday] = useState<string>("");
   const [selectedSegment, setSelectedSegment] = useState<string>("operations");
 
-  // Fetch real data using the AuthContext
+  // Get profile data from context
   const { profile, authLoading, refreshProfile } = useAuth();
 
   useEffect(() => {
     const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString("fr-FR");
+    const formattedDate = currentDate.toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
     setToday(formattedDate);
   }, []);
 
-  // Refresh function called when the user pulls to refresh.
+  // Refresh function for pull-to-refresh
   const handleRefreshC = async (event: CustomEvent) => {
     try {
       await refreshProfile();
@@ -62,30 +69,32 @@ const CompteMobile: React.FC = () => {
     }
   };
 
+  // Set a formatted date for display (example date)
   const [Day, setDay] = useState<string>("");
-    useEffect(() => {
-      const isoString = "2025-02-25T02:20:26.487Z";
-      const date = new Date(isoString);
-      const options: Intl.DateTimeFormatOptions = { 
-        day: 'numeric', 
-        month: 'long', 
-        year: 'numeric' 
-      };
-    let formattedDate = date.toLocaleDateString('fr-FR', options); 
-    // This typically returns "25 février 2025". If you need the month capitalized ("Fevrier")
-    const parts = formattedDate.split(' ');
+  useEffect(() => {
+    const isoString = "2025-02-25T02:20:26.487Z";
+    const date = new Date(isoString);
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    };
+    let formattedDate = date.toLocaleDateString("fr-FR", options);
+    // Capitalize month if needed
+    const parts = formattedDate.split(" ");
     if (parts.length === 3) {
       parts[1] = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-      formattedDate = parts.join(' ');
+      formattedDate = parts.join(" ");
     }
-       setDay(formattedDate); // For example, "25/02/2025"
-    }, []);
-  // Handle segment change
+    setDay(formattedDate);
+  }, []);
+
+  // Handle segment (tab) change
   const handleSegmentChange = (e: CustomEvent) => {
     setSelectedSegment(e.detail.value);
   };
 
-  // Display a loading state until profile data is fetched
+  // Wait for profile data to load
   if (authLoading) {
     return (
       <IonPage>
@@ -96,14 +105,59 @@ const CompteMobile: React.FC = () => {
     );
   }
 
-  // Use the first account from the profile, if available
+  // Use the first account from profile data (or fallback)
   const account =
     profile?.comptes && profile.comptes.length > 0 ? profile.comptes[0] : null;
+
+  // Fetch operations from the API
+  const [operations, setOperations] = useState<Operation[]>([]);
+  const [loadingOperations, setLoadingOperations] = useState<boolean>(true);
+  const [errorOperations, setErrorOperations] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOperations = async () => {
+      try {
+        const response = await fetch("/api/historique", {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch operations");
+        }
+        const data: Operation[] = await response.json();
+        setOperations(data);
+      } catch (error) {
+        console.error("Error fetching operations:", error);
+        setErrorOperations("Erreur lors de la récupération des opérations.");
+      } finally {
+        setLoadingOperations(false);
+      }
+    };
+    fetchOperations();
+  }, []);
+
+  // Build chart data from fetched operations
+  const chartData = useMemo(() => {
+    const grouped = operations.reduce((acc, op) => {
+      // Get a short month string (e.g., "Jan", "Feb")
+      const month = new Date(op.date).toLocaleString("default", { month: "short" });
+      if (!acc[month]) {
+        acc[month] = { month: month, income: 0, expenses: 0 };
+      }
+      if (op.type === "credit") {
+        acc[month].income += op.amount;
+      } else if (op.type === "debit") {
+        acc[month].expenses += op.amount;
+      }
+      return acc;
+    }, {} as { [key: string]: { month: string; income: number; expenses: number } });
+    return Object.values(grouped);
+  }, [operations]);
 
   return (
     <IonPage>
       <IonContent fullscreen>
-        {/* IonRefresher is placed as a direct child of IonContent */}
+        {/* Pull-to-refresh */}
         <IonRefresher slot="fixed" onIonRefresh={handleRefreshC}>
           <IonRefresherContent
             pullingIcon={chevronDownCircleOutline}
@@ -146,7 +200,7 @@ const CompteMobile: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Chart */}
+          {/* Chart Section for Operations */}
           {selectedSegment === "operations" && (
             <motion.div
               className="mobile-chart-container"
@@ -154,49 +208,55 @@ const CompteMobile: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <ResponsiveContainer width="100%" height={200}>
-                <AreaChart
-                  data={sampleChartData}
-                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                >
-                  <defs>
-                    <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#4CAF50" stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#FF5722" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#FF5722" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="rgba(255,255,255,0.1)"
-                  />
-                  <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
-                  <YAxis stroke="rgba(255,255,255,0.5)" />
-                  <Area
-                    type="monotone"
-                    dataKey="expenses"
-                    stackId="1"
-                    stroke="#FF5722"
-                    fillOpacity={1}
-                    fill="url(#colorExpenses)"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="income"
-                    stackId="1"
-                    stroke="#4CAF50"
-                    fillOpacity={1}
-                    fill="url(#colorIncome)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              {loadingOperations ? (
+                <p>Loading chart data...</p>
+              ) : errorOperations ? (
+                <p>{errorOperations}</p>
+              ) : (
+                <ResponsiveContainer width="100%" height={200}>
+                  <AreaChart
+                    data={chartData}
+                    margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#4CAF50" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#FF5722" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#FF5722" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(255,255,255,0.1)"
+                    />
+                    <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
+                    <YAxis stroke="rgba(255,255,255,0.5)" />
+                    <Area
+                      type="monotone"
+                      dataKey="expenses"
+                      stackId="1"
+                      stroke="#FF5722"
+                      fillOpacity={1}
+                      fill="url(#colorExpenses)"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="income"
+                      stackId="1"
+                      stroke="#4CAF50"
+                      fillOpacity={1}
+                      fill="url(#colorIncome)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
             </motion.div>
           )}
 
-          {/* Segments */}
+          {/* Segment Buttons */}
           <IonSegment
             mode="ios"
             value={selectedSegment}
@@ -216,8 +276,13 @@ const CompteMobile: React.FC = () => {
               <IonLabel>Chèques</IonLabel>
             </IonSegmentButton>
           </IonSegment>
+          <IonSearchbar
+            placeholder="Rechercher"
+            className="custom-searchbar"
+            mode="ios"
+          ></IonSearchbar>
 
-          {/* Operations Section */}
+          {/* Operations List Section */}
           {selectedSegment === "operations" && (
             <motion.div
               className="operations-section"
@@ -227,15 +292,44 @@ const CompteMobile: React.FC = () => {
             >
               <h3>Opérations</h3>
               <p className="last-update">Dernière mise à jour: {today}</p>
+              {loadingOperations ? (
+                <p>Loading operations...</p>
+              ) : errorOperations ? (
+                <p>{errorOperations}</p>
+              ) : operations.length > 0 ? (
+                operations.map((op) => (
+                  <div key={op.id} className="operation-item">
+                    <div className="operation-icon">
+                      <IonIcon
+                        icon={
+                          op.type === "credit" ? trendingUpOutline : trendingDownOutline
+                        }
+                      />
+                    </div>
+                    <div className="operation-details">
+                      <span className="operation-description">{op.description}</span>
+                      <span className="operation-date">
+                        {new Date(op.date).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+                    <div className="operation-amount">
+                      <span className={`amount ${op.type === "credit" ? "credit" : "debit"}`}>
+                        {op.type === "credit" ? "+" : "-"} {op.amount} TND
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p>Aucune opération disponible</p>
+              )}
             </motion.div>
           )}
 
-          <IonSearchbar
-            placeholder="Rechercher"
-            className="custom-searchbar"
-            mode="ios"
-          ></IonSearchbar>
-
+      
           {/* Account Information Section */}
           {selectedSegment === "infos" && (
             <motion.div
@@ -245,7 +339,6 @@ const CompteMobile: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <h2>Information du compte</h2>
-              {/* Replace dummy data with real account info where available */}
               <motion.div
                 className="info-item"
                 initial={{ opacity: 0, x: -20 }}
