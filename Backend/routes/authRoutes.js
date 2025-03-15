@@ -13,6 +13,21 @@ const Compte = require('../models/Compte');
 const Carte = require('../models/Cartes');
 const LoginAttempt = require('../models/LoginAttempt');
 const Alert = require('../models/AdminAlert');
+const getIPInfo = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/api/ip/info");
+    if (!response.ok) {
+      console.error("Failed to fetch IP info");
+      return null;
+    }
+    const data = await response.json();
+    return data.clientIP; // Adjust according to your API's JSON structure
+  } catch (err) {
+    console.error("Error fetching IP info:", err);
+    return null;
+  }
+};
+
 // Rate limiters and request validator
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -20,7 +35,7 @@ const loginLimiter = rateLimit({
   message: 'Too many login attempts from this IP, please try again later.',
   handler: async (req, res, next) => {
     const { email } = req.body;
-    const ipAddress = req.ip;
+    const ipAddress = (await getIPInfo()) || "unknown";;
     const userAgent = req.get('User-Agent');
 
     // Log the failed login attempt
