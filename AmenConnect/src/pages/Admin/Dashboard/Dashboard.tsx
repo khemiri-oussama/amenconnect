@@ -13,6 +13,7 @@ import {
   discOutline,
   alertCircleOutline,
   checkmarkCircleOutline,
+  idCardOutline,
 } from "ionicons/icons"
 import "./dashboard.css"
 import { useAdminAuth } from "../../../AdminAuthContext"
@@ -63,90 +64,121 @@ const fetchSystemStats = async () => {
 
 const SystemLoadChart = () => {
   const [chartData, setChartData] = useState({
-    labels: [] as string[],
-    datasets: [
-      {
-        label: "CPU Usage (%)",
-        data: [] as number[],
-        fill: true,
-        backgroundColor: (context: any) => {
-          const ctx = context.chart.ctx
-          const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-          gradient.addColorStop(0, "rgba(56, 189, 248, 0.5)")
-          gradient.addColorStop(1, "rgba(56, 189, 248, 0.0)")
-          return gradient
-        },
-        borderColor: "rgba(56, 189, 248, 1)",
-        tension: 0.4,
-        pointBackgroundColor: "#fff",
-        pointBorderColor: "rgba(56, 189, 248, 1)",
-        pointRadius: 4,
-        pointHoverRadius: 6,
+  labels: [] as string[],
+  datasets: [
+    {
+      label: "CPU Usage (%)",
+      data: [] as number[],
+      fill: true,
+      backgroundColor: (context: any) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, "rgba(56, 189, 248, 0.5)");
+        gradient.addColorStop(1, "rgba(56, 189, 248, 0.0)");
+        return gradient;
       },
-      {
-        label: "RAM Usage (%)",
-        data: [] as number[],
-        fill: true,
-        backgroundColor: (context: any) => {
-          const ctx = context.chart.ctx
-          const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-          gradient.addColorStop(0, "rgba(168, 85, 247, 0.5)")
-          gradient.addColorStop(1, "rgba(168, 85, 247, 0.0)")
-          return gradient
-        },
-        borderColor: "rgba(168, 85, 247, 1)",
-        tension: 0.4,
-        pointBackgroundColor: "#fff",
-        pointBorderColor: "rgba(168, 85, 247, 1)",
-        pointRadius: 4,
-        pointHoverRadius: 6,
+      borderColor: "rgba(56, 189, 248, 1)",
+      tension: 0.4,
+      pointBackgroundColor: "#fff",
+      pointBorderColor: "rgba(56, 189, 248, 1)",
+      pointRadius: 4,
+      pointHoverRadius: 6,
+    },
+    {
+      label: "RAM Usage (%)",
+      data: [] as number[],
+      fill: true,
+      backgroundColor: (context: any) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, "rgba(168, 85, 247, 0.5)");
+        gradient.addColorStop(1, "rgba(168, 85, 247, 0.0)");
+        return gradient;
       },
-    ],
-  })
+      borderColor: "rgba(168, 85, 247, 1)",
+      tension: 0.4,
+      pointBackgroundColor: "#fff",
+      pointBorderColor: "rgba(168, 85, 247, 1)",
+      pointRadius: 4,
+      pointHoverRadius: 6,
+    },
+    {
+      label: "Disk Usage (%)",
+      data: [] as number[],
+      fill: true,
+      backgroundColor: (context: any) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, "rgba(255, 165, 0, 0.5)"); // Orange gradient
+        gradient.addColorStop(1, "rgba(255, 165, 0, 0.0)");
+        return gradient;
+      },
+      borderColor: "rgba(255, 165, 0, 1)",
+      tension: 0.4,
+      pointBackgroundColor: "#fff",
+      pointBorderColor: "rgba(255, 165, 0, 1)",
+      pointRadius: 4,
+      pointHoverRadius: 6,
+    },
+  ],
+});
+
 
   const [currentCpuUsage, setCurrentCpuUsage] = useState<number>(0)
   const [currentRamUsage, setCurrentRamUsage] = useState<number>(0)
   const [cpuStatus, setCpuStatus] = useState<string>("normal")
   const [ramStatus, setRamStatus] = useState<string>("normal")
-
+  const [currentDiskUsage, setCurrentDiskUsage] = useState<number>(0);
+  const [diskStatus, setDiskStatus] = useState<string>("normal");
+  
   useEffect(() => {
     const updateChartData = async () => {
-      const result = await fetchSystemStats()
-
-      // Update current usage and status
-      setCurrentCpuUsage(result.cpuUsage)
-      setCurrentRamUsage(result.ramUsage)
+      const result = await fetchSystemStats();
+  
+      // Update current usage and status for CPU, RAM, and Disk
+      setCurrentCpuUsage(result.cpuUsage);
+      setCurrentRamUsage(result.ramUsage);
+      setCurrentDiskUsage(result.diskUsage);
+  
       setCpuStatus(
         result.cpuUsage > 80 ? "critical" : result.cpuUsage > 60 ? "warning" : "normal"
-      )
+      );
       setRamStatus(
         result.ramUsage > 80 ? "critical" : result.ramUsage > 60 ? "warning" : "normal"
-      )
-
+      );
+      setDiskStatus(
+        result.diskUsage > 80 ? "critical" : result.diskUsage > 60 ? "warning" : "normal"
+      );
+  
+      // Update chart data
       setChartData((prevData) => {
-        const newLabels = [...prevData.labels, result.time]
-        const newCpuData = [...prevData.datasets[0].data, result.cpuUsage]
-        const newRamData = [...prevData.datasets[1].data, result.ramUsage]
-
+        const newLabels = [...prevData.labels, result.time];
+        const newCpuData = [...prevData.datasets[0].data, result.cpuUsage];
+        const newRamData = [...prevData.datasets[1].data, result.ramUsage];
+        const newDiskData = [...prevData.datasets[2].data, result.diskUsage];
+  
         // Limit to the last 10 data points
-        const limitedLabels = newLabels.slice(-10)
-        const limitedCpuData = newCpuData.slice(-10)
-        const limitedRamData = newRamData.slice(-10)
-
+        const limitedLabels = newLabels.slice(-10);
+        const limitedCpuData = newCpuData.slice(-10);
+        const limitedRamData = newRamData.slice(-10);
+        const limitedDiskData = newDiskData.slice(-10);
+  
         return {
           labels: limitedLabels,
           datasets: [
             { ...prevData.datasets[0], data: limitedCpuData },
             { ...prevData.datasets[1], data: limitedRamData },
+            { ...prevData.datasets[2], data: limitedDiskData },
           ],
-        }
-      })
-    }
-
-    updateChartData()
-    const interval = setInterval(updateChartData, 5000)
-    return () => clearInterval(interval)
-  }, [])
+        };
+      });
+    };
+  
+    updateChartData();
+    const interval = setInterval(updateChartData, 5000);
+    return () => clearInterval(interval);
+  }, []);
+  
 
   const options = {
     responsive: true,
@@ -218,64 +250,88 @@ const SystemLoadChart = () => {
   return (
     <div className="system-load-container">
       <div className="system-metrics">
-        <div className={`system-metric-card ${cpuStatus}`}>
-          <div className="metric-icon">
-            <IonIcon icon={serverOutline} />
-          </div>
-          <div className="metric-details">
-            <div className="metric-header">
-              <h4>CPU</h4>
-              <div className="metric-status">
-                {cpuStatus === "normal" && (
-                  <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
-                )}
-                {cpuStatus === "warning" && (
-                  <IonIcon icon={alertCircleOutline} className="status-icon warning" />
-                )}
-                {cpuStatus === "critical" && (
-                  <IonIcon icon={alertCircleOutline} className="status-icon critical" />
-                )}
-              </div>
-            </div>
-            <div className="metric-value">{currentCpuUsage}%</div>
-            <div className="metric-progress">
-              <div
-                className={`progress-bar ${cpuStatus}`}
-                style={{ width: `${currentCpuUsage}%` }}
-              ></div>
-            </div>
-          </div>
-        </div>
-
-        <div className={`system-metric-card ${ramStatus}`}>
-          <div className="metric-icon">
-            <IonIcon icon={discOutline} />
-          </div>
-          <div className="metric-details">
-            <div className="metric-header">
-              <h4>RAM</h4>
-              <div className="metric-status">
-                {ramStatus === "normal" && (
-                  <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
-                )}
-                {ramStatus === "warning" && (
-                  <IonIcon icon={alertCircleOutline} className="status-icon warning" />
-                )}
-                {ramStatus === "critical" && (
-                  <IonIcon icon={alertCircleOutline} className="status-icon critical" />
-                )}
-              </div>
-            </div>
-            <div className="metric-value">{currentRamUsage}%</div>
-            <div className="metric-progress">
-              <div
-                className={`progress-bar ${ramStatus}`}
-                style={{ width: `${currentRamUsage}%` }}
-              ></div>
-            </div>
-          </div>
+  {/* CPU Card */}
+  <div className={`system-metric-card ${cpuStatus}`}>
+    <div className="metric-icon">
+      <IonIcon icon={serverOutline} />
+    </div>
+    <div className="metric-details">
+      <div className="metric-header">
+        <h4>CPU</h4>
+        <div className="metric-status">
+          {cpuStatus === "normal" && (
+            <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
+          )}
+          {cpuStatus === "warning" && (
+            <IonIcon icon={alertCircleOutline} className="status-icon warning" />
+          )}
+          {cpuStatus === "critical" && (
+            <IonIcon icon={alertCircleOutline} className="status-icon critical" />
+          )}
         </div>
       </div>
+      <div className="metric-value">{currentCpuUsage}%</div>
+      <div className="metric-progress">
+        <div className={`progress-bar ${cpuStatus}`} style={{ width: `${currentCpuUsage}%` }}></div>
+      </div>
+    </div>
+  </div>
+
+  {/* RAM Card */}
+  <div className={`system-metric-card ${ramStatus}`}>
+    <div className="metric-icon">
+      <IonIcon icon={discOutline} />
+    </div>
+    <div className="metric-details">
+      <div className="metric-header">
+        <h4>RAM</h4>
+        <div className="metric-status">
+          {ramStatus === "normal" && (
+            <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
+          )}
+          {ramStatus === "warning" && (
+            <IonIcon icon={alertCircleOutline} className="status-icon warning" />
+          )}
+          {ramStatus === "critical" && (
+            <IonIcon icon={alertCircleOutline} className="status-icon critical" />
+          )}
+        </div>
+      </div>
+      <div className="metric-value">{currentRamUsage}%</div>
+      <div className="metric-progress">
+        <div className={`progress-bar ${ramStatus}`} style={{ width: `${currentRamUsage}%` }}></div>
+      </div>
+    </div>
+  </div>
+
+  {/* Disk Usage Card */}
+  <div className={`system-metric-card ${diskStatus}`}>
+    <div className="metric-icon">
+      <IonIcon icon={idCardOutline} />
+    </div>
+    <div className="metric-details">
+      <div className="metric-header">
+        <h4>Disque</h4>
+        <div className="metric-status">
+          {diskStatus === "normal" && (
+            <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
+          )}
+          {diskStatus === "warning" && (
+            <IonIcon icon={alertCircleOutline} className="status-icon warning" />
+          )}
+          {diskStatus === "critical" && (
+            <IonIcon icon={alertCircleOutline} className="status-icon critical" />
+          )}
+        </div>
+      </div>
+      <div className="metric-value">{currentDiskUsage}%</div>
+      <div className="metric-progress">
+        <div className={`progress-bar ${diskStatus}`} style={{ width: `${currentDiskUsage}%` }}></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
       <div className="chart-container">
         <Line data={chartData} options={options} />
@@ -379,7 +435,6 @@ const Dashboard = () => {
     { title: "Alertes de Sécurité", value: 5, icon: shieldOutline },
   ])
 
-  // Fetch active sessions to update "Utilisateurs Actifs"
   useEffect(() => {
     const fetchActiveUsers = async () => {
       try {
@@ -404,8 +459,7 @@ const Dashboard = () => {
     const interval = setInterval(fetchActiveUsers, 10000)
     return () => clearInterval(interval)
   }, [])
-
-  // Update other stats randomly every 10 seconds (excluding "Utilisateurs Actifs")
+  
   useEffect(() => {
     const updateOtherStats = () => {
       setStats((prevStats) =>
@@ -433,8 +487,6 @@ const Dashboard = () => {
         const response = await fetch("/api/alerts");
         if (response.ok) {
           const data = await response.json();
-          // Assuming your API returns an object with an "alerts" array,
-          // map each alert object to its message property:
           setAlerts(data.alerts.map((alert: any) => alert.message));
         } else {
           console.error("Failed to fetch alerts.");
