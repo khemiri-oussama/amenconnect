@@ -22,6 +22,7 @@ interface AdminPageHeaderProps {
 const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [adminName, setAdminName] = useState("Admin"); // default admin name
   const notificationRef = useRef<HTMLDivElement>(null);
 
   // Calculate unread notifications count
@@ -32,10 +33,12 @@ const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) =>
     setIsNotificationsOpen(!isNotificationsOpen);
   };
 
-  // Mark a single notification as read (you might want to call an API to persist this)
+  // Mark a single notification as read
   const markAsRead = (id: string) => {
     setNotifications((prev) =>
-      prev.map((notification) => (notification.id === id ? { ...notification, read: true } : notification))
+      prev.map((notification) =>
+        notification.id === id ? { ...notification, read: true } : notification
+      )
     );
   };
 
@@ -75,20 +78,38 @@ const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) =>
   useEffect(() => {
     // Specify the server URL explicitly
     const socket = io("http://localhost:3000");
-  
+
     socket.on("connect", () => {
-  
+      // connection established
     });
-  
+
     socket.on("new_notification", (notification: Notification) => {
       setNotifications((prev) => [notification, ...prev]);
     });
-  
+
     return () => {
       socket.disconnect();
     };
   }, []);
-  
+
+  // Fetch admin profile on component mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("/api/admin/profile", { credentials: "include" });
+        if (!res.ok) {
+          console.error("Error fetching admin profile");
+          return;
+        }
+        const data = await res.json();
+        // Assuming your response contains an admin object with a name field
+        setAdminName(data.admin.name);
+      } catch (error) {
+        console.error("Failed to fetch admin profile", error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   // Close notifications when clicking outside the dropdown
   useEffect(() => {
@@ -134,14 +155,16 @@ const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) =>
                   </button>
                 </div>
               </div>
-              
+
               <div className="admin-notifications-content">
                 {notifications.length > 0 ? (
                   <div className="admin-notifications-list">
                     {notifications.map((notification) => (
                       <div
                         key={notification.id}
-                        className={`admin-notification-item ${!notification.read ? "admin-notification-unread" : ""}`}
+                        className={`admin-notification-item ${
+                          !notification.read ? "admin-notification-unread" : ""
+                        }`}
                         onClick={() => markAsRead(notification.id)}
                       >
                         <div className="admin-notification-content">
@@ -161,21 +184,19 @@ const AdminPageHeader: React.FC<AdminPageHeaderProps> = ({ title, subtitle }) =>
                   </div>
                 )}
               </div>
-              
+
               <div className="admin-notifications-footer">
-                <button className="admin-btn admin-btn-outline">
-                  Voir toutes les notifications
-                </button>
+                <button className="admin-btn admin-btn-outline">Voir toutes les notifications</button>
               </div>
             </div>
           )}
         </div>
-        
+
         <div className="admin-profile">
           <div className="admin-profile-avatar">
-            <span>A</span>
+            <span>{adminName.charAt(0).toUpperCase()}</span>
           </div>
-          <span className="admin-profile-name">Admin</span>
+          <span className="admin-profile-name">{adminName}</span>
         </div>
       </div>
     </div>
