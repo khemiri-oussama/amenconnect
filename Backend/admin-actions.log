@@ -25,3 +25,9 @@
 {"email":"khemirioussama00@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-03-16T23:56:00.199Z"}
 {"adminId":"67cec467625e2d46982a197f","level":"info","message":"New admin session created","sessionId":"08954f89b07206b12b082e80936b2645","timestamp":"2025-03-16T23:56:14.413Z"}
 {"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-03-16T23:56:14.497Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Admin logged out","timestamp":"2025-03-16T23:57:48.428Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-16T23:57:57.563Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-03-16T23:57:57.907Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-03-16T23:57:59.978Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"New admin session created","sessionId":"73167aa85919273243b344b3168203e1","timestamp":"2025-03-16T23:58:08.935Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-03-16T23:58:09.023Z"}
