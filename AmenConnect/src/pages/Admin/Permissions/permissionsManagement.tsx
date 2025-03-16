@@ -58,6 +58,8 @@ const PermissionsManagement: React.FC = () => {
   const [dateFilter, setDateFilter] = useState("all")
   const [actionFilter, setActionFilter] = useState("all")
   const [expandedRows, setExpandedRows] = useState<number[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(10)
 
   const roles = ["Admin", "Manager", "User"]
   const permissions = ["View", "Edit", "Create", "Delete", "Approve"]
@@ -129,6 +131,12 @@ const PermissionsManagement: React.FC = () => {
     return matchesSearch && matchesDate && matchesAction
   })
 
+  // Calculate pagination
+  const indexOfLastLog = currentPage * itemsPerPage
+  const indexOfFirstLog = indexOfLastLog - itemsPerPage
+  const currentLogs = filteredLogs.slice(indexOfFirstLog, indexOfLastLog)
+  const totalPages = Math.ceil(filteredLogs.length / itemsPerPage)
+
   const toggleRowExpansion = (index: number) => {
     setExpandedRows((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]))
   }
@@ -143,6 +151,15 @@ const PermissionsManagement: React.FC = () => {
         return alertCircleOutline
       default:
         return informationCircleOutline
+    }
+  }
+
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+    // Scroll to top of table when changing pages
+    const tableElement = document.querySelector(".audit-table-container")
+    if (tableElement) {
+      tableElement.scrollIntoView({ behavior: "smooth", block: "start" })
     }
   }
 
@@ -320,7 +337,7 @@ const PermissionsManagement: React.FC = () => {
             </thead>
             <tbody>
               {filteredLogs.length > 0 ? (
-                filteredLogs.map((log, index) => (
+                currentLogs.map((log, index) => (
                   <React.Fragment key={index}>
                     <tr className={`audit-row ${expandedRows.includes(index) ? "expanded" : ""}`}>
                       <td className="audit-status-col">
@@ -440,10 +457,77 @@ const PermissionsManagement: React.FC = () => {
           </table>
         </div>
       )}
+      <div className="audit-pagination">
+        <div className="audit-pagination-info">
+          Showing {indexOfFirstLog + 1}-{Math.min(indexOfLastLog, filteredLogs.length)} of {filteredLogs.length} logs
+        </div>
+        <div className="audit-pagination-controls">
+          <button
+            className="audit-pagination-button"
+            onClick={() => paginate(1)}
+            disabled={currentPage === 1}
+            aria-label="Go to first page"
+          >
+            <IonIcon icon={chevronDownOutline} className="rotate-90" />
+            <IonIcon icon={chevronDownOutline} className="rotate-90 -ml-1" />
+          </button>
+          <button
+            className="audit-pagination-button"
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            aria-label="Go to previous page"
+          >
+            <IonIcon icon={chevronDownOutline} className="rotate-90" />
+          </button>
 
+          <div className="audit-pagination-pages">
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              // Logic to show pages around current page
+              let pageNum = currentPage
+              if (totalPages <= 5) {
+                pageNum = i + 1
+              } else if (currentPage <= 3) {
+                pageNum = i + 1
+              } else if (currentPage >= totalPages - 2) {
+                pageNum = totalPages - 4 + i
+              } else {
+                pageNum = currentPage - 2 + i
+              }
+
+              return (
+                <button
+                  key={pageNum}
+                  className={`audit-pagination-page ${currentPage === pageNum ? "active" : ""}`}
+                  onClick={() => paginate(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              )
+            })}
+          </div>
+
+          <button
+            className="audit-pagination-button"
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages || totalPages === 0}
+            aria-label="Go to next page"
+          >
+            <IonIcon icon={chevronDownOutline} className="rotate-270" />
+          </button>
+          <button
+            className="audit-pagination-button"
+            onClick={() => paginate(totalPages)}
+            disabled={currentPage === totalPages || totalPages === 0}
+            aria-label="Go to last page"
+          >
+            <IonIcon icon={chevronDownOutline} className="rotate-270" />
+            <IonIcon icon={chevronDownOutline} className="rotate-270 -ml-1" />
+          </button>
+        </div>
+      </div>
       <div className="audit-log-summary">
         <span>
-          Showing {filteredLogs.length} of {auditLogs.length} log entries
+          Page {currentPage} of {totalPages || 1}
         </span>
         <button className="audit-export-button">
           <IonIcon icon={documentTextOutline} />
