@@ -29,36 +29,77 @@ const transporter = nodemailer.createTransport({
 
 // Helper: generate the email HTML content in French
 const generateAccountApprovedEmailHTML = (userEmail, generatedPassword) => {
-  return `
-    <!DOCTYPE html>
-    <html lang="fr">
-    <head>
-      <meta charset="UTF-8">
-      <title>Compte Activé</title>
-      <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
-        .container { background-color: #ffffff; padding: 20px; border-radius: 8px; max-width: 600px; margin: 0 auto; }
-        h2 { color: #333; }
-        p { color: #555; }
-        .credentials { background-color: #eee; padding: 10px; border-radius: 4px; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <h2>Votre compte a été activé !</h2>
-        <p>Bonjour,</p>
-        <p>Nous avons le plaisir de vous informer que votre demande de création de compte a été approuvée.</p>
-        <p>Voici vos informations de connexion :</p>
-        <div class="credentials">
-          <p><strong>Email :</strong> ${userEmail}</p>
-          <p><strong>Mot de passe :</strong> ${generatedPassword}</p>
-        </div>
-        <p>Nous vous recommandons de modifier votre mot de passe dès votre première connexion pour garantir la sécurité de votre compte.</p>
-        <p>Cordialement,<br>L'équipe AmenBank</p>
+  return`<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenue - Votre Compte est Approuvé</title>
+  <style>
+    body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; color: #333; }
+    .container { max-width: 600px; margin: 30px auto; background-color: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+    .logo { text-align: center; margin-bottom: 30px; }
+    .logo img { width: 150px; height: auto; }
+    .header { text-align: center; font-size: 28px; font-weight: bold; color: #121660; margin-bottom: 30px; }
+    .welcome-message { text-align: center; font-size: 18px; color: #333; margin-bottom: 30px; line-height: 1.6; }
+    .info-container { background-color: #f8f9fa; border-radius: 12px; padding: 30px; margin-bottom: 30px; }
+    .info-label { font-size: 16px; color: #666; margin-bottom: 5px; }
+    .info-value { font-size: 18px; color: #121660; font-weight: bold; margin-bottom: 20px; word-break: break-all; }
+    .password-container { background-color: #edf7ed; border-radius: 12px; padding: 25px; margin: 30px 0; border-left: 4px solid #47CE65; }
+    .password-value { font-size: 24px; color: #47CE65; text-align: center; letter-spacing: 3px; font-weight: bold; font-family: monospace; }
+    .notice { background-color: #fff8e6; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #ffb74d; }
+    .notice-text { font-size: 16px; color: #e65100; }
+    .button-container { text-align: center; margin: 30px 0; }
+    .button { display: inline-block; background-color: #121660; color: white; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; }
+    .footer { text-align: center; font-size: 14px; color: #47B3CE; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(71, 179, 206, 0.3); }
+    .divider { height: 1px; background-color: #eee; margin: 25px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="/amen_logo.png" alt="AmenBank">
+    </div>
+    <div class="header">
+      Félicitations! Votre Compte est Approuvé
+    </div>
+    <div class="welcome-message">
+      <p>Nous sommes ravis de vous informer que votre demande de compte a été approuvée. Bienvenue dans notre communauté!</p>
+    </div>
+    
+    <div class="info-container">
+      <div class="info-label">Votre identifiant de connexion:</div>
+      <div class="info-value">${userEmail}</div>
+      
+      <div class="divider"></div>
+      
+      <div class="info-label">Votre mot de passe temporaire:</div>
+      <div class="password-container">
+        <div class="password-value">${generatedPassword}</div>
       </div>
-    </body>
-    </html>
-  `;
+    </div>
+    
+    <div class="notice">
+      <div class="notice-text">
+        <strong>Important:</strong> Pour des raisons de sécurité, vous devrez changer ce mot de passe lors de votre première connexion.
+      </div>
+    </div>
+    
+    <div class="button-container">
+      <a href="https://localhost:8200" class="button">Se Connecter Maintenant</a>
+    </div>
+    
+    <div class="welcome-message">
+      <p>Si vous avez des questions ou besoin d'assistance, n'hésitez pas à contacter notre équipe de support.</p>
+    </div>
+    
+    <div class="footer">
+      <p>Ce message est automatique, merci de ne pas y répondre directement.</p>
+      <p>&copy; 2025 AmenBank. Tous droits réservés.</p>
+    </div>
+  </div>
+</body>
+</html>`;
 };
 
 exports.createAccountCreation = async (req, res) => {
