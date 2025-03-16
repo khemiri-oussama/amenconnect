@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
+import React, { useState, useEffect, ReactNode } from "react"
 import {
   IonPage,
   IonIcon,
@@ -25,10 +24,27 @@ import "./permissionsManagement.css"
 import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
 import AdminPageHeader from "../adminpageheader"
+
+interface AuditLogEntry {
+  ip: string
+  timestamp: string | number | Date
+  level: ReactNode
+  adminId: any
+  email: any
+  message: ReactNode
+  event: string
+  user: string
+  action: string
+  date: string
+  details: string
+}
+
 const PermissionsManagement: React.FC = () => {
   const { authLoading } = useAdminAuth()
   const [activeTab, setActiveTab] = useState<"matrix" | "rules" | "audit">("matrix")
   const [roleFilter, setRoleFilter] = useState("all")
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([])
+  const [logsLoading, setLogsLoading] = useState(false)
 
   if (authLoading) {
     return <div className="admin-loading">Loading...</div>
@@ -36,6 +52,30 @@ const PermissionsManagement: React.FC = () => {
 
   const roles = ["Admin", "Manager", "User"]
   const permissions = ["View", "Edit", "Create", "Delete", "Approve"]
+
+  // Fetch audit logs when the audit tab is active
+  useEffect(() => {
+    if (activeTab === "audit") {
+      const fetchAuditLogs = async () => {
+        setLogsLoading(true)
+        try {
+          const res = await fetch("/api/audit-logs", { credentials: "include" })
+          if (!res.ok) {
+            console.error("Error fetching audit logs")
+            setLogsLoading(false)
+            return
+          }
+          const data = await res.json()
+          // Assume the returned JSON has a "logs" property that is an array of log entries
+          setAuditLogs(data.logs)
+        } catch (error) {
+          console.error("Failed to fetch audit logs", error)
+        }
+        setLogsLoading(false)
+      }
+      fetchAuditLogs()
+    }
+  }, [activeTab])
 
   const renderRoleMatrix = () => (
     <div className="admin-permissions-matrix">
@@ -150,39 +190,48 @@ const PermissionsManagement: React.FC = () => {
 
   const renderAuditLog = () => (
     <div className="admin-audit-log">
-      <div className="admin-table-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Event</th>
-              <th>User</th>
-              <th>Action</th>
-              <th>Date</th>
-              <th>Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[1, 2, 3, 4, 5].map((_, index) => (
-              <tr key={index}>
-                <td>
-                  <div className="audit-event">
-                    <IonIcon icon={documentTextOutline} className="audit-icon" />
-                    <span>Permission Change #{index + 1}</span>
-                  </div>
-                </td>
-                <td>Admin User</td>
-                <td>
-                  <span className="admin-status-badge actif">Modified</span>
-                </td>
-                <td>{new Date().toLocaleString()}</td>
-                <td>Changed View Permission for Manager role</td>
+      {logsLoading ? (
+        <div>Loading audit logs...</div>
+      ) : (
+        <div className="admin-table-container">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Date</th>
+                <th>Details</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {auditLogs.length > 0 ? (
+                auditLogs.map((log, index) => (
+                  <tr key={index}>
+                    {/* Use the message as the event */}
+                    <td>{log.message}</td>
+                    {/* Show email if available, otherwise adminId */}
+                    <td>{log.email || log.adminId || "N/A"}</td>
+                    {/* Use the log level as the action */}
+                    <td>{log.level}</td>
+                    {/* Format the timestamp */}
+                    <td>{new Date(log.timestamp).toLocaleString()}</td>
+                    {/* Show the IP address if available */}
+                    <td>{log.ip || ""}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5}>No audit logs found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
+  
 
   return (
     <IonPage>
@@ -238,4 +287,3 @@ const PermissionsManagement: React.FC = () => {
 }
 
 export default PermissionsManagement
-
