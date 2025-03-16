@@ -45,78 +45,83 @@ export interface TransactionsEnvisagees {
 
 export interface FormData {
   // Page 1 - Personal Information
-  nom: string
-  prenom: string
-  dateNaissance: string
-  lieuNaissance: string
-  numeroCIN: string
-  dateDelivranceCIN: string
-  lieuDelivranceCIN: string
-  qualiteJuridique: string
-  situationFamille: string
-  email: string
-  numeroGSM: string
-  adresseDomicile: string
-  codePostal: string
-  ville: string
+  nom: string;
+  prenom: string;
+  dateNaissance: string;
+  lieuNaissance: string;
+  numeroCIN: string;
+  dateDelivranceCIN: string;
+  lieuDelivranceCIN: string;
+  qualiteJuridique: string;
+  situationFamille: string;
+  email: string;
+  numeroGSM: string;
+  adresseDomicile: string;
+  codePostal: string;
+  ville: string;
 
   // Activity
-  activite: string
-  fonction: string
+  activite: string;
+  fonction: string;
 
   // FATCA
-  fatca: string
-  citoyenneteAmericaine: string
-  pays: string
-  detentionCodeTIN: string
-  codeTIN: string
-  ligneTelephoniqueUSA: string
-  detentionGreenCard: string
-  adressePostaleUSA: string
-  virementPermanentUSA: string
-  procurationPersonneUSA: string
-  detentionSocieteAmericaine: string
+  fatca: string;
+  citoyenneteAmericaine: string;
+  pays: string;
+  detentionCodeTIN: string;
+  codeTIN: string;
+  ligneTelephoniqueUSA: string;
+  detentionGreenCard: string;
+  adressePostaleUSA: string;
+  virementPermanentUSA: string;
+  procurationPersonneUSA: string;
+  detentionSocieteAmericaine: string;
 
   // Page 2 - Additional Information
-  connuAmenBank: string
-  connuAmenBankAutre: string
+  connuAmenBank: string;
+  connuAmenBankAutre: string;
 
   // Special functions
-  exerceHauteFonction: string
-  exerceHauteFonctionDetail: ExerceHauteFonctionDetail
-  liePersonneHauteFonction: string
-  liePersonneHauteFonctionDetail: LiePersonneHauteFonctionDetail
-  fonctionnaireOrganisationInternationale: string
-  fonctionnaireOrganisationInternationaleDetail: FonctionnaireOrganisationInternationaleDetail
+  exerceHauteFonction: string;
+  exerceHauteFonctionDetail: ExerceHauteFonctionDetail;
+  liePersonneHauteFonction: string;
+  liePersonneHauteFonctionDetail: LiePersonneHauteFonctionDetail;
+  fonctionnaireOrganisationInternationale: string;
+  fonctionnaireOrganisationInternationaleDetail: FonctionnaireOrganisationInternationaleDetail;
 
   // Revenue types
-  revenusTypes: RevenusTypes
-  montantRevenusAnnuels: string
-  montantRevenusMensuels: string
+  revenusTypes: RevenusTypes;
+  montantRevenusAnnuels: string;
+  montantRevenusMensuels: string;
 
   // Business Relationship
-  objetOuvertureCompte: ObjetOuvertureCompte
-  objetOuvertureCompteAutre: string
+  objetOuvertureCompte: ObjetOuvertureCompte;
+  objetOuvertureCompteAutre: string;
 
   // Planned transactions
-  transactionsEnvisagees: TransactionsEnvisagees
-  volumeMensuelTransaction: string
+  transactionsEnvisagees: TransactionsEnvisagees;
+  volumeMensuelTransaction: string;
 
   // Page 3 - Products and Services
-  typeCompte: string
-  agenceContact: string
-  acceptConditions: boolean
+  typeCompte: string;
+  agenceContact: string;
+  acceptConditions: boolean;
+
+  // New properties for Credit Card selection
+  wantCreditCard?: boolean;
+  creditCardType?: string;
 
   // Page 4 - Verification and Validation
-  documentsValides: boolean
+  documentsValides: boolean;
 
   // Document upload
-  cinRecto: File | null
-  cinVerso: File | null
-  specimenSignature: File | null
-  ficheProfilClient: File | null
-  selfiAvecCIN: File | null
+  cinRecto: File | null;
+  cinVerso: File | null;
+  specimenSignature: File | null;
+  ficheProfilClient: File | null;
+  selfiAvecCIN: File | null;
 }
+
 
 // Create an extended interface for SignatureCanvas that includes the missing properties
 export interface ExtendedSignatureCanvas extends SignatureCanvas {
