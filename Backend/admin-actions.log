@@ -1,0 +1,11 @@
+{"email":"dsvgd@fds.fds","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-16T20:48:48.205Z"}
+{"email":"dsvgd@fds.fds","level":"warn","message":"Invalid login attempt: admin not found","timestamp":"2025-03-16T20:48:48.297Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-16T20:49:10.300Z"}
+{"email":"rayen1ouertani@gmail.com","level":"warn","message":"Invalid login attempt: wrong password","timestamp":"2025-03-16T20:49:10.727Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-16T20:49:32.425Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-03-16T20:49:32.910Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-03-16T20:49:34.770Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"96ce71b675e13e60ad767be9614974e0","timestamp":"2025-03-16T20:49:48.575Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-03-16T20:49:48.679Z"}
+{"adminId":"67d739b27cd4b804b4bd0e99","email":"xcv@gmail.com","level":"info","message":"New admin registered","timestamp":"2025-03-16T20:50:58.920Z"}
+{"email":"xcv@gmail.com","level":"info","message":"Registration email sent","timestamp":"2025-03-16T20:51:01.145Z"}
