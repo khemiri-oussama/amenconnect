@@ -58,7 +58,7 @@ const generateAccountApprovedEmailHTML = (userEmail, generatedPassword) => {
 <body>
   <div class="container">
     <div class="logo">
-      <img src="/amen_logo.png" alt="AmenBank">
+      <img src="https://amennet.com.tn/images/RefG/AmenbankLogo.png" alt="AmenBank">
     </div>
     <div class="header">
       Félicitations! Votre Compte est Approuvé
@@ -126,7 +126,11 @@ exports.getAllDemandes = async (req, res) => {
     res.status(500).json({ error: 'Erreur lors de la récupération des demandes' });
   }
 };
-
+const currentDate = new Date().toLocaleDateString('fr-FR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
 // New controller function to approve a demande
 exports.approveAccountCreation = async (req, res) => {
   try {
@@ -218,20 +222,115 @@ exports.approveAccountCreation = async (req, res) => {
 };
 
 // New controller function to reject a demande
+
 exports.rejectAccountCreation = async (req, res) => {
   try {
     const { id } = req.params;
-    const demande = await DemandeCreationCompte.findByIdAndUpdate(
-      id,
-      { status: 'rejected' },
-      { new: true }
-    );
+    // Delete the demande from the database
+    const demande = await DemandeCreationCompte.findByIdAndDelete(id);
     if (!demande) {
       return res.status(404).json({ error: 'Demande non trouvée' });
     }
-    res.status(200).json({ message: 'Demande rejetée avec succès', demande });
+
+    // Extract the user's email from the demande (ensure this field exists in your schema)
+    const userEmail = demande.email;
+    if (!userEmail) {
+      return res.status(400).json({ error: 'Adresse email introuvable dans la demande' });
+    }
+
+    // Use the globally configured transporter (Gmail in this case)
+    const mailOptions = {
+        from: `"AmenConnect" <${process.env.EMAIL_USER}>`,
+        to: userEmail,
+        subject: 'Information concernant votre demande de compte AmenConnect',
+        text: 
+    `Bonjour ${userEmail},
+    
+    Nous vous remercions de l'intérêt que vous portez à AmenConnect.
+    
+    Suite à l'examen de votre demande de création de compte, nous sommes au regret de vous informer que celle-ci n'a pas pu être approuvée.
+    
+    Si vous souhaitez obtenir plus d'informations concernant cette décision ou si vous pensez qu'une erreur s'est produite, n'hésitez pas à contacter notre équipe support à l'adresse support@amenconnect.com.
+    
+    Nous vous prions de recevoir nos salutations distinguées,
+    
+    L'équipe AmenConnect
+    www.amenconnect.com
+    
+    Ce message est généré automatiquement, merci de ne pas y répondre directement.`,
+        
+        html: `
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Information concernant votre demande</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; color: #333333; background-color: #f5f5f5;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+          <td style="padding: 20px 0; text-align: center; background-color: #ffffff;">
+            <img src="https://amennet.com.tn/images/RefG/AmenbankLogo.png" alt="AmenConnect Logo" style="max-width: 200px; height: auto;">
+          </td>
+        </tr>
+      </table>
+      
+      <table role="presentation" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <tr>
+          <td style="padding: 30px 40px;">
+            <table role="presentation" width="100%">
+              <tr>
+                <td>
+                  <p style="margin-top: 0; color: #666666; font-size: 14px;">${currentDate}</p>
+                  <h1 style="margin: 15px 0; color: #333333; font-size: 22px;">Information concernant votre demande</h1>
+                  
+                  <p style="margin: 20px 0; font-size: 16px; line-height: 1.5;">Bonjour ${userEmail},</p>
+                  
+                  <p style="margin: 20px 0; font-size: 16px; line-height: 1.5;">Nous vous remercions de l'intérêt que vous portez à AmenConnect.</p>
+                  
+                  <p style="margin: 20px 0; font-size: 16px; line-height: 1.5;">Suite à l'examen de votre demande de création de compte, nous sommes au regret de vous informer que celle-ci n'a pas pu être approuvée.</p>
+                  
+                  <p style="margin: 20px 0; font-size: 16px; line-height: 1.5;">Si vous souhaitez obtenir plus d'informations concernant cette décision ou si vous pensez qu'une erreur s'est produite, n'hésitez pas à contacter notre équipe support.</p>
+                  
+                  <div style="margin: 30px 0; padding: 20px; background-color: #f8f8f8; border-radius: 5px; text-align: center;">
+                    <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">Besoin d'assistance ?</p>
+                    <a href="mailto:support@amenconnect.com" style="color: #0066cc; text-decoration: none; font-weight: bold;">support@amenconnect.com</a>
+                  </div>
+                  
+                  <p style="margin: 20px 0; font-size: 16px; line-height: 1.5;">Nous vous prions de recevoir nos salutations distinguées,</p>
+                  
+                  <p style="margin: 5px 0; font-size: 16px; line-height: 1.5; font-weight: bold;">L'équipe AmenConnect</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+          <td style="padding: 30px 0; text-align: center;">
+            <p style="margin: 0; font-size: 14px; color: #666666;">© ${new Date().getFullYear()} AmenConnect. Tous droits réservés.</p>
+            <p style="margin: 10px 0 0 0; font-size: 12px; color: #999999;">Ce message est généré automatiquement, merci de ne pas y répondre directement.</p>
+            <p style="margin: 10px 0 0 0; font-size: 12px; color: #999999;">
+              <a href="https://www.amenconnect.com" style="color: #0066cc; text-decoration: none;">www.amenconnect.com</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: 'Demande supprimée et email envoyé avec succès' });
   } catch (error) {
     console.error('Error rejecting demande:', error);
     res.status(500).json({ error: 'Erreur lors du rejet de la demande' });
   }
 };
+
+
