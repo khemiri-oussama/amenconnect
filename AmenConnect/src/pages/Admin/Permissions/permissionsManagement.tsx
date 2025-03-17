@@ -34,19 +34,21 @@ import { useAdminAuth } from "../../../AdminAuthContext"
 import AdminPageHeader from "../adminpageheader"
 
 interface AuditLogEntry {
-  ip: string
-  timestamp: string | number | Date
-  level: ReactNode
-  adminId: any
-  email: any
-  message: ReactNode
-  event: string
-  user: string
-  action: string
-  date: string
-  details: string
-  status?: "success" | "warning" | "error" | "info"
+  ip: string;
+  timestamp: string | number | Date;
+  level: ReactNode;
+  adminId: any;
+  email: any;
+  message: ReactNode;
+  event: string;
+  user: string;
+  action: string;
+  date: string;
+  details: string;
+  status?: "success" | "warning" | "error" | "info";
+  changes?: Record<string, { old: string; new: string }>;
 }
+
 
 const PermissionsManagement: React.FC = () => {
   const { authLoading } = useAdminAuth()
@@ -397,38 +399,55 @@ const PermissionsManagement: React.FC = () => {
                       </td>
                     </tr>
                     {expandedRows.includes(index) && (
-                      <tr className="audit-expanded-row">
-                        <td colSpan={7}>
-                          <div className="audit-expanded-content">
-                            <div className="audit-expanded-section">
-                              <h4>Event Details</h4>
-                              <p>{log.message}</p>
-                            </div>
-                            <div className="audit-expanded-section">
-                              <h4>Technical Information</h4>
-                              <div className="audit-expanded-details">
-                                <div className="audit-detail-item">
-                                  <span className="audit-detail-label">IP Address:</span>
-                                  <span className="audit-detail-value">{log.ip || "N/A"}</span>
-                                </div>
-                                <div className="audit-detail-item">
-                                  <span className="audit-detail-label">User ID:</span>
-                                  <span className="audit-detail-value">{log.adminId || "N/A"}</span>
-                                </div>
-                                <div className="audit-detail-item">
-                                  <span className="audit-detail-label">Email:</span>
-                                  <span className="audit-detail-value">{log.email || "N/A"}</span>
-                                </div>
-                                <div className="audit-detail-item">
-                                  <span className="audit-detail-label">Timestamp:</span>
-                                  <span className="audit-detail-value">{new Date(log.timestamp).toLocaleString()}</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
+  <tr className="audit-expanded-row">
+    <td colSpan={7}>
+      <div className="audit-expanded-content">
+        <div className="audit-expanded-section">
+          <h4>Event Details</h4>
+          <p>{log.message}</p>
+        </div>
+        {log.changes && (
+  <div className="audit-expanded-section">
+    <h4>Changes</h4>
+    <ul>
+      {Object.entries(log.changes as Record<string, { old: string; new: string }>).map(([field, change]) => (
+        <li key={field}>
+          <strong>{field}:</strong>{" "}
+          <span>
+            From "{change.old}" to "{change.new}"
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+        <div className="audit-expanded-section">
+          <h4>Technical Information</h4>
+          <div className="audit-expanded-details">
+            <div className="audit-detail-item">
+              <span className="audit-detail-label">IP Address:</span>
+              <span className="audit-detail-value">{log.ip || "N/A"}</span>
+            </div>
+            <div className="audit-detail-item">
+              <span className="audit-detail-label">User ID:</span>
+              <span className="audit-detail-value">{log.adminId || "N/A"}</span>
+            </div>
+            <div className="audit-detail-item">
+              <span className="audit-detail-label">Email:</span>
+              <span className="audit-detail-value">{log.email || "N/A"}</span>
+            </div>
+            <div className="audit-detail-item">
+              <span className="audit-detail-label">Timestamp:</span>
+              <span className="audit-detail-value">{new Date(log.timestamp).toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </td>
+  </tr>
+)}
+
                   </React.Fragment>
                 ))
               ) : (
