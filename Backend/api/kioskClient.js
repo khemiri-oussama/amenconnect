@@ -2,7 +2,7 @@
 const io = require("socket.io-client");
 const { exec } = require("child_process");
 
-const totemId = "TM4803"; // This should be the unique ID for this kiosk device
+const totemId = "TM9374"; // This should be the unique ID for this kiosk device
 const socket = io("http://localhost:3000");
 
 // Register with the server once connected

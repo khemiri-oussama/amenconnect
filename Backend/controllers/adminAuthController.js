@@ -515,3 +515,49 @@ exports.register = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
+
+// In controllers/adminAuthController.js
+
+exports.updateAdmin = async (req, res) => {
+  const { id } = req.params;
+  let updates = { ...req.body };
+
+  // Handle password update: hash it if provided, or remove if empty
+  if (updates.password && updates.password.trim() !== "") {
+    updates.password = await bcrypt.hash(updates.password, 10);
+  } else {
+    delete updates.password;
+  }
+
+  try {
+    // Retrieve the original document
+    const originalAdmin = await Admin.findById(id);
+    if (!originalAdmin) {
+      return res.status(404).json({ message: "Admin not found." });
+    }
+
+    // Compute the differences
+    let changedFields = {};
+    for (let key in updates) {
+      // If the field is "password", log that it was updated without logging the actual value
+      if (key === "password") {
+        changedFields[key] = "updated";
+      } else if (originalAdmin[key]?.toString() !== updates[key]?.toString()) {
+        changedFields[key] = { old: originalAdmin[key], new: updates[key] };
+      }
+    }
+
+    // Perform the update
+    const updatedAdmin = await Admin.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true }
+    );
+    logger.info('Admin updated successfully', { adminId: id, changes: changedFields });
+    res.json({ message: "Admin updated successfully.", admin: updatedAdmin });
+  } catch (err) {
+    logger.error('Admin update error', { error: err });
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
