@@ -93,8 +93,18 @@ const UserManagement: React.FC = () => {
   const [loadingRequests, setLoadingRequests] = useState(true)
   const [requestStatusFilter, setRequestStatusFilter] = useState("all")
   const [requestSearchQuery, setRequestSearchQuery] = useState("")
-
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState<any>(null);
   // Form state for creating/editing an admin
+  interface AdminFormData {
+    name: string;
+    cin: string;
+    email: string;
+    password?: string; // mark as optional
+    role: string;
+    department: string;
+    permissions: string[];
+  }
   const [formData, setFormData] = useState({
     name: "",
     cin: "",
@@ -170,32 +180,78 @@ const UserManagement: React.FC = () => {
     setShowPassword(!showPassword)
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  let payload = { ...formData };
+  
+  // Remove password from payload if it's empty
+  if (!payload.password.trim()) {
+    delete (payload as { password?: string }).password;
+  }
+  
+  
+
+  if (isEditing && selectedAdmin) {
     try {
-      const response = await fetch("/api/admin/register", {
-        method: "POST",
+      const response = await fetch(`/api/admin/${selectedAdmin._id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
-      })
-      const data = await response.json()
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
       if (response.ok) {
-        alert("Admin created successfully!")
-        setActiveTab("list")
-        // Optionally, refresh the admins list after adding a new admin:
-        const refreshed = await fetch("/api/admin")
-        const refreshedData = await refreshed.json()
-        setAdmins(refreshedData.admins || [])
+        alert("Admin updated successfully!");
+        setActiveTab("list");
+        const refreshed = await fetch("/api/admin/list");
+        const refreshedData = await refreshed.json();
+        setAdmins(refreshedData.admins || []);
+        setIsEditing(false);
+        setSelectedAdmin(null);
+        setFormData({
+          name: "",
+          cin: "",
+          email: "",
+          password: "",
+          role: "admin",
+          department: "General",
+          permissions: [],
+        });
       } else {
-        alert("Error: " + data.message)
+        alert("Error: " + data.message);
       }
     } catch (error) {
-      console.error("Registration error:", error)
-      alert("An error occurred while creating the admin.")
+      console.error("Update error:", error);
+      alert("An error occurred while updating the admin.");
     }
-  }
+  } else {
+      // Existing registration logic (creating a new admin)
+      try {
+        const response = await fetch("/api/admin/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert("Admin created successfully!");
+          setActiveTab("list");
+          const refreshed = await fetch("/api/admin/list");
+          const refreshedData = await refreshed.json();
+          setAdmins(refreshedData.admins || []);
+        } else {
+          alert("Error: " + data.message);
+        }
+      } catch (error) {
+        console.error("Registration error:", error);
+        alert("An error occurred while creating the admin.");
+      }
+    }
+  };
+  
 
   const handleDelete = async (adminId: string) => {
     if (window.confirm("Are you sure you want to delete this admin?")) {
@@ -447,20 +503,28 @@ const handleApproveRequest = async (requestId: string) => {
                     </td>
                     <td>
                       <div className="admin-action-buttons">
-                        <button
-                          className="admin-icon-button edit"
-                          onClick={() => setActiveTab("create")}
-                          title="Modifier"
-                        >
-                          <IonIcon icon={createOutline} />
-                        </button>
-                        <button
-                          className="admin-icon-button delete"
-                          title="Supprimer"
-                          onClick={() => handleDelete(admin._id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                        </button>
+                      <button
+  className="admin-icon-button edit"
+  onClick={() => {
+    setIsEditing(true);
+    setSelectedAdmin(admin);
+    setFormData({
+      name: admin.name,
+      cin: admin.cin,
+      email: admin.email,
+      // For security, you might leave the password field blank or handle it separately.
+      password: "",
+      role: admin.role,
+      department: admin.department,
+      permissions: admin.permissions || [],
+    });
+    setActiveTab("create"); // You can continue to use the same form tab for editing
+  }}
+  title="Modifier"
+>
+  <IonIcon icon={createOutline} />
+</button>
+
                       </div>
                     </td>
                   </tr>
