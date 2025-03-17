@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@capacitor/device": "^7.0.0",
     "@ionic/react": "^8.4.3",
     "framer-motion": "^12.0.11",
     "ionicons": "^7.4.0",
