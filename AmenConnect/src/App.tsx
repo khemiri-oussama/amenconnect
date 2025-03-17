@@ -27,6 +27,7 @@ setupIonicReact();
 
 // Lazy load public pages
 import Home from './pages/Home';
+import KioskSetup from './components/KioskComponents/kiosk-setup';
 
 import Login from './pages/Login/Login';
 import ModeInvite from './pages/ModeInvite/ModeInvite';
@@ -55,7 +56,6 @@ const PermissionsManagement = lazy(() => import('./pages/Admin/Permissions/permi
 const AuthenticationSecurity = lazy(() => import('./pages/Admin/AuthenticationSecurity/AuthenticationSecurity'));
 const InteractiveTotemManagement = lazy(() => import('./pages/Admin/GestiondesTotem/InteractiveTotemManagement'));
 const VideoConferenceManagement = lazy(() => import('./pages/Admin/videoconfmanage/videoconfmanage'));
-
 const AppContent: React.FC = () => {
   const { isAuthenticated, pendingUser } = useAuth();
   const { isAuthenticated: adminAuthenticated } = useAdminAuth();
@@ -70,6 +70,7 @@ const AppContent: React.FC = () => {
         <IonRouterOutlet>
           {/* Public Routes */}
           <Route exact path="/home" component={Home} />
+          <Route exact path="/setup" component={KioskSetup}/>
           <Route exact path="/login" component={Login} />
           <Route exact path="/admin/otp" component={AdminOtp} />
           <Route exact path="/admin/login" component={AdminLogin} />

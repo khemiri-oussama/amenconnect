@@ -1,0 +1,84 @@
+/* Custom styles for the kiosk setup page */
+ion-content {
+  --background: #f8f9fa;
+}
+
+ion-card {
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+ion-card-header {
+  background-color: #f1f5f9;
+}
+
+ion-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+ion-item {
+  --border-radius: 8px;
+  --padding-start: 12px;
+  margin-bottom: 16px;
+}
+
+ion-input {
+  --padding-start: 12px;
+  font-size: 1rem;
+}
+
+ion-button {
+  --border-radius: 24px;
+  margin-top: 24px;
+  height: 48px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin-bottom: 8px;
+}
+
+/* Animation for the welcome text */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ion-text-center h1,
+.ion-text-center p {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.ion-text-center p {
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  ion-card-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Focus states */
+ion-input:focus {
+  --background: rgba(var(--ion-color-primary-rgb), 0.05);
+}
+
