@@ -1,52 +1,61 @@
+// controllers/kioskController.js
 const Kiosk = require("../models/Kiosk");
-const { exec } = require("child_process");
 
-// Retrieve all kiosks
+// GET all kiosks
 exports.getKiosks = async (req, res) => {
   try {
     const kiosks = await Kiosk.find();
     res.json(kiosks);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Create a new kiosk record
-exports.createKiosk = async (req, res) => {
-  if (!req.body.toteId) {
-    return res.status(400).json({ error: "toteId is required" });
-  }
+// GET kiosk by ID
+exports.getKioskById = async (req, res) => {
   try {
-    // Map the frontend field "toteId" to the backend field "tote"
-    const kioskData = {
-      tote: req.body.toteId,  // <-- this is the fix: store incoming toteId in the "tote" field
-      status: req.body.status,
-      version: req.body.version,
-      temperature: req.body.temperature,
-      location: req.body.location,
-      agencyName: req.body.agencyName,
-      enabled: req.body.enabled,
-    };
+    const kiosk = await Kiosk.findById(req.params.id);
+    if (!kiosk) return res.status(404).json({ message: "Kiosk not found" });
+    res.json(kiosk);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-    const newKiosk = new Kiosk(kioskData);
+// CREATE a new kiosk
+exports.createKiosk = async (req, res) => {
+  try {
+    const newKiosk = new Kiosk(req.body);
     const savedKiosk = await newKiosk.save();
     res.status(201).json(savedKiosk);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 
-// Update kiosk details
+// UPDATE an existing kiosk
 exports.updateKiosk = async (req, res) => {
   try {
     const updatedKiosk = await Kiosk.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedKiosk) return res.status(404).json({ message: "Kiosk not found" });
     res.json(updatedKiosk);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 
+// DELETE a kiosk
+exports.deleteKiosk = async (req, res) => {
+  try {
+    const deletedKiosk = await Kiosk.findByIdAndDelete(req.params.id);
+    if (!deletedKiosk) return res.status(404).json({ message: "Kiosk not found" });
+    res.json({ message: "Kiosk deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
+// Shutdown a kiosk
 exports.shutdownKiosk = async (req, res) => {
   const { totemId } = req.body;
   if (!totemId) {
@@ -74,15 +83,14 @@ exports.shutdownKiosk = async (req, res) => {
     const io = req.app.locals.io;
     
     // Emit a shutdown command to the room identified by the kiosk's totemId.
-    // Make sure that each kiosk device joins a room with its totemId when connecting.
+    // (Make sure each kiosk joins a room named with its totemId upon connecting.)
     io.to(totemId).emit("shutdownCommand", { message: "Shutdown your device" });
 
-    res.json({ message: "Shutdown command sent to kiosk device and status updated to offline." });
+    res.json({ message: "Shutdown command sent and status updated to offline." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 // Simulated endpoint for refreshing temperature data
 exports.getTemperature = (req, res) => {

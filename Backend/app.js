@@ -85,7 +85,7 @@ app.use('/api/alerts', alertsRouter);
 app.use('/api/audit-logs', auditLogsRoutes);
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
-app.use("/api/kiosk", adminpassport.authenticate('admin-jwt', { session: false }),kioskRoutes);
+app.use("/api/kiosk",kioskRoutes);
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

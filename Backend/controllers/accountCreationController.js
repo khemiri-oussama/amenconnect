@@ -4,7 +4,6 @@ const DemandeCreationCompte = require('../models/DemandeCreationCompte');
 const User = require("../models/User");
 const Compte = require("../models/Compte");
 const Carte = require("../models/Cartes");
-const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const { generateRIB, DOMICILIATION, generateOTP } = require("../config/helper"); // adjust if needed
