@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { IonPage, IonIcon } from "@ionic/react"
+import { useState, useEffect } from "react";
+import { IonPage, IonIcon } from "@ionic/react";
 import {
   peopleOutline,
   swapHorizontalOutline,
@@ -14,14 +14,15 @@ import {
   alertCircleOutline,
   checkmarkCircleOutline,
   idCardOutline,
-} from "ionicons/icons"
-import "./dashboard.css"
-import { useAdminAuth } from "../../../AdminAuthContext"
-import SidebarAdmin from "../../../components/SidebarAdmin"
-import AdminPageHeader from "../adminpageheader"
-import MongoOpsChart from "../../../components/MongoOpsChart" 
+} from "ionicons/icons";
+import "./dashboard.css";
+import { useAdminAuth } from "../../../AdminAuthContext";
+import SidebarAdmin from "../../../components/SidebarAdmin";
+import AdminPageHeader from "../adminpageheader";
+import MongoOpsChart from "../../../components/MongoOpsChart";
+
 // Import chart components and register necessary elements
-import { Line, Pie } from "react-chartjs-2"
+import { Line, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -33,9 +34,18 @@ import {
   Tooltip,
   Legend,
   FontSpec,
-} from "chart.js"
+} from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend)
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 // Simulated API for role distribution
 const fetchRoleDistribution = async () => {
@@ -44,23 +54,28 @@ const fetchRoleDistribution = async () => {
     moderators: 15,
     users: 60,
     guests: 15,
-  }
-}
+  };
+};
 
 // Function to fetch system stats from your API endpoint
 const fetchSystemStats = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/system-stats")
+    const response = await fetch("http://localhost:3000/api/system-stats");
     if (!response.ok) {
-      throw new Error("Failed to fetch system stats")
+      throw new Error("Failed to fetch system stats");
     }
-    return await response.json()
+    return await response.json();
   } catch (error) {
-    console.error("Error fetching system stats:", error)
-    // Return fallback data in case of error
-    return { time: new Date().toLocaleTimeString(), cpuUsage: 0, ramUsage: 0 }
+    console.error("Error fetching system stats:", error);
+    // Return fallback data in case of error (including gpuTemperature)
+    return {
+      time: new Date().toLocaleTimeString(),
+      cpuUsage: 0,
+      ramUsage: 0,
+      gpuTemperature: 0,
+    };
   }
-}
+};
 
 const SystemLoadChart = () => {
   const [chartData, setChartData] = useState({
@@ -129,7 +144,7 @@ const SystemLoadChart = () => {
   const [cpuStatus, setCpuStatus] = useState<string>("normal");
   const [ramStatus, setRamStatus] = useState<string>("normal");
   const [gpuTempStatus, setGpuTempStatus] = useState<string>("normal");
-  
+
   useEffect(() => {
     const updateChartData = async () => {
       const result = await fetchSystemStats();
@@ -161,7 +176,7 @@ const SystemLoadChart = () => {
         const limitedCpuData = newCpuData.slice(-10);
         const limitedRamData = newRamData.slice(-10);
         const limitedGpuData = newGpuData.slice(-10);
-  
+
         return {
           labels: limitedLabels,
           datasets: [
@@ -172,13 +187,12 @@ const SystemLoadChart = () => {
         };
       });
     };
-  
+
     updateChartData();
     const interval = setInterval(updateChartData, 5000);
     return () => clearInterval(interval);
   }, []);
-  
-  // (chart options remain unchanged)
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -256,9 +270,15 @@ const SystemLoadChart = () => {
             <div className="metric-header">
               <h4>CPU</h4>
               <div className="metric-status">
-                {cpuStatus === "normal" && <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />}
-                {cpuStatus === "warning" && <IonIcon icon={alertCircleOutline} className="status-icon warning" />}
-                {cpuStatus === "critical" && <IonIcon icon={alertCircleOutline} className="status-icon critical" />}
+                {cpuStatus === "normal" && (
+                  <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
+                )}
+                {cpuStatus === "warning" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon warning" />
+                )}
+                {cpuStatus === "critical" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon critical" />
+                )}
               </div>
             </div>
             <div className="metric-value">{currentCpuUsage}%</div>
@@ -277,9 +297,15 @@ const SystemLoadChart = () => {
             <div className="metric-header">
               <h4>RAM</h4>
               <div className="metric-status">
-                {ramStatus === "normal" && <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />}
-                {ramStatus === "warning" && <IonIcon icon={alertCircleOutline} className="status-icon warning" />}
-                {ramStatus === "critical" && <IonIcon icon={alertCircleOutline} className="status-icon critical" />}
+                {ramStatus === "normal" && (
+                  <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
+                )}
+                {ramStatus === "warning" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon warning" />
+                )}
+                {ramStatus === "critical" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon critical" />
+                )}
               </div>
             </div>
             <div className="metric-value">{currentRamUsage}%</div>
@@ -298,9 +324,15 @@ const SystemLoadChart = () => {
             <div className="metric-header">
               <h4>Température GPU</h4>
               <div className="metric-status">
-                {gpuTempStatus === "normal" && <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />}
-                {gpuTempStatus === "warning" && <IonIcon icon={alertCircleOutline} className="status-icon warning" />}
-                {gpuTempStatus === "critical" && <IonIcon icon={alertCircleOutline} className="status-icon critical" />}
+                {gpuTempStatus === "normal" && (
+                  <IonIcon icon={checkmarkCircleOutline} className="status-icon normal" />
+                )}
+                {gpuTempStatus === "warning" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon warning" />
+                )}
+                {gpuTempStatus === "critical" && (
+                  <IonIcon icon={alertCircleOutline} className="status-icon critical" />
+                )}
               </div>
             </div>
             <div className="metric-value">{currentGpuTemp}°C</div>
@@ -317,7 +349,6 @@ const SystemLoadChart = () => {
     </div>
   );
 };
-
 
 const RoleDistributionChart = () => {
   const [chartData, setChartData] = useState({
@@ -342,11 +373,11 @@ const RoleDistributionChart = () => {
         hoverOffset: 8,
       },
     ],
-  })
+  });
 
   useEffect(() => {
     const updateRoleData = async () => {
-      const result = await fetchRoleDistribution()
+      const result = await fetchRoleDistribution();
       setChartData((prevData) => ({
         ...prevData,
         datasets: [
@@ -355,13 +386,13 @@ const RoleDistributionChart = () => {
             data: [result.admins, result.moderators, result.users, result.guests],
           },
         ],
-      }))
-    }
+      }));
+    };
 
-    updateRoleData()
-    const interval = setInterval(updateRoleData, 30000)
-    return () => clearInterval(interval)
-  }, [])
+    updateRoleData();
+    const interval = setInterval(updateRoleData, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const options = {
     responsive: true,
@@ -397,69 +428,25 @@ const RoleDistributionChart = () => {
     },
     animation: { animateRotate: true, duration: 800 },
     cutout: "60%",
-  }
+  };
 
   return (
     <div className="role-distribution-container">
       <Pie data={chartData} options={options} />
     </div>
-  )
-}
+  );
+};
 
 const Dashboard = () => {
-  const { authLoading } = useAdminAuth()
+  const { authLoading } = useAdminAuth();
+  const [alerts, setAlerts] = useState<string[]>([]);
   const [stats, setStats] = useState([
     { title: "Utilisateurs Actifs", value: 0, icon: peopleOutline },
     { title: "Transactions en Temps Réel", value: 356, icon: swapHorizontalOutline },
     { title: "Alertes de Sécurité", value: 5, icon: shieldOutline },
-  ])
+  ]);
 
-  useEffect(() => {
-    const fetchActiveUsers = async () => {
-      try {
-        const response = await fetch("/api/sessions", { credentials: "include" })
-        if (response.ok) {
-          const data = await response.json()
-          const activeCount = data.sessions ? data.sessions.length : 0
-          setStats((prevStats) =>
-            prevStats.map((stat) =>
-              stat.title === "Utilisateurs Actifs" ? { ...stat, value: activeCount } : stat
-            )
-          )
-        } else {
-          console.error("Failed to fetch active sessions.")
-        }
-      } catch (error) {
-        console.error("Error fetching sessions:", error)
-      }
-    }
-
-    fetchActiveUsers()
-    const interval = setInterval(fetchActiveUsers, 10000)
-    return () => clearInterval(interval)
-  }, [])
-  
-  useEffect(() => {
-    const updateOtherStats = () => {
-      setStats((prevStats) =>
-        prevStats.map((stat) => {
-          if (stat.title === "Utilisateurs Actifs") return stat
-          const fluctuation = Math.random() * 0.1 - 0.05
-          const newValue = Math.round(stat.value * (1 + fluctuation))
-          return { ...stat, value: newValue }
-        })
-      )
-    }
-
-    const interval = setInterval(updateOtherStats, 10000)
-    return () => clearInterval(interval)
-  }, [])
-
-  if (authLoading) {
-    return <div className="admin-loading">Loading...</div>
-  }
-
-  const [alerts, setAlerts] = useState<string[]>([]);
+  // Fetch alerts every 10 seconds
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
@@ -474,12 +461,68 @@ const Dashboard = () => {
         console.error("Error fetching alerts:", error);
       }
     };
-  
+
     fetchAlerts();
     const interval = setInterval(fetchAlerts, 10000);
     return () => clearInterval(interval);
   }, []);
-  
+
+  // Update "Alertes de Sécurité" based on alerts count
+  useEffect(() => {
+    setStats((prevStats) =>
+      prevStats.map((stat) =>
+        stat.title === "Alertes de Sécurité" ? { ...stat, value: alerts.length } : stat
+      )
+    );
+  }, [alerts]);
+
+  // Fetch active users every 10 seconds
+  useEffect(() => {
+    const fetchActiveUsers = async () => {
+      try {
+        const response = await fetch("/api/sessions", { credentials: "include" });
+        if (response.ok) {
+          const data = await response.json();
+          const activeCount = data.sessions ? data.sessions.length : 0;
+          setStats((prevStats) =>
+            prevStats.map((stat) =>
+              stat.title === "Utilisateurs Actifs" ? { ...stat, value: activeCount } : stat
+            )
+          );
+        } else {
+          console.error("Failed to fetch active sessions.");
+        }
+      } catch (error) {
+        console.error("Error fetching sessions:", error);
+      }
+    };
+
+    fetchActiveUsers();
+    const interval = setInterval(fetchActiveUsers, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Update "Transactions en Temps Réel" with random fluctuations every 10 seconds
+  useEffect(() => {
+    const updateOtherStats = () => {
+      setStats((prevStats) =>
+        prevStats.map((stat) => {
+          if (stat.title === "Utilisateurs Actifs" || stat.title === "Alertes de Sécurité")
+            return stat;
+          const fluctuation = Math.random() * 0.1 - 0.05;
+          const newValue = Math.round(stat.value * (1 + fluctuation));
+          return { ...stat, value: newValue };
+        })
+      );
+    };
+
+    const interval = setInterval(updateOtherStats, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (authLoading) {
+    return <div className="admin-loading">Loading...</div>;
+  }
 
   return (
     <IonPage>
@@ -530,14 +573,15 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="admin-chart-card">
-  <div className="admin-card-header">
-    <IonIcon icon={trendingUpOutline} className="admin-card-icon" />
-    <h3 className="admin-card-title">Opérations MongoDB</h3>
-  </div>
-  <div className="admin-chart-content">
-    <MongoOpsChart />
-  </div>
-</div>
+            <div className="admin-card-header">
+              <IonIcon icon={trendingUpOutline} className="admin-card-icon" />
+              <h3 className="admin-card-title">Opérations MongoDB</h3>
+            </div>
+            <div className="admin-chart-content">
+              <MongoOpsChart />
+            </div>
+          </div>
+
           {/* Alerts */}
           <div className="admin-alerts-card">
             <div className="admin-card-header">
@@ -545,28 +589,27 @@ const Dashboard = () => {
               <h3 className="admin-card-title">Alertes Urgentes</h3>
             </div>
             <div className="admin-alerts-list">
-  {alerts.length ? (
-    alerts.map((alert, index) => (
-      <div className="admin-alert-item" key={index}>
-        <div className="admin-alert-icon">
-          <IonIcon icon={warningOutline} />
-        </div>
-        <div className="admin-alert-content">
-          <p>{alert}</p>
-        </div>
-        <div className="admin-alert-badge">Urgent</div>
-      </div>
-    ))
-  ) : (
-    <p>Aucune alerte urgente.</p>
-  )}
-</div>
-
+              {alerts.length ? (
+                alerts.map((alert, index) => (
+                  <div className="admin-alert-item" key={index}>
+                    <div className="admin-alert-icon">
+                      <IonIcon icon={warningOutline} />
+                    </div>
+                    <div className="admin-alert-content">
+                      <p>{alert}</p>
+                    </div>
+                    <div className="admin-alert-badge">Urgent</div>
+                  </div>
+                ))
+              ) : (
+                <p>Aucune alerte urgente.</p>
+              )}
+            </div>
           </div>
         </div>
       </div>
     </IonPage>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
