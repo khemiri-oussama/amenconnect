@@ -1,91 +1,125 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { IonContent, IonPage, IonInput, IonButton, IonIcon, IonText, IonToast } from "@ionic/react"
-import { checkmarkCircleOutline, businessOutline, locationOutline, barcodeOutline } from "ionicons/icons"
-import { Device } from '@capacitor/device'
-import "./kiosk-setup.css"
+import React, { useState, useEffect } from "react";
+import { IonContent, IonPage, IonInput, IonButton, IonIcon, IonText, IonToast } from "@ionic/react";
+import { checkmarkCircleOutline, businessOutline, locationOutline, barcodeOutline } from "ionicons/icons";
+import { Device } from "@capacitor/device";
+import "./kiosk-setup.css";
 
 const KioskSetup: React.FC = () => {
-  const [serialNumber, setSerialNumber] = useState<string>("")
-  const [agencyName, setAgencyName] = useState<string>("")
-  const [agencyLocation, setAgencyLocation] = useState<string>("")
-  const [showToast, setShowToast] = useState<boolean>(false)
-  const [errors, setErrors] = useState<{
-    serialNumber?: string
-    agencyName?: string
-    agencyLocation?: string
-  }>({})
+  const [serialNumber, setSerialNumber] = useState<string>("");
+  const [agencyName, setAgencyName] = useState<string>("");
+  const [agencyLocation, setAgencyLocation] = useState<string>("");
+  const [showToast, setShowToast] = useState<{ message: string; color: string } | null>(null);
+  const [errors, setErrors] = useState<{ serialNumber?: string; agencyName?: string; agencyLocation?: string; }>({});
 
   useEffect(() => {
     async function fetchDeviceSerial() {
       try {
         // Try to get the device's unique identifier
-        const { uuid } = await Device.getId()
-        // Check if uuid is a valid value (it might be "unknown" or empty on web)
+        const { uuid } = await Device.getId();
         if (uuid && uuid !== "unknown") {
-          setSerialNumber(uuid)
+          setSerialNumber(uuid);
         } else {
           // For PC or if the plugin doesn't return a valid value,
           // generate or retrieve a persistent pseudo-UUID from localStorage.
-          const storedUuid = localStorage.getItem("pcUuid")
+          const storedUuid = localStorage.getItem("pcUuid");
           if (storedUuid) {
-            setSerialNumber(storedUuid)
+            setSerialNumber(storedUuid);
           } else {
-            const newUuid = crypto.randomUUID()
-            localStorage.setItem("pcUuid", newUuid)
-            setSerialNumber(newUuid)
+            const newUuid = crypto.randomUUID();
+            localStorage.setItem("pcUuid", newUuid);
+            setSerialNumber(newUuid);
           }
         }
       } catch (error) {
-        console.error("Error fetching device serial number", error)
-        // In case of error, fallback to generating a pseudo-UUID
-        const storedUuid = localStorage.getItem("pcUuid")
+        console.error("Error fetching device serial number", error);
+        // Fallback to generating a pseudo-UUID
+        const storedUuid = localStorage.getItem("pcUuid");
         if (storedUuid) {
-          setSerialNumber(storedUuid)
+          setSerialNumber(storedUuid);
         } else {
-          const newUuid = crypto.randomUUID()
-          localStorage.setItem("pcUuid", newUuid)
-          setSerialNumber(newUuid)
+          const newUuid = crypto.randomUUID();
+          localStorage.setItem("pcUuid", newUuid);
+          setSerialNumber(newUuid);
         }
       }
     }
-    fetchDeviceSerial()
-  }, [])
+    fetchDeviceSerial();
+  }, []);
 
   const validateForm = (): boolean => {
-    const newErrors: {
-      serialNumber?: string
-      agencyName?: string
-      agencyLocation?: string
-    } = {}
+    const newErrors: { serialNumber?: string; agencyName?: string; agencyLocation?: string; } = {};
 
     if (!serialNumber.trim()) {
-      newErrors.serialNumber = "Veuillez saisir le numéro de série"
+      newErrors.serialNumber = "Veuillez saisir le numéro de série";
     }
-
     if (!agencyName.trim()) {
-      newErrors.agencyName = "Veuillez saisir le nom de l'agence"
+      newErrors.agencyName = "Veuillez saisir le nom de l'agence";
     }
-
     if (!agencyLocation.trim()) {
-      newErrors.agencyLocation = "Veuillez saisir l'emplacement de l'agence"
+      newErrors.agencyLocation = "Veuillez saisir l'emplacement de l'agence";
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
     if (validateForm()) {
-      console.log("Form submitted:", { serialNumber, agencyName, agencyLocation })
-      setShowToast(true)
-      // Here you would typically send the data to your backend
-    }
-  }
+      const kioskData = {
+        SN: serialNumber,
+        agencyName,
+        location: agencyLocation,
+        status: "offline",
+        version: "0",
+        temperature: 0,
+        enabled: true,
+      };
+      try {
+        const response = await fetch("/api/kiosk", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(kioskData),
+        });
+      
+        if (!response.ok) {
+          let errorMessage = "Une erreur est survenue.(Contacter IT).";
+          
+          try {
+            const errorData = await response.json();
+            if (errorData.message) {
+              errorMessage = errorData.message;
+            }
+          } catch (jsonError) {
+            console.error("Error parsing error response:", jsonError);
+          }
+      
+          throw new Error(errorMessage);
+        }
+      
+        const data = await response.json();
+        console.log("Kiosk created:", data);
+        setShowToast({ message: "Configuration enregistrée avec succès!", color: "success" });
+      
+      } catch (error: unknown) {
+        console.error("Error saving kiosk data:", error);
+        
+        let errorMessage = "Impossible de se connecter au serveur.";
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+      
+        setShowToast({ message: errorMessage, color: "danger" });
+      }
+      
+  }};
+  
+  
 
   return (
     <IonPage>
@@ -94,10 +128,7 @@ const KioskSetup: React.FC = () => {
           <div className="background-white"></div>
           <div className="background-svg">
             <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M1080 0C1080 0 800 150 600 450C400 750 300 900 150 1200C0 1500 0 1920 0 1920H1080V0Z"
-                fill="#F0F4FF"
-              />
+              <path d="M1080 0C1080 0 800 150 600 450C400 750 300 900 150 1200C0 1500 0 1920 0 1920H1080V0Z" fill="#F0F4FF" />
             </svg>
           </div>
 
@@ -183,17 +214,18 @@ const KioskSetup: React.FC = () => {
         </div>
 
         <IonToast
-          isOpen={showToast}
-          onDidDismiss={() => setShowToast(false)}
-          message="Configuration enregistrée avec succès!"
-          duration={2000}
-          color="success"
-          position="top"
-          cssClass="custom-toast"
-        />
+  isOpen={!!showToast}
+  onDidDismiss={() => setShowToast(null)}
+  message={showToast?.message || ""}
+  duration={3000}
+  color={showToast?.color || "danger"}
+  position="top"
+/>
+
+
       </IonContent>
     </IonPage>
-  )
-}
+  );
+};
 
-export default KioskSetup
+export default KioskSetup;

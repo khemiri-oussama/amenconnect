@@ -1,14 +1,15 @@
-const mongoose = require("mongoose");
+// models/Kiosk.js
+const mongoose = require('mongoose');
 
 const KioskSchema = new mongoose.Schema({
-  // Use only the "tote" field as the unique, required identifier.
-  tote: { type: String, required: true, unique: true },
-  status: { type: String, enum: ["online", "offline"], default: "offline" },
-  version: { type: String, default: "1.4" },
+  tote: { type: String, required: false },
+  status: { type: String, required: true },
+  SN: { type: String, required: true },
+  version: { type: String, required: true },
   temperature: { type: Number, default: 0 },
-  location: { type: String },
-  agencyName: { type: String },
-  enabled: { type: Boolean, default: true },
-});
+  location: { type: String, required: true },
+  agencyName: { type: String, required: true },
+  enabled: { type: Boolean, default: true }
+}, { timestamps: true });
 
-module.exports = mongoose.model("Kiosk", KioskSchema);
+module.exports = mongoose.model('Kiosk', KioskSchema);

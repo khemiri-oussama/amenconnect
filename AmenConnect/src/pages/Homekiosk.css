@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
 
-/* Base container */
-.kiosk-container {
+.homekiosk-container {
   font-family: "Outfit", sans-serif;
   height: 100vh;
   width: 100vw;
@@ -9,7 +8,6 @@
   overflow: hidden;
 }
 
-/* Background elements */
 .background-white {
   position: absolute;
   top: 0;
@@ -30,13 +28,14 @@
   z-index: -1;
 }
 
-.background-svg svg {
+.homekiosk-img {
   width: 100%;
-  height: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
-/* Content container */
-.kiosk-content {
+.homekiosk-content {
   position: absolute;
   top: 0;
   left: 0;
@@ -51,141 +50,126 @@
   transition: opacity 0.3s ease;
 }
 
-/* Logo styling */
-.kiosk-logo {
+.homekiosk-logo {
   margin-bottom: 70px;
 }
 
-.logo-img {
-  height: auto;
-  max-width: 240px;
-}
-
-/* Typography */
-.kiosk-title {
+.homekiosk-title {
   color: #121660;
-  font-size: 4rem;
+  font-size: 5rem;
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: 0.05em;
   margin-bottom: 1.5rem;
 }
 
-.kiosk-question {
+.homekiosk-question {
   color: #121660;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 400;
   line-height: 1.3;
   margin-bottom: 2.5rem;
 }
 
-/* Form styling */
-.kiosk-form {
-  width: 100%;
-  max-width: 600px;
-}
-
-.input-container {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  text-align: left;
-  background-color: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(18, 22, 96, 0.1);
-}
-
-.input-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
+.homekiosk-btn {
   background: linear-gradient(to right, #121660, #181e92);
-  border-radius: 50%;
-  margin-right: 1rem;
-  flex-shrink: 0;
-}
-
-.input-icon ion-icon {
-  font-size: 1.5rem;
+  border: none;
+  border-radius: 2rem;
   color: white;
-}
-
-.input-field {
-  flex-grow: 1;
-}
-
-.input-field label {
-  display: block;
-  color: #121660;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.input-field ion-input {
-  --padding-start: 0;
-  --padding-end: 0;
-  --padding-top: 0.5rem;
-  --padding-bottom: 0.5rem;
-  --placeholder-color: #8890b5;
-  --placeholder-opacity: 0.7;
-  font-size: 1.2rem;
-  border-bottom: 2px solid #e0e5ff;
-  margin-bottom: 0.5rem;
-}
-
-.input-field ion-input.has-error {
-  border-bottom: 2px solid #ff3b30;
-}
-
-.error-message {
-  font-size: 0.9rem;
-  margin-top: 0.25rem;
-}
-
-/* Button styling */
-.button-container {
-  margin-top: 3rem;
-}
-
-ion-button.kiosk-btn {
-  --background: linear-gradient(to right, #121660, #181e92);
-  --background-hover: linear-gradient(to right, #181e92, #121660);
-  --border-radius: 2rem;
-  --padding-top: 1.5rem;
-  --padding-bottom: 1.5rem;
-  --padding-start: 3rem;
-  --padding-end: 3rem;
-  --box-shadow: 0 4px 10px rgba(18, 22, 96, 0.3);
-
-  height: auto;
+  cursor: pointer;
   font-family: "Outfit", sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 600;
+  padding: 1rem 3rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 4px 10px rgba(18, 22, 96, 0.3);
   text-transform: uppercase;
-  margin: 0 auto;
-  max-width: 400px;
 }
 
-ion-button.kiosk-btn ion-icon {
-  margin-right: 0.5rem;
-  font-size: 1.5rem;
+.homekiosk-buttons {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
 }
 
-/* Toast styling */
-.custom-toast {
-  --background: #121660;
-  --color: white;
-  --border-radius: 1rem;
-  --box-shadow: 0 4px 10px rgba(18, 22, 96, 0.3);
-  font-family: "Outfit", sans-serif;
-  font-size: 1.2rem;
+.homekiosk-btn-guest {
+  background: #ffcc00;
+  color: #121660;
 }
 
-/* Animations */
+.homekiosk-btn-login {
+  background: linear-gradient(to right, #121660, #181e92);
+}
+
+.homekiosk-btn-account {
+  background: linear-gradient(to right, #ffffff, #ffffff);
+  color: rgb(73, 60, 193);
+  margin-bottom: 2.5rem;
+  border: 2px solid #4749ce;
+  box-shadow: 0 4px 10px rgba(71, 206, 101, 0.3);
+}
+
+.homekiosk-btn-account:hover {
+  background: linear-gradient(to right, #4749ce, #339e47);
+  color: rgb(255, 255, 255);
+}
+
+.homekiosk-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.homekiosk-message {
+  color: #121660;
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .homekiosk-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .homekiosk-title {
+    font-size: 4rem;
+  }
+  .homekiosk-question,
+  .homekiosk-message {
+    font-size: 2rem;
+  }
+  .homekiosk-btn {
+    font-size: 1.5rem;
+    padding: 0.875rem 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .homekiosk-logo {
+    font-size: 2rem;
+  }
+  .homekiosk-title {
+    font-size: 3rem;
+  }
+  .homekiosk-question,
+  .homekiosk-message {
+    font-size: 1.75rem;
+  }
+  .homekiosk-btn {
+    font-size: 1.25rem;
+    padding: 0.75rem 2rem;
+  }
+}
+
+.homekiosk-video-container {
+  width: 100vw;
+  height: 100vh;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -225,66 +209,45 @@ ion-button.kiosk-btn ion-icon {
   animation-delay: 0.3s;
 }
 
-.animate-staggered:nth-child(3) {
-  animation-delay: 0.5s;
+.animate-transition {
+  transition: opacity 0.3s ease;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .kiosk-title {
-    font-size: 3rem;
-  }
-
-  .kiosk-question {
-    font-size: 1.5rem;
-  }
-
-  .input-container {
-    padding: 1rem;
-  }
-
-  .input-icon {
-    width: 40px;
-    height: 40px;
-  }
-
-  .input-field label {
-    font-size: 1rem;
-  }
-
-  .input-field ion-input {
-    font-size: 1rem;
-  }
-
-  ion-button.kiosk-btn {
-    font-size: 1.2rem;
-    --padding-top: 1.2rem;
-    --padding-bottom: 1.2rem;
-    --padding-start: 2rem;
-    --padding-end: 2rem;
-  }
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
-@media (max-width: 480px) {
-  .kiosk-logo {
-    margin-bottom: 40px;
-  }
+.modal-container {
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  border-radius: 8px;
+  overflow: hidden;
+  animation: scaleIn 0.3s ease-out;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
 
-  .kiosk-title {
-    font-size: 2.5rem;
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
   }
-
-  .kiosk-question {
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .input-container {
-    margin-bottom: 1rem;
-  }
-
-  .button-container {
-    margin-top: 2rem;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
