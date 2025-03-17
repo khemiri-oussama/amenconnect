@@ -18,3 +18,5 @@ router.post('/register', adminAuthController.register);
 // New profile endpoint
 router.get('/profile', adminAuthMiddleware, adminAuthController.getProfile);
 module.exports = router;
+
+router.put('/:id', adminAuthMiddleware, adminAuthController.updateAdmin);

@@ -515,3 +515,33 @@ exports.register = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
+
+// In controllers/adminAuthController.js
+
+exports.updateAdmin = async (req, res) => {
+  const { id } = req.params;
+  let updates = { ...req.body };
+
+  // If a password is provided and is not empty, hash it; otherwise, remove it from updates.
+  if (updates.password && updates.password.trim() !== "") {
+    updates.password = await bcrypt.hash(updates.password, 10);
+  } else {
+    delete updates.password;
+  }
+
+  try {
+    const updatedAdmin = await Admin.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true }
+    );
+    if (!updatedAdmin) {
+      return res.status(404).json({ message: "Admin not found." });
+    }
+    logger.info('Admin updated successfully', { adminId: id });
+    res.json({ message: "Admin updated successfully.", admin: updatedAdmin });
+  } catch (err) {
+    logger.error('Admin update error', { error: err });
+    res.status(500).json({ message: "Server error." });
+  }
+};
