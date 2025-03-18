@@ -88,7 +88,7 @@ const InteractiveTotemManagement: React.FC = () => {
   useEffect(() => {
     const fetchKiosks = async () => {
       try {
-        const response = await axios.get("/api/kiosk/kiosk");
+        const response = await axios.get("/api/kiosk");
         // Map the API response to match the Totem interface
         const mappedKiosks = response.data.map((kiosk: any) => ({
           id: kiosk.tote, // API returns the unique identifier as "tote"
