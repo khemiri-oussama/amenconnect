@@ -280,6 +280,58 @@ ion-button.kiosk-btn:hover {
   }
 }
 
+/* Waiting screen styles */
+.waiting-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 2.5rem;
+  width: 100%;
+}
+
+.waiting-animation {
+  margin: 2rem 0;
+}
+
+.waiting-animation ion-spinner {
+  width: 60px;
+  height: 60px;
+  --color: var(--primary-color);
+}
+
+.waiting-message {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.waiting-details {
+  width: 100%;
+  background-color: rgba(67, 97, 238, 0.05);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  text-align: left;
+}
+
+.waiting-detail-item {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.waiting-detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.waiting-detail-item strong {
+  color: var(--primary-dark);
+  margin-right: 0.5rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 576px) {
   .kiosk-title {
@@ -297,6 +349,14 @@ ion-button.kiosk-btn:hover {
   .input-icon {
     width: 36px;
     height: 36px;
+  }
+
+  .waiting-container {
+    padding: 1.5rem;
+  }
+
+  .waiting-message {
+    font-size: 1rem;
   }
 }
 
