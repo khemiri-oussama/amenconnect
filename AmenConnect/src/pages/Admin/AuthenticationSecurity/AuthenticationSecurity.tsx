@@ -13,7 +13,7 @@ import "./authenticationSecurity.css"
 import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
 import AdminPageHeader from "../adminpageheader"
-
+import LoadingScreen from "../../../components/loading-screen"
 const AuthenticationSecurity: React.FC = () => {
   const { authLoading } = useAdminAuth()
   const [activeTab, setActiveTab] = useState<"2fa" | "sessions" | "policies">("2fa")
@@ -116,7 +116,7 @@ const AuthenticationSecurity: React.FC = () => {
   }
 
   if (authLoading) {
-    return <div className="admin-loading">Loading...</div>
+    return <LoadingScreen />
   }
 
   const render2FAConfig = () => (
