@@ -4,7 +4,26 @@ const socketHandler = (io) => {
     const connectedKiosks = new Map()
   
     io.on("connection", (socket) => {
-      console.log("New client connected:", socket.id)
+      console.log("New client connected:", socket.id);
+      
+      socket.on("heartbeat", async (data) => {
+        const { serialNumber } = data;
+        if (serialNumber) {
+          // Update kiosk status to online
+          const kiosk = await Kiosk.findOne({ SN: serialNumber });
+          if (kiosk && kiosk.status !== 'online') {
+            kiosk.status = 'online';
+            await kiosk.save();
+            console.log(`Heartbeat received: Kiosk ${serialNumber} is online.`);
+          }
+        }
+      });
+    
+      socket.on("disconnect", async () => {
+        console.log("Client disconnected:", socket.id);
+        // Optionally, you can try to mark the kiosk offline here,
+        // or implement a timeout mechanism to update status after missing heartbeats.
+      });
   
       // Handle kiosk registration
       socket.on("registerKiosk", (data) => {
@@ -20,20 +39,7 @@ const socketHandler = (io) => {
           console.log(`Kiosk registered: ${serialNumber} with socket ID: ${socket.id}`)
         }
       })
-  
-      // Handle disconnection
-      socket.on("disconnect", () => {
-        console.log("Client disconnected:", socket.id)
-  
-        // Remove the disconnected kiosk from our map
-        for (const [serialNumber, socketId] of connectedKiosks.entries()) {
-          if (socketId === socket.id) {
-            connectedKiosks.delete(serialNumber)
-            console.log(`Kiosk unregistered: ${serialNumber}`)
-            break
-          }
-        }
-      })
+
     })
   
     // Return methods to be used by API routes
