@@ -67,43 +67,37 @@ const InteractiveTotemManagement: React.FC = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false)
 
   // Register totem form state
-  const [totemFormData, setTotemFormData] = useState<TotemFormData>({
-    toteId: "",
-    status: "offline",
-    version: "1.4",
-    temperature: 0,
-    location: "",
-    agencyName: "",
-    enabled: true,
-    deviceId: "",
-  })
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+
 
   // Auto-generate a unique Totem ID on mount if not already set
 
 
   // Fetch kiosks from the API when the component mounts
-  useEffect(() => {
-    const fetchKiosks = async () => {
-      try {
-        const response = await axios.get("/api/kiosk")
-        // Map the API response to match the Totem interface
-        const mappedKiosks = response.data.map((kiosk: any) => ({
-          id: kiosk.tote, // API returns the unique identifier as "tote"
-          status: kiosk.status,
-          version: kiosk.version,
-          temperature: kiosk.temperature,
-        }))
-        setTotems(mappedKiosks)
-      } catch (error) {
-        console.error("Error fetching kiosks:", error)
-        setAlertMessage("Erreur lors de la récupération des kiosks")
-        setShowAlert(true)
-      }
+// Fetch kiosks from the API when the component mounts
+useEffect(() => {
+  const fetchKiosks = async () => {
+    try {
+      const response = await axios.get("/api/kiosk")
+      // Filter out kiosks that are not enabled
+      const enabledKiosks = response.data.filter((kiosk: any) => kiosk.enabled)
+      // Map the API response to match the Totem interface
+      const mappedKiosks = enabledKiosks.map((kiosk: any) => ({
+        id: kiosk.tote, // API returns the unique identifier as "tote"
+        status: kiosk.status,
+        version: kiosk.version,
+        temperature: kiosk.temperature,
+      }))
+      setTotems(mappedKiosks)
+    } catch (error) {
+      console.error("Error fetching kiosks:", error)
+      setAlertMessage("Erreur lors de la récupération des kiosks")
+      setShowAlert(true)
     }
+  }
 
-    fetchKiosks()
-  }, [])
+  fetchKiosks()
+}, [])
+
 
   if (authLoading) {
     return <div className="admin-loading">Loading...</div>
@@ -183,26 +177,6 @@ const InteractiveTotemManagement: React.FC = () => {
       setShowAlert(true)
     }
   }
-
-  // Handler for form input changes
-
-
-  // Validate form before submission
-  const validateForm = () => {
-    const errors: Record<string, string> = {}
-
-    if (!totemFormData.toteId.trim()) {
-      errors.toteId = "Totem ID est requis"
-    }
-
-    if (!totemFormData.deviceId.trim()) {
-      errors.deviceId = "Device ID est requis"
-    }
-
-    setFormErrors(errors)
-    return Object.keys(errors).length === 0
-  }
-
 
 
   // Render the list of kiosks in the "État des Appareils" tab
