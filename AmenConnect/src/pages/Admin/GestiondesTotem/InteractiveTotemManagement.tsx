@@ -11,7 +11,6 @@ import {
   IonModal,
   IonTextarea,
   IonAlert,
-  IonInput,
 } from "@ionic/react"
 import {
   refreshOutline,
@@ -20,7 +19,6 @@ import {
   thermometerOutline,
   cloudUploadOutline,
   closeCircleOutline,
-  saveOutline,
   checkmarkCircleOutline,
 } from "ionicons/icons"
 import "./InteractiveTotemManagement.css"
@@ -30,22 +28,14 @@ import AdminPageHeader from "../adminpageheader"
 import KioskApprovalTab from "./kiosk-approval-tab"
 import axios from "axios"
 
+// Extend Totem interface to include serial and apiUrl from the kiosk record.
 interface Totem {
-  id: string
+  id: string                // e.g., "TM1"
   status: "online" | "offline"
   version: string
   temperature: number
-}
-
-interface TotemFormData {
-  toteId: string
-  status: "online" | "offline"
-  version: string
-  temperature: number
-  location: string
-  agencyName: string
-  enabled: boolean
-  deviceId: string
+  serial: string            // the kiosk’s SN field (e.g., "9S716R612613ZM3001160")
+  apiUrl: string            // the kiosk’s API URL (e.g., "http://127.0.0.1:5000")
 }
 
 const InteractiveTotemManagement: React.FC = () => {
@@ -54,10 +44,10 @@ const InteractiveTotemManagement: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedTotem, setSelectedTotem] = useState<string | null>(null)
 
-  // Initialize kiosks from the API (empty array initially)
+  // State for kiosks (totems)
   const [totems, setTotems] = useState<Totem[]>([])
 
-  // Remote maintenance state
+  // Remote maintenance state (unchanged for now)
   const [selectedMaintenanceTotem, setSelectedMaintenanceTotem] = useState<string | null>(null)
   const [selectedMaintenanceAction, setSelectedMaintenanceAction] = useState<string | null>(null)
   const [maintenanceProgress, setMaintenanceProgress] = useState<number>(0)
@@ -66,38 +56,36 @@ const InteractiveTotemManagement: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState<string>("")
   const [showAlert, setShowAlert] = useState<boolean>(false)
 
-  // Register totem form state
-
-
-  // Auto-generate a unique Totem ID on mount if not already set
-
-
   // Fetch kiosks from the API when the component mounts
-// Fetch kiosks from the API when the component mounts
-useEffect(() => {
-  const fetchKiosks = async () => {
-    try {
-      const response = await axios.get("/api/kiosk")
-      // Filter out kiosks that are not enabled
-      const enabledKiosks = response.data.filter((kiosk: any) => kiosk.enabled)
-      // Map the API response to match the Totem interface
-      const mappedKiosks = enabledKiosks.map((kiosk: any) => ({
-        id: kiosk.tote, // API returns the unique identifier as "tote"
-        status: kiosk.status,
-        version: kiosk.version,
-        temperature: kiosk.temperature,
-      }))
-      setTotems(mappedKiosks)
-    } catch (error) {
-      console.error("Error fetching kiosks:", error)
-      setAlertMessage("Erreur lors de la récupération des kiosks")
-      setShowAlert(true)
+  useEffect(() => {
+    const fetchKiosks = async () => {
+      try {
+        const response = await axios.get("/api/kiosk")
+        // Filter out kiosks that are not enabled
+        const enabledKiosks = response.data.filter((kiosk: any) => kiosk.enabled)
+        // Map API response to match our Totem interface.
+        // Here we assume: 
+        // - kiosk.tote is the UI identifier (e.g., "TM1")
+        // - kiosk.SN is the kiosk serial number
+        // - kiosk.apiUrl is the URL where the kiosk's Python API is running
+        const mappedKiosks = enabledKiosks.map((kiosk: any) => ({
+          id: kiosk.tote,
+          status: kiosk.status,
+          version: kiosk.version,
+          temperature: kiosk.temperature,
+          serial: kiosk.SN,
+          apiUrl: kiosk.apiUrl,
+        }))
+        setTotems(mappedKiosks)
+      } catch (error) {
+        console.error("Error fetching kiosks:", error)
+        setAlertMessage("Erreur lors de la récupération des kiosks")
+        setShowAlert(true)
+      }
     }
-  }
 
-  fetchKiosks()
-}, [])
-
+    fetchKiosks()
+  }, [])
 
   if (authLoading) {
     return <div className="admin-loading">Loading...</div>
@@ -110,10 +98,11 @@ useEffect(() => {
       const newTemperature = response.data.temperature
       setTotems((prevTotems) =>
         prevTotems.map((totem) =>
-          totem.id === totemId && totem.status === "online" ? { ...totem, temperature: newTemperature } : totem,
+          totem.id === totemId && totem.status === "online"
+            ? { ...totem, temperature: newTemperature }
+            : totem,
         ),
       )
-
     } catch (error) {
       console.error("Error refreshing temperature:", error)
       setAlertMessage(`Error refreshing Totem ${totemId}`)
@@ -121,18 +110,23 @@ useEffect(() => {
     }
   }
 
-  // Handler for shutting down a totem (simulate remote shutdown)
-  const handleShutdown = async (totemId: string) => {
+  // New shutdown handler calling the kiosk's Python API using its serial number
+  const handleShutdown = async (totem: Totem) => {
     try {
-      await axios.post("/api/kiosk/shutdown", { totemId })
+      // Make a POST request to the kiosk's Python API endpoint for shutdown.
+      // The payload includes the kiosk's serial number.
+      await axios.post(`${totem.apiUrl}/shutdown`, { serialNumber: totem.serial })
+      // Upon successful shutdown command, update the UI to mark the kiosk as offline.
       setTotems((prevTotems) =>
-        prevTotems.map((totem) => (totem.id === totemId ? { ...totem, status: "offline", temperature: 0 } : totem)),
+        prevTotems.map((t) =>
+          t.id === totem.id ? { ...t, status: "offline", temperature: 0 } : t,
+        ),
       )
-      setAlertMessage(`Shutdown command sent to Totem ${totemId}`)
+      setAlertMessage(`Shutdown command sent to Totem ${totem.id}`)
       setShowAlert(true)
     } catch (error) {
       console.error("Error shutting down totem:", error)
-      setAlertMessage(`Error shutting down Totem ${totemId}`)
+      setAlertMessage(`Error shutting down Totem ${totem.id}`)
       setShowAlert(true)
     }
   }
@@ -178,7 +172,6 @@ useEffect(() => {
     }
   }
 
-
   // Render the list of kiosks in the "État des Appareils" tab
   const renderDeviceStatus = () => (
     <div className="admin-table-container">
@@ -222,7 +215,7 @@ useEffect(() => {
                     className="admin-icon-button"
                     disabled={totem.status === "offline"}
                     title="Power"
-                    onClick={() => handleShutdown(totem.id)}
+                    onClick={() => handleShutdown(totem)}
                   >
                     <IonIcon icon={powerOutline} />
                   </button>
@@ -235,7 +228,7 @@ useEffect(() => {
     </div>
   )
 
-  // Render Remote Maintenance Tab
+  // Render Remote Maintenance Tab (unchanged)
   const renderRemoteMaintenance = () => (
     <div className="admin-maintenance-container">
       <div className="admin-form-group">
@@ -287,7 +280,7 @@ useEffect(() => {
     </div>
   )
 
-  // Render Incident Log Tab
+  // Render Incident Log Tab (simplified for brevity)
   const renderIncidentLog = () => (
     <div className="admin-incidents-container">
       {[1, 2, 3].map((_, index) => (
@@ -307,7 +300,9 @@ useEffect(() => {
             <p className="admin-incident-details">
               Totem: TM00{index + 1} | Date: {new Date().toLocaleString()}
             </p>
-            <p className="admin-incident-type">Type: {index % 2 === 0 ? "Hardware Failure" : "Software Error"}</p>
+            <p className="admin-incident-type">
+              Type: {index % 2 === 0 ? "Hardware Failure" : "Software Error"}
+            </p>
           </div>
           <div className={`admin-incident-badge ${index % 2 === 0 ? "warning" : "critical"}`}>
             {index % 2 === 0 ? "Open" : "Critical"}
@@ -316,8 +311,6 @@ useEffect(() => {
       ))}
     </div>
   )
-
-
 
   // Render Approval Tab
   const renderApprovalTab = () => <KioskApprovalTab />
@@ -351,7 +344,6 @@ useEffect(() => {
               >
                 Journal d'Incidents
               </button>
-           
               <button
                 className={`admin-tab ${activeTab === "approval" ? "active" : ""}`}
                 onClick={() => setActiveTab("approval")}
@@ -364,7 +356,6 @@ useEffect(() => {
               {activeTab === "status" && renderDeviceStatus()}
               {activeTab === "maintenance" && renderRemoteMaintenance()}
               {activeTab === "incidents" && renderIncidentLog()}
-              
               {activeTab === "approval" && renderApprovalTab()}
             </div>
           </div>
@@ -388,7 +379,6 @@ useEffect(() => {
         </div>
       </IonModal>
 
-      {/* Alert for notifications */}
       <IonAlert
         isOpen={showAlert}
         onDidDismiss={() => setShowAlert(false)}
@@ -401,4 +391,3 @@ useEffect(() => {
 }
 
 export default InteractiveTotemManagement
-
