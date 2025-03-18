@@ -17,7 +17,7 @@ const KioskSetup: React.FC = () => {
   useEffect(() => {
     async function fetchDeviceSerial() {
       try {
-        const response = await fetch('http://localhost:3000/serial');
+        const response = await fetch('/serial');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
