@@ -1,3 +1,4 @@
+//controllers/kioskController.js
 const Kiosk = require("../models/Kiosk")
 
 // GET all kiosks

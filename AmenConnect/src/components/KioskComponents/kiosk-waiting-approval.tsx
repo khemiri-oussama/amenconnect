@@ -17,14 +17,20 @@ const KioskWaitingApproval: React.FC<KioskWaitingApprovalProps> = ({ serialNumbe
   const [elapsedTime, setElapsedTime] = useState<number>(0)
 
   useEffect(() => {
-    // Connect to Socket.IO server
-    const socket = io(window.location.origin)
+    // Explicitly connect to the Socket.IO server running on port 3000
+    const socket = io("http://localhost:3000") 
+
+    // Log connection info
+    socket.on("connect", () => {
+      console.log("Socket connected with id", socket.id)
+    })
 
     // Register this kiosk with the server
     socket.emit("registerKiosk", { serialNumber })
 
     // Listen for approval status updates
     socket.on("kioskApprovalStatus", (data) => {
+      console.log("Received kioskApprovalStatus:", data)
       if (data.serialNumber === serialNumber) {
         setStatus(data.status)
         setMessage(data.message || "Votre demande a été traitée.")
@@ -131,4 +137,3 @@ const KioskWaitingApproval: React.FC<KioskWaitingApprovalProps> = ({ serialNumbe
 }
 
 export default KioskWaitingApproval
-
