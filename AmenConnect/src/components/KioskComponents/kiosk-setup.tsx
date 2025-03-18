@@ -14,34 +14,25 @@ const KioskSetup: React.FC = () => {
   const [showToast, setShowToast] = useState<{ message: string; color: string } | null>(null)
   const [errors, setErrors] = useState<{ serialNumber?: string; agencyName?: string; agencyLocation?: string }>({})
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
-
   useEffect(() => {
     async function fetchDeviceSerial() {
       try {
-        // generate or retrieve a persistent pseudo-UUID from localStorage.
-        const storedUuid = localStorage.getItem("pcUuid")
-        if (storedUuid) {
-          setSerialNumber(storedUuid)
+        const response = await fetch('http://localhost:3000/serial');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.serial_number) {
+          setSerialNumber(data.serial_number);
         } else {
-          const newUuid = crypto.randomUUID()
-          localStorage.setItem("pcUuid", newUuid)
-          setSerialNumber(newUuid)
+          console.error('No serial number returned from API.');
         }
       } catch (error) {
-        console.error("Error fetching device serial number", error)
-        // Fallback to generating a pseudo-UUID
-        const storedUuid = localStorage.getItem("pcUuid")
-        if (storedUuid) {
-          setSerialNumber(storedUuid)
-        } else {
-          const newUuid = crypto.randomUUID()
-          localStorage.setItem("pcUuid", newUuid)
-          setSerialNumber(newUuid)
-        }
+        console.error('Error fetching device serial number:', error);
       }
     }
-    fetchDeviceSerial()
-  }, [])
+    fetchDeviceSerial();
+  }, []);
 
   const validateForm = (): boolean => {
     const newErrors: { serialNumber?: string; agencyName?: string; agencyLocation?: string } = {}
