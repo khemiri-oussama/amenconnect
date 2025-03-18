@@ -38,3 +38,8 @@
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"Admin updated successfully","timestamp":"2025-03-17T00:48:32.214Z"}
 {"adminId":"67cec3ec625e2d46982a196e","changes":{"name":{"new":"Rayen Ouertanii","old":"Rayen Ouertani"}},"level":"info","message":"Admin updated successfully","timestamp":"2025-03-17T00:55:20.417Z"}
 {"adminId":"67cec3ec625e2d46982a196e","changes":{"cin":{"new":"12380894","old":"12380895"},"name":{"new":"Rayen Ouertani","old":"Rayen Ouertanii"}},"level":"info","message":"Admin updated successfully","timestamp":"2025-03-17T01:01:32.697Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-17T18:37:57.405Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-03-17T18:37:58.418Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-03-17T18:38:00.186Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"df92977f4785dd32220dd02647ca668f","timestamp":"2025-03-17T18:38:14.391Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-03-17T18:38:14.497Z"}
