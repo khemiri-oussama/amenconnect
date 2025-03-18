@@ -80,12 +80,7 @@ const InteractiveTotemManagement: React.FC = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
   // Auto-generate a unique Totem ID on mount if not already set
-  useEffect(() => {
-    if (!totemFormData.toteId) {
-      const uniqueId = "TM" + Math.floor(1000 + Math.random() * 9000)
-      setTotemFormData((prev) => ({ ...prev, toteId: uniqueId }))
-    }
-  }, [totemFormData.toteId])
+
 
   // Fetch kiosks from the API when the component mounts
   useEffect(() => {
@@ -124,8 +119,7 @@ const InteractiveTotemManagement: React.FC = () => {
           totem.id === totemId && totem.status === "online" ? { ...totem, temperature: newTemperature } : totem,
         ),
       )
-      setAlertMessage(`Totem ${totemId} refreshed. New temperature: ${newTemperature}°C`)
-      setShowAlert(true)
+
     } catch (error) {
       console.error("Error refreshing temperature:", error)
       setAlertMessage(`Error refreshing Totem ${totemId}`)
@@ -191,20 +185,7 @@ const InteractiveTotemManagement: React.FC = () => {
   }
 
   // Handler for form input changes
-  const handleFormChange = (field: keyof TotemFormData, value: any) => {
-    setTotemFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
 
-    if (formErrors[field]) {
-      setFormErrors((prev) => {
-        const newErrors = { ...prev }
-        delete newErrors[field]
-        return newErrors
-      })
-    }
-  }
 
   // Validate form before submission
   const validateForm = () => {
@@ -402,85 +383,7 @@ const InteractiveTotemManagement: React.FC = () => {
     </div>
   )
 
-  // Render Register Totem Tab
-  const renderRegisterTotem = () => (
-    <div className="admin-register-container">
-      <div className="admin-register-form">
-        <div className="admin-form-group">
-          <label className="admin-form-label">Totem ID</label>
-          <IonInput
-            className={`admin-input ${formErrors.toteId ? "admin-input-error" : ""}`}
-            value={totemFormData.toteId}
-            readonly
-            placeholder="Entrez l'ID du totem"
-          />
-          {formErrors.toteId && <div className="admin-error-message">{formErrors.toteId}</div>}
-        </div>
 
-        <div className="admin-form-group">
-          <label className="admin-form-label">Device ID*</label>
-          <IonInput
-            className={`admin-input ${formErrors.deviceId ? "admin-input-error" : ""}`}
-            value={totemFormData.deviceId}
-            onIonChange={(e) => handleFormChange("deviceId", e.detail.value || "")}
-            placeholder="Entrez l'ID de l'appareil"
-          />
-          {formErrors.deviceId && <div className="admin-error-message">{formErrors.deviceId}</div>}
-        </div>
-
-        <div className="admin-form-row">
-          <div className="admin-form-group admin-form-group-half">
-            <label className="admin-form-label">Status</label>
-            <div className="admin-select-wrapper">
-              <IonSelect
-                className="admin-select"
-                value={totemFormData.status}
-                onIonChange={(e) => handleFormChange("status", e.detail.value)}
-              >
-                <IonSelectOption value="online">Online</IonSelectOption>
-                <IonSelectOption value="offline">Offline</IonSelectOption>
-              </IonSelect>
-            </div>
-          </div>
-
-          <div className="admin-form-group admin-form-group-half">
-            <label className="admin-form-label">Version</label>
-            <IonInput
-              className="admin-input"
-              value={totemFormData.version}
-              onIonChange={(e) => handleFormChange("version", e.detail.value || "1.4")}
-              placeholder="Version du logiciel"
-            />
-          </div>
-        </div>
-
-        <div className="admin-form-group">
-          <label className="admin-form-label">Emplacement</label>
-          <IonInput
-            className="admin-input"
-            value={totemFormData.location}
-            onIonChange={(e) => handleFormChange("location", e.detail.value || "")}
-            placeholder="Emplacement du totem"
-          />
-        </div>
-
-        <div className="admin-form-group">
-          <label className="admin-form-label">Nom de l'agence</label>
-          <IonInput
-            className="admin-input"
-            value={totemFormData.agencyName}
-            onIonChange={(e) => handleFormChange("agencyName", e.detail.value || "")}
-            placeholder="Nom de l'agence"
-          />
-        </div>
-
-        <button className="admin-action-button" onClick={handleRegisterTotem}>
-          <IonIcon icon={saveOutline} />
-          <span>Enregistrer le Totem</span>
-        </button>
-      </div>
-    </div>
-  )
 
   // Render Approval Tab
   const renderApprovalTab = () => <KioskApprovalTab />
@@ -514,12 +417,7 @@ const InteractiveTotemManagement: React.FC = () => {
               >
                 Journal d'Incidents
               </button>
-              <button
-                className={`admin-tab ${activeTab === "register" ? "active" : ""}`}
-                onClick={() => setActiveTab("register")}
-              >
-                Enregistrer Totem
-              </button>
+           
               <button
                 className={`admin-tab ${activeTab === "approval" ? "active" : ""}`}
                 onClick={() => setActiveTab("approval")}
@@ -532,7 +430,7 @@ const InteractiveTotemManagement: React.FC = () => {
               {activeTab === "status" && renderDeviceStatus()}
               {activeTab === "maintenance" && renderRemoteMaintenance()}
               {activeTab === "incidents" && renderIncidentLog()}
-              {activeTab === "register" && renderRegisterTotem()}
+              
               {activeTab === "approval" && renderApprovalTab()}
             </div>
           </div>
