@@ -1,5 +1,22 @@
 //controllers/kioskController.js
 const Kiosk = require("../models/Kiosk")
+const fs = require('fs');
+const path = require('path');
+
+function saveKioskFile(kiosk) {
+  // Define a base directory for approved kiosks (adjust the path as needed)
+  const baseDir = path.join(__dirname, '..', 'approvedKiosks');
+  // Create a directory for the kiosk using its serial number
+  const kioskDir = path.join(baseDir, kiosk.SN);
+
+  if (!fs.existsSync(kioskDir)) {
+    fs.mkdirSync(kioskDir, { recursive: true });
+  }
+
+  // Create or update the kiosk file (e.g., kiosk.json)
+  const filePath = path.join(kioskDir, 'kiosk.json');
+  fs.writeFileSync(filePath, JSON.stringify(kiosk, null, 2));
+}
 
 // GET all kiosks
 exports.getKiosks = async (req, res) => {
@@ -103,50 +120,47 @@ exports.getPendingKiosks = async (req, res) => {
 
 // Approve a kiosk
 exports.approveKiosk = async (req, res) => {
-  const { kioskId } = req.body
+  const { kioskId } = req.body;
 
   if (!kioskId) {
-    return res.status(400).json({ error: "Kiosk ID is required for approval." })
+    return res.status(400).json({ error: "Kiosk ID is required for approval." });
   }
 
   try {
-    const kiosk = await Kiosk.findById(kioskId)
-
+    const kiosk = await Kiosk.findById(kioskId);
     if (!kiosk) {
-      return res.status(404).json({ error: "Kiosk not found." })
+      return res.status(404).json({ error: "Kiosk not found." });
     }
 
-    // Update kiosk to enabled
-    kiosk.enabled = true
-
-    // If the kiosk doesn't already have a tote, assign an incrementing value
+    // Mark the kiosk as approved
+    kiosk.enabled = true;
     if (!kiosk.tote) {
-      // Count kiosks that already have a tote starting with "TM"
-      const count = await Kiosk.countDocuments({ tote: { $regex: /^TM/ } })
-      // Set the tote property with the next number in sequence
-      kiosk.tote = `TM${count + 1}`
+      const count = await Kiosk.countDocuments({ tote: { $regex: /^TM/ } });
+      kiosk.tote = `TM${count + 1}`;
     }
 
-    // Save the updated kiosk
-    await kiosk.save()
+    // Save the updated kiosk (if you wish to continue using the database)
+    await kiosk.save();
 
-    // Get the Socket.IO handler from app locals
-    const socketHandler = req.app.locals.socketHandler
+    // Save the kiosk data into its own file/directory
+    saveKioskFile(kiosk);
 
-    // Notify the kiosk about the approval
+    // Notify the kiosk about the approval if using Socket.IO
+    const socketHandler = req.app.locals.socketHandler;
     if (socketHandler) {
       socketHandler.notifyKioskApproval(
         kiosk.SN,
         "approved",
         "Votre configuration a été approuvée. Vous pouvez maintenant utiliser le kiosk."
-      )
+      );
     }
 
-    res.json({ message: "Kiosk approved successfully." })
+    res.json({ message: "Kiosk approved successfully." });
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
-}
+};
+
 
 
 // Reject a kiosk
