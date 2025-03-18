@@ -598,7 +598,6 @@ const handleApproveRequest = async (requestId: string) => {
               type={showPassword ? "text" : "password"}
               required
               className="admin-input password-input"
-              readonly
               value={formData.password}
             ></IonInput>
             <div className="password-actions">

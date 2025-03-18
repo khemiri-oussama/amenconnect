@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { IonContent, IonPage, IonInput, IonButton, IonIcon, IonText, IonToast } from "@ionic/react";
 import { checkmarkCircleOutline, businessOutline, locationOutline, barcodeOutline } from "ionicons/icons";
-import { Device } from "@capacitor/device";
 import "./kiosk-setup.css";
 
 const KioskSetup: React.FC = () => {
@@ -16,12 +15,6 @@ const KioskSetup: React.FC = () => {
   useEffect(() => {
     async function fetchDeviceSerial() {
       try {
-        // Try to get the device's unique identifier
-        const { uuid } = await Device.getId();
-        if (uuid && uuid !== "unknown") {
-          setSerialNumber(uuid);
-        } else {
-          // For PC or if the plugin doesn't return a valid value,
           // generate or retrieve a persistent pseudo-UUID from localStorage.
           const storedUuid = localStorage.getItem("pcUuid");
           if (storedUuid) {
@@ -31,7 +24,7 @@ const KioskSetup: React.FC = () => {
             localStorage.setItem("pcUuid", newUuid);
             setSerialNumber(newUuid);
           }
-        }
+        
       } catch (error) {
         console.error("Error fetching device serial number", error);
         // Fallback to generating a pseudo-UUID
