@@ -9,7 +9,7 @@ const KioskSchema = new mongoose.Schema({
   temperature: { type: Number, default: 0 },
   location: { type: String, required: true },
   agencyName: { type: String, required: true },
-  enabled: { type: Boolean, default: true }
+  enabled: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Kiosk', KioskSchema);
