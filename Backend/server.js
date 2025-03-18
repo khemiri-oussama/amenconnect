@@ -13,11 +13,10 @@ const server = http.createServer(app);
 
 // Initialize Socket.IO with CORS configuration
 const allowedOrigins = ["http://localhost:8200", "https://localhost:8200"];
-
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
+      // Allow requests with no origin (e.g., mobile apps or curl requests)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
@@ -28,33 +27,24 @@ const io = new Server(server, {
   },
 });
 
-// server.js
+// Initialize your socket handler with the single Socket.IO instance
+const socketHandler = require('./server/socket-handler')(io);
+app.locals.socketHandler = socketHandler;
+app.locals.io = io;
+
+// Global connection logging and event listeners
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
   
-  // Listen for a register event where the kiosk sends its unique totemId
+  // Optional: Listen for a registration event if needed
   socket.on('register', (data) => {
     const { totemId } = data;
     if (totemId) {
-      // Join a room that is named after the kiosk's totemId
       socket.join(totemId);
       console.log(`Socket ${socket.id} joined room ${totemId}`);
     }
   });
 
-  socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
-  });
-});
-
-
-// Make the Socket.IO instance available in the app
-app.locals.io = io;
-
-// Log when a new client connects/disconnects
-io.on('connection', (socket) => {
-  console.log('New client connected:', socket.id);
-  
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
   });
