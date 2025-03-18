@@ -42,11 +42,17 @@ exports.getKioskById = async (req, res) => {
 // CREATE a new kiosk
 exports.createKiosk = async (req, res) => {
   try {
-    const newKiosk = new Kiosk(req.body)
-    const savedKiosk = await newKiosk.save()
-    res.status(201).json(savedKiosk)
+    // Check if a kiosk with the same SN already exists
+    const existingKiosk = await Kiosk.findOne({ SN: req.body.SN });
+    if (existingKiosk) {
+      return res.status(400).json({ error: "A kiosk with this serial number already exists." });
+    }
+
+    const newKiosk = new Kiosk(req.body);
+    const savedKiosk = await newKiosk.save();
+    res.status(201).json(savedKiosk);
   } catch (err) {
-    res.status(400).json({ error: err.message })
+    res.status(400).json({ error: err.message });
   }
 }
 
