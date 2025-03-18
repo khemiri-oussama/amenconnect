@@ -1,0 +1,15 @@
+{
+  "_id": "67d9a295728391bc5b99e9aa",
+  "status": "offline",
+  "SN": "9S716R612613ZM3001160",
+  "version": "0",
+  "temperature": 0,
+  "location": "hgchcghgc",
+  "apiUrl": "http://127.0.0.1:3000",
+  "agencyName": "vghvhv",
+  "enabled": true,
+  "createdAt": "2025-03-18T16:43:01.509Z",
+  "updatedAt": "2025-03-18T16:43:09.616Z",
+  "__v": 0,
+  "tote": "TM1"
+}

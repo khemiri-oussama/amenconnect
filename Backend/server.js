@@ -59,3 +59,6 @@ connectDB()
   .catch((err) => {
     console.error('Failed to connect to DB', err);
   });
+  // At the bottom of server.js
+require('./monitorTotems');
+
