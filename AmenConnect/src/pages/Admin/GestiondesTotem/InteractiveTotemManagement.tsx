@@ -203,47 +203,7 @@ const InteractiveTotemManagement: React.FC = () => {
     return Object.keys(errors).length === 0
   }
 
-  // Handler for registering a new totem
-  const handleRegisterTotem = async () => {
-    if (!validateForm()) {
-      setAlertMessage("Veuillez corriger les erreurs dans le formulaire")
-      setShowAlert(true)
-      return
-    }
 
-    try {
-      await axios.post("/api/kiosk/register", totemFormData)
-
-      const newTotem: Totem = {
-        id: totemFormData.toteId,
-        status: totemFormData.status,
-        version: totemFormData.version,
-        temperature: totemFormData.temperature,
-      }
-
-      setTotems((prev) => [...prev, newTotem])
-
-      // Reset form and generate a new unique Totem ID for the next registration
-      const newUniqueId = "TM" + Math.floor(1000 + Math.random() * 9000)
-      setTotemFormData({
-        toteId: newUniqueId,
-        status: "offline",
-        version: "1.4",
-        temperature: 0,
-        location: "",
-        agencyName: "",
-        enabled: true,
-        deviceId: "",
-      })
-
-      setAlertMessage("Totem enregistré avec succès")
-      setShowAlert(true)
-    } catch (error) {
-      console.error("Error registering totem:", error)
-      setAlertMessage("Erreur lors de l'enregistrement du totem")
-      setShowAlert(true)
-    }
-  }
 
   // Render the list of kiosks in the "État des Appareils" tab
   const renderDeviceStatus = () => (
