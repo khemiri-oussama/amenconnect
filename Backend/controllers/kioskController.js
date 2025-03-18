@@ -118,6 +118,16 @@ exports.approveKiosk = async (req, res) => {
 
     // Update kiosk to enabled
     kiosk.enabled = true
+
+    // If the kiosk doesn't already have a tote, assign an incrementing value
+    if (!kiosk.tote) {
+      // Count kiosks that already have a tote starting with "TM"
+      const count = await Kiosk.countDocuments({ tote: { $regex: /^TM/ } })
+      // Set the tote property with the next number in sequence
+      kiosk.tote = `TM${count + 1}`
+    }
+
+    // Save the updated kiosk
     await kiosk.save()
 
     // Get the Socket.IO handler from app locals
@@ -128,7 +138,7 @@ exports.approveKiosk = async (req, res) => {
       socketHandler.notifyKioskApproval(
         kiosk.SN,
         "approved",
-        "Votre configuration a été approuvée. Vous pouvez maintenant utiliser le kiosk.",
+        "Votre configuration a été approuvée. Vous pouvez maintenant utiliser le kiosk."
       )
     }
 
@@ -137,6 +147,7 @@ exports.approveKiosk = async (req, res) => {
     res.status(500).json({ error: error.message })
   }
 }
+
 
 // Reject a kiosk
 exports.rejectKiosk = async (req, res) => {
