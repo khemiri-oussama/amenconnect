@@ -1,6 +1,7 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
+import type React from "react"
+import { useState, useEffect } from "react"
 import {
   IonPage,
   IonIcon,
@@ -11,7 +12,7 @@ import {
   IonTextarea,
   IonAlert,
   IonInput,
-} from "@ionic/react";
+} from "@ionic/react"
 import {
   refreshOutline,
   powerOutline,
@@ -20,48 +21,50 @@ import {
   cloudUploadOutline,
   closeCircleOutline,
   saveOutline,
-} from "ionicons/icons";
-import "./InteractiveTotemManagement.css";
-import SidebarAdmin from "../../../components/SidebarAdmin";
-import { useAdminAuth } from "../../../AdminAuthContext";
-import AdminPageHeader from "../adminpageheader";
-import axios from "axios";
+  checkmarkCircleOutline,
+} from "ionicons/icons"
+import "./InteractiveTotemManagement.css"
+import SidebarAdmin from "../../../components/SidebarAdmin"
+import { useAdminAuth } from "../../../AdminAuthContext"
+import AdminPageHeader from "../adminpageheader"
+import KioskApprovalTab from "./kiosk-approval-tab"
+import axios from "axios"
 
 interface Totem {
-  id: string;
-  status: "online" | "offline";
-  version: string;
-  temperature: number;
+  id: string
+  status: "online" | "offline"
+  version: string
+  temperature: number
 }
 
 interface TotemFormData {
-  toteId: string;
-  status: "online" | "offline";
-  version: string;
-  temperature: number;
-  location: string;
-  agencyName: string;
-  enabled: boolean;
-  deviceId: string;
+  toteId: string
+  status: "online" | "offline"
+  version: string
+  temperature: number
+  location: string
+  agencyName: string
+  enabled: boolean
+  deviceId: string
 }
 
 const InteractiveTotemManagement: React.FC = () => {
-  const { authLoading } = useAdminAuth();
-  const [activeTab, setActiveTab] = useState<"status" | "maintenance" | "incidents" | "register">("status");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTotem, setSelectedTotem] = useState<string | null>(null);
-  
+  const { authLoading } = useAdminAuth()
+  const [activeTab, setActiveTab] = useState<"status" | "maintenance" | "incidents" | "register" | "approval">("status")
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedTotem, setSelectedTotem] = useState<string | null>(null)
+
   // Initialize kiosks from the API (empty array initially)
-  const [totems, setTotems] = useState<Totem[]>([]);
-  
+  const [totems, setTotems] = useState<Totem[]>([])
+
   // Remote maintenance state
-  const [selectedMaintenanceTotem, setSelectedMaintenanceTotem] = useState<string | null>(null);
-  const [selectedMaintenanceAction, setSelectedMaintenanceAction] = useState<string | null>(null);
-  const [maintenanceProgress, setMaintenanceProgress] = useState<number>(0);
+  const [selectedMaintenanceTotem, setSelectedMaintenanceTotem] = useState<string | null>(null)
+  const [selectedMaintenanceAction, setSelectedMaintenanceAction] = useState<string | null>(null)
+  const [maintenanceProgress, setMaintenanceProgress] = useState<number>(0)
 
   // Alert state for notifications
-  const [alertMessage, setAlertMessage] = useState<string>("");
-  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("")
+  const [showAlert, setShowAlert] = useState<boolean>(false)
 
   // Register totem form state
   const [totemFormData, setTotemFormData] = useState<TotemFormData>({
@@ -73,174 +76,174 @@ const InteractiveTotemManagement: React.FC = () => {
     agencyName: "",
     enabled: true,
     deviceId: "",
-  });
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  })
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
   // Auto-generate a unique Totem ID on mount if not already set
   useEffect(() => {
     if (!totemFormData.toteId) {
-      const uniqueId = "TM" + Math.floor(1000 + Math.random() * 9000);
-      setTotemFormData((prev) => ({ ...prev, toteId: uniqueId }));
+      const uniqueId = "TM" + Math.floor(1000 + Math.random() * 9000)
+      setTotemFormData((prev) => ({ ...prev, toteId: uniqueId }))
     }
-  }, [totemFormData.toteId]);
+  }, [totemFormData.toteId])
 
   // Fetch kiosks from the API when the component mounts
   useEffect(() => {
     const fetchKiosks = async () => {
       try {
-        const response = await axios.get("/api/kiosk");
+        const response = await axios.get("/api/kiosk")
         // Map the API response to match the Totem interface
         const mappedKiosks = response.data.map((kiosk: any) => ({
           id: kiosk.tote, // API returns the unique identifier as "tote"
           status: kiosk.status,
           version: kiosk.version,
           temperature: kiosk.temperature,
-        }));
-        setTotems(mappedKiosks);
+        }))
+        setTotems(mappedKiosks)
       } catch (error) {
-        console.error("Error fetching kiosks:", error);
-        setAlertMessage("Erreur lors de la récupération des kiosks");
-        setShowAlert(true);
+        console.error("Error fetching kiosks:", error)
+        setAlertMessage("Erreur lors de la récupération des kiosks")
+        setShowAlert(true)
       }
-    };
+    }
 
-    fetchKiosks();
-  }, []);
+    fetchKiosks()
+  }, [])
 
   if (authLoading) {
-    return <div className="admin-loading">Loading...</div>;
+    return <div className="admin-loading">Loading...</div>
   }
 
   // Handler for refreshing temperature for a specific totem
   const handleRefresh = async (totemId: string) => {
     try {
-      const response = await axios.get("/api/kiosk/temperature");
-      const newTemperature = response.data.temperature;
+      const response = await axios.get("/api/kiosk/temperature")
+      const newTemperature = response.data.temperature
       setTotems((prevTotems) =>
         prevTotems.map((totem) =>
-          totem.id === totemId && totem.status === "online" ? { ...totem, temperature: newTemperature } : totem
-        )
-      );
-      setAlertMessage(`Totem ${totemId} refreshed. New temperature: ${newTemperature}°C`);
-      setShowAlert(true);
+          totem.id === totemId && totem.status === "online" ? { ...totem, temperature: newTemperature } : totem,
+        ),
+      )
+      setAlertMessage(`Totem ${totemId} refreshed. New temperature: ${newTemperature}°C`)
+      setShowAlert(true)
     } catch (error) {
-      console.error("Error refreshing temperature:", error);
-      setAlertMessage(`Error refreshing Totem ${totemId}`);
-      setShowAlert(true);
+      console.error("Error refreshing temperature:", error)
+      setAlertMessage(`Error refreshing Totem ${totemId}`)
+      setShowAlert(true)
     }
-  };
+  }
 
   // Handler for shutting down a totem (simulate remote shutdown)
   const handleShutdown = async (totemId: string) => {
     try {
-      await axios.post("/api/kiosk/shutdown", { totemId });
+      await axios.post("/api/kiosk/shutdown", { totemId })
       setTotems((prevTotems) =>
-        prevTotems.map((totem) => (totem.id === totemId ? { ...totem, status: "offline", temperature: 0 } : totem))
-      );
-      setAlertMessage(`Shutdown command sent to Totem ${totemId}`);
-      setShowAlert(true);
+        prevTotems.map((totem) => (totem.id === totemId ? { ...totem, status: "offline", temperature: 0 } : totem)),
+      )
+      setAlertMessage(`Shutdown command sent to Totem ${totemId}`)
+      setShowAlert(true)
     } catch (error) {
-      console.error("Error shutting down totem:", error);
-      setAlertMessage(`Error shutting down Totem ${totemId}`);
-      setShowAlert(true);
+      console.error("Error shutting down totem:", error)
+      setAlertMessage(`Error shutting down Totem ${totemId}`)
+      setShowAlert(true)
     }
-  };
+  }
 
   // Handler for executing remote maintenance action
   const handleExecuteMaintenance = async () => {
     if (!selectedMaintenanceTotem || !selectedMaintenanceAction) {
-      setAlertMessage("Please select both a Totem and an Action.");
-      setShowAlert(true);
-      return;
+      setAlertMessage("Please select both a Totem and an Action.")
+      setShowAlert(true)
+      return
     }
 
     try {
       await axios.post("http://localhost:3000/api/kiosk/maintenance", {
         totemId: selectedMaintenanceTotem,
         action: selectedMaintenanceAction,
-      });
+      })
       if (selectedMaintenanceAction === "update") {
-        setMaintenanceProgress(0);
+        setMaintenanceProgress(0)
         const interval = setInterval(() => {
           setMaintenanceProgress((prev) => {
             if (prev >= 1) {
-              clearInterval(interval);
+              clearInterval(interval)
               setAlertMessage(
-                `Maintenance action "${selectedMaintenanceAction}" completed for Totem ${selectedMaintenanceTotem}`
-              );
-              setShowAlert(true);
-              return 1;
+                `Maintenance action "${selectedMaintenanceAction}" completed for Totem ${selectedMaintenanceTotem}`,
+              )
+              setShowAlert(true)
+              return 1
             }
-            return prev + 0.1;
-          });
-        }, 500);
+            return prev + 0.1
+          })
+        }, 500)
       } else {
         setAlertMessage(
-          `Maintenance action "${selectedMaintenanceAction}" executed for Totem ${selectedMaintenanceTotem}`
-        );
-        setShowAlert(true);
+          `Maintenance action "${selectedMaintenanceAction}" executed for Totem ${selectedMaintenanceTotem}`,
+        )
+        setShowAlert(true)
       }
     } catch (error) {
-      console.error("Error executing maintenance action:", error);
-      setAlertMessage(`Error executing maintenance action on Totem ${selectedMaintenanceTotem}`);
-      setShowAlert(true);
+      console.error("Error executing maintenance action:", error)
+      setAlertMessage(`Error executing maintenance action on Totem ${selectedMaintenanceTotem}`)
+      setShowAlert(true)
     }
-  };
+  }
 
   // Handler for form input changes
   const handleFormChange = (field: keyof TotemFormData, value: any) => {
     setTotemFormData((prev) => ({
       ...prev,
       [field]: value,
-    }));
+    }))
 
     if (formErrors[field]) {
       setFormErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
+        const newErrors = { ...prev }
+        delete newErrors[field]
+        return newErrors
+      })
     }
-  };
+  }
 
   // Validate form before submission
   const validateForm = () => {
-    const errors: Record<string, string> = {};
+    const errors: Record<string, string> = {}
 
     if (!totemFormData.toteId.trim()) {
-      errors.toteId = "Totem ID est requis";
+      errors.toteId = "Totem ID est requis"
     }
 
     if (!totemFormData.deviceId.trim()) {
-      errors.deviceId = "Device ID est requis";
+      errors.deviceId = "Device ID est requis"
     }
 
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
+  }
 
   // Handler for registering a new totem
   const handleRegisterTotem = async () => {
     if (!validateForm()) {
-      setAlertMessage("Veuillez corriger les erreurs dans le formulaire");
-      setShowAlert(true);
-      return;
+      setAlertMessage("Veuillez corriger les erreurs dans le formulaire")
+      setShowAlert(true)
+      return
     }
 
     try {
-      await axios.post("/api/kiosk/register", totemFormData);
+      await axios.post("/api/kiosk/register", totemFormData)
 
       const newTotem: Totem = {
         id: totemFormData.toteId,
         status: totemFormData.status,
         version: totemFormData.version,
         temperature: totemFormData.temperature,
-      };
+      }
 
-      setTotems((prev) => [...prev, newTotem]);
+      setTotems((prev) => [...prev, newTotem])
 
       // Reset form and generate a new unique Totem ID for the next registration
-      const newUniqueId = "TM" + Math.floor(1000 + Math.random() * 9000);
+      const newUniqueId = "TM" + Math.floor(1000 + Math.random() * 9000)
       setTotemFormData({
         toteId: newUniqueId,
         status: "offline",
@@ -250,16 +253,16 @@ const InteractiveTotemManagement: React.FC = () => {
         agencyName: "",
         enabled: true,
         deviceId: "",
-      });
+      })
 
-      setAlertMessage("Totem enregistré avec succès");
-      setShowAlert(true);
+      setAlertMessage("Totem enregistré avec succès")
+      setShowAlert(true)
     } catch (error) {
-      console.error("Error registering totem:", error);
-      setAlertMessage("Erreur lors de l'enregistrement du totem");
-      setShowAlert(true);
+      console.error("Error registering totem:", error)
+      setAlertMessage("Erreur lors de l'enregistrement du totem")
+      setShowAlert(true)
     }
-  };
+  }
 
   // Render the list of kiosks in the "État des Appareils" tab
   const renderDeviceStatus = () => (
@@ -315,7 +318,7 @@ const InteractiveTotemManagement: React.FC = () => {
         </tbody>
       </table>
     </div>
-  );
+  )
 
   // Render Remote Maintenance Tab
   const renderRemoteMaintenance = () => (
@@ -367,7 +370,7 @@ const InteractiveTotemManagement: React.FC = () => {
         </div>
       )}
     </div>
-  );
+  )
 
   // Render Incident Log Tab
   const renderIncidentLog = () => (
@@ -377,8 +380,8 @@ const InteractiveTotemManagement: React.FC = () => {
           key={index}
           className="admin-incident-item"
           onClick={() => {
-            setSelectedTotem(`TM00${index + 1}`);
-            setIsModalOpen(true);
+            setSelectedTotem(`TM00${index + 1}`)
+            setIsModalOpen(true)
           }}
         >
           <div className="admin-incident-icon">
@@ -389,9 +392,7 @@ const InteractiveTotemManagement: React.FC = () => {
             <p className="admin-incident-details">
               Totem: TM00{index + 1} | Date: {new Date().toLocaleString()}
             </p>
-            <p className="admin-incident-type">
-              Type: {index % 2 === 0 ? "Hardware Failure" : "Software Error"}
-            </p>
+            <p className="admin-incident-type">Type: {index % 2 === 0 ? "Hardware Failure" : "Software Error"}</p>
           </div>
           <div className={`admin-incident-badge ${index % 2 === 0 ? "warning" : "critical"}`}>
             {index % 2 === 0 ? "Open" : "Critical"}
@@ -399,7 +400,7 @@ const InteractiveTotemManagement: React.FC = () => {
         </div>
       ))}
     </div>
-  );
+  )
 
   // Render Register Totem Tab
   const renderRegisterTotem = () => (
@@ -479,7 +480,10 @@ const InteractiveTotemManagement: React.FC = () => {
         </button>
       </div>
     </div>
-  );
+  )
+
+  // Render Approval Tab
+  const renderApprovalTab = () => <KioskApprovalTab />
 
   return (
     <IonPage>
@@ -492,17 +496,36 @@ const InteractiveTotemManagement: React.FC = () => {
           />
           <div className="admin-content-card">
             <div className="admin-tabs">
-              <button className={`admin-tab ${activeTab === "status" ? "active" : ""}`} onClick={() => setActiveTab("status")}>
+              <button
+                className={`admin-tab ${activeTab === "status" ? "active" : ""}`}
+                onClick={() => setActiveTab("status")}
+              >
                 État des Appareils
               </button>
-              <button className={`admin-tab ${activeTab === "maintenance" ? "active" : ""}`} onClick={() => setActiveTab("maintenance")}>
+              <button
+                className={`admin-tab ${activeTab === "maintenance" ? "active" : ""}`}
+                onClick={() => setActiveTab("maintenance")}
+              >
                 Maintenance à Distance
               </button>
-              <button className={`admin-tab ${activeTab === "incidents" ? "active" : ""}`} onClick={() => setActiveTab("incidents")}>
+              <button
+                className={`admin-tab ${activeTab === "incidents" ? "active" : ""}`}
+                onClick={() => setActiveTab("incidents")}
+              >
                 Journal d'Incidents
               </button>
-              <button className={`admin-tab ${activeTab === "register" ? "active" : ""}`} onClick={() => setActiveTab("register")}>
+              <button
+                className={`admin-tab ${activeTab === "register" ? "active" : ""}`}
+                onClick={() => setActiveTab("register")}
+              >
                 Enregistrer Totem
+              </button>
+              <button
+                className={`admin-tab ${activeTab === "approval" ? "active" : ""}`}
+                onClick={() => setActiveTab("approval")}
+              >
+                <IonIcon icon={checkmarkCircleOutline} className="tab-icon" />
+                Approbations
               </button>
             </div>
             <div className="admin-tab-content">
@@ -510,6 +533,7 @@ const InteractiveTotemManagement: React.FC = () => {
               {activeTab === "maintenance" && renderRemoteMaintenance()}
               {activeTab === "incidents" && renderIncidentLog()}
               {activeTab === "register" && renderRegisterTotem()}
+              {activeTab === "approval" && renderApprovalTab()}
             </div>
           </div>
         </div>
@@ -541,7 +565,8 @@ const InteractiveTotemManagement: React.FC = () => {
         buttons={["OK"]}
       />
     </IonPage>
-  );
-};
+  )
+}
 
-export default InteractiveTotemManagement;
+export default InteractiveTotemManagement
+
