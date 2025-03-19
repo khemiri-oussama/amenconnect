@@ -4,10 +4,18 @@ import subprocess
 import platform
 import re
 import requests
+import time
+import pyrebase
+import threading    # Install via: pip install pyrebase4
 
 app = Flask(__name__)
-CORS(app, origins=["https://localhost:8200"])
-
+CORS(app)
+firebase_config = {
+    "apiKey": "AIzaSyD0qjnrDLjAs0BGQavFuvV7zQhgJ6ijos0",
+    "authDomain": "kiosk-b8f76.firebaseapp.com",
+    "databaseURL": "https://kiosk-b8f76-default-rtdb.firebaseio.com",
+    "storageBucket": "kiosk-b8f76.firebasestorage.app",
+}
 def get_serial_number():
     system = platform.system()
     try:
@@ -36,7 +44,6 @@ def get_temperature():
     """
     try:
         # Run the command to get the GPU temperature.
-        # This returns a string like "45" (temperature in Celsius).
         output = subprocess.check_output(
             ["nvidia-smi", "--query-gpu=temperature.gpu", "--format=csv,noheader,nounits"],
             universal_newlines=True
@@ -51,6 +58,7 @@ def get_temperature():
         print("Error using nvidia-smi for GPU temperature:", e)
         return None
 
+# Modified shutdown endpoint that uses Firebase to issue a shutdown command.
 @app.route('/shutdown', methods=['POST'])
 def shutdown_api():
     data = request.get_json()
@@ -63,20 +71,47 @@ def shutdown_api():
     if provided_serial != local_serial:
         return jsonify({"error": "Serial number mismatch."}), 403
 
-    try:
-        system = platform.system()
-        if system == "Linux":
-            subprocess.call(["shutdown", "-h", "now"])
-        elif system == "Windows":
-            subprocess.call(["shutdown", "/s", "/t", "0"])
-        elif system == "Darwin":
-            subprocess.call(["sudo", "shutdown", "-h", "now"])
-        else:
-            return jsonify({"error": "Unsupported OS for shutdown."}), 500
+    # Firebase configuration - update with your actual project details.
+    firebase = pyrebase.initialize_app(firebase_config)
+    db = firebase.database()
+    
+    shutdown_data = {
+        "command": "shutdown",
+        "timestamp": int(time.time())
+    }
 
-        return jsonify({"message": f"Shutdown initiated for serial {local_serial}"}), 200
+    try:
+        # Write the shutdown command under the node 'shutdown_commands/<local_serial>'.
+        db.child("shutdown_commands").child(local_serial).set(shutdown_data)
+        exit()
+        print("Shutdown command return code:")
+        return jsonify({"message": f"Shutdown command sent to serial {local_serial} via Firebase."}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+def firebase_shutdown_listener():
+    firebase = pyrebase.initialize_app(firebase_config)
+    db = firebase.database()
+    local_serial = get_serial_number()
+    while True:
+        try:
+            # Check for shutdown command under this kiosk's serial number
+            command = db.child("shutdown_commands").child(local_serial).get().val()
+            if command and command.get("command") == "shutdown":
+                # Determine OS and execute shutdown command
+                system = platform.system()
+                if system == "Windows":
+                    subprocess.run(["shutdown", "/s", "/t", "0"], shell=True)
+                elif system == "Linux":
+                    subprocess.run(["sudo", "shutdown", "now"], check=True)
+                elif system == "Darwin":
+                    subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+                # Remove the command from Firebase after execution
+                db.child("shutdown_commands").child(local_serial).remove()
+                break  # Exit loop once shutdown is initiated
+        except Exception as e:
+            print(f"Error checking shutdown command: {e}")
+        time.sleep(60)  # Check every 60 seconds
 
 @app.route('/serial', methods=['GET'])
 def serial_api():
@@ -117,4 +152,7 @@ def update_temperature_api():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
+    # Start the Firebase shutdown listener in a background thread
+    listener_thread = threading.Thread(target=firebase_shutdown_listener, daemon=True)
+    listener_thread.start()
     app.run(host='0.0.0.0', port=3000)

@@ -27,8 +27,8 @@ import { useAdminAuth } from "../../../AdminAuthContext"
 import AdminPageHeader from "../adminpageheader"
 import KioskApprovalTab from "./kiosk-approval-tab"
 import axios from "axios"
-
-// Extend Totem interface to include serial and apiUrl from the kiosk record.
+import { ref, set } from "firebase/database";
+import { database } from '../../../components/firebaseConfig';// Extend Totem interface to include serial and apiUrl from the kiosk record.
 interface Totem {
   id: string                // e.g., "TM1"
   status: "online" | "offline"
@@ -113,23 +113,29 @@ const InteractiveTotemManagement: React.FC = () => {
   // New shutdown handler calling the kiosk's Python API using its serial number
   const handleShutdown = async (totem: Totem) => {
     try {
-      // Make a POST request to the kiosk's Python API endpoint for shutdown.
-      // The payload includes the kiosk's serial number.
-      await axios.post(`${totem.apiUrl}/shutdown`, { serialNumber: totem.serial })
-      // Upon successful shutdown command, update the UI to mark the kiosk as offline.
+      // Create a reference to the location in your database.
+      const shutdownRef = ref(database, `shutdown_commands/${totem.serial}`);
+      
+      // Write the shutdown command using the modular set() function.
+      await set(shutdownRef, {
+        command: "shutdown",
+        timestamp: Date.now()
+      });
+  
+      // Update the UI to mark the kiosk as offline.
       setTotems((prevTotems) =>
         prevTotems.map((t) =>
           t.id === totem.id ? { ...t, status: "offline", temperature: 0 } : t,
         ),
-      )
-      setAlertMessage(`Shutdown command sent to Totem ${totem.id}`)
-      setShowAlert(true)
+      );
+      setAlertMessage(`Shutdown command sent to Totem ${totem.id}`);
+      setShowAlert(true);
     } catch (error) {
-      console.error("Error shutting down totem:", error)
-      setAlertMessage(`Error shutting down Totem ${totem.id}`)
-      setShowAlert(true)
+      console.error("Error shutting down totem:", error);
+      setAlertMessage(`Error shutting down Totem ${totem.id}`);
+      setShowAlert(true);
     }
-  }
+  };
 
   // Handler for executing remote maintenance action
   const handleExecuteMaintenance = async () => {
