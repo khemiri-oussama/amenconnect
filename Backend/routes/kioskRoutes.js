@@ -5,7 +5,6 @@ const kioskController = require("../controllers/kioskController")
 
 // Custom endpoints
 router.post("/shutdown", kioskController.shutdownKiosk)
-router.get("/temperature", kioskController.getTemperature)
 router.get("/pending", kioskController.getPendingKiosks)
 router.post("/approve", kioskController.approveKiosk)
 router.post("/reject", kioskController.rejectKiosk)

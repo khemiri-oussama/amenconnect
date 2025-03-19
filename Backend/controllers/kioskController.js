@@ -205,10 +205,3 @@ exports.rejectKiosk = async (req, res) => {
   }
 }
 
-// Simulated endpoint for refreshing temperature data
-exports.getTemperature = (req, res) => {
-  // Generate a random temperature between 30°C and 50°C for simulation
-  const temperature = Math.floor(Math.random() * (50 - 30 + 1)) + 30
-  res.json({ temperature })
-}
-

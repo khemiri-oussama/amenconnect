@@ -51,4 +51,4 @@ const checkTotemStatus = async () => {
 };
 
 // Check every 10 seconds (adjust as needed)
-setInterval(checkTotemStatus, 10000);
+setInterval(checkTotemStatus, 1000);
