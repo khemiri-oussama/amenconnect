@@ -93,22 +93,39 @@ const InteractiveTotemManagement: React.FC = () => {
 
   // Handler for refreshing temperature for a specific totem
   const handleRefresh = async (totemId: string) => {
+    // Find the totem in the state using its UI identifier
+    const totem = totems.find((t) => t.id === totemId);
+    if (!totem) return;
+    
     try {
-      const response = await axios.get("/api/kiosk/temperature")
-      const newTemperature = response.data.temperature
+      // Query the totem's Python API to check online status via /serial endpoint.
+      const serialResponse = await axios.get(`${totem.apiUrl}/serial`, { timeout: 3000 });
+      let newStatus: "online" | "offline" = "offline";
+      if (serialResponse.status === 200 && serialResponse.data.serial_number) {
+        newStatus = "online";
+      }
+      
+      // If online, fetch the updated temperature from /temperature endpoint.
+      let newTemperature = 0;
+      if (newStatus === "online") {
+        const tempResponse = await axios.get(`${totem.apiUrl}/temperature`, { timeout: 3000 });
+        if (tempResponse.status === 200 && typeof tempResponse.data.temperature !== "undefined") {
+          newTemperature = tempResponse.data.temperature;
+        }
+      }
+      
+      // Update the state for that totem with the refreshed info.
       setTotems((prevTotems) =>
-        prevTotems.map((totem) =>
-          totem.id === totemId && totem.status === "online"
-            ? { ...totem, temperature: newTemperature }
-            : totem,
-        ),
-      )
+        prevTotems.map((t) =>
+          t.id === totemId ? { ...t, status: newStatus, temperature: newTemperature } : t
+        )
+      );
     } catch (error) {
-      console.error("Error refreshing temperature:", error)
-      setAlertMessage(`Error refreshing Totem ${totemId}`)
-      setShowAlert(true)
+      console.error("Error refreshing totem info:", error);
+      setAlertMessage(`Error refreshing Totem ${totemId}.`);
+      setShowAlert(true);
     }
-  }
+  };
 
   // New shutdown handler calling the kiosk's Python API using its serial number
   const handleShutdown = async (totem: Totem) => {
