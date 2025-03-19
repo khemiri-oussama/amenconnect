@@ -14,7 +14,7 @@ const checkTotemStatus = async () => {
       
       // Check if the kiosk is online using its serial endpoint
       try {
-        const serialResponse = await axios.get(`${kiosk.apiUrl}/serial`, { timeout: 3000 });
+        const serialResponse = await axios.get(`${kiosk.apiUrl}/serial`, { timeout: 5000 });
         if (serialResponse.status === 200 && serialResponse.data.serial_number) {
           online = true;
           if (kiosk.status !== 'online') {
@@ -32,7 +32,7 @@ const checkTotemStatus = async () => {
       // If online, also fetch the temperature
       if (online) {
         try {
-          const tempResponse = await axios.get(`${kiosk.apiUrl}/temperature`, { timeout: 3000 });
+          const serialResponse = await axios.get(`${kiosk.apiUrl}/serial`, { timeout: 5000 });
           if (tempResponse.status === 200 && typeof tempResponse.data.temperature !== 'undefined') {
             kiosk.temperature = tempResponse.data.temperature;
             statusChanged = true;
