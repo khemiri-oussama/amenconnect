@@ -1,0 +1,15 @@
+{
+  "_id": "67daaefcc4c2e82bf1652b1e",
+  "status": "offline",
+  "SN": "PF3KNEPH",
+  "version": "0",
+  "temperature": 0,
+  "location": "g",
+  "apiUrl": "http://192.168.1.106:3000/shutdow",
+  "agencyName": "Refused to connect to 'http://192.168.1.106:3000/shutdown' because it violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:3000 ws://localhost:3000 https://open.er-api.com http://127.0.0.1:3000 https://8x8.vc\".",
+  "enabled": true,
+  "createdAt": "2025-03-19T11:48:12.500Z",
+  "updatedAt": "2025-03-19T11:49:57.269Z",
+  "__v": 0,
+  "tote": "TM2"
+}

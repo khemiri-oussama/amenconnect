@@ -1,0 +1,15 @@
+{
+  "_id": "67dab8c81c518b39796f0d30",
+  "status": "offline",
+  "SN": "PF3KNEPHF",
+  "version": "0",
+  "temperature": 0,
+  "location": "df",
+  "apiUrl": "http://127.0.0.1:3000",
+  "agencyName": "curl -v -k -X POST \"http://192.168.1.106:3000/shutdown\" -H \"Content-Type: application/json\" -d \"{\\\"serialNumber\\\":\\\"PF3KNEPH\\\"}\"",
+  "enabled": true,
+  "createdAt": "2025-03-19T12:30:00.089Z",
+  "updatedAt": "2025-03-19T12:40:22.992Z",
+  "__v": 0,
+  "tote": "TM3"
+}
