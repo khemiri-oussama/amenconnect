@@ -80,15 +80,17 @@ const PermissionsManagement: React.FC = () => {
           }
           const data = await res.json()
           // Enhance logs with status based on level
-          const enhancedLogs = data.logs.map((log: AuditLogEntry) => {
-            let status: "success" | "warning" | "error" | "info" = "info"
+          const enhancedLogs = data.logs
+          .map((log: AuditLogEntry) => {
+            let status: "success" | "warning" | "error" | "info" = "info";
             if (typeof log.level === "string") {
-              if (log.level.toLowerCase().includes("error")) status = "error"
-              else if (log.level.toLowerCase().includes("warn")) status = "warning"
-              else if (log.level.toLowerCase().includes("success")) status = "success"
+              if (log.level.toLowerCase().includes("error")) status = "error";
+              else if (log.level.toLowerCase().includes("warn")) status = "warning";
+              else if (log.level.toLowerCase().includes("success")) status = "success";
             }
-            return { ...log, status }
+            return { ...log, status };
           })
+          .sort((a: { timestamp: string | number | Date }, b: { timestamp: string | number | Date }) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
           setAuditLogs(enhancedLogs)
         } catch (error) {
           console.error("Failed to fetch audit logs", error)
