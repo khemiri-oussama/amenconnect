@@ -19,14 +19,12 @@ const checkTotemStatus = async () => {
           online = true;
           if (kiosk.status !== 'online') {
             kiosk.status = 'online';
-            console.log(`Kiosk ${kiosk.SN} is online.`);
             statusChanged = true;
           }
         }
       } catch (error) {
         if (kiosk.status !== 'offline') {
           kiosk.status = 'offline';
-          console.log(`Kiosk ${kiosk.SN} is offline.`);
           statusChanged = true;
         }
       }
@@ -37,11 +35,9 @@ const checkTotemStatus = async () => {
           const tempResponse = await axios.get(`${kiosk.apiUrl}/temperature`, { timeout: 3000 });
           if (tempResponse.status === 200 && typeof tempResponse.data.temperature !== 'undefined') {
             kiosk.temperature = tempResponse.data.temperature;
-            console.log(`Updated temperature for kiosk ${kiosk.SN} to ${tempResponse.data.temperature}°C`);
             statusChanged = true;
           }
         } catch (error) {
-          console.error(`Error fetching temperature for kiosk ${kiosk.SN}: ${error.message}`);
         }
       }
       
@@ -51,9 +47,8 @@ const checkTotemStatus = async () => {
       }
     }
   } catch (err) {
-    console.error("Error checking kiosks:", err.message);
   }
 };
 
 // Check every 10 seconds (adjust as needed)
-setInterval(checkTotemStatus, 10000);
+setInterval(checkTotemStatus, 1000);
