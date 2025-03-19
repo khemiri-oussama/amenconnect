@@ -4,28 +4,50 @@ const Kiosk = require('./models/Kiosk');
 
 const checkTotemStatus = async () => {
   try {
-    // Retrieve all kiosks that are enabled (or whichever criteria applies)
+    // Retrieve all enabled kiosks
     const kiosks = await Kiosk.find({ enabled: true });
     
-    // Loop over each kiosk and check its API endpoint
+    // Loop over each kiosk and check its API endpoints
     for (const kiosk of kiosks) {
+      let statusChanged = false;
+      let online = false;
+      
+      // Check if the kiosk is online using its serial endpoint
       try {
-        // Use the kiosk's stored API URL
-        const response = await axios.get(`${kiosk.apiUrl}/serial`, { timeout: 3000 });
-        if (response.status === 200 && response.data.serial_number) {
+        const serialResponse = await axios.get(`${kiosk.apiUrl}/serial`, { timeout: 3000 });
+        if (serialResponse.status === 200 && serialResponse.data.serial_number) {
+          online = true;
           if (kiosk.status !== 'online') {
             kiosk.status = 'online';
-            await kiosk.save();
             console.log(`Kiosk ${kiosk.SN} is online.`);
+            statusChanged = true;
           }
         }
       } catch (error) {
-        // If request fails, mark the kiosk as offline
         if (kiosk.status !== 'offline') {
           kiosk.status = 'offline';
-          await kiosk.save();
           console.log(`Kiosk ${kiosk.SN} is offline.`);
+          statusChanged = true;
         }
+      }
+      
+      // If online, also fetch the temperature
+      if (online) {
+        try {
+          const tempResponse = await axios.get(`${kiosk.apiUrl}/temperature`, { timeout: 3000 });
+          if (tempResponse.status === 200 && typeof tempResponse.data.temperature !== 'undefined') {
+            kiosk.temperature = tempResponse.data.temperature;
+            console.log(`Updated temperature for kiosk ${kiosk.SN} to ${tempResponse.data.temperature}°C`);
+            statusChanged = true;
+          }
+        } catch (error) {
+          console.error(`Error fetching temperature for kiosk ${kiosk.SN}: ${error.message}`);
+        }
+      }
+      
+      // Save changes if any were made
+      if (statusChanged) {
+        await kiosk.save();
       }
     }
   } catch (err) {
