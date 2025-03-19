@@ -33,6 +33,7 @@
     "crypto-json": "^2.0.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "firebase": "^11.4.0",
     "framer-motion": "^12.4.7",
     "html5-qrcode": "^2.3.8",
     "ionicons": "^7.4.0",
