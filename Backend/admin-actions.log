@@ -128,3 +128,9 @@
 {"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-03-19T13:28:57.698Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"b96ba47e6077faf1423edd4e9b58550c","timestamp":"2025-03-19T13:29:18.656Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-03-19T13:29:18.784Z"}
+{"error":"E11000 duplicate key error collection: client.kiosks index: tote_1 dup key: { tote: \"TM3\" }","kioskId":"67dacd1824a35e58f0d029c9","level":"error","message":"Approve kiosk error","timestamp":"2025-03-19T13:56:52.525Z"}
+{"error":"E11000 duplicate key error collection: client.kiosks index: tote_1 dup key: { tote: \"TM3\" }","kioskId":"67dacd1824a35e58f0d029c9","level":"error","message":"Approve kiosk error","timestamp":"2025-03-19T13:56:57.619Z"}
+{"error":"E11000 duplicate key error collection: client.kiosks index: tote_1 dup key: { tote: \"TM3\" }","kioskId":"67dacd1824a35e58f0d029c9","level":"error","message":"Approve kiosk error","timestamp":"2025-03-19T13:57:41.250Z"}
+{"kioskId":"67dacd1824a35e58f0d029c9","level":"info","message":"Kiosk approved successfully","timestamp":"2025-03-19T13:58:12.406Z","tote":"TM3"}
+{"error":"saveKioskFile is not defined","kioskId":"67dacd1824a35e58f0d029c9","level":"error","message":"Approve kiosk error","timestamp":"2025-03-19T13:58:12.408Z"}
+{"kioskId":"67dacd1824a35e58f0d029c9","level":"info","message":"Kiosk approved successfully","timestamp":"2025-03-19T13:58:46.025Z","tote":"TM3"}
