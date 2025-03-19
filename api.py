@@ -7,6 +7,7 @@ import requests
 import time
 import pyrebase
 import threading    # Install via: pip install pyrebase4
+import webbrowser
 
 app = Flask(__name__)
 CORS(app)
@@ -150,9 +151,16 @@ def update_temperature_api():
         }), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
+def open_browser():
+    # Wait a short period to ensure the server is up
+    time.sleep(1)
+    webbrowser.open("https://localhost:8200/home")
+    
 if __name__ == '__main__':
     # Start the Firebase shutdown listener in a background thread
     listener_thread = threading.Thread(target=firebase_shutdown_listener, daemon=True)
     listener_thread.start()
+
+    browser_thread = threading.Thread(target=open_browser, daemon=True)
+    browser_thread.start()
     app.run(host='0.0.0.0', port=3000)
