@@ -2,9 +2,9 @@
 const express = require("express")
 const router = express.Router()
 const kioskController = require("../controllers/kioskController")
-
+const adminpassport = require('../config/adminPassport');
 // Custom endpoints
-router.post("/shutdown", kioskController.shutdownKiosk)
+router.post("/shutdown", adminpassport.authenticate('admin-jwt', { session: false }), kioskController.shutdownTotem);
 router.get("/pending", kioskController.getPendingKiosks)
 router.post("/approve", kioskController.approveKiosk)
 router.post("/reject", kioskController.rejectKiosk)

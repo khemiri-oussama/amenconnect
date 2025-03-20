@@ -128,31 +128,29 @@ const InteractiveTotemManagement: React.FC = () => {
   };
 
   // New shutdown handler calling the kiosk's Python API using its serial number
-  const handleShutdown = async (totem: Totem) => {
-    try {
-      // Create a reference to the location in your database.
-      const shutdownRef = ref(database, `shutdown_commands/${totem.serial}`);
-      
-      // Write the shutdown command using the modular set() function.
-      await set(shutdownRef, {
-        command: "shutdown",
-        timestamp: Date.now()
-      });
-  
-      // Update the UI to mark the kiosk as offline.
-      setTotems((prevTotems) =>
-        prevTotems.map((t) =>
-          t.id === totem.id ? { ...t, status: "offline", temperature: 0 } : t,
-        ),
-      );
-      setAlertMessage(`Shutdown command sent to Totem ${totem.id}`);
-      setShowAlert(true);
-    } catch (error) {
-      console.error("Error shutting down totem:", error);
-      setAlertMessage(`Error shutting down Totem ${totem.id}`);
-      setShowAlert(true);
-    }
-  };
+// In your InteractiveTotemManagement component
+const handleShutdown = async (totem: Totem) => {
+  try {
+    // Call your backend shutdown API instead of Firebase directly.
+    const response = await axios.post("/api/kiosk/shutdown", {
+      totemId: totem.id,
+    });
+    
+    // Optionally update your UI state.
+    setTotems((prevTotems) =>
+      prevTotems.map((t) =>
+        t.id === totem.id ? { ...t, status: "offline", temperature: 0 } : t
+      )
+    );
+    setAlertMessage(response.data.message || `Shutdown command sent to Totem ${totem.id}`);
+    setShowAlert(true);
+  } catch (error) {
+    console.error("Error shutting down totem:", error);
+    setAlertMessage(`Error shutting down Totem ${totem.id}`);
+    setShowAlert(true);
+  }
+};
+
 
   // Handler for executing remote maintenance action
   const handleExecuteMaintenance = async () => {

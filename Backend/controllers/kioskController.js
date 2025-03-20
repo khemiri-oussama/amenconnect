@@ -1,7 +1,7 @@
 //controllers/kioskController.js
 const Kiosk = require("../models/Kiosk")
 const logger = require('../config/logger');
-
+const admin = require("../config/firebaseAdmin");
 // GET all kiosks
 exports.getKiosks = async (req, res) => {
   try {
@@ -63,41 +63,43 @@ exports.deleteKiosk = async (req, res) => {
 }
 
 // Shutdown a kiosk
-exports.shutdownKiosk = async (req, res) => {
-  const { totemId } = req.body
+exports.shutdownTotem = async (req, res) => {
+  const { totemId } = req.body;
   if (!totemId) {
-    return res.status(400).json({ error: "Totem ID is required for shutdown." })
+    return res.status(400).json({ error: "Totem ID is required for shutdown." });
   }
 
   try {
     // Find the kiosk using the provided totemId (stored in the "tote" field)
-    const kiosk = await Kiosk.findOne({ tote: totemId })
+    const kiosk = await Kiosk.findOne({ tote: totemId });
     if (!kiosk) {
-      return res.status(404).json({ error: "Kiosk not found." })
+      return res.status(404).json({ error: "Kiosk not found." });
     }
 
-    // Check if the kiosk is online before proceeding
+    // Check if the kiosk is already offline
     if (kiosk.status !== "online") {
-      return res.status(400).json({ error: "Kiosk is already offline." })
+      return res.status(400).json({ error: "Kiosk is already offline." });
     }
 
-    // Update kiosk status to offline and reset temperature
-    kiosk.status = "offline"
-    kiosk.temperature = 0
-    await kiosk.save()
+    // Create a reference to the shutdown command in Firebase using the kiosk's serial number.
+    const shutdownRef = admin.database().ref(`shutdown_commands/${kiosk.SN}`);
 
-    // Get the Socket.IO instance from the app locals
-    const io = req.app.locals.io
+    // Write the shutdown command.
+    await shutdownRef.set({
+      command: "shutdown",
+      timestamp: Date.now()
+    });
 
-    // Emit a shutdown command to the room identified by the kiosk's totemId.
-    io.to(totemId).emit("shutdownCommand", { message: "Shutdown your device" })
+    // Update kiosk status to offline and reset temperature.
+    kiosk.status = "offline";
+    kiosk.temperature = 0;
+    await kiosk.save();
 
-    res.json({ message: "Shutdown command sent and status updated to offline." })
+    res.json({ message: `Shutdown command sent to Totem ${totemId}` });
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
-}
-
+};
 // Get pending kiosks (enabled = false)
 exports.getPendingKiosks = async (req, res) => {
   try {
