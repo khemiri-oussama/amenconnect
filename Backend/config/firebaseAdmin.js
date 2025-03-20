@@ -1,6 +1,6 @@
 // firebaseAdmin.js
 const admin = require('firebase-admin');
-const serviceAccount = require('./serviceaccountfile.json'); // Update with the correct path
+const serviceAccount = require('./kiosk-b8f76-firebase-adminsdk-fbsvc-aa64e250f6.json'); // Update with the correct path
 
 if (!admin.apps.length) {
   admin.initializeApp({
