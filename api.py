@@ -6,29 +6,46 @@ import re
 import requests
 import time
 import pyrebase
-import threading    # Install via: pip install pyrebase4
+import threading
+import socketio  # Install via: pip install "python-socketio[client]"
 
 app = Flask(__name__)
 CORS(app)
+
+# Firebase configuration (update with your actual project details)
 firebase_config = {
     "apiKey": "AIzaSyD0qjnrDLjAs0BGQavFuvV7zQhgJ6ijos0",
     "authDomain": "kiosk-b8f76.firebaseapp.com",
     "databaseURL": "https://kiosk-b8f76-default-rtdb.firebaseio.com",
     "storageBucket": "kiosk-b8f76.firebasestorage.app",
 }
+
+# Socket.IO client for sending heartbeat events to the Node.js backend.
+sio = socketio.Client()
+NODE_BACKEND_URL = "http://localhost:3000"
+
 def get_serial_number():
     system = platform.system()
     try:
         if system == "Windows":
-            output = subprocess.check_output(["wmic", "bios", "get", "serialnumber"], universal_newlines=True)
+            output = subprocess.check_output(
+                ["wmic", "bios", "get", "serialnumber"],
+                universal_newlines=True
+            )
             lines = [line.strip() for line in output.splitlines() if line.strip()]
             serial_lines = [line for line in lines if line.lower() != "serialnumber"]
             serial = serial_lines[0] if serial_lines else "Unknown or not available"
         elif system == "Linux":
-            output = subprocess.check_output(["sudo", "dmidecode", "-s", "system-serial-number"], universal_newlines=True)
+            output = subprocess.check_output(
+                ["sudo", "dmidecode", "-s", "system-serial-number"],
+                universal_newlines=True
+            )
             serial = output.strip()
         elif system == "Darwin":
-            output = subprocess.check_output(["system_profiler", "SPHardwareDataType"], universal_newlines=True)
+            output = subprocess.check_output(
+                ["system_profiler", "SPHardwareDataType"],
+                universal_newlines=True
+            )
             match = re.search(r"Serial Number.*: (.+)", output)
             serial = match.group(1).strip() if match else "Unknown"
         else:
@@ -43,7 +60,6 @@ def get_temperature():
     This command queries the GPU temperature in Celsius.
     """
     try:
-        # Run the command to get the GPU temperature.
         output = subprocess.check_output(
             ["nvidia-smi", "--query-gpu=temperature.gpu", "--format=csv,noheader,nounits"],
             universal_newlines=True
@@ -71,7 +87,6 @@ def shutdown_api():
     if provided_serial != local_serial:
         return jsonify({"error": "Serial number mismatch."}), 403
 
-    # Firebase configuration - update with your actual project details.
     firebase = pyrebase.initialize_app(firebase_config)
     db = firebase.database()
     
@@ -83,7 +98,7 @@ def shutdown_api():
     try:
         # Write the shutdown command under the node 'shutdown_commands/<local_serial>'.
         db.child("shutdown_commands").child(local_serial).set(shutdown_data)
-        exit()
+        exit()  # Immediately exit after issuing the shutdown command.
         print("Shutdown command return code:")
         return jsonify({"message": f"Shutdown command sent to serial {local_serial} via Firebase."}), 200
     except Exception as e:
@@ -95,10 +110,9 @@ def firebase_shutdown_listener():
     local_serial = get_serial_number()
     while True:
         try:
-            # Check for shutdown command under this kiosk's serial number
+            # Check for shutdown command under this kiosk's serial number.
             command = db.child("shutdown_commands").child(local_serial).get().val()
             if command and command.get("command") == "shutdown":
-                # Determine OS and execute shutdown command
                 system = platform.system()
                 if system == "Windows":
                     subprocess.run(["shutdown", "/s", "/t", "0"], shell=True)
@@ -106,12 +120,12 @@ def firebase_shutdown_listener():
                     subprocess.run(["sudo", "shutdown", "now"], check=True)
                 elif system == "Darwin":
                     subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
-                # Remove the command from Firebase after execution
+                # Remove the command from Firebase after execution.
                 db.child("shutdown_commands").child(local_serial).remove()
-                break  # Exit loop once shutdown is initiated
+                break  # Exit loop once shutdown is initiated.
         except Exception as e:
             print(f"Error checking shutdown command: {e}")
-        time.sleep(60)  # Check every 60 seconds
+        time.sleep(60)  # Check every 60 seconds.
 
 @app.route('/serial', methods=['GET'])
 def serial_api():
@@ -138,7 +152,6 @@ def update_temperature_api():
         "temperature": temp
     }
 
-    # Replace with your Node.js backend endpoint.
     node_backend_url = "http://localhost:3000/api/kiosk/update-temperature"
 
     try:
@@ -150,10 +163,38 @@ def update_temperature_api():
         }), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+def send_heartbeat():
+    """Send heartbeat with serial and temperature using the Socket.IO client."""
+    while True:
+        serial = get_serial_number()
+        temperature = get_temperature()
+        payload = {
+            "serialNumber": serial,
+            "temperature": temperature
+        }
+        try:
+            sio.emit("heartbeat", payload)
+            print("Heartbeat sent:", payload)
+        except Exception as e:
+            print("Error sending heartbeat:", e)
+        time.sleep(5)  # Send heartbeat every 10 seconds.
+
 if __name__ == '__main__':
-    # Start the Firebase shutdown listener in a background thread
+    # Connect to the Node.js backend for socket communication.
+    try:
+        sio.connect(NODE_BACKEND_URL)
+        print("Connected to Node backend via Socket.IO")
+    except Exception as e:
+        print("Failed to connect to Node backend via Socket.IO:", e)
+
+    # Start the Firebase shutdown listener in a background thread.
     listener_thread = threading.Thread(target=firebase_shutdown_listener, daemon=True)
     listener_thread.start()
 
+    # Start the heartbeat thread.
+    heartbeat_thread = threading.Thread(target=send_heartbeat, daemon=True)
+    heartbeat_thread.start()
+
+    # Run the Flask app.
     app.run(host='0.0.0.0', port=3000)
