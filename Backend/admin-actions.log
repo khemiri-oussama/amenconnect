@@ -185,3 +185,43 @@
 {"email":"khemirioussama00@gmail.com","level":"warn","message":"Invalid login attempt: wrong password","timestamp":"2025-03-21T00:01:18.383Z"}
 {"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T00:46:35.270Z"}
 {"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T00:46:36.915Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T01:32:31.102Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T01:32:32.711Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T01:33:29.245Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T01:33:31.788Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-21T01:34:15.986Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Invalid login attempt: wrong password","timestamp":"2025-03-21T01:34:16.146Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-21T01:34:16.577Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Invalid login attempt: wrong password","timestamp":"2025-03-21T01:34:16.727Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T01:34:31.833Z"}
+{"email":"khemirioussama00@gmail.com","error":{},"level":"error","message":"Error sending password reset email","timestamp":"2025-03-21T01:34:51.124Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T01:34:55.518Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T01:34:58.966Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-21T01:35:25.286Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Invalid login attempt: wrong password","timestamp":"2025-03-21T01:35:25.422Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-21T01:35:25.897Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Invalid login attempt: wrong password","timestamp":"2025-03-21T01:35:26.344Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Reset password failed: Invalid or expired token","timestamp":"2025-03-21T01:41:45.711Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T01:41:54.862Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T01:41:57.190Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Reset password failed: Invalid or expired token","timestamp":"2025-03-21T01:42:28.061Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Reset password failed: Invalid or expired token","timestamp":"2025-03-21T01:43:05.106Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Reset password failed: Invalid or expired token","timestamp":"2025-03-21T01:43:19.725Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Reset password failed: Invalid or expired token","timestamp":"2025-03-21T01:43:28.701Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset successfully","timestamp":"2025-03-21T01:45:34.337Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T01:46:02.321Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T01:46:04.895Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset successfully","timestamp":"2025-03-21T01:46:22.467Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-21T01:46:38.695Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Invalid login attempt: wrong password","timestamp":"2025-03-21T01:46:39.184Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-21T01:46:40.436Z"}
+{"email":"khemirioussama00@gmail.com","level":"warn","message":"Invalid login attempt: wrong password","timestamp":"2025-03-21T01:46:40.582Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T01:56:37.912Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T01:56:40.071Z"}
+{"error":{},"level":"error","message":"Reset password error","timestamp":"2025-03-21T01:59:25.129Z"}
+{"error":{},"level":"error","message":"Reset password error","timestamp":"2025-03-21T01:59:49.022Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T02:01:50.357Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T02:01:51.824Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T02:07:43.350Z"}
+{"email":"khemirioussama00@gmail.com","error":{},"level":"error","message":"Error sending password reset email","timestamp":"2025-03-21T02:08:19.614Z"}
+{"error":{"beforeHandshake":false,"connectionGeneration":7,"errorLabelSet":{}},"level":"error","message":"Reset password error","timestamp":"2025-03-21T16:25:09.547Z"}

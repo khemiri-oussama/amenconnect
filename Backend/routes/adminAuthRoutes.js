@@ -21,4 +21,5 @@ module.exports = router;
 
 router.put('/:id', adminAuthMiddleware, adminAuthController.updateAdmin);
 
-router.post('/reset',adminAuthController.forgotPassword);
+router.post('/reset',adminAuthController.resetPassword);
+router.post('/forget',adminAuthController.forgotPassword);

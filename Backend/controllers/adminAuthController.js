@@ -649,24 +649,26 @@ const sendAdminResetPasswordEmail = async (email, resetUrl) => {
 exports.resetPassword = async (req, res) => {
   const { email, token, newPassword } = req.body;
   try {
-    const admin = await Admin.findOne({
-      email,
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }
-    });
-
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const admin = await Admin.findOneAndUpdate(
+      {
+        email,
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() }
+      },
+      {
+        password: hashedNewPassword,
+        resetPasswordToken: undefined,
+        resetPasswordExpires: undefined
+      },
+      { new: true, runValidators: true }
+    );
+    
+    // Check if a matching admin was found
     if (!admin) {
-      logger.warn('Reset password failed: Invalid or expired token', { email });
       return res.status(400).json({ message: "Invalid or expired reset token." });
     }
-
-    // Hash the new password and update the admin's password
-    admin.password = await bcrypt.hash(newPassword, 10);
-    // Clear the reset token fields
-    admin.resetPasswordToken = undefined;
-    admin.resetPasswordExpires = undefined;
-    await admin.save();
-
+    
     logger.info('Password reset successfully', { adminId: admin._id });
     res.json({ message: "Password has been reset successfully." });
   } catch (err) {
