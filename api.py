@@ -190,14 +190,14 @@ def update_temperature_api():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-def keep_online(interval=30):
+def keep_online(interval=5):
     """
     Background task that continuously sets the kiosk's status to "online"
-    with an updated timestamp. This ensures that as long as the Flask app is
-    running, the kiosk will be marked online in the database.
+    with an updated timestamp and current temperature.
     """
     while True:
-        update_kiosk_status("online", {"last_heartbeat": time.time()})
+        current_temp = get_temperature()
+        update_kiosk_status("online", {"last_heartbeat": time.time(), "temperature": current_temp})
         time.sleep(interval)
 
 if __name__ == '__main__':
