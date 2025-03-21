@@ -8,6 +8,8 @@ router.post("/shutdown", adminpassport.authenticate('admin-jwt', { session: fals
 router.get("/pending", kioskController.getPendingKiosks)
 router.post("/approve", kioskController.approveKiosk)
 router.post("/reject", kioskController.rejectKiosk)
+// Diagnostic endpoint to fetch system diagnostics via the Flask app
+router.post("/diagnostic", adminpassport.authenticate('admin-jwt', { session: false }), kioskController.runDiagnostic);
 
 // CRUD endpoints
 router.get("/", kioskController.getKiosks)
