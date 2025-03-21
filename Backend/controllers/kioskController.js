@@ -2,6 +2,8 @@
 const Kiosk = require("../models/Kiosk")
 const logger = require('../config/logger');
 const admin = require("../config/firebaseAdmin");
+const axios = require('axios');
+
 // GET all kiosks
 exports.getKiosks = async (req, res) => {
   try {
@@ -193,4 +195,22 @@ exports.rejectKiosk = async (req, res) => {
   }
 };
 
+exports.runDiagnostic = async (req, res) => {
+  try {
+    const { serialNumber } = req.body;
+    if (!serialNumber) {
+      return res.status(400).json({ error: "Serial number is required for diagnostic." });
+    }
 
+    // Replace the URL with your Flask app URL if different.
+    const flaskDiagnosticUrl = "http://127.0.0.1:3000/diagnostic";
+
+    // Forward the request to the Flask diagnostic endpoint.
+    const response = await axios.post(flaskDiagnosticUrl, { serialNumber });
+
+    // Return the diagnostic data received from the Flask endpoint.
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -185,6 +185,11 @@
 {"email":"khemirioussama00@gmail.com","level":"warn","message":"Invalid login attempt: wrong password","timestamp":"2025-03-21T00:01:18.383Z"}
 {"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T00:46:35.270Z"}
 {"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T00:46:36.915Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-21T02:55:45.270Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-03-21T02:55:45.835Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-03-21T02:55:47.470Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"5538a7124fd71271d955e52c1919ed0e","timestamp":"2025-03-21T02:55:55.743Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-03-21T02:55:55.827Z"}
 {"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T01:32:31.102Z"}
 {"email":"khemirioussama00@gmail.com","level":"info","message":"Password reset email sent","timestamp":"2025-03-21T01:32:32.711Z"}
 {"adminId":"67cec467625e2d46982a197f","level":"info","message":"Password reset token generated","timestamp":"2025-03-21T01:33:29.245Z"}

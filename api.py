@@ -8,6 +8,9 @@ import time
 import pyrebase
 import threading
 from pymongo import MongoClient
+import os
+import shutil
+import psutil
 
 app = Flask(__name__)
 CORS(app)
@@ -204,7 +207,7 @@ def update_temperature_api():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-def keep_online(interval=1):
+def keep_online(interval=5):
     """
     Background task that continuously sets the kiosk's status to "online"
     with an updated timestamp and current temperature.
@@ -213,6 +216,87 @@ def keep_online(interval=1):
         current_temp = get_temperature()
         update_kiosk_status("online", {"last_heartbeat": time.time(), "temperature": current_temp})
         time.sleep(interval)
+
+@app.route('/diagnostic', methods=['POST'])
+def diagnostic_api():
+    """
+    Performs a detailed diagnostic check on the computer but only if the provided serial number matches.
+    """
+    try:
+        data = request.get_json()
+        provided_serial = data.get("serialNumber")
+
+        if not provided_serial:
+            return jsonify({"error": "Serial number is required."}), 400
+
+        local_serial = get_serial_number()
+        if provided_serial != local_serial:
+            return jsonify({"error": "Serial number mismatch."}), 403
+
+        # Basic system information
+        diagnostic = {
+            "os": platform.system(),
+            "os_version": platform.version(),
+            "platform": platform.platform(),
+            "architecture": platform.machine(),
+            "serial_number": local_serial,
+            "cpu_count": os.cpu_count(),
+            "cpu_usage_percent": psutil.cpu_percent(interval=1),
+            "cpu_frequency": psutil.cpu_freq()._asdict() if psutil.cpu_freq() else {},
+        }
+
+        # Memory metrics
+        virtual_mem = psutil.virtual_memory()
+        diagnostic["memory"] = {
+            "total_gb": round(virtual_mem.total / (1024**3), 2),
+            "available_gb": round(virtual_mem.available / (1024**3), 2),
+            "used_gb": round(virtual_mem.used / (1024**3), 2),
+            "percent": virtual_mem.percent,
+        }
+
+        # Disk usage metrics
+        partitions = psutil.disk_partitions()
+        disk_info = {}
+        for partition in partitions:
+            try:
+                usage = psutil.disk_usage(partition.mountpoint)
+                disk_info[partition.mountpoint] = {
+                    "total_gb": round(usage.total / (1024**3), 2),
+                    "used_gb": round(usage.used / (1024**3), 2),
+                    "free_gb": round(usage.free / (1024**3), 2),
+                    "percent": usage.percent,
+                }
+            except Exception as e:
+                disk_info[partition.mountpoint] = {"error": str(e)}
+        diagnostic["disk_usage"] = disk_info
+
+        # GPU temperature (if available)
+        diagnostic["gpu_temperature"] = get_temperature()
+
+        # Uptime
+        diagnostic["uptime_seconds"] = round(time.time() - psutil.boot_time(), 2)
+
+        # Network I/O statistics
+        net_io = psutil.net_io_counters()
+        diagnostic["network"] = {
+            "bytes_sent": net_io.bytes_sent,
+            "bytes_recv": net_io.bytes_recv,
+            "packets_sent": net_io.packets_sent,
+            "packets_recv": net_io.packets_recv,
+        }
+
+        # Load average
+        if hasattr(os, "getloadavg"):
+            load1, load5, load15 = os.getloadavg()
+            diagnostic["load_average"] = {"1min": load1, "5min": load5, "15min": load15}
+        else:
+            diagnostic["load_average"] = "Not available on this system"
+
+        return jsonify(diagnostic)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     # Start the Firebase shutdown listener in a background thread.
