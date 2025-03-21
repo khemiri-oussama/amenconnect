@@ -89,9 +89,6 @@ def update_kiosk_status(new_status, additional_fields=None):
 
 @app.route('/shutdown', methods=['POST'])
 def shutdown_api():
-    """
-    Issues a shutdown command via Firebase after verifying the provided serial number.
-    """
     data = request.get_json()
     provided_serial = data.get("serialNumber")
     
@@ -103,7 +100,7 @@ def shutdown_api():
         return jsonify({"error": "Serial number mismatch."}), 403
 
     firebase = pyrebase.initialize_app(firebase_config)
-    db_fb = firebase.database()
+    db_fb = firebase.database()  # Use this variable for Firebase calls
     
     shutdown_data = {
         "command": "shutdown",
@@ -111,8 +108,8 @@ def shutdown_api():
     }
 
     try:
-        # Write the shutdown command under the node 'shutdown_commands/<local_serial>'.
-        db.child("shutdown_commands").child(local_serial).set(shutdown_data)
+        # Use db_fb instead of db
+        db_fb.child("shutdown_commands").child(local_serial).set(shutdown_data)
         exit()  
         print("Shutdown command return code:")
         return jsonify({"message": f"Shutdown command sent to serial {local_serial} via Firebase."}), 200
@@ -120,23 +117,21 @@ def shutdown_api():
         return jsonify({"error": str(e)}), 500
 
 
+
+
 def firebase_shutdown_listener():
-    """
-    Listens for shutdown commands from Firebase and executes a system shutdown when received.
-    """
     firebase = pyrebase.initialize_app(firebase_config)
-    db_fb = firebase.database()
+    db_fb = firebase.database()  # Use this variable for Firebase calls
     local_serial = get_serial_number()
     print(f"Firebase shutdown listener started for serial {local_serial}")
     
     while True:
         try:
-            command_data = db.child("shutdown_commands").child(local_serial).get().val()
+            command_data = db_fb.child("shutdown_commands").child(local_serial).get().val()
             if command_data and command_data.get("command") == "shutdown":
                 command_timestamp = command_data.get("timestamp")
                 current_time = time.time()
                 
-                # Convert command_timestamp to seconds if it appears to be in milliseconds
                 if command_timestamp and command_timestamp > 1e12:
                     command_timestamp = command_timestamp / 1000
                     
@@ -144,7 +139,7 @@ def firebase_shutdown_listener():
                 
                 if command_timestamp and (current_time - command_timestamp) > 20:
                     print("Found an old shutdown command. Removing it.")
-                    db.child("shutdown_commands").child(local_serial).remove()
+                    db_fb.child("shutdown_commands").child(local_serial).remove()
                 else:
                     system = platform.system()
                     print(f"Initiating shutdown for {system} based on recent command.")
@@ -154,11 +149,12 @@ def firebase_shutdown_listener():
                         subprocess.run(["sudo", "shutdown", "now"], check=True)
                     elif system == "Darwin":
                         subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
-                    db.child("shutdown_commands").child(local_serial).remove()
+                    db_fb.child("shutdown_commands").child(local_serial).remove()
                     break 
         except Exception as e:
             print(f"Error checking shutdown command: {e}")
         time.sleep(10)
+
 
 
 @app.route('/serial', methods=['GET'])

@@ -45,7 +45,7 @@ const ChatBot = lazy(() => import('./pages/Client/chatBot/chatBot'));
 const Virement = lazy(() => import('./pages/Client/virement/virement'));
 const ProfileMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/ProfileMobile'));
 const SecuritySettingsMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/SecuritySettingsMobile'));
-
+const ResetPasswordAdmin =  lazy(() => import('./pages/AdminForgetPassword/ResetPassword'));
 // Lazy load admin pages
 const AdminLogin = lazy(() => import('./pages/AdminLogin/AdminLogin'));
 const AdminOtp = lazy (() => import('./pages/AdminOtp/AdminOtp'));
@@ -69,6 +69,7 @@ const AppContent: React.FC = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <IonRouterOutlet>
           {/* Public Routes */}
+          <Route exact path="/admin/reset-password" component={ResetPasswordAdmin}/>
           <Route exact path="/home" component={Home} />
           <Route exact path="/setup" component={KioskSetup}/>
           <Route exact path="/login" component={Login} />
