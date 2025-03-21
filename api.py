@@ -208,7 +208,7 @@ def update_temperature_api():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-def keep_online(interval=5):
+def keep_online(interval=3):
     """
     Background task that continuously sets the kiosk's status to "online"
     with an updated timestamp and current temperature.

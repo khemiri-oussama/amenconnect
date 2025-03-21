@@ -1,54 +1,25 @@
-// monitorTotems.js
-const axios = require('axios');
 const Kiosk = require('./models/Kiosk');
 
 const checkTotemStatus = async () => {
   try {
     // Retrieve all enabled kiosks
     const kiosks = await Kiosk.find({ enabled: true });
-    
-    // Loop over each kiosk and check its API endpoints
+    const now = Date.now() / 1000; // current time in seconds
+
     for (const kiosk of kiosks) {
-      let statusChanged = false;
-      let online = false;
-      
-      // Check if the kiosk is online using its serial endpoint
-      try {
-        const serialResponse = await axios.get(`${kiosk.apiUrl}/serial`, { timeout: 5000 });
-        if (serialResponse.status === 200 && serialResponse.data.serial_number) {
-          online = true;
-          if (kiosk.status !== 'online') {
-            kiosk.status = 'online';
-            statusChanged = true;
-          }
-        }
-      } catch (error) {
-        if (kiosk.status !== 'offline') {
-          kiosk.status = 'offline';
-          statusChanged = true;
-        }
-      }
-      
-      // If online, also fetch the temperature
-      if (online) {
-        try {
-          const serialResponse = await axios.get(`${kiosk.apiUrl}/serial`, { timeout: 5000 });
-          if (tempResponse.status === 200 && typeof tempResponse.data.temperature !== 'undefined') {
-            kiosk.temperature = tempResponse.data.temperature;
-            statusChanged = true;
-          }
-        } catch (error) {
-        }
-      }
-      
-      // Save changes if any were made
-      if (statusChanged) {
+      const lastHeartbeat = kiosk.last_heartbeat || kiosk.lastHeartbeat || 0;
+      // Use a threshold of 15 seconds instead of 10 seconds.
+      if (now - lastHeartbeat > 15 && kiosk.status !== 'offline') {
+        kiosk.status = 'offline';
+        kiosk.temperature = 0; // Optionally reset temperature
         await kiosk.save();
+        console.log(`Kiosk ${kiosk.SN} marked as offline due to heartbeat timeout.`);
       }
     }
   } catch (err) {
+    console.error('Error checking totem status:', err);
   }
 };
 
-// Check every 10 seconds (adjust as needed)
-setInterval(checkTotemStatus, 1000);
+setInterval(checkTotemStatus, 10000);
+
