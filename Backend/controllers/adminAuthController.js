@@ -561,3 +561,116 @@ exports.updateAdmin = async (req, res) => {
   }
 };
 
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      logger.warn('Forgot password failed: admin not found', { email });
+      // For security, you might want to return a generic message
+      return res.status(400).json({ message: "If the email exists, a reset link has been sent." });
+    }
+
+    // Generate a reset token (valid for 10 minutes)
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    const resetTokenExpires = Date.now() + 10 * 60 * 1000;
+
+    // Store the token and its expiry in the admin document
+    admin.resetPasswordToken = resetToken;
+    admin.resetPasswordExpires = resetTokenExpires;
+    await admin.save();
+    logger.info('Password reset token generated', { adminId: admin._id });
+
+    // Generate reset URL (adjust the URL to your frontend route)
+    const resetUrl = `https://localhost:8200/admin/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+
+    // Send the reset password email
+    try {
+      await sendAdminResetPasswordEmail(email, resetUrl);
+      logger.info('Password reset email sent', { email });
+    } catch (emailError) {
+      logger.error('Error sending password reset email', { email, error: emailError });
+      return res.status(500).json({ message: "Error sending reset email. Please try again later." });
+    }
+
+    res.json({ message: "If the email exists, a reset link has been sent." });
+  } catch (err) {
+    logger.error('Forgot password error', { error: err });
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+// Helper: Generate HTML for reset password email
+const generateAdminResetPasswordEmailHTML = (resetUrl) => {
+  return `
+  <!DOCTYPE html>
+  <html lang="fr">
+  <head>
+      <meta charset="UTF-8">
+      <title>Réinitialisez votre mot de passe - Admin Panel</title>
+      <style>
+          body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+          .container { max-width: 600px; margin: 30px auto; background-color: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+          .header { text-align: center; font-size: 24px; margin-bottom: 20px; color: #333; }
+          .message { font-size: 16px; color: #555; text-align: center; }
+          .reset-button { display: block; width: 200px; margin: 30px auto; padding: 12px; text-align: center; background-color: #1e293b; color: #fff; text-decoration: none; border-radius: 6px; }
+      </style>
+  </head>
+  <body>
+      <div class="container">
+          <div class="header">Réinitialisation du mot de passe</div>
+          <div class="message">
+              Vous avez demandé à réinitialiser votre mot de passe.<br>
+              Cliquez sur le bouton ci-dessous pour procéder.
+          </div>
+          <a href="${resetUrl}" class="reset-button">Réinitialiser le mot de passe</a>
+          <div class="message">
+              Si vous n'êtes pas à l'origine de cette demande, veuillez ignorer cet email.
+          </div>
+      </div>
+  </body>
+  </html>
+  `;
+};
+
+// Helper: Send the reset password email
+const sendAdminResetPasswordEmail = async (email, resetUrl) => {
+  const mailOptions = {
+    from: `"Admin Panel" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: "Réinitialisez votre mot de passe - Admin Panel",
+    html: generateAdminResetPasswordEmailHTML(resetUrl),
+  };
+
+  return transporter.sendMail(mailOptions);
+};
+
+// RESET PASSWORD ENDPOINT: Verify the reset token and update the password
+exports.resetPassword = async (req, res) => {
+  const { email, token, newPassword } = req.body;
+  try {
+    const admin = await Admin.findOne({
+      email,
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!admin) {
+      logger.warn('Reset password failed: Invalid or expired token', { email });
+      return res.status(400).json({ message: "Invalid or expired reset token." });
+    }
+
+    // Hash the new password and update the admin's password
+    admin.password = await bcrypt.hash(newPassword, 10);
+    // Clear the reset token fields
+    admin.resetPasswordToken = undefined;
+    admin.resetPasswordExpires = undefined;
+    await admin.save();
+
+    logger.info('Password reset successfully', { adminId: admin._id });
+    res.json({ message: "Password has been reset successfully." });
+  } catch (err) {
+    logger.error('Reset password error', { error: err });
+    res.status(500).json({ message: "Server error." });
+  }
+};

@@ -98,34 +98,50 @@ def shutdown_api():
     try:
         # Write the shutdown command under the node 'shutdown_commands/<local_serial>'.
         db.child("shutdown_commands").child(local_serial).set(shutdown_data)
-        exit()  # Immediately exit after issuing the shutdown command.
+        exit()  
         print("Shutdown command return code:")
         return jsonify({"message": f"Shutdown command sent to serial {local_serial} via Firebase."}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 def firebase_shutdown_listener():
     firebase = pyrebase.initialize_app(firebase_config)
     db = firebase.database()
     local_serial = get_serial_number()
+    print(f"Firebase shutdown listener started for serial {local_serial}")
+    
     while True:
         try:
-            # Check for shutdown command under this kiosk's serial number.
-            command = db.child("shutdown_commands").child(local_serial).get().val()
-            if command and command.get("command") == "shutdown":
-                system = platform.system()
-                if system == "Windows":
-                    subprocess.run(["shutdown", "/s", "/t", "0"], shell=True)
-                elif system == "Linux":
-                    subprocess.run(["sudo", "shutdown", "now"], check=True)
-                elif system == "Darwin":
-                    subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
-                # Remove the command from Firebase after execution.
-                db.child("shutdown_commands").child(local_serial).remove()
-                break  # Exit loop once shutdown is initiated.
+            command_data = db.child("shutdown_commands").child(local_serial).get().val()
+            if command_data and command_data.get("command") == "shutdown":
+                command_timestamp = command_data.get("timestamp")
+                current_time = time.time()
+                
+                # Convert command_timestamp to seconds if it appears to be in milliseconds
+                if command_timestamp and command_timestamp > 1e12:
+                    command_timestamp = command_timestamp / 1000
+                    
+                print(f"Received shutdown command. Timestamp: {command_timestamp}, Current time: {current_time}")
+                
+                if command_timestamp and (current_time - command_timestamp) > 20:
+                    print("Found an old shutdown command. Removing it.")
+                    db.child("shutdown_commands").child(local_serial).remove()
+                else:
+                    system = platform.system()
+                    print(f"Initiating shutdown for {system} based on recent command.")
+                    if system == "Windows":
+                        subprocess.run(["shutdown", "/s", "/t", "0"], shell=True)
+                    elif system == "Linux":
+                        subprocess.run(["sudo", "shutdown", "now"], check=True)
+                    elif system == "Darwin":
+                        subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+                    db.child("shutdown_commands").child(local_serial).remove()
+                    break 
         except Exception as e:
             print(f"Error checking shutdown command: {e}")
-        time.sleep(60)  # Check every 60 seconds.
+        time.sleep(10)
+
 
 @app.route('/serial', methods=['GET'])
 def serial_api():
@@ -144,6 +160,7 @@ def temperature_api():
 def update_temperature_api():
     temp = get_temperature()
     if temp is None:
+        temp=0
         return jsonify({"error": "Could not retrieve temperature"}), 500
 
     local_serial = get_serial_number()

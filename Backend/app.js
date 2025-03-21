@@ -74,6 +74,7 @@ app.use("/api/virements", virementRoutes);
 app.use("/api/beneficiaries", beneficiaryRoutes);
 app.use("/api/video-requests", videoConferenceRoutes);
 app.use("/api/admin/notifications", adminNotificationsRoutes);
+app.use("/api/admin/reset",adminRoutes)
 app.use(
   "/api/admin/list",
   adminpassport.authenticate("admin-jwt", { session: false }),
