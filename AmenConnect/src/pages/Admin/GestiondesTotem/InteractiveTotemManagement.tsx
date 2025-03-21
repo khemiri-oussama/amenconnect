@@ -1,64 +1,39 @@
 "use client"
 
-import type React from "react"
 import { useState, useEffect } from "react"
-import {
-  IonPage,
-  IonIcon,
-  IonSelect,
-  IonSelectOption,
-  IonProgressBar,
-  IonModal,
-  IonTextarea,
-  IonAlert,
-  IonButton,
-} from "@ionic/react"
+import { IonPage, IonIcon, IonModal, IonTextarea, IonAlert } from "@ionic/react"
 import {
   refreshOutline,
   powerOutline,
   bugOutline,
   thermometerOutline,
-  cloudUploadOutline,
   closeCircleOutline,
   checkmarkCircleOutline,
 } from "ionicons/icons"
-import "./InteractiveTotemManagement.css"
 import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
 import AdminPageHeader from "../adminpageheader"
 import KioskApprovalTab from "./kiosk-approval-tab"
+import MaintenanceTab from "./maintenancetab"
 import axios from "axios"
 
 interface Totem {
-  id: string // e.g., "TM1"
+  id: string
   status: "online" | "offline"
   version: string
   temperature: number
-  serial: string // the kiosk's SN field (e.g., "9S716R612613ZM3001160")
-  apiUrl: string // the kiosk's API URL (e.g., "http://127.0.0.1:5000")
-  location?: string // the kiosk's location
-  agency?: string // the kiosk's agency name
+  serial: string
+  apiUrl: string
+  location?: string
+  agency?: string
 }
 
-const InteractiveTotemManagement: React.FC = () => {
+const InteractiveTotemManagement = () => {
   const { authLoading } = useAdminAuth()
   const [activeTab, setActiveTab] = useState<"status" | "maintenance" | "incidents" | "register" | "approval">("status")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedTotem, setSelectedTotem] = useState<string | null>(null)
-
-  // State for kiosks (totems)
   const [totems, setTotems] = useState<Totem[]>([])
-
-  // Remote maintenance state
-  const [selectedMaintenanceTotem, setSelectedMaintenanceTotem] = useState<string | null>(null)
-  const [selectedMaintenanceAction, setSelectedMaintenanceAction] = useState<string | null>(null)
-  const [maintenanceProgress, setMaintenanceProgress] = useState<number>(0)
-
-  // New state for diagnostic result and modal
-  const [diagnosticResult, setDiagnosticResult] = useState<any>(null)
-  const [isDiagnosticModalOpen, setIsDiagnosticModalOpen] = useState<boolean>(false)
-
-  // Alert state for notifications
   const [alertMessage, setAlertMessage] = useState<string>("")
   const [showAlert, setShowAlert] = useState<boolean>(false)
 
@@ -67,9 +42,7 @@ const InteractiveTotemManagement: React.FC = () => {
     const fetchKiosks = async () => {
       try {
         const response = await axios.get("/api/kiosk")
-        // Filter out kiosks that are not enabled
         const enabledKiosks = response.data.filter((kiosk: any) => kiosk.enabled)
-        // Map API response to match our Totem interface.
         const mappedKiosks = enabledKiosks.map((kiosk: any) => ({
           id: kiosk.tote,
           status: kiosk.status,
@@ -144,72 +117,6 @@ const InteractiveTotemManagement: React.FC = () => {
     }
   }
 
-  // Handler for executing remote maintenance action including diagnostics
-  const handleExecuteMaintenance = async () => {
-    if (!selectedMaintenanceTotem || !selectedMaintenanceAction) {
-      setAlertMessage("Please select both a Totem and an Action.")
-      setShowAlert(true)
-      return
-    }
-
-    // Find the selected totem from the state
-    const totem = totems.find((t) => t.id === selectedMaintenanceTotem)
-    if (!totem) {
-      setAlertMessage("Selected Totem not found.")
-      setShowAlert(true)
-      return
-    }
-
-    // If the action is "diagnose", call the new diagnostic endpoint
-    if (selectedMaintenanceAction === "diagnose") {
-      try {
-        const response = await axios.post("/api/kiosk/diagnostic", {
-          serialNumber: totem.serial,
-        })
-        setDiagnosticResult(response.data)
-        setIsDiagnosticModalOpen(true)
-      } catch (error: any) {
-        console.error("Error running diagnostics:", error)
-        setAlertMessage(`Error running diagnostics on Totem ${totem.id}`)
-        setShowAlert(true)
-      }
-      return
-    }
-
-    // Other maintenance actions (update, restart)
-    try {
-      await axios.post("http://localhost:3000/api/kiosk/maintenance", {
-        totemId: selectedMaintenanceTotem,
-        action: selectedMaintenanceAction,
-      })
-      if (selectedMaintenanceAction === "update") {
-        setMaintenanceProgress(0)
-        const interval = setInterval(() => {
-          setMaintenanceProgress((prev) => {
-            if (prev >= 1) {
-              clearInterval(interval)
-              setAlertMessage(
-                `Maintenance action "${selectedMaintenanceAction}" completed for Totem ${selectedMaintenanceTotem}`,
-              )
-              setShowAlert(true)
-              return 1
-            }
-            return prev + 0.1
-          })
-        }, 500)
-      } else {
-        setAlertMessage(
-          `Maintenance action "${selectedMaintenanceAction}" executed for Totem ${selectedMaintenanceTotem}`,
-        )
-        setShowAlert(true)
-      }
-    } catch (error) {
-      console.error("Error executing maintenance action:", error)
-      setAlertMessage(`Error executing maintenance action on Totem ${selectedMaintenanceTotem}`)
-      setShowAlert(true)
-    }
-  }
-
   // Render the list of kiosks in the "État des Appareils" tab
   const renderDeviceStatus = () => (
     <div className="admin-table-container">
@@ -269,58 +176,6 @@ const InteractiveTotemManagement: React.FC = () => {
           ))}
         </tbody>
       </table>
-    </div>
-  )
-
-  // Render Remote Maintenance Tab
-  const renderRemoteMaintenance = () => (
-    <div className="admin-maintenance-container">
-      <div className="admin-form-group">
-        <label className="admin-form-label">Select Totem</label>
-        <div className="admin-select-wrapper">
-          <IonSelect
-            placeholder="Choose a totem"
-            className="admin-select"
-            onIonChange={(e) => setSelectedMaintenanceTotem(e.detail.value)}
-          >
-            {totems.map((totem) => (
-              <IonSelectOption key={totem.id} value={totem.id}>
-                {totem.id}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </div>
-      </div>
-
-      <div className="admin-form-group">
-        <label className="admin-form-label">Action</label>
-        <div className="admin-select-wrapper">
-          <IonSelect
-            placeholder="Choose an action"
-            className="admin-select"
-            onIonChange={(e) => setSelectedMaintenanceAction(e.detail.value)}
-          >
-            <IonSelectOption value="update">Update Software</IonSelectOption>
-            <IonSelectOption value="restart">Restart Totem</IonSelectOption>
-            <IonSelectOption value="diagnose">Run Diagnostics</IonSelectOption>
-          </IonSelect>
-        </div>
-      </div>
-
-      <button className="admin-action-button" onClick={handleExecuteMaintenance}>
-        <IonIcon icon={cloudUploadOutline} />
-        <span>Execute Action</span>
-      </button>
-
-      {selectedMaintenanceAction === "update" && (
-        <div className="admin-progress-card">
-          <h3 className="admin-progress-title">Update Progress</h3>
-          <div className="admin-progress-container">
-            <IonProgressBar value={maintenanceProgress} className="admin-progress-bar"></IonProgressBar>
-            <span className="admin-progress-value">{Math.round(maintenanceProgress * 100)}%</span>
-          </div>
-        </div>
-      )}
     </div>
   )
 
@@ -396,7 +251,9 @@ const InteractiveTotemManagement: React.FC = () => {
             </div>
             <div className="admin-tab-content">
               {activeTab === "status" && renderDeviceStatus()}
-              {activeTab === "maintenance" && renderRemoteMaintenance()}
+              {activeTab === "maintenance" && (
+                <MaintenanceTab totems={totems} setAlertMessage={setAlertMessage} setShowAlert={setShowAlert} />
+              )}
               {activeTab === "incidents" && renderIncidentLog()}
               {activeTab === "approval" && renderApprovalTab()}
             </div>
@@ -421,26 +278,6 @@ const InteractiveTotemManagement: React.FC = () => {
         </div>
       </IonModal>
 
-      {/* Diagnostic Modal */}
-      <IonModal
-        isOpen={isDiagnosticModalOpen}
-        onDidDismiss={() => setIsDiagnosticModalOpen(false)}
-        className="admin-modal"
-      >
-        <div className="admin-modal-header">
-          <h2 className="admin-modal-title">Résultat du Diagnostic</h2>
-          <button className="admin-modal-close" onClick={() => setIsDiagnosticModalOpen(false)}>
-            <IonIcon icon={closeCircleOutline} />
-          </button>
-        </div>
-        <div className="admin-modal-content">
-          <pre>{diagnosticResult ? JSON.stringify(diagnosticResult, null, 2) : "No diagnostic data."}</pre>
-          <IonButton expand="block" onClick={() => setIsDiagnosticModalOpen(false)}>
-            Fermer
-          </IonButton>
-        </div>
-      </IonModal>
-
       <IonAlert
         isOpen={showAlert}
         onDidDismiss={() => setShowAlert(false)}
@@ -453,3 +290,4 @@ const InteractiveTotemManagement: React.FC = () => {
 }
 
 export default InteractiveTotemManagement
+
