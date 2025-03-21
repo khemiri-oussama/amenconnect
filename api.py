@@ -7,12 +7,12 @@ import requests
 import time
 import pyrebase
 import threading
-import socketio  # Install via: pip install "python-socketio[client]"
+from pymongo import MongoClient
 
 app = Flask(__name__)
 CORS(app)
 
-# Firebase configuration (update with your actual project details)
+# Firebase configuration
 firebase_config = {
     "apiKey": "AIzaSyD0qjnrDLjAs0BGQavFuvV7zQhgJ6ijos0",
     "authDomain": "kiosk-b8f76.firebaseapp.com",
@@ -20,31 +20,30 @@ firebase_config = {
     "storageBucket": "kiosk-b8f76.firebasestorage.app",
 }
 
-# Socket.IO client for sending heartbeat events to the Node.js backend.
-sio = socketio.Client()
-NODE_BACKEND_URL = "http://localhost:3000"
+# Connect to MongoDB using your provided URI
+MONGO_URI = "mongodb+srv://backend:GpwHU0tIVU3Wsi2z@amenconnect.4vekp.mongodb.net/client?retryWrites=true&w=majority"
+mongo_client = MongoClient(MONGO_URI)
+db = mongo_client.get_database()  # Uses the default database from the URI
+kiosks_collection = db.kiosks     # Assumes kiosks are stored in the 'kiosks' collection
 
 def get_serial_number():
     system = platform.system()
     try:
         if system == "Windows":
             output = subprocess.check_output(
-                ["wmic", "bios", "get", "serialnumber"],
-                universal_newlines=True
+                ["wmic", "bios", "get", "serialnumber"], universal_newlines=True
             )
             lines = [line.strip() for line in output.splitlines() if line.strip()]
             serial_lines = [line for line in lines if line.lower() != "serialnumber"]
             serial = serial_lines[0] if serial_lines else "Unknown or not available"
         elif system == "Linux":
             output = subprocess.check_output(
-                ["sudo", "dmidecode", "-s", "system-serial-number"],
-                universal_newlines=True
+                ["sudo", "dmidecode", "-s", "system-serial-number"], universal_newlines=True
             )
             serial = output.strip()
         elif system == "Darwin":
             output = subprocess.check_output(
-                ["system_profiler", "SPHardwareDataType"],
-                universal_newlines=True
+                ["system_profiler", "SPHardwareDataType"], universal_newlines=True
             )
             match = re.search(r"Serial Number.*: (.+)", output)
             serial = match.group(1).strip() if match else "Unknown"
@@ -74,9 +73,25 @@ def get_temperature():
         print("Error using nvidia-smi for GPU temperature:", e)
         return None
 
-# Modified shutdown endpoint that uses Firebase to issue a shutdown command.
+def update_kiosk_status(new_status, additional_fields=None):
+    """
+    Updates the kiosk document (found by its serial number) in MongoDB.
+    """
+    serial = get_serial_number()
+    update_fields = {"status": new_status}
+    if additional_fields:
+        update_fields.update(additional_fields)
+    result = kiosks_collection.update_one({"SN": serial}, {"$set": update_fields})
+    if result.matched_count:
+        print(f"Kiosk with serial {serial} updated to {new_status}.")
+    else:
+        print(f"Kiosk with serial {serial} not found in the database.")
+
 @app.route('/shutdown', methods=['POST'])
 def shutdown_api():
+    """
+    Issues a shutdown command via Firebase after verifying the provided serial number.
+    """
     data = request.get_json()
     provided_serial = data.get("serialNumber")
     
@@ -88,7 +103,7 @@ def shutdown_api():
         return jsonify({"error": "Serial number mismatch."}), 403
 
     firebase = pyrebase.initialize_app(firebase_config)
-    db = firebase.database()
+    db_fb = firebase.database()
     
     shutdown_data = {
         "command": "shutdown",
@@ -106,8 +121,11 @@ def shutdown_api():
 
 
 def firebase_shutdown_listener():
+    """
+    Listens for shutdown commands from Firebase and executes a system shutdown when received.
+    """
     firebase = pyrebase.initialize_app(firebase_config)
-    db = firebase.database()
+    db_fb = firebase.database()
     local_serial = get_serial_number()
     print(f"Firebase shutdown listener started for serial {local_serial}")
     
@@ -145,12 +163,17 @@ def firebase_shutdown_listener():
 
 @app.route('/serial', methods=['GET'])
 def serial_api():
-    print("serial_api route was called")
+    """
+    Returns the kiosk's serial number.
+    """
     serial = get_serial_number()
     return jsonify({"serial_number": serial})
 
 @app.route('/temperature', methods=['GET'])
 def temperature_api():
+    """
+    Returns the GPU temperature.
+    """
     temp = get_temperature()
     if temp is None:
         return jsonify({"error": "Could not retrieve temperature"}), 500
@@ -158,6 +181,9 @@ def temperature_api():
 
 @app.route('/update-temp', methods=['POST'])
 def update_temperature_api():
+    """
+    Retrieves the current GPU temperature and forwards it to the Node.js backend.
+    """
     temp = get_temperature()
     if temp is None:
         temp=0
@@ -169,6 +195,7 @@ def update_temperature_api():
         "temperature": temp
     }
 
+    # Replace with your Node.js backend endpoint.
     node_backend_url = "http://localhost:3000/api/kiosk/update-temperature"
 
     try:
@@ -181,37 +208,23 @@ def update_temperature_api():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-def send_heartbeat():
-    """Send heartbeat with serial and temperature using the Socket.IO client."""
+def keep_online(interval=5):
+    """
+    Background task that continuously sets the kiosk's status to "online"
+    with an updated timestamp and current temperature.
+    """
     while True:
-        serial = get_serial_number()
-        temperature = get_temperature()
-        payload = {
-            "serialNumber": serial,
-            "temperature": temperature
-        }
-        try:
-            sio.emit("heartbeat", payload)
-            print("Heartbeat sent:", payload)
-        except Exception as e:
-            print("Error sending heartbeat:", e)
-        time.sleep(5)  # Send heartbeat every 10 seconds.
+        current_temp = get_temperature()
+        update_kiosk_status("online", {"last_heartbeat": time.time(), "temperature": current_temp})
+        time.sleep(interval)
 
 if __name__ == '__main__':
-    # Connect to the Node.js backend for socket communication.
-    try:
-        sio.connect(NODE_BACKEND_URL)
-        print("Connected to Node backend via Socket.IO")
-    except Exception as e:
-        print("Failed to connect to Node backend via Socket.IO:", e)
-
     # Start the Firebase shutdown listener in a background thread.
-    listener_thread = threading.Thread(target=firebase_shutdown_listener, daemon=True)
-    listener_thread.start()
+    shutdown_listener_thread = threading.Thread(target=firebase_shutdown_listener, daemon=True)
+    shutdown_listener_thread.start()
+    
+    # Start the keep_online thread to constantly update the kiosk's status to "online".
+    online_thread = threading.Thread(target=keep_online, daemon=True)
+    online_thread.start()
 
-    # Start the heartbeat thread.
-    heartbeat_thread = threading.Thread(target=send_heartbeat, daemon=True)
-    heartbeat_thread.start()
-
-    # Run the Flask app.
     app.run(host='0.0.0.0', port=3000)
