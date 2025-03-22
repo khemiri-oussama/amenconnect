@@ -10,7 +10,7 @@ router.post("/approve", kioskController.approveKiosk)
 router.post("/reject", kioskController.rejectKiosk)
 // Diagnostic endpoint to fetch system diagnostics via the Flask app
 router.post("/diagnostic", adminpassport.authenticate('admin-jwt', { session: false }), kioskController.runDiagnostic);
-
+router.post('/restart', kioskController.restartTotem);
 // CRUD endpoints
 router.get("/", kioskController.getKiosks)
 router.get("/:id", kioskController.getKioskById)

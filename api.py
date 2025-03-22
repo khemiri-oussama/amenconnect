@@ -119,6 +119,63 @@ def shutdown_api():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+def firebase_command_listener():
+    firebase = pyrebase.initialize_app(firebase_config)
+    db_fb = firebase.database()
+    local_serial = get_serial_number()
+    print(f"Firebase command listener started for serial {local_serial}")
+
+    while True:
+        try:
+            # Check for shutdown command
+            shutdown_data = db_fb.child("shutdown_commands").child(local_serial).get().val()
+            if shutdown_data and shutdown_data.get("command") == "shutdown":
+                command_timestamp = shutdown_data.get("timestamp")
+                current_time = time.time()
+                # Normalize timestamp if needed (if in milliseconds)
+                if command_timestamp and command_timestamp > 1e12:
+                    command_timestamp = command_timestamp / 1000
+                print(f"Received shutdown command. Timestamp: {command_timestamp}, Current time: {current_time}")
+                if command_timestamp and (current_time - command_timestamp) > 20:
+                    print("Found an old shutdown command. Removing it.")
+                    db_fb.child("shutdown_commands").child(local_serial).remove()
+                else:
+                    system = platform.system()
+                    print(f"Initiating shutdown for {system} based on command.")
+                    if system == "Windows":
+                        subprocess.run(["shutdown", "/s", "/t", "0"], shell=True)
+                    elif system == "Linux":
+                        subprocess.run(["sudo", "shutdown", "now"], check=True)
+                    elif system == "Darwin":
+                        subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+                    db_fb.child("shutdown_commands").child(local_serial).remove()
+                    break  # Optional: break if the system is going down
+
+            # Check for restart command
+            restart_data = db_fb.child("restart_commands").child(local_serial).get().val()
+            if restart_data and restart_data.get("command") == "restart":
+                command_timestamp = restart_data.get("timestamp")
+                current_time = time.time()
+                if command_timestamp and command_timestamp > 1e12:
+                    command_timestamp = command_timestamp / 1000
+                print(f"Received restart command. Timestamp: {command_timestamp}, Current time: {current_time}")
+                if command_timestamp and (current_time - command_timestamp) > 20:
+                    print("Found an old restart command. Removing it.")
+                    db_fb.child("restart_commands").child(local_serial).remove()
+                else:
+                    system = platform.system()
+                    print(f"Initiating restart for {system} based on command.")
+                    if system == "Windows":
+                        subprocess.run(["shutdown", "/r", "/t", "0"], shell=True)
+                    elif system == "Linux":
+                        subprocess.run(["sudo", "shutdown", "-r", "now"], check=True)
+                    elif system == "Darwin":
+                        subprocess.run(["sudo", "shutdown", "-r", "now"], check=True)
+                    db_fb.child("restart_commands").child(local_serial).remove()
+                    break  # Optional: break after executing restart
+        except Exception as e:
+            print(f"Error checking commands: {e}")
+        time.sleep(10)
 
 
 
@@ -221,6 +278,7 @@ def keep_online(interval=5):
 def diagnostic_api():
     """
     Performs a detailed diagnostic check on the computer but only if the provided serial number matches.
+    Also stores the diagnostic report in Firebase so it is publicly available.
     """
     try:
         data = request.get_json()
@@ -292,6 +350,17 @@ def diagnostic_api():
         else:
             diagnostic["load_average"] = "Not available on this system"
 
+        # Initialize pyrebase and write diagnostic data to Firebase
+        firebase = pyrebase.initialize_app(firebase_config)
+        db_fb = firebase.database()
+        timestamp = int(time.time())
+        diagnostic_data = {
+            "timestamp": timestamp,
+            "data": diagnostic
+        }
+        # Store under diagnostic_reports/{serial}
+        db_fb.child("diagnostic_reports").child(local_serial).set(diagnostic_data)
+
         return jsonify(diagnostic)
 
     except Exception as e:
@@ -299,9 +368,9 @@ def diagnostic_api():
 
 
 if __name__ == '__main__':
-    # Start the Firebase shutdown listener in a background thread.
-    shutdown_listener_thread = threading.Thread(target=firebase_shutdown_listener, daemon=True)
-    shutdown_listener_thread.start()
+    # Start the Firebase command listener in a background thread.
+    command_listener_thread = threading.Thread(target=firebase_command_listener, daemon=True)
+    command_listener_thread.start()
     
     # Start the keep_online thread to constantly update the kiosk's status to "online".
     online_thread = threading.Thread(target=keep_online, daemon=True)

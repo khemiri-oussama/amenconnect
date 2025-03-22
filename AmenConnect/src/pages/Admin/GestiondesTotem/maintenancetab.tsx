@@ -262,26 +262,23 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
 
     // Other maintenance actions (update, restart)
     try {
-      await axios.post("http://localhost:3000/api/kiosk/maintenance", {
-        totemId: selectedMaintenanceTotem,
-        action: selectedMaintenanceAction,
-      })
-      if (selectedMaintenanceAction === "update") {
-        setMaintenanceProgress(0)
-        const interval = setInterval(() => {
-          setMaintenanceProgress((prev) => {
-            if (prev >= 1) {
-              clearInterval(interval)
-              setAlertMessage(
-                `Maintenance action "${selectedMaintenanceAction}" completed for Totem ${selectedMaintenanceTotem}`,
-              )
-              setShowAlert(true)
-              return 1
-            }
-            return prev + 0.1
-          })
-        }, 500)
-      } else {
+      if (selectedMaintenanceAction === "restart") {
+        try {
+          await axios.post("/api/kiosk/restart", {
+            totemId: selectedMaintenanceTotem,
+          });
+          setAlertMessage(
+            `Restart command executed for Totem ${selectedMaintenanceTotem}`
+          );
+          setShowAlert(true);
+        } catch (error) {
+          console.error("Error executing restart action:", error);
+          setAlertMessage(`Error executing restart action on Totem ${selectedMaintenanceTotem}`);
+          setShowAlert(true);
+        }
+        return;
+      }
+      else {
         setAlertMessage(
           `Maintenance action "${selectedMaintenanceAction}" executed for Totem ${selectedMaintenanceTotem}`,
         )
