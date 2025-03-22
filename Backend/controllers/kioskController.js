@@ -156,6 +156,43 @@ exports.approveKiosk = async (req, res) => {
 };
 
 
+// RESTART a kiosk
+exports.restartTotem = async (req, res) => {
+  const { totemId } = req.body;
+  if (!totemId) {
+    return res.status(400).json({ error: "Totem ID is required for restart." });
+  }
+
+  try {
+    // Find the kiosk using the provided totemId (stored in the "tote" field)
+    const kiosk = await Kiosk.findOne({ tote: totemId });
+    if (!kiosk) {
+      return res.status(404).json({ error: "Kiosk not found." });
+    }
+
+    // Ensure the kiosk is online (optional check)
+    if (kiosk.status !== "online") {
+      return res.status(400).json({ error: "Kiosk is not online." });
+    }
+
+    // Create a reference to the restart command in Firebase using the kiosk's serial number.
+    const restartRef = admin.database().ref(`restart_commands/${kiosk.SN}`);
+
+    // Write the restart command with a timestamp.
+    await restartRef.set({
+      command: "restart",
+      timestamp: Date.now()
+    });
+
+    // Optionally update kiosk status to "restarting".
+    kiosk.status = "restarting";
+    await kiosk.save();
+
+    res.json({ message: `Restart command sent to Totem ${totemId}` });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
 // Reject a kiosk
@@ -214,3 +251,6 @@ exports.runDiagnostic = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+
