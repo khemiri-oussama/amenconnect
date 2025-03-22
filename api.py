@@ -227,7 +227,7 @@ def firebase_diagnostic_listener():
                     db_fb.child("diagnostic_commands").child(local_serial).remove()
         except Exception as e:
             print(f"Error checking diagnostic command: {e}")
-        time.sleep(10)
+        time.sleep(20)
 
 def firebase_command_listener():
     firebase = pyrebase.initialize_app(firebase_config)
