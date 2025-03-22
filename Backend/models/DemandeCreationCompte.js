@@ -95,7 +95,8 @@ const demandeCreationSchema = new mongoose.Schema({
   typeCompte: { type: String, required: true },
   agenceContact: { type: String, required: true },
   acceptConditions: { type: Boolean, required: true },
-
+  wantCreditCard: { type: Boolean, default: false },
+  creditCardType: { type: String, default: "" },
   // Page 4 - Verification and Validation
   documentsValides: { type: Boolean, required: true },
   // For file uploads, you might store file paths or URLs after upload

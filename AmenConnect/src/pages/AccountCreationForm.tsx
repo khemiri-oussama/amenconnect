@@ -112,7 +112,8 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
     typeCompte: "Compte de dépot",
     agenceContact: "AGENCE AIN ZAGHOUAN",
     acceptConditions: false,
-
+    wantCreditCard: false, // initialize as false
+    creditCardType: "",    // initialize as empty string
     // Page 4 - Verification and Validation
     documentsValides: false,
 
@@ -261,30 +262,28 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
   
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Reset inactivity timer on checkbox change
-    if (resetTimer) resetTimer()
-
-    const { name, checked } = e.target
-
+    if (resetTimer) resetTimer();
+  
+    const { name, checked } = e.target;
+  
     if (name.includes(".")) {
-      const [category, field] = name.split(".")
-
-      // Fix for spread types error - use type assertion to ensure TypeScript knows it's an object
-      const currentValue = formData[category as keyof FormData] as Record<string, any>
-
+      const [category, field] = name.split(".");
+      const currentValue = formData[category as keyof FormData] as Record<string, any>;
+  
       setFormData({
         ...formData,
         [category]: {
           ...currentValue,
           [field]: checked,
         },
-      })
+      });
     } else {
       setFormData({
         ...formData,
         [name]: checked,
-      })
+      });
     }
-  }
+  };
 
   const validatePage1 = () => {
     const errors: string[] = []
@@ -435,7 +434,7 @@ const AccountCreationForm: React.FC<AccountCreationFormProps> = ({ onBack, reset
         ...formData,
         specimenSignature: signatureDataUrl,
       };
-    
+      console.log("Submitting form data:", formData);
       // Define the file fields that need to be converted
       const fileFields = ["cinRecto", "cinVerso", "ficheProfilClient", "selfiAvecCIN"];
     
