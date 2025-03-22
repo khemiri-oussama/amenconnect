@@ -4,7 +4,11 @@ import { useState, useEffect, useRef } from "react"
 import { IonIcon, IonProgressBar, IonSelect, IonSelectOption, IonModal, IonButton } from "@ionic/react"
 import { cloudUploadOutline, terminalOutline, copyOutline, closeCircleOutline } from "ionicons/icons"
 import axios from "axios"
+import { ref, onValue,remove } from "firebase/database"
+import { database } from "./firebaseClient" // Adjust the path as needed
+
 import "./terminal-styles.css"
+
 interface Totem {
   id: string
   status: "online" | "offline"
@@ -22,7 +26,6 @@ interface MaintenanceTabProps {
   setShowAlert: (show: boolean) => void
 }
 
-// Helper functions
 const formatUptime = (seconds: number): string => {
   if (!seconds && seconds !== 0) return "Unknown"
 
@@ -231,65 +234,76 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
   // Handler for executing remote maintenance action including diagnostics
   const handleExecuteMaintenance = async () => {
     if (!selectedMaintenanceTotem || !selectedMaintenanceAction) {
-      setAlertMessage("Please select both a Totem and an Action.")
-      setShowAlert(true)
-      return
+      setAlertMessage("Please select both a Totem and an Action.");
+      setShowAlert(true);
+      return;
     }
-
+  
     // Find the selected totem from the state
-    const totem = totems.find((t) => t.id === selectedMaintenanceTotem)
+    const totem = totems.find((t) => t.id === selectedMaintenanceTotem);
     if (!totem) {
-      setAlertMessage("Selected Totem not found.")
-      setShowAlert(true)
-      return
+      setAlertMessage("Selected Totem not found.");
+      setShowAlert(true);
+      return;
     }
-
-    // If the action is "diagnose", call the new diagnostic endpoint
+  
+    // If the action is "diagnose", trigger the diagnostic command and subscribe to Firebase
     if (selectedMaintenanceAction === "diagnose") {
       try {
-        const response = await axios.post("/api/kiosk/diagnostic", {
-          serialNumber: totem.serial,
-        })
-        setDiagnosticResult(response.data)
-        setIsDiagnosticModalOpen(true)
-      } catch (error: any) {
-        console.error("Error running diagnostics:", error)
-        setAlertMessage(`Error running diagnostics on Totem ${totem.id}`)
-        setShowAlert(true)
-      }
-      return
-    }
+        // Trigger diagnostic command via your API endpoint (which writes the diagnostic command to Firebase)
+       await axios.post("/api/kiosk/diagnostic", {
+  totemId: totem.serial, // or use the appropriate totem identifier if different
+});
 
-    // Other maintenance actions (update, restart)
+        
+        // Set up a Firebase listener to wait for the diagnostic report at diagnostic_reports/{serial}
+        const diagnosticRef = ref(database, `diagnostic_reports/${totem.serial}`);
+        onValue(diagnosticRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data && data.data) { // assuming the report structure is { timestamp, data: { ...diagnosticInfo } }
+            setDiagnosticResult(data.data);
+            setIsDiagnosticModalOpen(true);
+            // Remove the diagnostic report after retrieval
+            remove(diagnosticRef)
+              .then(() => {
+                console.log("Diagnostic report removed from Firebase.");
+              })
+              .catch((err) => {
+                console.error("Error removing diagnostic report:", err);
+              });
+          }
+        });        
+      } catch (error) {
+        console.error("Error running diagnostics:", error);
+        setAlertMessage(`Error running diagnostics on Totem ${totem.id}`);
+        setShowAlert(true);
+      }
+      return;
+    }
+  
+    // Handle other maintenance actions (update, restart)
     try {
       if (selectedMaintenanceAction === "restart") {
-        try {
-          await axios.post("/api/kiosk/restart", {
-            totemId: selectedMaintenanceTotem,
-          });
-          setAlertMessage(
-            `Restart command executed for Totem ${selectedMaintenanceTotem}`
-          );
-          setShowAlert(true);
-        } catch (error) {
-          console.error("Error executing restart action:", error);
-          setAlertMessage(`Error executing restart action on Totem ${selectedMaintenanceTotem}`);
-          setShowAlert(true);
-        }
-        return;
-      }
-      else {
+        await axios.post("/api/kiosk/restart", {
+          totemId: selectedMaintenanceTotem,
+        });
         setAlertMessage(
-          `Maintenance action "${selectedMaintenanceAction}" executed for Totem ${selectedMaintenanceTotem}`,
-        )
-        setShowAlert(true)
+          `Restart command executed for Totem ${selectedMaintenanceTotem}`
+        );
+        setShowAlert(true);
+        return;
+      } else {
+        setAlertMessage(
+          `Maintenance action "${selectedMaintenanceAction}" executed for Totem ${selectedMaintenanceTotem}`
+        );
+        setShowAlert(true);
       }
     } catch (error) {
-      console.error("Error executing maintenance action:", error)
-      setAlertMessage(`Error executing maintenance action on Totem ${selectedMaintenanceTotem}`)
-      setShowAlert(true)
+      console.error("Error executing maintenance action:", error);
+      setAlertMessage(`Error executing maintenance action on Totem ${selectedMaintenanceTotem}`);
+      setShowAlert(true);
     }
-  }
+  };
 
   return (
     <>
@@ -396,4 +410,3 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
 }
 
 export default MaintenanceTab
-

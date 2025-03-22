@@ -234,23 +234,36 @@ exports.rejectKiosk = async (req, res) => {
 
 exports.runDiagnostic = async (req, res) => {
   try {
-    const { serialNumber } = req.body;
-    if (!serialNumber) {
-      return res.status(400).json({ error: "Serial number is required for diagnostic." });
+    const { totemId } = req.body;
+    if (!totemId) {
+      return res.status(400).json({ error: "Totem ID is required for diagnostic." });
     }
-
-    // Replace the URL with your Flask app URL if different.
-    const flaskDiagnosticUrl = "http://127.0.0.1:3000/diagnostic";
-
-    // Forward the request to the Flask diagnostic endpoint.
-    const response = await axios.post(flaskDiagnosticUrl, { serialNumber });
-
-    // Return the diagnostic data received from the Flask endpoint.
-    res.json(response.data);
+    // Change query to use SN instead of tote
+    const kiosk = await Kiosk.findOne({ SN: totemId });
+    if (!kiosk) {
+      return res.status(404).json({ error: "Kiosk not found." });
+    }
+    
+    // Create a reference to the diagnostic command in Firebase using the kiosk's serial number.
+    const diagnosticRef = admin.database().ref(`diagnostic_commands/${kiosk.SN}`);
+    await diagnosticRef.set({
+      command: "diagnostic",
+      timestamp: Date.now()
+    });
+    
+    // Update kiosk status to indicate a pending diagnostic
+    kiosk.status = "diagnostic_pending";
+    await kiosk.save();
+    
+    res.json({ message: `Diagnostic command sent to Totem ${totemId}` });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+
+
 
 
 
