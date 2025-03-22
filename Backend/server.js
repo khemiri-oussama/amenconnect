@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
     console.log('Client disconnected:', socket.id);
   });
 });
-
+require('./monitorTotems');
 connectDB()
   .then(() => {
     server.listen(PORT, () => {
@@ -60,5 +60,5 @@ connectDB()
     console.error('Failed to connect to DB', err);
   });
   // At the bottom of server.js
-  require('./monitorTotems');
+
 
