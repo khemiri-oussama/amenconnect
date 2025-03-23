@@ -30,7 +30,7 @@ const kioskRoutes = require("./routes/kioskRoutes");
 const auditLogsRoutes = require("./routes/auditLogsRoutes");
 const mongoOpsRoute = require("./routes/mongoOpsRoute");
 const alertsRouter = require("./routes/alerts");
-
+const incidentsRouter = require('./routes/incidents');
 // Import Passport
 const passport = require("./config/passport");
 const adminpassport = require("./config/adminPassport");
@@ -53,6 +53,8 @@ app.use(
 // Initialize Passport
 app.use(passport.initialize());
 app.use(adminpassport.initialize());
+
+app.use('/api/incidents', incidentsRouter);
 
 // Mount routes
 app.use("/api", accountCreationRoutes);

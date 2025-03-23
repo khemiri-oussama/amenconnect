@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { IonPage, IonIcon, IonModal, IonTextarea, IonAlert } from "@ionic/react"
 import {
   refreshOutline,
@@ -36,8 +36,31 @@ const InteractiveTotemManagement = () => {
   const [totems, setTotems] = useState<Totem[]>([])
   const [alertMessage, setAlertMessage] = useState<string>("")
   const [showAlert, setShowAlert] = useState<boolean>(false)
+  const [incidentDescription, setIncidentDescription] = useState<string>("")
+  const [incidents, setIncidents] = useState<any[]>([])
 
-  // Fetch kiosks from the API when the component mounts
+  // Use a ref to track which totems have already been logged as offline.
+  const loggedIncidentsRef = useRef<{ [totemId: string]: boolean }>({})
+
+  // Periodically check each totem and log an incident if offline and not already logged.
+  // Using a ref here prevents unnecessary re-creation of the effect.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      totems.forEach(async (totem) => {
+        if (totem.status === "offline" && !loggedIncidentsRef.current[totem.id]) {
+          await logIncident(totem.id, "Hardware Failure", "Totem is offline.")
+          loggedIncidentsRef.current[totem.id] = true
+        }
+        if (totem.status === "online" && loggedIncidentsRef.current[totem.id]) {
+          delete loggedIncidentsRef.current[totem.id]
+        }
+      })
+    }, 20000) // Check every 20 seconds (adjust as needed)
+
+    return () => clearInterval(interval)
+  }, [totems])
+
+  // Fetch kiosks from the API on mount
   useEffect(() => {
     const fetchKiosks = async () => {
       try {
@@ -60,15 +83,38 @@ const InteractiveTotemManagement = () => {
         setShowAlert(true)
       }
     }
-
     fetchKiosks()
   }, [])
+
+  // Fetch incidents when the incidents tab is active
+  useEffect(() => {
+    if (activeTab === "incidents") {
+      const fetchIncidents = async () => {
+        try {
+          const response = await axios.get("/api/incidents")
+          setIncidents(response.data)
+        } catch (error) {
+          console.error("Error fetching incidents:", error)
+        }
+      }
+      fetchIncidents()
+    }
+  }, [activeTab])
 
   if (authLoading) {
     return <div className="admin-loading">Loading...</div>
   }
 
-  // Handler for refreshing temperature for a specific totem
+  // Function to log an incident to the backend
+  const logIncident = async (totemId: string, type: string, description: string) => {
+    try {
+      await axios.post("/api/incidents", { totemId, type, description })
+    } catch (error) {
+      console.error("Error logging incident", error)
+    }
+  }
+
+  // Handler to refresh a totem’s status and temperature
   const handleRefresh = async (totemId: string) => {
     const totem = totems.find((t) => t.id === totemId)
     if (!totem) return
@@ -88,8 +134,15 @@ const InteractiveTotemManagement = () => {
         }
       }
 
+      // Log incident if conditions are met
+      if (newStatus === "offline") {
+        await logIncident(totem.id, "Hardware Failure", "Totem is offline.")
+      } else if (newTemperature === 0) {
+        await logIncident(totem.id, "Hardware Failure", "Temperature reading is null or 0°C.")
+      }
+
       setTotems((prevTotems) =>
-        prevTotems.map((t) => (t.id === totemId ? { ...t, status: newStatus, temperature: newTemperature } : t)),
+        prevTotems.map((t) => (t.id === totemId ? { ...t, status: newStatus, temperature: newTemperature } : t))
       )
     } catch (error) {
       console.error("Error refreshing totem info:", error)
@@ -98,21 +151,66 @@ const InteractiveTotemManagement = () => {
     }
   }
 
-  // New shutdown handler calling the kiosk's Python API using its serial number
+  // Handler to shutdown a totem
   const handleShutdown = async (totem: Totem) => {
     try {
       const response = await axios.post("/api/kiosk/shutdown", {
         totemId: totem.id,
       })
 
+      // After shutdown, mark as offline and log an incident
       setTotems((prevTotems) =>
-        prevTotems.map((t) => (t.id === totem.id ? { ...t, status: "offline", temperature: 0 } : t)),
+        prevTotems.map((t) => (t.id === totem.id ? { ...t, status: "offline", temperature: 0 } : t))
       )
+      await logIncident(totem.id, "Hardware Failure", "Totem shutdown command executed; device is now offline.")
       setAlertMessage(response.data.message || `Shutdown command sent to Totem ${totem.id}`)
       setShowAlert(true)
     } catch (error) {
       console.error("Error shutting down totem:", error)
       setAlertMessage(`Error shutting down Totem ${totem.id}`)
+      setShowAlert(true)
+    }
+  }
+
+  // Submit the incident report from the modal (manual incident reporting)
+  const submitIncidentReport = async () => {
+    if (!selectedTotem || incidentDescription.trim() === "") {
+      setAlertMessage("Please provide a description for the incident.")
+      setShowAlert(true)
+      return
+    }
+    try {
+      await axios.post("/api/incidents", {
+        totemId: selectedTotem,
+        type: "Other",
+        description: incidentDescription,
+      })
+      setAlertMessage("Incident report submitted successfully.")
+      setShowAlert(true)
+      // Refresh incidents list if the tab is active
+      if (activeTab === "incidents") {
+        const response = await axios.get("/api/incidents")
+        setIncidents(response.data)
+      }
+      setIsModalOpen(false)
+      setIncidentDescription("")
+    } catch (error) {
+      console.error("Error submitting incident report:", error)
+      setAlertMessage("Error submitting incident report.")
+      setShowAlert(true)
+    }
+  }
+
+  // Handler to mark an incident as fixed (delete it from the backend and update the state)
+  const handleFixIncident = async (incidentId: string) => {
+    try {
+      await axios.delete(`/api/incidents/${incidentId}`)
+      setIncidents((prev) => prev.filter((incident) => incident._id !== incidentId))
+      setAlertMessage("Incident marked as fixed and removed.")
+      setShowAlert(true)
+    } catch (error) {
+      console.error("Error fixing incident:", error)
+      setAlertMessage("Error marking incident as fixed.")
       setShowAlert(true)
     }
   }
@@ -154,12 +252,7 @@ const InteractiveTotemManagement = () => {
               </td>
               <td>
                 <div className="admin-action-buttons">
-                  <button
-                    className="admin-icon-button"
-                    disabled={totem.status === "offline"}
-                    title="Refresh"
-                    onClick={() => handleRefresh(totem.id)}
-                  >
+                  <button className="admin-icon-button" title="Refresh" onClick={() => handleRefresh(totem.id)} disabled={totem.status === "offline"}>
                     <IonIcon icon={refreshOutline} />
                   </button>
                   <button
@@ -179,33 +272,42 @@ const InteractiveTotemManagement = () => {
     </div>
   )
 
-  // Render Incident Log Tab (simplified for brevity)
+  // Render Incident Log Tab with a "Fixed" button for each incident
   const renderIncidentLog = () => (
     <div className="admin-incidents-container">
-      {[1, 2, 3].map((_, index) => (
-        <div
-          key={index}
-          className="admin-incident-item"
-          onClick={() => {
-            setSelectedTotem(`TM00${index + 1}`)
-            setIsModalOpen(true)
-          }}
-        >
-          <div className="admin-incident-icon">
-            <IonIcon icon={bugOutline} />
+      {incidents.length === 0 ? (
+        <p>Aucun incident n'a été signalé.</p>
+      ) : (
+        incidents.map((incident, index) => (
+          <div
+            key={index}
+            className={`admin-incident-item ${incident.type === "Hardware Failure" ? "warning" : "critical"}`}
+          >
+            <div className="admin-incident-icon">
+              <IonIcon icon={bugOutline} />
+            </div>
+            <div
+              className="admin-incident-content"
+              onClick={() => {
+                setSelectedTotem(incident.totemId)
+                setIsModalOpen(true)
+              }}
+            >
+              <h3 className="admin-incident-title">Incident - {incident.totemId}</h3>
+              <p className="admin-incident-details">
+                Date: {new Date(incident.createdAt).toLocaleString()}
+              </p>
+              <p className="admin-incident-type">Type: {incident.type}</p>
+              <p className="admin-incident-description">{incident.description}</p>
+            </div>
+            <div className="admin-incident-actions">
+              <button className="admin-action-button" onClick={() => handleFixIncident(incident._id)}>
+                Fixed
+              </button>
+            </div>
           </div>
-          <div className="admin-incident-content">
-            <h3 className="admin-incident-title">Incident #{1000 + index}</h3>
-            <p className="admin-incident-details">
-              Totem: TM00{index + 1} | Date: {new Date().toLocaleString()}
-            </p>
-            <p className="admin-incident-type">Type: {index % 2 === 0 ? "Hardware Failure" : "Software Error"}</p>
-          </div>
-          <div className={`admin-incident-badge ${index % 2 === 0 ? "warning" : "critical"}`}>
-            {index % 2 === 0 ? "Open" : "Critical"}
-          </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   )
 
@@ -223,28 +325,16 @@ const InteractiveTotemManagement = () => {
           />
           <div className="admin-content-card">
             <div className="admin-tabs">
-              <button
-                className={`admin-tab ${activeTab === "status" ? "active" : ""}`}
-                onClick={() => setActiveTab("status")}
-              >
+              <button className={`admin-tab ${activeTab === "status" ? "active" : ""}`} onClick={() => setActiveTab("status")}>
                 État des Appareils
               </button>
-              <button
-                className={`admin-tab ${activeTab === "maintenance" ? "active" : ""}`}
-                onClick={() => setActiveTab("maintenance")}
-              >
+              <button className={`admin-tab ${activeTab === "maintenance" ? "active" : ""}`} onClick={() => setActiveTab("maintenance")}>
                 Maintenance à Distance
               </button>
-              <button
-                className={`admin-tab ${activeTab === "incidents" ? "active" : ""}`}
-                onClick={() => setActiveTab("incidents")}
-              >
+              <button className={`admin-tab ${activeTab === "incidents" ? "active" : ""}`} onClick={() => setActiveTab("incidents")}>
                 Journal d'Incidents
               </button>
-              <button
-                className={`admin-tab ${activeTab === "approval" ? "active" : ""}`}
-                onClick={() => setActiveTab("approval")}
-              >
+              <button className={`admin-tab ${activeTab === "approval" ? "active" : ""}`} onClick={() => setActiveTab("approval")}>
                 <IonIcon icon={checkmarkCircleOutline} className="tab-icon" />
                 Approbations
               </button>
@@ -272,9 +362,17 @@ const InteractiveTotemManagement = () => {
         <div className="admin-modal-content">
           <div className="admin-form-group">
             <label className="admin-form-label">Description de l'Incident</label>
-            <IonTextarea rows={10} placeholder="Entrez les détails de l'incident ici..." className="admin-textarea" />
+            <IonTextarea
+              rows={10}
+              placeholder="Entrez les détails de l'incident ici..."
+              className="admin-textarea"
+              value={incidentDescription}
+              onIonChange={(e) => setIncidentDescription(e.detail.value!)}
+            />
           </div>
-          <button className="admin-action-button">Enregistrer le Rapport d'Incident</button>
+          <button className="admin-action-button" onClick={submitIncidentReport}>
+            Enregistrer le Rapport d'Incident
+          </button>
         </div>
       </IonModal>
 
@@ -290,4 +388,3 @@ const InteractiveTotemManagement = () => {
 }
 
 export default InteractiveTotemManagement
-
