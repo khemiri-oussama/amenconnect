@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { IonIcon, IonProgressBar, IonSelect, IonSelectOption, IonModal, IonButton } from "@ionic/react"
 import { cloudUploadOutline, terminalOutline, copyOutline, closeCircleOutline } from "ionicons/icons"
 import axios from "axios"
-import { ref, onValue,remove } from "firebase/database"
+import { ref, onValue, remove } from "firebase/database"
 import { database } from "./firebaseClient" // Adjust the path as needed
 
 import "./terminal-styles.css"
@@ -63,11 +63,41 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
   const [isDiagnosticModalOpen, setIsDiagnosticModalOpen] = useState<boolean>(false)
   const [typedOutput, setTypedOutput] = useState<string>("")
   const [isTyping, setIsTyping] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [loadingProgress, setLoadingProgress] = useState<number>(0)
+  const [loadingStatus, setLoadingStatus] = useState<string>("Initializing diagnostic tools...")
   const terminalRef = useRef<HTMLDivElement>(null)
+
+  // Loading progress simulation
+  useEffect(() => {
+    if (isLoading && isDiagnosticModalOpen) {
+      const progressInterval = setInterval(() => {
+        setLoadingProgress((prev) => {
+          const newProgress = prev + Math.random() * 0.05
+          if (newProgress > 0.95) {
+            return 0.95
+          }
+
+          // Update loading status based on progress
+          if (newProgress > 0.3 && newProgress < 0.6) {
+            setLoadingStatus("Collecting system information...")
+          } else if (newProgress >= 0.6 && newProgress < 0.9) {
+            setLoadingStatus("Analyzing performance metrics...")
+          } else if (newProgress >= 0.9) {
+            setLoadingStatus("Finalizing diagnostic report...")
+          }
+
+          return newProgress
+        })
+      }, 200)
+
+      return () => clearInterval(progressInterval)
+    }
+  }, [isLoading, isDiagnosticModalOpen])
 
   // Terminal typing effect
   useEffect(() => {
-    if (diagnosticResult && isDiagnosticModalOpen) {
+    if (diagnosticResult && isDiagnosticModalOpen && !isLoading) {
       const totem = totems.find((t) => t.id === selectedMaintenanceTotem)
       const formattedResult = formatDiagnosticResult(diagnosticResult, totem?.serial || "unknown")
 
@@ -87,7 +117,7 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
 
       typeText()
     }
-  }, [diagnosticResult, isDiagnosticModalOpen, selectedMaintenanceTotem, totems])
+  }, [diagnosticResult, isDiagnosticModalOpen, selectedMaintenanceTotem, totems, isLoading])
 
   // Auto-scroll terminal
   useEffect(() => {
@@ -234,76 +264,90 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
   // Handler for executing remote maintenance action including diagnostics
   const handleExecuteMaintenance = async () => {
     if (!selectedMaintenanceTotem || !selectedMaintenanceAction) {
-      setAlertMessage("Please select both a Totem and an Action.");
-      setShowAlert(true);
-      return;
+      setAlertMessage("Please select both a Totem and an Action.")
+      setShowAlert(true)
+      return
     }
-  
+
     // Find the selected totem from the state
-    const totem = totems.find((t) => t.id === selectedMaintenanceTotem);
+    const totem = totems.find((t) => t.id === selectedMaintenanceTotem)
     if (!totem) {
-      setAlertMessage("Selected Totem not found.");
-      setShowAlert(true);
-      return;
+      setAlertMessage("Selected Totem not found.")
+      setShowAlert(true)
+      return
     }
-  
+
     // If the action is "diagnose", trigger the diagnostic command and subscribe to Firebase
     if (selectedMaintenanceAction === "diagnose") {
       try {
-        // Trigger diagnostic command via your API endpoint (which writes the diagnostic command to Firebase)
-       await axios.post("/api/kiosk/diagnostic", {
-  totemId: totem.serial, // or use the appropriate totem identifier if different
-});
+        // Open modal and show loading state
+        setIsDiagnosticModalOpen(true)
+        setIsLoading(true)
+        setLoadingProgress(0)
+        setLoadingStatus("Initializing diagnostic tools...")
 
-        
+        // Trigger diagnostic command via your API endpoint
+        await axios.post("/api/kiosk/diagnostic", {
+          totemId: totem.serial, // or use the appropriate totem identifier if different
+        })
+
         // Set up a Firebase listener to wait for the diagnostic report at diagnostic_reports/{serial}
-        const diagnosticRef = ref(database, `diagnostic_reports/${totem.serial}`);
+        const diagnosticRef = ref(database, `diagnostic_reports/${totem.serial}`)
         onValue(diagnosticRef, (snapshot) => {
-          const data = snapshot.val();
-          if (data && data.data) { // assuming the report structure is { timestamp, data: { ...diagnosticInfo } }
-            setDiagnosticResult(data.data);
-            setIsDiagnosticModalOpen(true);
-            // Remove the diagnostic report after retrieval
-            remove(diagnosticRef)
-              .then(() => {
-                console.log("Diagnostic report removed from Firebase.");
-              })
-              .catch((err) => {
-                console.error("Error removing diagnostic report:", err);
-              });
+          const data = snapshot.val()
+          if (data && data.data) {
+            // assuming the report structure is { timestamp, data: { ...diagnosticInfo } }
+            // Complete the loading animation
+            setLoadingProgress(1)
+            setLoadingStatus("Report received!")
+
+            // Short delay to show the completed loading state
+            setTimeout(() => {
+              setIsLoading(false)
+              setDiagnosticResult(data.data)
+
+              // Remove the diagnostic report after retrieval
+              remove(diagnosticRef)
+                .then(() => {
+                  console.log("Diagnostic report removed from Firebase.")
+                })
+                .catch((err) => {
+                  console.error("Error removing diagnostic report:", err)
+                })
+            }, 500)
           }
-        });        
+        })
       } catch (error) {
-        console.error("Error running diagnostics:", error);
-        setAlertMessage(`Error running diagnostics on Totem ${totem.id}`);
-        setShowAlert(true);
+        console.error("Error running diagnostics:", error)
+        setAlertMessage(`Error running diagnostics on Totem ${totem.id}`)
+        setShowAlert(true)
+        setIsLoading(false)
+        setIsDiagnosticModalOpen(false)
       }
-      return;
+      return
     }
-  
+
     // Handle other maintenance actions (update, restart)
     try {
       if (selectedMaintenanceAction === "restart") {
         await axios.post("/api/kiosk/restart", {
           totemId: selectedMaintenanceTotem,
-        });
-        setAlertMessage(
-          `Restart command executed for Totem ${selectedMaintenanceTotem}`
-        );
-        setShowAlert(true);
-        return;
+        })
+        setAlertMessage(`Restart command executed for Totem ${selectedMaintenanceTotem}`)
+        setShowAlert(true)
+        return
       } else {
         setAlertMessage(
-          `Maintenance action "${selectedMaintenanceAction}" executed for Totem ${selectedMaintenanceTotem}`
-        );
-        setShowAlert(true);
+          `Maintenance action "${selectedMaintenanceAction}" executed for Totem ${selectedMaintenanceTotem}`,
+        )
+        setShowAlert(true)
       }
     } catch (error) {
-      console.error("Error executing maintenance action:", error);
-      setAlertMessage(`Error executing maintenance action on Totem ${selectedMaintenanceTotem}`);
-      setShowAlert(true);
+      console.error("Error executing maintenance action:", error)
+      setAlertMessage(`Error executing maintenance action on Totem ${selectedMaintenanceTotem}`)
+      setShowAlert(true)
     }
-  };
+  }
 
   return (
     <>
@@ -356,7 +400,7 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
         )}
       </div>
 
-      {/* Terminal-style Diagnostic Modal */}
+      {/* Terminal-style Diagnostic Modal with Loading State */}
       <IonModal
         isOpen={isDiagnosticModalOpen}
         onDidDismiss={() => setIsDiagnosticModalOpen(false)}
@@ -368,7 +412,12 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
             <h2 className="admin-modal-title">Diagnostic Terminal</h2>
           </div>
           <div className="terminal-actions">
-            <button className="terminal-action-button" onClick={copyToClipboard} title="Copy to clipboard">
+            <button
+              className="terminal-action-button"
+              onClick={copyToClipboard}
+              title="Copy to clipboard"
+              disabled={isLoading}
+            >
               <IonIcon icon={copyOutline} />
             </button>
             <button className="admin-modal-close" onClick={() => setIsDiagnosticModalOpen(false)}>
@@ -376,29 +425,47 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
             </button>
           </div>
         </div>
+
         <div className="terminal-container">
-          <div className="terminal-window" ref={terminalRef}>
-            <div className="terminal-content">
-              {typedOutput.split("\n").map((line, index) => {
-                // Apply different styling based on line content
-                let lineClass = "terminal-line"
-
-                if (line.includes("HEALTHY")) lineClass += " terminal-success"
-                else if (line.includes("WARNING")) lineClass += " terminal-warning"
-                else if (line.includes("CRITICAL") || line.includes("FAILURE")) lineClass += " terminal-error"
-                else if (line.includes("┌─") || line.includes("└─") || line.includes("│")) lineClass += " terminal-box"
-                else if (line.startsWith("#")) lineClass += " terminal-heading"
-
-                return (
-                  <div key={index} className={lineClass}>
-                    {line || " "}
-                  </div>
-                )
-              })}
-              {isTyping && <span className="terminal-cursor">_</span>}
+          {isLoading ? (
+            <div className="diagnostic-loading-container">
+              <div className="diagnostic-loading-content">
+                <div className="diagnostic-loading-icon">
+                  <div className="diagnostic-loading-spinner"></div>
+                </div>
+                <h3 className="diagnostic-loading-text">Running Diagnostics</h3>
+                <div className="diagnostic-loading-bar-container">
+                  <div className="diagnostic-loading-bar" style={{ width: `${loadingProgress * 100}%` }}></div>
+                </div>
+                <div className="diagnostic-loading-status">{loadingStatus}</div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="terminal-window" ref={terminalRef}>
+              <div className="terminal-content">
+                {typedOutput.split("\n").map((line, index) => {
+                  // Apply different styling based on line content
+                  let lineClass = "terminal-line"
+
+                  if (line.includes("HEALTHY")) lineClass += " terminal-success"
+                  else if (line.includes("WARNING")) lineClass += " terminal-warning"
+                  else if (line.includes("CRITICAL") || line.includes("FAILURE")) lineClass += " terminal-error"
+                  else if (line.includes("┌─") || line.includes("└─") || line.includes("│"))
+                    lineClass += " terminal-box"
+                  else if (line.startsWith("#")) lineClass += " terminal-heading"
+
+                  return (
+                    <div key={index} className={lineClass}>
+                      {line || " "}
+                    </div>
+                  )
+                })}
+                {isTyping && <span className="terminal-cursor">_</span>}
+              </div>
+            </div>
+          )}
         </div>
+
         <div className="terminal-footer">
           <IonButton expand="block" onClick={() => setIsDiagnosticModalOpen(false)} className="terminal-close-button">
             Close Terminal
@@ -410,3 +477,4 @@ const MaintenanceTab = ({ totems, setAlertMessage, setShowAlert }: MaintenanceTa
 }
 
 export default MaintenanceTab
+
