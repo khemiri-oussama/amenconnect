@@ -1,3 +1,4 @@
+//routes/adminNotificationsRoutes.js
 const express = require("express");
 const router = express.Router();
 const AdminNotification = require("../models/AdminNotification");
@@ -22,5 +23,23 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
+// GET all admin notifications sorted by creation date
+router.get("/", async (req, res, next) => {
+  try {
+    const notifications = await AdminNotification.find().sort({ createdAt: -1 });
+    // Transform notifications if needed before sending
+    const formatted = notifications.map((notif) => ({
+      id: notif._id,
+      title: notif.title || "Nouvelle demande de vidéoconférence",
+      message: notif.message,
+      time: new Date(notif.createdAt).toLocaleString(),
+      read: notif.read,
+    }));
+    res.status(200).json({ notifications: formatted });
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 module.exports = router;
