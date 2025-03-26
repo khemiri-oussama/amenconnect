@@ -1,0 +1,527 @@
+/* Login page styles */
+.login-container {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 0;
+  gap: 30px;
+}
+
+.login-container.landscape {
+  flex-direction: row;
+}
+
+.login-container.portrait {
+  flex-direction: column;
+}
+
+.login-card-main {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  flex: 2;
+}
+
+.login-card-secondary {
+  flex: 1;
+}
+
+.login-content {
+  position: relative;
+  padding: 40px;
+}
+
+.login-back-button {
+  --color: var(--dark-gray);
+  position: absolute;
+  left: 40px;
+  top: 40px;
+  font-weight: 500;
+}
+
+.login-back-button:hover {
+  --color: var(--primary-blue);
+}
+
+.login-content h2 {
+  text-align: center;
+  color: var(--primary-blue);
+  font-size: 2.2rem;
+  margin: 60px 0 40px;
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* QR Code Login Styles */
+.login-qrcode-container {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.login-qrcode-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.login-qrcode-image {
+  width: 220px;
+  height: 220px;
+  background-color: var(--white);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px solid var(--medium-gray);
+}
+
+.login-qrcode-corners {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.login-qrcode-corners .corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--primary-blue);
+  border-style: solid;
+  border-width: 0;
+}
+
+.login-qrcode-corners .top-left {
+  top: 10px;
+  left: 10px;
+  border-top-width: 3px;
+  border-left-width: 3px;
+}
+
+.login-qrcode-corners .top-right {
+  top: 10px;
+  right: 10px;
+  border-top-width: 3px;
+  border-right-width: 3px;
+}
+
+.login-qrcode-corners .bottom-left {
+  bottom: 10px;
+  left: 10px;
+  border-bottom-width: 3px;
+  border-left-width: 3px;
+}
+
+.login-qrcode-corners .bottom-right {
+  bottom: 10px;
+  right: 10px;
+  border-bottom-width: 3px;
+  border-right-width: 3px;
+}
+
+.login-qrcode-placeholder {
+  font-size: 120px;
+  color: var(--primary-blue);
+  opacity: 0.9;
+}
+
+.login-qrcode-refreshing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.login-qrcode-refreshing ion-spinner {
+  width: 40px;
+  height: 40px;
+  color: var(--primary-blue);
+}
+
+.login-qrcode-refreshing p {
+  margin: 0;
+  color: var(--dark-gray);
+}
+
+.login-qrcode-expiry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 220px;
+}
+
+.login-qrcode-timer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--dark-gray);
+  font-size: 0.9rem;
+}
+
+.login-qrcode-timer ion-icon {
+  color: var(--primary-blue);
+}
+
+.login-qrcode-refresh {
+  --color: var(--primary-blue);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.login-qrcode-instructions {
+  background-color: var(--light-gray);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.login-qrcode-instructions h3 {
+  font-size: 1.1rem;
+  margin: 0 0 15px 0;
+  color: var(--dark-gray);
+  text-align: center;
+}
+
+.login-qrcode-instructions ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: qr-steps;
+}
+
+.login-qrcode-instructions li {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  position: relative;
+  counter-increment: qr-steps;
+}
+
+.login-qrcode-instructions li:last-child {
+  margin-bottom: 0;
+}
+
+.login-qrcode-instructions .instruction-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.login-qrcode-instructions .instruction-icon::before {
+  content: counter(qr-steps);
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--primary-blue);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.login-qrcode-instructions .instruction-icon ion-icon {
+  font-size: 20px;
+  color: var(--primary-blue);
+}
+
+.login-qrcode-instructions .instruction-text {
+  flex: 1;
+  color: var(--dark-gray);
+}
+
+.login-qrcode-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-qrcode-demo-button {
+  --background: var(--primary-green);
+  --color: var(--white);
+  --border-radius: var(--radius-full);
+  font-family: "Inter", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  height: 50px;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  transition: all var(--transition-normal);
+}
+
+.login-qrcode-demo-button:hover:not([disabled]) {
+  --background: var(--primary-green-dark);
+  --box-shadow: var(--shadow-hover);
+}
+
+/* Email Login Styles */
+.login-form {
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.login-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-input-container {
+  position: relative;
+}
+
+.login-input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  color: var(--primary-blue);
+  opacity: 0.7;
+  font-size: 20px;
+}
+
+.login-input-item {
+  --background: var(--light-gray);
+  --border-radius: var(--radius-md);
+  --padding-start: 45px;
+  --padding-end: 15px;
+  margin: 0;
+  transition: all var(--transition-normal);
+}
+
+/* Add this to ensure input text is black */
+.login-input-item ion-input {
+  --color: var(--dark-gray);
+  --placeholder-color: rgba(51, 51, 51, 0.6);
+}
+
+/* Make sure floating labels are visible */
+.login-input-item ion-input.has-focus {
+  --color: var(--dark-gray);
+}
+
+.login-input-item ion-label {
+  color: var(--dark-gray);
+}
+
+.login-input-item.item-has-focus {
+  --background: var(--white);
+  box-shadow: 0 0 0 2px var(--primary-blue);
+}
+
+.login-password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  color: var(--dark-gray);
+  opacity: 0.7;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.login-password-toggle:hover {
+  opacity: 1;
+  color: var(--primary-blue);
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.login-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-forgot {
+  color: var(--primary-blue);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+}
+
+.login-forgot:hover {
+  color: var(--primary-green);
+  text-decoration: underline;
+}
+
+.login-submit-button {
+  --background: var(--primary-green);
+  --color: var(--white);
+  --border-radius: var(--radius-full);
+  font-family: "Inter", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 20px;
+  height: 50px;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  transition: all var(--transition-normal);
+}
+
+.login-submit-button:hover:not([disabled]) {
+  --background: var(--primary-green-dark);
+  --box-shadow: var(--shadow-hover);
+}
+
+/* Auth Method Toggle */
+.login-auth-toggle {
+  text-align: center;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-auth-toggle span {
+  color: var(--dark-gray);
+  font-size: 0.95rem;
+}
+
+.login-toggle-button {
+  --color: var(--primary-blue);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.login-toggle-button:hover {
+  --color: var(--primary-blue-dark);
+  text-decoration: underline;
+}
+
+/* Secondary Card Styles */
+.login-create-account {
+  background: linear-gradient(135deg, var(--primary-yellow-light) 0%, rgba(255, 204, 0, 0.2) 100%);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-create-account h3 {
+  color: var(--dark-gray);
+  font-size: 1.5rem;
+  margin: 0 0 15px 0;
+}
+
+.login-create-account p {
+  color: var(--dark-gray);
+  opacity: 0.8;
+  margin: 0 0 20px 0;
+}
+
+.login-create-button {
+  --background: transparent;
+  --color: var(--dark-gray);
+  --border-color: var(--primary-yellow);
+  --border-style: solid;
+  --border-width: 2px;
+  --border-radius: var(--radius-full);
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+}
+
+.login-create-button:hover {
+  --background: var(--primary-yellow);
+  --box-shadow: var(--shadow);
+}
+
+.login-security-note {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  transition: all var(--transition-normal);
+}
+
+.login-security-note:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.login-security-note ion-icon {
+  font-size: 24px;
+  color: var(--primary-green);
+}
+
+.login-security-note p {
+  color: var(--white);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .login-container.landscape {
+    flex-direction: column;
+  }
+
+  .login-content h2 {
+    font-size: 2rem;
+    margin: 50px 0 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-content {
+    padding: 30px 20px;
+  }
+
+  .login-back-button {
+    left: 20px;
+    top: 30px;
+  }
+
+  .login-content h2 {
+    font-size: 1.8rem;
+    margin: 40px 0 30px;
+  }
+
+  .login-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .login-create-account {
+    padding: 25px 20px;
+  }
+
+  .login-create-account h3 {
+    font-size: 1.3rem;
+  }
+}
+
