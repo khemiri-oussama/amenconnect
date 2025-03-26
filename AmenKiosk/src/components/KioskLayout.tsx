@@ -109,7 +109,16 @@ const KioskLayout: React.FC<KioskLayoutProps> = ({ children, pageTitle, showLogo
 
           {showLogo && (
             <div className="kiosk-logo" onClick={handleLogoClick}>
-              <img src={theme.logoUrl || "/placeholder.svg"} alt="Bank Logo" />
+              <img
+                src={theme?.logoUrl || "amen_logo.png"}
+                alt="Bank Logo"
+                onError={(e) => {
+                  // Fallback to default logo if the theme logo fails to load
+                  const target = e.target as HTMLImageElement
+                  target.onerror = null // Prevent infinite loop
+                  target.src = "amen_logo.png"
+                }}
+              />
             </div>
           )}
 

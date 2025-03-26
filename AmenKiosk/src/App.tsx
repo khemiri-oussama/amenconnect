@@ -38,6 +38,7 @@ import "./theme/variables.css"
 import { OrientationProvider } from "./context/OrientationContext"
 import { ThemeProvider } from "./context/ThemeContext"
 
+
 // Lazy load components for better performance
 const Home = lazy(() => import("./pages/Home"))
 const ModeInvite = lazy(() => import("./pages/mode-invite"))
@@ -60,8 +61,44 @@ setupIonicReact({
   hardwareBackButton: false, // Disable hardware back button
 })
 
+// Update the App component with better error handling:
 const App: React.FC = () => {
   const [isAppReady, setIsAppReady] = useState(false)
+  const [hasError, setHasError] = useState(false)
+
+  useEffect(() => {
+    try {
+      // Simulate splash screen timeout
+      const timer = setTimeout(() => {
+        setIsAppReady(true)
+
+        // Initialize button sounds after app is loaded
+        try {
+          preloadSounds()
+          enableButtonSounds()
+        } catch (error) {
+          console.error("Error initializing sounds:", error)
+        }
+      }, 1000)
+
+      return () => clearTimeout(timer)
+    } catch (error) {
+      console.error("Error in App initialization:", error)
+      setHasError(true)
+    }
+  }, [])
+
+  if (hasError) {
+    return (
+      <div className="kiosk-error-container">
+        <div className="kiosk-error-content">
+          <h2>Une erreur est survenue</h2>
+          <p>Impossible de charger l'application. Veuillez rafraîchir la page.</p>
+          <button onClick={() => window.location.reload()}>Rafraîchir</button>
+        </div>
+      </div>
+    )
+  }
 
   if (!isAppReady) {
     return <LoadingFallback />

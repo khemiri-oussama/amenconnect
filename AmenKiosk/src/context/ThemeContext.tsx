@@ -60,42 +60,59 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Load theme from localStorage on initial render
   useEffect(() => {
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY)
-    if (savedTheme) {
-      try {
-        const parsedTheme = JSON.parse(savedTheme)
-        setTheme({ ...defaultTheme, ...parsedTheme })
-        applyThemeToDOM({ ...defaultTheme, ...parsedTheme })
-      } catch (error) {
-        console.error("Failed to parse saved theme:", error)
+    try {
+      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY)
+      if (savedTheme) {
+        try {
+          const parsedTheme = JSON.parse(savedTheme)
+          setTheme({ ...defaultTheme, ...parsedTheme })
+          // Delay theme application to ensure DOM is ready
+          setTimeout(() => {
+            applyThemeToDOM({ ...defaultTheme, ...parsedTheme })
+          }, 0)
+        } catch (error) {
+          console.error("Failed to parse saved theme:", error)
+          applyThemeToDOM(defaultTheme)
+        }
+      } else {
+        // Delay theme application to ensure DOM is ready
+        setTimeout(() => {
+          applyThemeToDOM(defaultTheme)
+        }, 0)
       }
-    } else {
-      applyThemeToDOM(defaultTheme)
+    } catch (error) {
+      console.error("Error initializing theme:", error)
     }
   }, [])
 
   // Apply theme to DOM by updating CSS variables
   const applyThemeToDOM = (themeToApply: KioskTheme) => {
-    const root = document.documentElement
+    try {
+      const root = document.documentElement
 
-    // Apply colors
-    root.style.setProperty("--primary-blue", themeToApply.primaryBlue)
-    root.style.setProperty("--primary-blue-dark", themeToApply.primaryBlueDark)
-    root.style.setProperty("--primary-blue-light", themeToApply.primaryBlueLight)
-    root.style.setProperty("--primary-green", themeToApply.primaryGreen)
-    root.style.setProperty("--primary-green-dark", themeToApply.primaryGreenDark)
-    root.style.setProperty("--primary-green-light", themeToApply.primaryGreenLight)
-    root.style.setProperty("--primary-yellow", themeToApply.primaryYellow)
-    root.style.setProperty("--primary-yellow-dark", themeToApply.primaryYellowDark)
-    root.style.setProperty("--primary-yellow-light", themeToApply.primaryYellowLight)
+      // Apply colors
+      root.style.setProperty("--primary-blue", themeToApply.primaryBlue)
+      root.style.setProperty("--primary-blue-dark", themeToApply.primaryBlueDark)
+      root.style.setProperty("--primary-blue-light", themeToApply.primaryBlueLight)
+      root.style.setProperty("--primary-green", themeToApply.primaryGreen)
+      root.style.setProperty("--primary-green-dark", themeToApply.primaryGreenDark)
+      root.style.setProperty("--primary-green-light", themeToApply.primaryGreenLight)
+      root.style.setProperty("--primary-yellow", themeToApply.primaryYellow)
+      root.style.setProperty("--primary-yellow-dark", themeToApply.primaryYellowDark)
+      root.style.setProperty("--primary-yellow-light", themeToApply.primaryYellowLight)
 
-    // Apply background
-    const kioskBackgrounds = document.querySelectorAll(".kiosk-background")
-    kioskBackgrounds.forEach((bg: Element) => {
-      if (bg instanceof HTMLElement) {
-        bg.style.background = themeToApply.backgroundGradient
-      }
-    })
+      // Apply background - do this safely with a timeout to ensure DOM is ready
+      setTimeout(() => {
+        const kioskBackgrounds = document.querySelectorAll(".kiosk-background")
+        kioskBackgrounds.forEach((bg: Element) => {
+          if (bg instanceof HTMLElement) {
+            bg.style.background = themeToApply.backgroundGradient
+          }
+        })
+      }, 0)
+    } catch (error) {
+      console.error("Error applying theme:", error)
+    }
   }
 
   // Update theme with new values

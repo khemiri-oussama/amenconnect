@@ -110,7 +110,7 @@ const LogoUploader: React.FC<{
 
 // Main admin panel component
 const AdminPanel: React.FC = () => {
-  const { theme, updateTheme, resetTheme, applyTheme } = useTheme()
+  const themeContext = useTheme()
   const history = useHistory()
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState("")
@@ -119,8 +119,30 @@ const AdminPanel: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false)
   const [activeTab, setActiveTab] = useState("colors")
   const [previewMode, setPreviewMode] = useState(false)
-  const [tempTheme, setTempTheme] = useState<KioskTheme>({ ...theme })
   const [soundVolume, setSoundVolume] = useState(50)
+
+  // Use a default theme if the context theme is undefined
+  const defaultThemeValues = {
+    primaryBlue: "#181e92",
+    primaryBlueDark: "#131778",
+    primaryBlueLight: "rgba(24, 30, 146, 0.1)",
+    primaryGreen: "#47ce65",
+    primaryGreenDark: "#3bb954",
+    primaryGreenLight: "rgba(71, 206, 101, 0.1)",
+    primaryYellow: "#ffcc00",
+    primaryYellowDark: "#e6b800",
+    primaryYellowLight: "rgba(255, 204, 0, 0.1)",
+    backgroundColor: "#0c3b67",
+    backgroundGradient: "linear-gradient(135deg, #0c3b67 0%, #025091 100%)",
+    logoUrl: "amen_logo.png",
+  }
+
+  const theme = themeContext?.theme || defaultThemeValues
+  const updateTheme = themeContext?.updateTheme || (() => {})
+  const resetTheme = themeContext?.resetTheme || (() => {})
+  const applyTheme = themeContext?.applyTheme || (() => {})
+
+  const [tempTheme, setTempTheme] = useState<KioskTheme>({ ...theme })
 
   // Update temp theme when main theme changes
   useEffect(() => {
