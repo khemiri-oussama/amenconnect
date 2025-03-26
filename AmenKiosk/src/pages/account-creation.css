@@ -5,7 +5,7 @@
   padding: 20px 0;
 }
 
-.register-progress-card, 
+.register-progress-card,
 .register-form-card,
 .register-success-card {
   background-color: var(--white);
@@ -144,6 +144,23 @@
   --padding-end: 15px;
   margin: 0;
   transition: all var(--transition-normal);
+}
+
+/* Add this to ensure input text is black */
+.register-input-item ion-input,
+.register-input-item ion-select {
+  --color: var(--dark-gray);
+  --placeholder-color: rgba(51, 51, 51, 0.6);
+}
+
+/* Make sure floating labels are visible */
+.register-input-item ion-input.has-focus,
+.register-input-item ion-select.has-focus {
+  --color: var(--dark-gray);
+}
+
+.register-input-item ion-label {
+  color: var(--dark-gray);
 }
 
 .register-input-item.item-has-focus {
@@ -411,33 +428,33 @@
   .register-form-inputs {
     grid-template-columns: 1fr;
   }
-  
+
   .register-form-actions {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .register-back-button,
   .register-next-button,
   .register-submit-button {
     width: 100%;
   }
-  
+
   .register-summary-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .register-steps {
     flex-direction: column;
     gap: 20px;
     align-items: flex-start;
   }
-  
+
   .register-step {
     flex-direction: row;
     width: 100%;
   }
-  
+
   .register-step-connector {
     width: 2px;
     height: 30px;
@@ -445,8 +462,9 @@
     top: 0;
     left: 20px;
   }
-  
+
   .register-step-label {
     text-align: left;
   }
 }
+

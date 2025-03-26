@@ -61,6 +61,35 @@ textarea {
   font-family: "Inter", sans-serif;
 }
 
+/* Global input styles to ensure text is visible */
+input,
+select,
+textarea {
+  color: var(--dark-gray);
+}
+
+/* For inputs on dark backgrounds, components should override this */
+.kiosk-container input[type="search"],
+.kiosk-header input,
+.kiosk-footer input {
+  color: var(--white);
+}
+
+/* Ionic specific input overrides */
+ion-input,
+ion-select,
+ion-textarea {
+  --color: var(--dark-gray) !important;
+}
+
+/* Exception for inputs on dark backgrounds */
+.kiosk-background ion-input,
+.kiosk-header ion-input,
+.kiosk-footer ion-input,
+[class*="dark-bg"] ion-input {
+  --color: var(--white) !important;
+}
+
 /* Kiosk specific styles */
 .kiosk-app {
   position: relative;
