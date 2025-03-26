@@ -1,0 +1,436 @@
+/* Import global styles */
+@import "../theme/global.css";
+
+/* Welcome container specific styles */
+.content-card {
+  position: relative;
+  z-index: 10;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1000px;
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 40px;
+  text-align: center;
+  transition: all var(--transition-normal);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.content-card.show-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.content-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Welcome header */
+.welcome-header {
+  position: relative;
+  margin-bottom: 40px;
+  animation: fadeIn 0.8s ease-out 0.3s both;
+}
+
+.welcome-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 4.5rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: var(--primary-blue);
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.welcome-subtitle {
+  font-family: "Inter", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--dark-gray);
+  max-width: 700px;
+  margin: 30px auto 0;
+}
+
+/* CTA container */
+.cta-container {
+  position: relative;
+  margin: 50px 0 30px;
+  animation: fadeIn 0.8s ease-out 0.6s both;
+}
+
+/* Start button */
+.start-button {
+  --background: var(--primary-green);
+  --color: var(--white);
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 auto;
+  max-width: 400px;
+  height: 70px;
+  --border-radius: var(--radius-full);
+  --box-shadow: var(--shadow);
+  text-transform: none;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.start-button:hover:not([disabled]) {
+  transform: translateY(-3px);
+  --box-shadow: var(--shadow-hover);
+  --background: var(--primary-green-dark);
+}
+
+.start-button span {
+  margin-right: 15px;
+}
+
+.button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  transition: transform var(--transition-fast);
+}
+
+.start-button:hover .button-icon {
+  transform: translateX(3px);
+}
+
+/* Options grid */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all var(--transition-normal);
+}
+
+.options-grid.show-options {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.option-card {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all var(--transition-normal);
+  height: 150px;
+}
+
+.option-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.option-card.guest {
+  background-color: rgba(24, 30, 146, 0.05);
+  border: 2px solid var(--primary-blue);
+}
+
+.option-card.login {
+  background-color: rgba(71, 206, 101, 0.05);
+  border: 2px solid var(--primary-green);
+}
+
+.option-card.register {
+  background-color: rgba(255, 204, 0, 0.05);
+  border: 2px solid var(--primary-yellow);
+}
+
+.option-button {
+  --background: transparent;
+  --color: var(--dark-gray);
+  --box-shadow: none;
+  --border-radius: var(--radius-md);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.option-content {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 20px;
+  transition: transform var(--transition-fast);
+}
+
+.option-button:active .option-icon {
+  transform: scale(0.95);
+}
+
+.guest .option-icon {
+  background-color: var(--primary-blue-light);
+  color: var(--primary-blue);
+}
+
+.login .option-icon {
+  background-color: var(--primary-green-light);
+  color: var(--primary-green);
+}
+
+.register .option-icon {
+  background-color: var(--primary-yellow-light);
+  color: var(--primary-yellow);
+}
+
+.option-icon ion-icon {
+  font-size: 24px;
+}
+
+.option-text {
+  text-align: left;
+  flex: 1;
+}
+
+.option-text h3 {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+}
+
+.option-text p {
+  font-family: "Inter", sans-serif;
+  font-size: 0.9rem;
+  margin: 0;
+  opacity: 0.7;
+}
+
+.option-arrow {
+  margin-left: 10px;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all var(--transition-normal);
+}
+
+.option-card:hover .option-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.guest .option-arrow {
+  color: var(--primary-blue);
+}
+
+.login .option-arrow {
+  color: var(--primary-green);
+}
+
+.register .option-arrow {
+  color: var(--primary-yellow);
+}
+
+/* Quick access section */
+.quick-access-section {
+  grid-column: 1 / -1;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.quick-access-section p {
+  font-size: 0.9rem;
+  color: var(--dark-gray);
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+
+.quick-access-button {
+  --color: var(--primary-blue);
+  font-size: 0.9rem;
+  font-weight: 500;
+  height: 40px;
+  transition: all var(--transition-normal);
+}
+
+.quick-access-button:hover {
+  --color: var(--primary-blue-dark);
+  transform: translateY(-2px);
+}
+
+.quick-access-button ion-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.back-button {
+  --color: var(--dark-gray);
+  font-size: 1rem;
+  margin-top: 20px;
+  grid-column: 1 / -1;
+  transition: all var(--transition-fast);
+}
+
+.back-button:hover {
+  --color: var(--primary-blue);
+}
+
+/* Tagline section */
+.tagline-section {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  margin: 20px 0;
+  animation: fadeIn 0.8s ease-out 0.9s both;
+}
+
+.welcome-tagline {
+  font-family: "Poppins", sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--primary-yellow);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin: 0;
+  padding: 0 20px;
+}
+
+/* Landscape mode */
+.landscape .content-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+}
+
+.landscape .welcome-title {
+  font-size: 5rem;
+}
+
+.landscape .welcome-subtitle {
+  font-size: 2.2rem;
+}
+
+.landscape .options-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.landscape .welcome-tagline {
+  font-size: 2.2rem;
+}
+
+/* Portrait mode */
+.portrait .content-card {
+  padding: 40px 30px;
+  margin-top: 10px;
+}
+
+.portrait .welcome-title {
+  font-size: 4rem;
+}
+
+.portrait .welcome-subtitle {
+  font-size: 1.8rem;
+}
+
+.portrait .options-grid {
+  grid-template-columns: 1fr;
+}
+
+.portrait .option-card {
+  height: 120px;
+}
+
+.portrait .welcome-tagline {
+  font-size: 1.8rem;
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 3.5rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.6rem;
+  }
+
+  .start-button {
+    font-size: 1.4rem;
+    height: 60px;
+  }
+
+  .option-text h3 {
+    font-size: 1.2rem;
+  }
+
+  .welcome-tagline {
+    font-size: 1.6rem;
+  }
+
+  .content-card {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-height: 700px) {
+  .content-card {
+    padding: 25px 20px;
+    margin: 10px auto;
+  }
+
+  .welcome-title {
+    font-size: 3rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.4rem;
+    margin-top: 20px;
+  }
+
+  .cta-container {
+    margin: 30px 0 20px;
+  }
+
+  .start-button {
+    height: 55px;
+    font-size: 1.3rem;
+  }
+
+  .option-card {
+    height: 100px;
+  }
+
+  .option-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .welcome-tagline {
+    font-size: 1.5rem;
+  }
+}
+

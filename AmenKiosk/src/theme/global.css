@@ -1,0 +1,272 @@
+/* Global styles for AmenBank application */
+
+/* Import fonts */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap");
+
+/* Color variables */
+:root {
+  --primary-blue: #181e92;
+  --primary-blue-light: rgba(24, 30, 146, 0.1);
+  --primary-blue-dark: #131778;
+  --primary-green: #47ce65;
+  --primary-green-light: rgba(71, 206, 101, 0.1);
+  --primary-green-dark: #3bb954;
+  --primary-yellow: #ffcc00;
+  --primary-yellow-light: rgba(255, 204, 0, 0.1);
+  --primary-yellow-dark: #e6b800;
+  --white: #ffffff;
+  --light-gray: #f5f5f5;
+  --medium-gray: #e0e0e0;
+  --dark-gray: #333333;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --color-weak: #ff4d4f;
+  --color-medium: #faad14;
+  --color-strong: #52c41a;
+}
+
+/* Base styles */
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Poppins", sans-serif;
+}
+
+/* Loading container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--primary-blue);
+  color: var(--white);
+}
+
+.loading-container ion-spinner {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: var(--primary-yellow);
+}
+
+/* Common container styles */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--primary-blue);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Enhanced background pattern */
+.background-pattern {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+  z-index: 1;
+  overflow: hidden;
+}
+
+.background-pattern::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 20% 30%, rgba(71, 206, 101, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(44, 51, 201, 0.2) 0%, transparent 50%);
+  background-attachment: fixed;
+  z-index: -1;
+}
+
+.background-pattern::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
+  z-index: -1;
+}
+
+/* Top section */
+.top-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  position: relative;
+  z-index: 10;
+}
+
+/* Date and time */
+.date-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius-full);
+  padding: 10px 20px;
+  font-family: "Inter", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--white);
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.date-time:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.date-time ion-icon {
+  font-size: 1.2rem;
+}
+
+/* Logo */
+.logo-container {
+  position: relative;
+  z-index: 10;
+}
+
+.bank-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 12px 24px;
+  box-shadow: var(--shadow);
+  transition: all var(--transition-normal);
+}
+
+.bank-logo:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Logo image styling */
+.bank-logo ion-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 24px;
+  margin-top: auto;
+  position: relative;
+  z-index: 10;
+}
+
+.footer-content {
+  font-family: "Inter", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--white);
+  opacity: 0.8;
+  padding: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .top-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .date-time {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-height: 700px) {
+  .top-section {
+    padding: 15px;
+  }
+}
+
