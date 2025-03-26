@@ -37,7 +37,7 @@ export default function LoginDesktop() {
               />
             </div>
             <div className="form-container">
-              <h1 className="title-accueil-desktop">Bienvenu</h1>
+              <h1 className="title-accueil-desktop">Bienvenue</h1>
               <p className="subtitle">
                 Veuillez saisir les détails de votre compte
               </p>
