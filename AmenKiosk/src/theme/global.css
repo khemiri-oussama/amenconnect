@@ -1,4 +1,4 @@
-/* Global styles for AmenBank application */
+/* Global styles for AmenBank Kiosk application */
 
 /* Import fonts */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap");
@@ -39,7 +39,9 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow: hidden;
+  touch-action: manipulation;
+  background-color: var(--primary-blue);
 }
 
 h1,
@@ -49,63 +51,81 @@ h4,
 h5,
 h6 {
   font-family: "Poppins", sans-serif;
+  margin-top: 0;
 }
 
-/* Loading container */
-.loading-container {
+button,
+input,
+select,
+textarea {
+  font-family: "Inter", sans-serif;
+}
+
+/* Kiosk specific styles */
+.kiosk-app {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.kiosk-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+  color: var(--white);
+}
+
+.kiosk-loading-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: var(--primary-blue);
-  color: var(--white);
+  text-align: center;
 }
 
-.loading-container ion-spinner {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 16px;
-  color: var(--primary-yellow);
+.kiosk-spinner {
+  width: 60px !important;
+  height: 60px !important;
+  color: var(--primary-yellow) !important;
+  margin-bottom: 20px;
 }
 
-/* Common container styles */
-.app-container {
+.kiosk-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: var(--primary-blue);
-  position: relative;
+  width: 100%;
   overflow: hidden;
 }
 
-/* Enhanced background pattern */
-.background-pattern {
+/* Update the background styling */
+.kiosk-background {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
-  z-index: 1;
-  overflow: hidden;
+  background: linear-gradient(135deg, #0c3b67 0%, #025091 100%);
+  z-index: -2;
 }
 
-.background-pattern::before {
+.kiosk-background::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(circle at 20% 30%, rgba(71, 206, 101, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(44, 51, 201, 0.2) 0%, transparent 50%);
+  background-image: radial-gradient(circle at 20% 30%, rgba(71, 206, 101, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.08) 0%, transparent 40%);
   background-attachment: fixed;
   z-index: -1;
 }
 
-.background-pattern::after {
+.kiosk-background::after {
   content: "";
   position: absolute;
   top: 0;
@@ -117,156 +137,196 @@ h6 {
   z-index: -1;
 }
 
-/* Top section */
-.top-section {
+.kiosk-header {
+  position: relative;
+  padding: 20px 30px;
+  color: var(--white);
+  z-index: 1;
+}
+
+.kiosk-header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  position: relative;
-  z-index: 10;
 }
 
-/* Date and time */
-.date-time {
+.kiosk-datetime {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.15);
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-radius: var(--radius-full);
-  padding: 10px 20px;
-  font-family: "Inter", sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--white);
-  transition: all var(--transition-normal);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.date-time:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.2);
+.kiosk-date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  margin-bottom: 5px;
 }
 
-.date-time ion-icon {
+.kiosk-date ion-icon {
   font-size: 1.2rem;
 }
 
-/* Logo */
-.logo-container {
-  position: relative;
-  z-index: 10;
+.kiosk-time {
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
-.bank-logo {
+/* Update the logo container to be transparent */
+.kiosk-logo {
+  padding: 10px 20px;
+  background-color: transparent;
+  border-radius: var(--radius-md);
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--white);
-  border-radius: var(--radius-md);
-  padding: 12px 24px;
-  box-shadow: var(--shadow);
-  transition: all var(--transition-normal);
 }
 
-.bank-logo:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
-
-/* Logo image styling */
-.bank-logo ion-img {
+.kiosk-logo img {
   height: 40px;
   width: auto;
   object-fit: contain;
 }
 
-/* Footer */
-.app-footer {
-  text-align: center;
-  padding: 24px;
-  margin-top: auto;
-  position: relative;
-  z-index: 10;
+.kiosk-header-extra {
+  display: flex;
+  align-items: center;
 }
 
-.footer-content {
-  font-family: "Inter", sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
+.kiosk-currency {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+}
+
+.kiosk-currency ion-icon {
+  font-size: 1.2rem;
+  color: var(--primary-yellow);
+}
+
+.kiosk-page-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 15px 0 5px;
+  background: linear-gradient(to right, var(--white), rgba(255, 255, 255, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kiosk-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 30px 30px;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+.kiosk-footer {
+  padding: 20px 30px;
   color: var(--white);
-  opacity: 0.8;
-  padding: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  max-width: 1000px;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1;
+}
+
+.kiosk-footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
-/* Animation keyframes */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.kiosk-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
 }
 
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.kiosk-slogan {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--primary-yellow);
 }
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+/* Animated Card Component */
+.kiosk-animated-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+  margin-bottom: 20px;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
+.kiosk-animated-card.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-  .top-section {
-    flex-direction: column;
+.kiosk-container.landscape .kiosk-main {
+  padding: 0 50px 40px;
+}
+
+.kiosk-container.portrait .kiosk-header-content {
+  flex-direction: column;
+  gap: 20px;
+}
+
+.kiosk-container.portrait .kiosk-page-title {
+  margin-top: 20px;
+}
+
+@media (max-width: 1200px) {
+  .kiosk-header-content {
+    flex-wrap: wrap;
     gap: 15px;
   }
 
-  .date-time {
-    width: 100%;
-    justify-content: center;
+  .kiosk-page-title {
+    font-size: 2.2rem;
   }
 }
 
-@media (max-height: 700px) {
-  .top-section {
+@media (max-width: 768px) {
+  .kiosk-header {
     padding: 15px;
+  }
+
+  .kiosk-main {
+    padding: 0 15px 20px;
+  }
+
+  .kiosk-footer {
+    padding: 15px;
+  }
+
+  .kiosk-footer-content {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .kiosk-page-title {
+    font-size: 1.8rem;
   }
 }
 

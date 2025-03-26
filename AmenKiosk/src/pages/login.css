@@ -1,371 +1,271 @@
-/* Import global styles */
-@import "../theme/global.css";
-
-/* Login content */
-.login-content {
-  position: relative;
-  z-index: 10;
-  margin: 20px auto;
-  width: 90%;
-  max-width: 500px;
+/* Login page styles */
+.login-container {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 0;
+  gap: 30px;
 }
 
-/* Login card */
-.login-card {
+.login-container.landscape {
+  flex-direction: row;
+}
+
+.login-container.portrait {
+  flex-direction: column;
+}
+
+.login-card-main {
   background-color: var(--white);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
-  padding: 40px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all var(--transition-normal);
+  flex: 2;
 }
 
-.login-card.show-card {
-  opacity: 1;
-  transform: translateY(0);
+.login-card-secondary {
+  flex: 1;
 }
 
-.login-card.hide-card {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.login-card:hover {
-  box-shadow: var(--shadow-hover);
-}
-
-/* Page header */
-.page-header {
+.login-content {
   position: relative;
-  margin-bottom: 30px;
-  text-align: center;
-  animation: fadeIn 0.8s ease-out 0.3s both;
+  padding: 40px;
 }
 
-.back-button-top {
-  position: absolute;
-  left: 0;
-  top: 0;
+.login-back-button {
   --color: var(--dark-gray);
-  transition: all var(--transition-fast);
+  position: absolute;
+  left: 40px;
+  top: 40px;
+  font-weight: 500;
 }
 
-.back-button-top:hover {
-  transform: translateX(-3px);
+.login-back-button:hover {
   --color: var(--primary-blue);
 }
 
-.page-title {
-  font-family: "Poppins", sans-serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 5px;
+.login-content h2 {
+  text-align: center;
   color: var(--primary-blue);
-  position: relative;
-  display: inline-block;
+  font-size: 2.2rem;
+  margin: 60px 0 40px;
   background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.title-accent {
-  position: absolute;
-  bottom: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 6px;
-  width: 60px;
-  background: linear-gradient(to right, var(--primary-green), var(--primary-yellow));
-  border-radius: var(--radius-full);
-}
-
-.page-subtitle {
-  font-family: "Inter", sans-serif;
-  font-size: 1.1rem;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--dark-gray);
-  margin: 25px auto 0;
-}
-
-/* Login form */
 .login-form {
-  margin-top: 30px;
-  animation: fadeIn 0.8s ease-out 0.5s both;
+  max-width: 450px;
+  margin: 0 auto;
 }
 
-.form-group {
+.login-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-input-container {
   position: relative;
-  margin-bottom: 25px;
 }
 
-.input-icon {
+.login-input-icon {
   position: absolute;
   left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 20;
+  z-index: 10;
   color: var(--primary-blue);
   opacity: 0.7;
+  font-size: 20px;
 }
 
-.form-item {
+.login-input-item {
   --background: var(--light-gray);
   --border-radius: var(--radius-md);
   --padding-start: 45px;
   --padding-end: 15px;
-  --padding-top: 12px;
-  --padding-bottom: 12px;
-  --highlight-height: 0;
   margin: 0;
   transition: all var(--transition-normal);
-  border: 2px solid transparent;
 }
 
-.form-item:focus-within {
-  box-shadow: 0 0 0 2px var(--primary-blue);
+.login-input-item.item-has-focus {
   --background: var(--white);
-  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px var(--primary-blue);
 }
 
-.form-item ion-input {
-  --padding-top: 12px;
-  --padding-bottom: 12px;
-  font-family: "Inter", sans-serif;
-}
-
-.password-toggle {
+.login-password-toggle {
   position: absolute;
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 20;
+  z-index: 10;
   color: var(--dark-gray);
   opacity: 0.7;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
-.password-toggle:hover {
+.login-password-toggle:hover {
   opacity: 1;
   color: var(--primary-blue);
 }
 
-/* Form options */
-.form-options {
+.login-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin: 10px 0;
 }
 
-.remember-me {
+.login-remember {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.remember-me ion-label {
-  font-size: 0.9rem;
-  color: var(--dark-gray);
-}
-
-.forgot-password {
-  font-size: 0.9rem;
+.login-forgot {
   color: var(--primary-blue);
   text-decoration: none;
+  font-size: 0.9rem;
   transition: all var(--transition-fast);
 }
 
-.forgot-password:hover {
+.login-forgot:hover {
   color: var(--primary-green);
   text-decoration: underline;
 }
 
-/* Login button */
-.login-button {
+.login-submit-button {
   --background: var(--primary-green);
   --color: var(--white);
   --border-radius: var(--radius-full);
   font-family: "Inter", sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
-  margin: 0 auto;
+  margin-top: 20px;
   height: 50px;
   text-transform: none;
   letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
   transition: all var(--transition-normal);
 }
 
-.login-button:hover:not([disabled]) {
-  transform: translateY(-3px);
+.login-submit-button:hover:not([disabled]) {
   --background: var(--primary-green-dark);
   --box-shadow: var(--shadow-hover);
 }
 
-/* Biometric login */
-.biometric-login {
-  margin-top: 25px;
+.login-divider {
+  display: none;
+}
+
+.login-biometric {
+  display: none;
+}
+
+.login-create-account {
+  background: linear-gradient(135deg, var(--primary-yellow-light) 0%, rgba(255, 204, 0, 0.2) 100%);
+  border-radius: var(--radius-lg);
+  padding: 30px;
   text-align: center;
-  animation: fadeIn 0.8s ease-out 0.7s both;
+  margin-bottom: 20px;
 }
 
-.biometric-login p {
-  font-size: 0.9rem;
+.login-create-account h3 {
   color: var(--dark-gray);
-  opacity: 0.7;
-  margin-bottom: 10px;
-}
-
-.biometric-button {
-  --color: var(--primary-blue);
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 auto;
-  transition: all var(--transition-fast);
-}
-
-.biometric-button:hover:not([disabled]) {
-  --color: var(--primary-blue-dark);
-  transform: translateY(-2px);
-}
-
-.biometric-button ion-icon {
   font-size: 1.5rem;
+  margin: 0 0 15px 0;
 }
 
-/* Create account section */
-.create-account {
-  margin-top: 30px;
-  text-align: center;
-  padding-top: 20px;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  animation: fadeIn 0.8s ease-out 0.9s both;
-}
-
-.create-account p {
-  margin-bottom: 15px;
+.login-create-account p {
   color: var(--dark-gray);
+  opacity: 0.8;
+  margin: 0 0 20px 0;
 }
 
-.create-account-button {
+.login-create-button {
+  --background: transparent;
+  --color: var(--dark-gray);
   --border-color: var(--primary-yellow);
-  --color: var(--primary-yellow);
+  --border-style: solid;
+  --border-width: 2px;
   --border-radius: var(--radius-full);
   font-family: "Inter", sans-serif;
-  font-size: 1rem;
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
+  font-weight: 600;
   transition: all var(--transition-normal);
 }
 
-.create-account-button:hover:not([disabled]) {
-  transform: translateY(-3px);
-  --border-color: var(--primary-yellow-dark);
-  --color: var(--primary-yellow-dark);
+.login-create-button:hover {
+  --background: var(--primary-yellow);
   --box-shadow: var(--shadow);
 }
 
-/* Security note */
-.security-note {
+.login-security-note {
   display: flex;
   align-items: center;
   gap: 15px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: var(--radius-md);
-  padding: 15px 20px;
+  padding: 20px;
   transition: all var(--transition-normal);
-  opacity: 0;
-  transform: translateY(20px);
 }
 
-.security-note.show-note {
-  opacity: 1;
-  transform: translateY(0);
+.login-security-note:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
-.security-note:hover {
-  transform: translateY(-3px);
-  background-color: rgba(255, 255, 255, 0.15);
+.login-security-note ion-icon {
+  font-size: 24px;
+  color: var(--primary-green);
 }
 
-.security-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
+.login-security-note p {
   color: var(--white);
-}
-
-.security-note p {
-  color: var(--white);
-  font-size: 0.9rem;
   margin: 0;
+  font-size: 0.95rem;
 }
 
-/* Landscape mode */
-.landscape .login-card {
-  padding: 50px;
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .login-container.landscape {
+    flex-direction: column;
+  }
+
+  .login-content h2 {
+    font-size: 2rem;
+    margin: 50px 0 30px;
+  }
 }
 
-/* Portrait mode */
-.portrait .login-card {
-  padding: 40px 30px;
-  margin-top: 10px;
-}
-
-/* Additional responsive adjustments */
 @media (max-width: 768px) {
-  .page-title {
-    font-size: 2.2rem;
-  }
-
-  .page-subtitle {
-    font-size: 1rem;
-  }
-
-  .login-card {
+  .login-content {
     padding: 30px 20px;
   }
 
-  .form-options {
+  .login-back-button {
+    left: 20px;
+    top: 30px;
+  }
+
+  .login-content h2 {
+    font-size: 1.8rem;
+    margin: 40px 0 30px;
+  }
+
+  .login-options {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
-}
 
-@media (max-height: 700px) {
-  .login-card {
+  .login-create-account {
     padding: 25px 20px;
-    margin: 10px auto;
   }
 
-  .page-title {
-    font-size: 2rem;
-  }
-
-  .page-subtitle {
-    font-size: 0.9rem;
-    margin-top: 20px;
+  .login-create-account h3 {
+    font-size: 1.3rem;
   }
 }
 
