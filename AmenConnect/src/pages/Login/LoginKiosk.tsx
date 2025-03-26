@@ -53,7 +53,7 @@ const LoginKiosk: React.FC = () => {
       clearTimeout(inactivityTimer.current)
     }
     inactivityTimer.current = setTimeout(() => {
-      ionRouter.push("/home")
+      ionRouter.push("/totem/kiosk")
     }, 60000)
   }, [ionRouter])
 

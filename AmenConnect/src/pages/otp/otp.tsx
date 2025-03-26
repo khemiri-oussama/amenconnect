@@ -11,7 +11,7 @@ interface Otp extends RouteComponentProps {}
 const Otp: React.FC<Otp> = (props) => {
   const [isPortrait, setIsPortrait] = useState(window.matchMedia("(orientation: portrait)").matches)
   const [isTouchable, setIsTouchable] = useState(false)
-  const isMobile = isPlatform("mobile")
+  const isMobile = isPlatform("android") || isPlatform("ios")
 
   useEffect(() => {
     const handleResize = () => {
