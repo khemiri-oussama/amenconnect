@@ -18,15 +18,15 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
+  padding: 1.5rem;
   text-align: center;
-  max-width: 1200px;
+  max-width: 1800px;
   width: 100%;
   z-index: 10;
 }
 
 .homekiosk-logo {
-  margin-bottom: 70px;
+  margin-bottom: 50px;
   max-width: 200px;
 }
 
@@ -51,7 +51,7 @@
   font-size: 2.5rem;
   font-weight: 400;
   line-height: 1.3;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 /* Options container */
@@ -71,7 +71,7 @@
 .homekiosk-buttons {
   display: flex;
   gap: 2rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   width: 100%;
   max-width: 800px;
   justify-content: center;
@@ -85,7 +85,7 @@
   font-size: 1.75rem;
   font-weight: 600;
   padding: 1rem 3rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-transform: uppercase;
   min-width: 250px;
@@ -172,11 +172,30 @@
 
   .homekiosk-title {
     font-size: 4.5rem;
+    margin-bottom: 1rem;
   }
 
-  .homekiosk-question,
+  .homekiosk-question {
+    font-size: 2.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .homekiosk-button {
+    padding: 0.875rem 2.5rem;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
   .homekiosk-message {
     font-size: 2.25rem;
+  }
+
+  .homekiosk-logo {
+    margin-bottom: 40px;
+  }
+
+  .homekiosk-options-container {
+    padding: 1.5rem 2rem;
   }
 }
 
@@ -193,13 +212,18 @@
     font-size: 5rem;
   }
 
-  .homekiosk-question,
-  .homekiosk-message {
+  .homekiosk-question {
     font-size: 2.5rem;
   }
 
   .homekiosk-button {
     width: 100%;
+    padding: 1.25rem 2rem;
+  }
+
+  .homekiosk-options-container {
+    padding: 2.5rem;
+    max-width: 90%;
   }
 }
 
@@ -218,12 +242,16 @@
   .homekiosk-message {
     font-size: 2rem;
   }
+
+  .homekiosk-options-container {
+    padding: 1.5rem;
+  }
 }
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .homekiosk-logo {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
   }
 
   .homekiosk-title {
@@ -233,6 +261,16 @@
   .homekiosk-question,
   .homekiosk-message {
     font-size: 1.75rem;
+  }
+
+  .homekiosk-button {
+    font-size: 1.25rem;
+    padding: 0.75rem 1.5rem;
+    min-width: 200px;
+  }
+
+  .homekiosk-options-container {
+    padding: 1rem;
   }
 }
 
