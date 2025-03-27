@@ -35,6 +35,7 @@ const incidentsRouter = require('./routes/incidents');
 const passport = require("./config/passport");
 const adminpassport = require("./config/adminPassport");
 const Twofa = require("./routes/2fa");
+const themeRoutes = require("./routes/theme")
 
 const app = express();
 
@@ -97,7 +98,7 @@ app.use("/api/kiosk", kioskRoutes);
 
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
-
+app.use('/api/theme', themeRoutes);
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
