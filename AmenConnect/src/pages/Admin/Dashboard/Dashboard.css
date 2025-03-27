@@ -235,6 +235,7 @@
 
 .status-icon {
   font-size: 1rem;
+  height: 40px;
 }
 
 .status-icon.normal {
