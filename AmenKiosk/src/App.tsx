@@ -38,7 +38,9 @@ import "./theme/variables.css"
 import { OrientationProvider } from "./context/OrientationContext"
 import { ThemeProvider } from "./context/ThemeContext"
 import { AuthProvider } from "./context/AuthContext"
-
+const Accueil = lazy(() => import("./pages/accueil/AccueilKiosk"))
+const ThemeCustomizerPage = lazy(() => import("./theme-customizer-page"))
+// Loading component
 // Lazy load components for better performance with improved error handling
 const Home = lazy(() =>
   import("./pages/Home").catch((err) => {
