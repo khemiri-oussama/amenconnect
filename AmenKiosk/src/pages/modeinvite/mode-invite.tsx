@@ -37,6 +37,7 @@ import {
   mailOutline,
   closeOutline,
   chevronForwardOutline,
+  arrowBackOutline,
 } from "ionicons/icons"
 import "./mode-invite.css"
 import CurrencyExchange from "../../components/modeInviteComponents/CurrencyExchange"
@@ -55,6 +56,7 @@ const ModeInviteKiosk: React.FC = () => {
   const [searchText, setSearchText] = useState("")
   const [showModal, setShowModal] = useState(false)
   const [selectedSection, setSelectedSection] = useState<string | null>(null)
+  const [videoLoaded, setVideoLoaded] = useState(false)
 
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -73,6 +75,9 @@ const ModeInviteKiosk: React.FC = () => {
 
   const filteredSections = sections.filter((section) => section.title.toLowerCase().includes(searchText.toLowerCase()))
 
+  // Enhanced timer reset with configurable timeout
+  const INACTIVITY_TIMEOUT = 60000 // 60 seconds
+
   const resetTimer = useCallback(() => {
     if (inactivityTimer.current) {
       clearTimeout(inactivityTimer.current)
@@ -81,9 +86,10 @@ const ModeInviteKiosk: React.FC = () => {
       setActive(false)
       setShowModal(false)
       if (videoRef.current) {
+        videoRef.current.currentTime = 0 // Reset video to beginning
         videoRef.current.play().catch((error) => console.error("Erreur lors de la lecture de la vidéo :", error))
       }
-    }, 60000) // 60 seconds of inactivity
+    }, INACTIVITY_TIMEOUT)
   }, [])
 
   const handleUserInteraction = useCallback(() => {
@@ -94,13 +100,29 @@ const ModeInviteKiosk: React.FC = () => {
   }, [active, resetTimer])
 
   const handleBackToHome = () => {
-    history.push("/")
+    try {
+      history.push("/home")
+    } catch (error) {
+      console.error("Navigation error:", error)
+      // Fallback navigation
+      window.location.href = "/home"
+    }
   }
 
   const openModal = (title: string) => {
     setSelectedSection(title)
     setShowModal(true)
     resetTimer()
+  }
+
+  // Handle video loading
+  const handleVideoLoad = () => {
+    setVideoLoaded(true)
+  }
+
+  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    console.error("Erreur lors du chargement de la vidéo :", e)
+    setVideoLoaded(true) // Still set to true to show UI even if video fails
   }
 
   useEffect(() => {
@@ -114,33 +136,38 @@ const ModeInviteKiosk: React.FC = () => {
     }
   }, [handleUserInteraction])
 
+  // Fix for scroll animation
   useEffect(() => {
     const handleScroll = () => {
-      const scrollElement = contentRef.current?.shadowRoot?.querySelector(".inner-scroll")
-      if (scrollElement) {
-        const scrollPosition = scrollElement.scrollTop
-        const windowHeight = window.innerHeight
+      const fadeElements = document.querySelectorAll(".fade-in-section")
 
-        document.querySelectorAll(".fade-in-section").forEach((element) => {
-          const rect = (element as HTMLElement).getBoundingClientRect()
-          const elementTop = rect.top + scrollPosition
-          const elementVisible = 150
+      fadeElements.forEach((element) => {
+        const rect = (element as HTMLElement).getBoundingClientRect()
+        const isVisible = rect.top < window.innerHeight - 150
 
-          if (elementTop < scrollPosition + windowHeight - elementVisible) {
-            element.classList.add("is-visible")
-          } else {
-            element.classList.remove("is-visible")
-          }
-        })
-      }
+        if (isVisible) {
+          element.classList.add("is-visible")
+        } else {
+          element.classList.remove("is-visible")
+        }
+      })
     }
 
-    contentRef.current?.addEventListener("ionScroll", handleScroll)
+    // Initial check
+    handleScroll()
+
+    // Add scroll event listener to IonContent
+    const ionContent = contentRef.current
+    if (ionContent) {
+      ionContent.addEventListener("ionScroll", handleScroll)
+    }
 
     return () => {
-      contentRef.current?.removeEventListener("ionScroll", handleScroll)
+      if (ionContent) {
+        ionContent.removeEventListener("ionScroll", handleScroll)
+      }
     }
-  }, [])
+  }, [active])
 
   const renderModalContent = () => {
     switch (selectedSection) {
@@ -175,6 +202,9 @@ const ModeInviteKiosk: React.FC = () => {
       <IonContent ref={contentRef} fullscreen scrollEvents={true}>
         {active ? (
           <div className="kiosk-container">
+            <div className="kiosk-bg-circle-1"></div>
+            <div className="kiosk-bg-circle-2"></div>
+            <div className="kiosk-bg-blob"></div>
 
             <div className="kiosk-content">
               <header className="kiosk-header">
@@ -207,7 +237,7 @@ const ModeInviteKiosk: React.FC = () => {
                     {filteredSections.map((section, index) => (
                       <IonCol size="12" sizeSm="6" sizeMd="4" sizeLg="3" key={index}>
                         <IonCard
-                          className={`kiosk-card animate-staggered delay-${index}`}
+                          className={`kiosk-card animate-staggered delay-${index % 8}`}
                           onClick={() => openModal(section.title)}
                         >
                           <IonCardHeader>
@@ -263,6 +293,7 @@ const ModeInviteKiosk: React.FC = () => {
             </div>
             <HelpDeskButton />
             <IonButton fill="clear" className="kiosk-back-button" onClick={handleBackToHome}>
+              <IonIcon icon={arrowBackOutline} slot="start" />
               Retour à l'accueil
             </IonButton>
 
@@ -282,23 +313,36 @@ const ModeInviteKiosk: React.FC = () => {
                   </IonButtons>
                 </IonToolbar>
               </IonHeader>
-              <IonContent className="ion-padding">{renderModalContent()}</IonContent>
+              <IonContent className="ion-padding modal-content">{renderModalContent()}</IonContent>
             </IonModal>
           </div>
         ) : (
           <div className="kiosk-video-container">
+            {!videoLoaded && (
+              <div className="video-loading">
+                <IonImg src="favicon.png" alt="Amen Bank Logo" className="video-loading-logo" />
+                <div className="video-loading-spinner"></div>
+              </div>
+            )}
             <video
               ref={videoRef}
               autoPlay
               loop
+              muted
               playsInline
               controls={false}
-              onError={(e) => console.error("Erreur lors du chargement de la vidéo :", e)}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              onLoadedData={handleVideoLoad}
+              onError={handleVideoError}
+              className={videoLoaded ? "video-loaded" : ""}
             >
               <source src="pub.mp4" type="video/mp4" />
               Votre navigateur ne supporte pas la lecture de vidéos.
             </video>
+            <div className="video-overlay">
+              <div className="video-tap-instruction">
+                <span>Touchez l'écran pour continuer</span>
+              </div>
+            </div>
           </div>
         )}
       </IonContent>
