@@ -4,7 +4,7 @@ import type React from "react"
 import { Redirect, Route } from "react-router-dom"
 import { IonApp, IonRouterOutlet, setupIonicReact, IonSpinner } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
-import { Suspense, lazy, useEffect, useState } from "react"
+import { Suspense, lazy, useEffect } from "react"
 import "./theme/global.css"
 
 /* Core CSS required for Ionic components to work properly */
@@ -64,9 +64,6 @@ setupIonicReact({
 
 // App component with better error handling
 const App: React.FC = () => {
-  const [isAppReady, setIsAppReady] = useState(false)
-  const [hasError, setHasError] = useState(false)
-
   // Handle orientation changes
   useEffect(() => {
     const handleResize = () => {

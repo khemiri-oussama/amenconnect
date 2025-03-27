@@ -6,21 +6,22 @@
   width: var(--viewport-width);
   position: relative;
   overflow: hidden;
+  background-color: var(--kiosk-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .loginkiosk-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 2rem;
   text-align: center;
-  transition: opacity 0.3s ease;
+  max-width: 1200px;
+  width: 100%;
 }
 
 .loginkiosk-back-button {
@@ -34,6 +35,13 @@
   font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+.loginkiosk-back-button:hover {
+  background-color: rgba(18, 22, 96, 0.1);
 }
 
 .loginkiosk-back-button ion-icon {
@@ -42,6 +50,7 @@
 
 .loginkiosk-logo {
   margin-bottom: 50px;
+  max-width: 200px;
 }
 
 .loginkiosk-img {
@@ -66,35 +75,6 @@
   margin-bottom: 2rem;
 }
 
-.loginkiosk-form-group {
-  margin-bottom: 1.5rem;
-  text-align: left;
-}
-
-.loginkiosk-label {
-  display: block;
-  color: var(--kiosk-primary);
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.loginkiosk-input {
-  width: 100%;
-  padding: 1rem;
-  font-size: 1.25rem;
-  font-family: "Outfit", sans-serif;
-  border: 2px solid var(--kiosk-border);
-  border-radius: 0.75rem;
-  background-color: var(--kiosk-surface);
-  transition: border-color 0.3s ease;
-}
-
-.loginkiosk-input:focus {
-  outline: none;
-  border-color: var(--kiosk-primary);
-}
-
 .loginkiosk-password-container {
   position: relative;
 }
@@ -109,20 +89,22 @@
   font-size: 1.5rem;
 }
 
-.loginkiosk-btn {
-  background: linear-gradient(to right, var(--kiosk-primary), var(--kiosk-primary-dark));
-  border: none;
-  border-radius: 2rem;
-  color: white;
-  cursor: pointer;
-  font-family: "Outfit", sans-serif;
-  font-size: 1.75rem;
-  font-weight: 600;
-  padding: 1rem 3rem;
-  margin: 1.5rem 0;
-  width: 100%;
-  box-shadow: 0 4px 10px rgba(18, 22, 96, 0.3);
-  text-transform: uppercase;
+.loginkiosk-input-container {
+  position: relative;
+}
+
+.loginkiosk-input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--kiosk-primary);
+  font-size: 1.5rem;
+}
+
+.loginkiosk-input-container .kiosk-input,
+.loginkiosk-password-container .kiosk-input {
+  padding-left: 3rem;
 }
 
 .loginkiosk-forgot-password {
@@ -135,6 +117,12 @@
   font-size: 1.25rem;
   text-decoration: none;
   font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.loginkiosk-forgot-password a:hover {
+  color: var(--kiosk-primary-light);
+  text-decoration: underline;
 }
 
 .loginkiosk-message {
@@ -143,11 +131,6 @@
   font-weight: 600;
   line-height: 1.3;
   margin: 2rem 0 0 0;
-}
-
-.loginkiosk-video-container {
-  width: var(--viewport-width);
-  height: var(--viewport-height);
 }
 
 .loginkiosk-qr-section {
@@ -212,6 +195,7 @@
 
 .loginkiosk-alt-login:hover {
   opacity: 0.8;
+  text-decoration: underline;
 }
 
 .loginkiosk-subtitle {
@@ -230,41 +214,6 @@
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.loginkiosk-input-container {
-  position: relative;
-}
-
-.loginkiosk-input-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--kiosk-primary);
-  font-size: 1.5rem;
-}
-
-.loginkiosk-input-container .loginkiosk-input {
-  padding-left: 3rem;
-}
-
-.success-message {
-  background-color: rgba(71, 206, 101, 0.1);
-  border: 1px solid var(--kiosk-secondary);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.error-message {
-  background-color: rgba(255, 73, 97, 0.1);
-  border: 1px solid var(--kiosk-danger);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  text-align: center;
 }
 
 /* Responsive design */
@@ -306,13 +255,14 @@
     font-size: 2rem;
   }
 
-  .loginkiosk-btn {
-    font-size: 1.5rem;
-    padding: 0.875rem 2.5rem;
-  }
-
   .loginkiosk-form {
     max-width: 400px;
+  }
+
+  .loginkiosk-back-button {
+    top: 1.5rem;
+    left: 1.5rem;
+    font-size: 1.1rem;
   }
 }
 
@@ -366,22 +316,8 @@
     font-size: 1.75rem;
   }
 
-  .loginkiosk-btn {
-    font-size: 1.25rem;
-    padding: 0.75rem 2rem;
-  }
-
   .loginkiosk-form {
     max-width: 100%;
-  }
-
-  .loginkiosk-label {
-    font-size: 1rem;
-  }
-
-  .loginkiosk-input {
-    font-size: 1rem;
-    padding: 0.75rem;
   }
 
   .loginkiosk-forgot-password a {

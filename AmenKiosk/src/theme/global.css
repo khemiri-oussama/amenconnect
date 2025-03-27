@@ -16,36 +16,16 @@ body {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  background-color: var(--kiosk-background);
 }
 
 /* Kiosk app container */
 .kiosk-app {
-  --ion-background-color: #ffffff;
+  --ion-background-color: var(--kiosk-background);
   --ion-text-color: var(--kiosk-primary-text);
   font-family: "Outfit", sans-serif;
   height: 100%;
   width: 100%;
-}
-
-/* Background elements */
-.background-white {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ffffff;
-  z-index: -2;
-}
-
-.background-svg {
-  position: absolute;
-  top: 50%;
-  left: 40%;
-  width: 1080px;
-  height: 1920px;
-  transform: translate(-50%, -50%);
-  z-index: -1;
 }
 
 /* Loading styles */
@@ -55,7 +35,7 @@ body {
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--kiosk-background);
 }
 
 .kiosk-loading-content {
@@ -86,6 +66,9 @@ body {
   box-shadow: 0 4px 10px rgba(18, 22, 96, 0.3);
   text-transform: uppercase;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-block;
+  text-align: center;
+  min-width: 250px;
 }
 
 .kiosk-btn:hover {
@@ -96,6 +79,13 @@ body {
 .kiosk-btn:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(18, 22, 96, 0.3);
+}
+
+.kiosk-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 10px rgba(18, 22, 96, 0.2);
 }
 
 /* Animations */
@@ -131,7 +121,7 @@ body {
 }
 
 .animate-transition {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* Staggered animation delays */
@@ -196,10 +186,11 @@ body {
   width: 90%;
   max-width: 1200px;
   max-height: 90vh;
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
   animation: scaleIn 0.3s ease-out;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background-color: var(--kiosk-background);
 }
 
 @keyframes scaleIn {
@@ -213,24 +204,72 @@ body {
   }
 }
 
+/* Form styles */
+.kiosk-form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.kiosk-label {
+  display: block;
+  color: var(--kiosk-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.kiosk-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.25rem;
+  font-family: "Outfit", sans-serif;
+  border: 2px solid var(--kiosk-border);
+  border-radius: 0.75rem;
+  background-color: var(--kiosk-surface);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.kiosk-input:focus {
+  outline: none;
+  border-color: var(--kiosk-primary);
+  box-shadow: 0 0 0 3px rgba(18, 22, 96, 0.1);
+}
+
+/* Status messages */
+.success-message {
+  background-color: rgba(71, 206, 101, 0.1);
+  border: 1px solid var(--kiosk-secondary);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: var(--kiosk-secondary-dark);
+}
+
+.error-message {
+  background-color: rgba(255, 73, 97, 0.1);
+  border: 1px solid var(--kiosk-danger);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: var(--kiosk-danger);
+}
+
 /* Responsive design for different orientations */
 /* Landscape mode (1920x1080) */
 @media (min-width: 1081px) and (orientation: landscape) {
-  .background-svg {
-    width: 1920px;
-    height: 1080px;
-    left: 50%;
-    top: 40%;
+  .kiosk-btn {
+    font-size: 1.5rem;
+    padding: 0.875rem 2.5rem;
   }
 }
 
 /* Portrait mode (1080x1920) */
 @media (max-width: 1080px) and (orientation: portrait) {
-  .background-svg {
-    width: 1080px;
-    height: 1920px;
-    left: 40%;
-    top: 50%;
+  .kiosk-btn {
+    font-size: 1.75rem;
+    padding: 1rem 3rem;
   }
 }
 
@@ -240,12 +279,31 @@ body {
     font-size: 1.5rem;
     padding: 0.875rem 2.5rem;
   }
+
+  .kiosk-label {
+    font-size: 1.1rem;
+  }
+
+  .kiosk-input {
+    font-size: 1.1rem;
+    padding: 0.875rem;
+  }
 }
 
 @media (max-width: 480px) {
   .kiosk-btn {
     font-size: 1.25rem;
     padding: 0.75rem 2rem;
+    min-width: 200px;
+  }
+
+  .kiosk-label {
+    font-size: 1rem;
+  }
+
+  .kiosk-input {
+    font-size: 1rem;
+    padding: 0.75rem;
   }
 }
 

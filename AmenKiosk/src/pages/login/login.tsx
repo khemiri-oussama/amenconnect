@@ -3,9 +3,9 @@
 import type React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { IonContent, IonPage, IonImg, useIonRouter, IonIcon } from "@ionic/react"
-import { arrowBack, eyeOutline, eyeOffOutline, phonePortrait } from "ionicons/icons"
+import { arrowBack, eyeOutline, eyeOffOutline, phonePortrait, mailOutline, lockClosedOutline } from "ionicons/icons"
 import { QRCodeSVG } from "qrcode.react"
-import { useLogin } from "../../hooks/useLogin" // Import the updated useLogin hook
+import { useLogin } from "../../hooks/useLogin"
 import ForgotPasswordKiosk from "./ForgotPassword/ForgotPassword"
 import "./login.css"
 
@@ -68,8 +68,6 @@ const LoginKiosk: React.FC = () => {
     e.preventDefault()
     try {
       await login(username, password)
-      // If login is successful, redirect to the appropriate page
-      ionRouter.push("/accueil")
     } catch (error) {
       // Error is already handled by the hook
       console.error("Login failed:", error)
@@ -84,7 +82,7 @@ const LoginKiosk: React.FC = () => {
     } else if (showLoginForm) {
       setShowLoginForm(false)
     } else {
-      ionRouter.push("/")
+      ionRouter.push("/home")
     }
   }
 
@@ -139,10 +137,8 @@ const LoginKiosk: React.FC = () => {
           credentials: "include",
           cache: "no-store",
         })
-        console.log("Polling response status:", response.status)
         if (response.ok) {
           const data = await response.json()
-          console.log("Polling response data:", data)
           if (data.status === "authenticated") {
             console.log("Session authenticated, redirecting to accueil...")
             clearInterval(intervalId)
@@ -175,15 +171,6 @@ const LoginKiosk: React.FC = () => {
     <IonPage>
       <IonContent fullscreen>
         <div className="loginkiosk-container">
-          <div className="background-white"></div>
-          <svg className="background-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 983 1920" fill="none">
-            <path
-              d="M0 0H645.236C723.098 0 770.28 85.9638 728.469 151.647C697.151 200.847 715.114 266.33 767.152 292.664L793.096 305.793C854.316 336.773 866.865 418.795 817.709 466.662L691.328 589.731C677.652 603.048 659.319 610.5 640.231 610.5C577.253 610.5 543.641 684.721 585.184 732.054L641.155 795.826C676.082 835.621 671.964 896.237 631.974 930.943L582.069 974.254C522.93 1025.58 568.96 1122.18 646.076 1108.59C700.297 1099.03 746.811 1147.67 734.833 1201.41L727.617 1233.79C715.109 1289.9 752.705 1344.88 809.534 1353.59L836.788 1357.76C862.867 1361.76 886.31 1375.9 902.011 1397.1L964.656 1481.7C1003.87 1534.65 970.947 1610.18 905.469 1617.5C862.212 1622.34 829.5 1658.92 829.5 1702.44V1717.72C829.5 1756.01 800.102 1787.88 761.94 1790.96L696.194 1796.27C667.843 1798.56 652.928 1831 669.644 1854.01C685.614 1876 672.771 1907.1 645.942 1911.41L597.738 1919.16C594.251 1919.72 590.726 1920 587.195 1920H462.5H200.5H0V0Z"
-              fill="#47CE65"
-              stroke="#47CE65"
-            />
-          </svg>
-
           <div className="loginkiosk-content">
             <div className="loginkiosk-back-button" onClick={handleBack}>
               <IonIcon icon={arrowBack} />
@@ -219,30 +206,34 @@ const LoginKiosk: React.FC = () => {
                   </div>
                 ) : (
                   <form className="loginkiosk-form animate-fade-in" onSubmit={handleLogin}>
-                    <div className="loginkiosk-form-group">
-                      <label htmlFor="username" className="loginkiosk-label">
+                    <div className="kiosk-form-group">
+                      <label htmlFor="username" className="kiosk-label">
                         Identifiant
                       </label>
-                      <input
-                        ref={usernameInputRef}
-                        type="text"
-                        id="username"
-                        className="loginkiosk-input"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        placeholder="Entrez votre identifiant"
-                        required
-                      />
+                      <div className="loginkiosk-input-container">
+                        <IonIcon icon={mailOutline} className="loginkiosk-input-icon" />
+                        <input
+                          ref={usernameInputRef}
+                          type="text"
+                          id="username"
+                          className="kiosk-input"
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          placeholder="Entrez votre identifiant"
+                          required
+                        />
+                      </div>
                     </div>
-                    <div className="loginkiosk-form-group">
-                      <label htmlFor="password" className="loginkiosk-label">
+                    <div className="kiosk-form-group">
+                      <label htmlFor="password" className="kiosk-label">
                         Mot de passe
                       </label>
                       <div className="loginkiosk-password-container">
+                        <IonIcon icon={lockClosedOutline} className="loginkiosk-input-icon" />
                         <input
                           type={showPassword ? "text" : "password"}
                           id="password"
-                          className="loginkiosk-input"
+                          className="kiosk-input"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="Entrez votre mot de passe"
@@ -254,7 +245,7 @@ const LoginKiosk: React.FC = () => {
                       </div>
                     </div>
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
-                    <button type="submit" className="loginkiosk-btn" disabled={isLoading}>
+                    <button type="submit" className="kiosk-btn" disabled={isLoading}>
                       {isLoading ? "Connexion en cours..." : "Se connecter"}
                     </button>
                     <div className="loginkiosk-forgot-password">
