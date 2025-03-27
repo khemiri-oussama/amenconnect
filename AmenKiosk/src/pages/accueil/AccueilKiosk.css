@@ -1,0 +1,408 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+/* Import the variables from the correct location in your project */
+/* If variables.css is in the theme folder, use: */
+@import "../../theme/variables.css";
+/* If it's in the root, use: */
+/* @import "/variables.css"; */
+
+.accueil-kiosk-container {
+  font-family: var(--kiosk-font-family, "Outfit", sans-serif);
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.background-white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--kiosk-background, #ffffff);
+  z-index: -2;
+}
+
+.background-svg {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1080px;
+  height: 1920px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.accueil-kiosk-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.accueil-kiosk-back-btn {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--kiosk-primary-text, #121660);
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.accueil-kiosk-back-btn ion-icon {
+  font-size: 1.5rem;
+}
+
+.accueil-kiosk-header {
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.accueil-kiosk-welcome {
+  margin-bottom: 1rem;
+}
+
+.accueil-kiosk-title {
+  color: var(--kiosk-primary-text, #121660);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+.accueil-kiosk-subtitle {
+  color: var(--kiosk-primary-text, #121660);
+  font-size: 1.5rem;
+  opacity: 0.8;
+}
+
+.accueil-kiosk-balance-card {
+  background: linear-gradient(to right, var(--kiosk-primary, #121660), var(--kiosk-primary-light, #4749ce));
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--kiosk-shadow-lg, 0 8px 24px rgba(18, 22, 96, 0.2));
+}
+
+.accueil-kiosk-balance-icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.5rem;
+}
+
+.accueil-kiosk-balance-icon ion-icon {
+  font-size: 2rem;
+  color: #ffffff;
+}
+
+.accueil-kiosk-balance-details {
+  flex: 1;
+}
+
+.accueil-kiosk-balance-label {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.accueil-kiosk-balance-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.accueil-kiosk-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.accueil-kiosk-section {
+  background: var(--kiosk-surface, #f8f8f8);
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
+  padding: 1.5rem;
+  box-shadow: var(--kiosk-shadow-md, 0 4px 12px rgba(18, 22, 96, 0.15));
+}
+
+.accueil-kiosk-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.accueil-kiosk-section-title {
+  color: var(--kiosk-primary-text, #121660);
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.accueil-kiosk-section-title ion-icon {
+  font-size: 1.75rem;
+  color: var(--kiosk-primary, #121660);
+}
+
+.accueil-kiosk-accounts-list,
+.accueil-kiosk-cards-list,
+.accueil-kiosk-transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.accueil-kiosk-account-item,
+.accueil-kiosk-card-item,
+.transaction-item {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  border-radius: var(--kiosk-radius-md, 1rem);
+  background-color: var(--kiosk-background, #ffffff);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.accueil-kiosk-account-item:hover,
+.accueil-kiosk-card-item:hover,
+.transaction-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.accueil-kiosk-account-icon,
+.accueil-kiosk-card-icon,
+.transaction-icon {
+  background-color: rgba(18, 22, 96, 0.1);
+  border-radius: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.accueil-kiosk-account-icon ion-icon,
+.accueil-kiosk-card-icon ion-icon,
+.transaction-icon ion-icon {
+  font-size: 1.75rem;
+  color: var(--kiosk-primary, #121660);
+}
+
+.accueil-kiosk-account-details,
+.accueil-kiosk-card-details,
+.transaction-details {
+  flex: 1;
+}
+
+.accueil-kiosk-account-name,
+.accueil-kiosk-card-number,
+.transaction-description {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--kiosk-primary-text, #121660);
+  margin-bottom: 0.25rem;
+}
+
+.accueil-kiosk-account-number,
+.accueil-kiosk-card-expiry,
+.transaction-date {
+  font-size: 1rem;
+  color: var(--kiosk-text-muted, rgba(18, 22, 96, 0.7));
+}
+
+.accueil-kiosk-account-balance,
+.transaction-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--kiosk-primary-text, #121660);
+}
+
+.transaction-amount.credit {
+  color: var(--kiosk-success, #2fdf75);
+}
+
+.transaction-amount.debit {
+  color: var(--kiosk-danger, #ff4961);
+}
+
+.accueil-kiosk-chart-container {
+  height: 300px;
+  width: 100%;
+}
+
+.accueil-kiosk-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.accueil-kiosk-action-button {
+  --background: linear-gradient(to right, var(--kiosk-primary), var(--kiosk-primary-light));
+  --color: #ffffff;
+  --border-radius: var(--kiosk-radius-md, 1rem);
+  --padding-top: 1.25rem;
+  --padding-bottom: 1.25rem;
+  font-family: var(--kiosk-font-family, "Outfit", sans-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: var(--kiosk-shadow-md, 0 4px 12px rgba(18, 22, 96, 0.15));
+}
+
+.accueil-kiosk-action-button ion-icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.accueil-kiosk-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: var(--kiosk-font-family, "Outfit", sans-serif);
+  font-size: 1.5rem;
+  color: var(--kiosk-primary, #121660);
+}
+
+@media (min-width: 768px) {
+  .accueil-kiosk-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .accueil-kiosk-chart {
+    grid-column: span 2;
+  }
+
+  .accueil-kiosk-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .accueil-kiosk-title {
+    font-size: 2rem;
+  }
+
+  .accueil-kiosk-subtitle {
+    font-size: 1.25rem;
+  }
+
+  .accueil-kiosk-balance-amount {
+    font-size: 2rem;
+  }
+
+  .accueil-kiosk-section-title {
+    font-size: 1.5rem;
+  }
+
+  .accueil-kiosk-section-title ion-icon {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .accueil-kiosk-back-btn {
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .accueil-kiosk-header {
+    margin-top: 4rem;
+  }
+
+  .accueil-kiosk-title {
+    font-size: 1.75rem;
+  }
+
+  .accueil-kiosk-subtitle {
+    font-size: 1rem;
+  }
+
+  .accueil-kiosk-balance-icon {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .accueil-kiosk-balance-icon ion-icon {
+    font-size: 1.5rem;
+  }
+
+  .accueil-kiosk-balance-label {
+    font-size: 1.25rem;
+  }
+
+  .accueil-kiosk-balance-amount {
+    font-size: 1.75rem;
+  }
+
+  .accueil-kiosk-account-icon,
+  .accueil-kiosk-card-icon,
+  .transaction-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .accueil-kiosk-account-icon ion-icon,
+  .accueil-kiosk-card-icon ion-icon,
+  .transaction-icon ion-icon {
+    font-size: 1.25rem;
+  }
+
+  .accueil-kiosk-account-name,
+  .accueil-kiosk-card-number,
+  .transaction-description {
+    font-size: 1rem;
+  }
+
+  .accueil-kiosk-account-balance,
+  .transaction-amount {
+    font-size: 1.25rem;
+  }
+}
+
+/* For WebKit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--kiosk-surface, #f8f8f8);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--kiosk-primary, #121660), var(--kiosk-primary-light, #4749ce));
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, var(--kiosk-primary-dark, #0a0d3b), var(--kiosk-primary, #121660));
+}
+

@@ -46,7 +46,8 @@ const Login = lazy(() => import("./pages/login/login"))
 const AccountCreation = lazy(() => import("./pages/AccountCreationForm"))
 const ForgotPassword = lazy(() => import("./pages/login/ForgotPassword/ForgotPassword"))
 const Otp = lazy(() => import("./pages/otp/otp"))
-
+const Accueil = lazy(() => import("./pages/accueil/AccueilKiosk"))
+const ThemeCustomizerPage = lazy(() => import("./theme-customizer-page"))
 // Loading component
 const LoadingFallback: React.FC = () => (
   <div className="kiosk-loading-container">
@@ -107,6 +108,12 @@ const App: React.FC = () => {
                   </Route>
                   <Route exact path="/">
                     <Redirect to="/home" />
+                  </Route>
+                  <Route exact path="/theme">
+                    <ThemeCustomizerPage/>
+                  </Route>
+                  <Route exact path="/accueil">
+                    <Accueil />
                   </Route>
                 </IonRouterOutlet>
               </Suspense>

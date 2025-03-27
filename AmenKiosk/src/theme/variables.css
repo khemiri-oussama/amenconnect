@@ -36,20 +36,31 @@
   --kiosk-transition-normal: 0.3s ease;
   --kiosk-transition-slow: 0.5s ease;
 
+  /* Border radius */
+  --kiosk-radius-sm: 0.5rem;
+  --kiosk-radius-md: 1rem;
+  --kiosk-radius-lg: 1.5rem;
+  --kiosk-radius-xl: 2rem;
+  --kiosk-radius-full: 9999px;
+
+  /* Viewport dimensions for responsive design */
+  --viewport-height: 100vh;
+  --viewport-width: 100vw;
+
   /* Ionic color overrides */
   --ion-color-primary: var(--kiosk-secondary);
   --ion-color-primary-rgb: 71, 206, 101;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #339e47;
-  --ion-color-primary-tint: #6fe389;
+  --ion-color-primary-shade: var(--kiosk-secondary-dark);
+  --ion-color-primary-tint: var(--kiosk-secondary-light);
 
   --ion-color-secondary: var(--kiosk-accent);
   --ion-color-secondary-rgb: 255, 204, 0;
   --ion-color-secondary-contrast: var(--kiosk-primary);
   --ion-color-secondary-contrast-rgb: 18, 22, 96;
-  --ion-color-secondary-shade: #e6b800;
-  --ion-color-secondary-tint: #ffd633;
+  --ion-color-secondary-shade: var(--kiosk-accent-dark);
+  --ion-color-secondary-tint: var(--kiosk-accent-light);
 
   --ion-color-tertiary: #6a64ff;
   --ion-color-tertiary-rgb: 106, 100, 255;
@@ -58,21 +69,21 @@
   --ion-color-tertiary-shade: #5d58e0;
   --ion-color-tertiary-tint: #7974ff;
 
-  --ion-color-success: #2fdf75;
+  --ion-color-success: var(--kiosk-success);
   --ion-color-success-rgb: 47, 223, 117;
   --ion-color-success-contrast: #000000;
   --ion-color-success-contrast-rgb: 0, 0, 0;
   --ion-color-success-shade: #29c467;
   --ion-color-success-tint: #44e283;
 
-  --ion-color-warning: #ffd534;
+  --ion-color-warning: var(--kiosk-warning);
   --ion-color-warning-rgb: 255, 213, 52;
   --ion-color-warning-contrast: #000000;
   --ion-color-warning-contrast-rgb: 0, 0, 0;
   --ion-color-warning-shade: #e0bb2e;
   --ion-color-warning-tint: #ffd948;
 
-  --ion-color-danger: #ff4961;
+  --ion-color-danger: var(--kiosk-danger);
   --ion-color-danger-rgb: 255, 73, 97;
   --ion-color-danger-contrast: #ffffff;
   --ion-color-danger-contrast-rgb: 255, 255, 255;
@@ -100,27 +111,77 @@
   --ion-color-dark-shade: #1e2023;
   --ion-color-dark-tint: #383a3e;
 
-  /* Viewport dimensions for responsive design */
-  --viewport-height: 100vh;
-  --viewport-width: 100vw;
+  /* Font settings */
+  --kiosk-font-family: "Outfit", sans-serif;
+  --kiosk-font-weight-normal: 400;
+  --kiosk-font-weight-semibold: 600;
+  --kiosk-font-weight-bold: 700;
 
-  /* Border radius */
-  --kiosk-radius-sm: 0.5rem;
-  --kiosk-radius-md: 1rem;
-  --kiosk-radius-lg: 1.5rem;
-  --kiosk-radius-xl: 2rem;
-  --kiosk-radius-full: 9999px;
+  /* Font sizes */
+  --kiosk-font-size-xs: 0.875rem;
+  --kiosk-font-size-sm: 1rem;
+  --kiosk-font-size-md: 1.25rem;
+  --kiosk-font-size-lg: 1.5rem;
+  --kiosk-font-size-xl: 1.75rem;
+  --kiosk-font-size-2xl: 2rem;
+  --kiosk-font-size-3xl: 2.5rem;
+  --kiosk-font-size-4xl: 3rem;
 }
 
 /* Dark mode variables */
 .dark-theme {
+  --kiosk-primary: #1a237e;
+  --kiosk-primary-dark: #0d1257;
+  --kiosk-primary-light: #2a34ae;
+
+  --kiosk-secondary: #2ebd4e;
+  --kiosk-secondary-dark: #259a3e;
+  --kiosk-secondary-light: #4cd76a;
+
+  --kiosk-accent: #ffd633;
+  --kiosk-accent-dark: #e6b800;
+  --kiosk-accent-light: #ffe066;
+
   --kiosk-background: #121212;
   --kiosk-surface: #1e1e1e;
   --kiosk-border: #333333;
   --kiosk-text-muted: rgba(255, 255, 255, 0.7);
   --kiosk-primary-text: #ffffff;
 
+  --kiosk-shadow-md: 0 4px 15px rgba(0, 0, 0, 0.2);
+  --kiosk-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+
   --ion-background-color: var(--kiosk-background);
   --ion-text-color: var(--kiosk-primary-text);
+
+  /* Dark mode Ionic color overrides */
+  --ion-color-primary: var(--kiosk-secondary);
+  --ion-color-primary-shade: var(--kiosk-secondary-dark);
+  --ion-color-primary-tint: var(--kiosk-secondary-light);
+
+  --ion-color-secondary: var(--kiosk-accent);
+  --ion-color-secondary-shade: var(--kiosk-accent-dark);
+  --ion-color-secondary-tint: var(--kiosk-accent-light);
+
+  /* Color steps for dark mode */
+  --ion-color-step-50: #1e1e1e;
+  --ion-color-step-100: #2a2a2a;
+  --ion-color-step-150: #363636;
+  --ion-color-step-200: #414141;
+  --ion-color-step-250: #4d4d4d;
+  --ion-color-step-300: #595959;
+  --ion-color-step-350: #656565;
+  --ion-color-step-400: #717171;
+  --ion-color-step-450: #7d7d7d;
+  --ion-color-step-500: #898989;
+  --ion-color-step-550: #949494;
+  --ion-color-step-600: #a0a0a0;
+  --ion-color-step-650: #acacac;
+  --ion-color-step-700: #b8b8b8;
+  --ion-color-step-750: #c4c4c4;
+  --ion-color-step-800: #d0d0d0;
+  --ion-color-step-850: #dbdbdb;
+  --ion-color-step-900: #e7e7e7;
+  --ion-color-step-950: #f3f3f3;
 }
 
