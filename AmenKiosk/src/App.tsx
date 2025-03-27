@@ -43,42 +43,42 @@ import { AuthProvider } from "./context/AuthContext"
 const Home = lazy(() =>
   import("./pages/Home").catch((err) => {
     console.error("Failed to load Home component:", err)
-    return import("./components/ErrorBoundary")
+    return { default: () => <div>An error occurred while loading the Home component.</div> }
   }),
 )
 
 const ModeInvite = lazy(() =>
   import("./pages/modeinvite/mode-invite").catch((err) => {
-    console.error("Failed to load ModeInvite component:", err)
-    return import("./components/ErrorBoundary")
+    console.error("Failed to load ModeInvite component:", err);
+    return { default: () => <div>An error occurred while loading ModeInvite.</div> };
   }),
 )
 
 const Login = lazy(() =>
   import("./pages/login/login").catch((err) => {
     console.error("Failed to load Login component:", err)
-    return import("./components/ErrorBoundary")
+    return { default: () => <div>An error occurred while loading the Login component.</div> }
   }),
 )
 
 const AccountCreation = lazy(() =>
   import("./pages/AccountCreationForm").catch((err) => {
     console.error("Failed to load AccountCreation component:", err)
-    return import("./components/ErrorBoundary")
+    return { default: () => <div>An error occurred while loading the AccountCreation component.</div> }
   }),
 )
 
 const ForgotPassword = lazy(() =>
   import("./pages/login/ForgotPassword/ForgotPassword").catch((err) => {
     console.error("Failed to load ForgotPassword component:", err)
-    return import("./components/ErrorBoundary")
+    return { default: require("./components/ErrorBoundary").default }
   }),
 )
 
 const Otp = lazy(() =>
   import("./pages/otp/otp").catch((err) => {
     console.error("Failed to load Otp component:", err)
-    return import("./components/ErrorBoundary")
+    return { default: require("./components/ErrorBoundary").default }
   }),
 )
 
