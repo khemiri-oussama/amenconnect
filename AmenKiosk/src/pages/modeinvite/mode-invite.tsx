@@ -136,39 +136,6 @@ const ModeInviteKiosk: React.FC = () => {
     }
   }, [handleUserInteraction])
 
-  // Fix for scroll animation
-  useEffect(() => {
-    const handleScroll = () => {
-      const fadeElements = document.querySelectorAll(".fade-in-section")
-
-      fadeElements.forEach((element) => {
-        const rect = (element as HTMLElement).getBoundingClientRect()
-        const isVisible = rect.top < window.innerHeight - 150
-
-        if (isVisible) {
-          element.classList.add("is-visible")
-        } else {
-          element.classList.remove("is-visible")
-        }
-      })
-    }
-
-    // Initial check
-    handleScroll()
-
-    // Add scroll event listener to IonContent
-    const ionContent = contentRef.current
-    if (ionContent) {
-      ionContent.addEventListener("ionScroll", handleScroll)
-    }
-
-    return () => {
-      if (ionContent) {
-        ionContent.removeEventListener("ionScroll", handleScroll)
-      }
-    }
-  }, [active])
-
   const renderModalContent = () => {
     switch (selectedSection) {
       case "Devises":
@@ -256,40 +223,6 @@ const ModeInviteKiosk: React.FC = () => {
                   </IonRow>
                 </IonGrid>
               </main>
-
-              <footer className="kiosk-footer fade-in-section">
-                <IonGrid>
-                  <IonRow>
-                    <IonCol size="12" sizeMd="4">
-                      <h3>À Propos</h3>
-                      <p>
-                        Amen Bank, votre partenaire financier depuis 1967, s'engage à vous offrir des services bancaires
-                        innovants et sécurisés.
-                      </p>
-                    </IonCol>
-                    <IonCol size="12" sizeMd="4">
-                      <h3>Contactez-nous</h3>
-                      <p>Email: contact@amenbank.com</p>
-                      <p>Téléphone: +216 71 148 000</p>
-                    </IonCol>
-                    <IonCol size="12" sizeMd="4">
-                      <h3>Liens Rapides</h3>
-                      <ul>
-                        <li>
-                          <a href="#">Nos Agences</a>
-                        </li>
-                        <li>
-                          <a href="#">Carrières</a>
-                        </li>
-                        <li>
-                          <a href="#">Mentions Légales</a>
-                        </li>
-                      </ul>
-                    </IonCol>
-                  </IonRow>
-                </IonGrid>
-                <IonText className="kiosk-copyright">© 2025 Amen Bank. Tous droits réservés.</IonText>
-              </footer>
             </div>
             <HelpDeskButton />
             <IonButton fill="clear" className="kiosk-back-button" onClick={handleBackToHome}>
