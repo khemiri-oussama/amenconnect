@@ -1,49 +1,55 @@
-import React, { createContext, useContext, useEffect, useState } from "react"
+"use client"
 
-type Orientation = "landscape" | "portrait"
+import type React from "react"
+import { createContext, useContext, useState, useEffect } from "react"
+
+type Orientation = "portrait" | "landscape"
 
 interface OrientationContextType {
   orientation: Orientation
-  isLandscape: boolean
   isPortrait: boolean
+  isLandscape: boolean
 }
 
 const OrientationContext = createContext<OrientationContextType>({
-  orientation: "landscape",
-  isLandscape: true,
-  isPortrait: false,
+  orientation: "portrait",
+  isPortrait: true,
+  isLandscape: false,
 })
 
 export const useOrientation = () => useContext(OrientationContext)
 
 export const OrientationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [orientation, setOrientation] = useState<Orientation>(
-    window.innerWidth > window.innerHeight ? "landscape" : "portrait"
-  )
+  const [orientation, setOrientation] = useState<Orientation>("portrait")
 
   useEffect(() => {
     const updateOrientation = () => {
-      const newOrientation: Orientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait"
-      setOrientation(newOrientation)
+      if (window.matchMedia("(orientation: portrait)").matches) {
+        setOrientation("portrait")
+      } else {
+        setOrientation("landscape")
+      }
     }
 
-    // Initial check
+    // Set initial orientation
     updateOrientation()
 
-    // Set up event listener
+    // Add event listener for orientation changes
     window.addEventListener("resize", updateOrientation)
+    window.addEventListener("orientationchange", updateOrientation)
 
-    // Clean up
     return () => {
       window.removeEventListener("resize", updateOrientation)
+      window.removeEventListener("orientationchange", updateOrientation)
     }
   }, [])
 
   const value = {
     orientation,
-    isLandscape: orientation === "landscape",
     isPortrait: orientation === "portrait",
+    isLandscape: orientation === "landscape",
   }
 
   return <OrientationContext.Provider value={value}>{children}</OrientationContext.Provider>
 }
+

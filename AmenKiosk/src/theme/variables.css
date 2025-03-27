@@ -1,23 +1,126 @@
-/* Ionic Variables and Theme Overrides */
-
-/**
- * These variables override the default Ionic CSS variables.
- * They can be used to customize the look and feel of the application.
- *
- * For more information, please see:
- * https://ionicframework.com/docs/theming/css-variables
- */
-
-/* Example primary color modification (do not uncomment, defined in global.css)
 :root {
-  --ion-color-primary: #3880ff;
-  --ion-color-primary-rgb: 56, 128, 255;
+  /* Primary colors */
+  --kiosk-primary: #121660;
+  --kiosk-primary-dark: #0a0d3b;
+  --kiosk-primary-light: #4749ce;
+  --kiosk-primary-text: #121660;
+
+  /* Secondary colors */
+  --kiosk-secondary: #47ce65;
+  --kiosk-secondary-dark: #339e47;
+  --kiosk-secondary-light: #6fe389;
+
+  /* Accent colors */
+  --kiosk-accent: #ffcc00;
+  --kiosk-accent-dark: #e6b800;
+  --kiosk-accent-light: #ffd633;
+
+  /* Neutral colors */
+  --kiosk-background: #ffffff;
+  --kiosk-surface: #f8f8f8;
+  --kiosk-border: #e0e0e0;
+  --kiosk-text-muted: rgba(18, 22, 96, 0.7);
+
+  /* Status colors */
+  --kiosk-success: #2fdf75;
+  --kiosk-warning: #ffd534;
+  --kiosk-danger: #ff4961;
+
+  /* Shadows */
+  --kiosk-shadow-sm: 0 2px 8px rgba(18, 22, 96, 0.1);
+  --kiosk-shadow-md: 0 4px 12px rgba(18, 22, 96, 0.15);
+  --kiosk-shadow-lg: 0 8px 24px rgba(18, 22, 96, 0.2);
+
+  /* Animations */
+  --kiosk-transition-fast: 0.2s ease;
+  --kiosk-transition-normal: 0.3s ease;
+  --kiosk-transition-slow: 0.5s ease;
+
+  /* Ionic color overrides */
+  --ion-color-primary: var(--kiosk-secondary);
+  --ion-color-primary-rgb: 71, 206, 101;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3171e0;
-  --ion-color-primary-tint: #4c8dff;
-}
-*/
+  --ion-color-primary-shade: #339e47;
+  --ion-color-primary-tint: #6fe389;
 
-/* Add custom variables here if needed.  The global.css file is where the main variables are defined */
+  --ion-color-secondary: var(--kiosk-accent);
+  --ion-color-secondary-rgb: 255, 204, 0;
+  --ion-color-secondary-contrast: var(--kiosk-primary);
+  --ion-color-secondary-contrast-rgb: 18, 22, 96;
+  --ion-color-secondary-shade: #e6b800;
+  --ion-color-secondary-tint: #ffd633;
+
+  --ion-color-tertiary: #6a64ff;
+  --ion-color-tertiary-rgb: 106, 100, 255;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #5d58e0;
+  --ion-color-tertiary-tint: #7974ff;
+
+  --ion-color-success: #2fdf75;
+  --ion-color-success-rgb: 47, 223, 117;
+  --ion-color-success-contrast: #000000;
+  --ion-color-success-contrast-rgb: 0, 0, 0;
+  --ion-color-success-shade: #29c467;
+  --ion-color-success-tint: #44e283;
+
+  --ion-color-warning: #ffd534;
+  --ion-color-warning-rgb: 255, 213, 52;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e0bb2e;
+  --ion-color-warning-tint: #ffd948;
+
+  --ion-color-danger: #ff4961;
+  --ion-color-danger-rgb: 255, 73, 97;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #e04055;
+  --ion-color-danger-tint: #ff5b71;
+
+  --ion-color-light: #f4f5f8;
+  --ion-color-light-rgb: 244, 245, 248;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+
+  --ion-color-medium: #989aa2;
+  --ion-color-medium-rgb: 152, 154, 162;
+  --ion-color-medium-contrast: #000000;
+  --ion-color-medium-contrast-rgb: 0, 0, 0;
+  --ion-color-medium-shade: #86888f;
+  --ion-color-medium-tint: #a2a4ab;
+
+  --ion-color-dark: #222428;
+  --ion-color-dark-rgb: 34, 36, 40;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #1e2023;
+  --ion-color-dark-tint: #383a3e;
+
+  /* Viewport dimensions for responsive design */
+  --viewport-height: 100vh;
+  --viewport-width: 100vw;
+
+  /* Border radius */
+  --kiosk-radius-sm: 0.5rem;
+  --kiosk-radius-md: 1rem;
+  --kiosk-radius-lg: 1.5rem;
+  --kiosk-radius-xl: 2rem;
+  --kiosk-radius-full: 9999px;
+}
+
+/* Dark mode variables */
+.dark-theme {
+  --kiosk-background: #121212;
+  --kiosk-surface: #1e1e1e;
+  --kiosk-border: #333333;
+  --kiosk-text-muted: rgba(255, 255, 255, 0.7);
+  --kiosk-primary-text: #ffffff;
+
+  --ion-background-color: var(--kiosk-background);
+  --ion-text-color: var(--kiosk-primary-text);
+}
 

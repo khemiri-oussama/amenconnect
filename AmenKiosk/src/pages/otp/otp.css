@@ -1,0 +1,268 @@
+/* Import global styles */
+@import "../../theme/global.css";
+
+.otpkiosk-container {
+  height: var(--viewport-height);
+  width: var(--viewport-width);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--kiosk-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.background-white {
+  display: none;
+}
+
+.background-svg {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1080px;
+  height: 1920px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.otpkiosk-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  text-align: center;
+  max-width: 1800px;
+  width: 100%;
+  z-index: 10;
+}
+
+.otpkiosk-back-button {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--kiosk-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: var(--kiosk-radius-full);
+  transition: background-color var(--kiosk-transition-normal);
+  z-index: 20;
+}
+
+.otpkiosk-back-button:hover {
+  background-color: rgba(18, 22, 96, 0.1);
+}
+
+.otpkiosk-back-button ion-icon {
+  font-size: 1.5rem;
+}
+
+.otpkiosk-logo {
+  margin-bottom: 40px;
+  max-width: 200px;
+}
+
+.otpkiosk-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.otpkiosk-title {
+  color: var(--kiosk-primary);
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.otpkiosk-subtitle {
+  color: var(--kiosk-primary);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.otpkiosk-form {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 1.5rem;
+  background-color: var(--kiosk-surface);
+  padding: 1.5rem;
+  border-radius: var(--kiosk-radius-lg);
+  box-shadow: var(--kiosk-shadow-md);
+}
+
+.otpkiosk-input-group {
+  margin-bottom: 1.5rem;
+}
+
+.otpkiosk-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.otpkiosk-input {
+  width: 3rem;
+  height: 3rem;
+  text-align: center;
+  font-size: 1.75rem;
+  font-family: "Outfit", sans-serif;
+  border: 2px solid var(--kiosk-border);
+  border-radius: var(--kiosk-radius-md);
+  background-color: var(--kiosk-surface);
+  transition: border-color var(--kiosk-transition-normal), box-shadow var(--kiosk-transition-normal);
+}
+
+.otpkiosk-input:focus {
+  outline: none;
+  border-color: var(--kiosk-primary);
+  box-shadow: 0 0 0 3px rgba(18, 22, 96, 0.1);
+}
+
+.error-message {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.otpkiosk-resend {
+  margin: 1rem 0;
+  font-size: 1.25rem;
+  color: var(--kiosk-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.otpkiosk-resend p {
+  margin: 0;
+}
+
+.otpkiosk-btn {
+  background: linear-gradient(to right, var(--kiosk-primary), var(--kiosk-primary-dark));
+  border: none;
+  border-radius: var(--kiosk-radius-full);
+  color: white;
+  cursor: pointer;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  padding: 1rem 3rem;
+  margin: 1.5rem 0;
+  width: 100%;
+  box-shadow: var(--kiosk-shadow-md);
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+.otpkiosk-message {
+  color: var(--kiosk-primary);
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.5rem 0 0 0;
+}
+
+/* Responsive design */
+/* Landscape mode (1920x1080) */
+@media (min-width: 1081px) and (orientation: landscape) {
+  .otpkiosk-title {
+    font-size: 3.5rem;
+  }
+
+  .otpkiosk-message {
+    font-size: 2.25rem;
+  }
+
+  .otpkiosk-btn {
+    font-size: 1.5rem;
+    padding: 0.875rem 2.5rem;
+  }
+
+  .otpkiosk-form {
+    padding: 2rem;
+  }
+
+  .otpkiosk-back-button {
+    top: 2.5rem;
+    left: 2.5rem;
+  }
+}
+
+/* Portrait mode (1080x1920) */
+@media (max-width: 1080px) and (orientation: portrait) {
+  .otpkiosk-title {
+    font-size: 4rem;
+  }
+
+  .otpkiosk-form {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .otpkiosk-title {
+    font-size: 3.5rem;
+  }
+  .otpkiosk-message {
+    font-size: 2rem;
+  }
+  .otpkiosk-btn {
+    font-size: 1.5rem;
+    padding: 0.875rem 2.5rem;
+  }
+  .otpkiosk-form {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .otpkiosk-inputs {
+    gap: 0.25rem;
+  }
+  .otpkiosk-input {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+  }
+  .otpkiosk-back-button {
+    top: 1rem;
+    left: 1rem;
+    font-size: 1rem;
+  }
+  .otpkiosk-back-button ion-icon {
+    font-size: 1.25rem;
+  }
+  .otpkiosk-logo {
+    margin-bottom: 30px;
+  }
+  .otpkiosk-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .otpkiosk-message {
+    font-size: 1.75rem;
+  }
+  .otpkiosk-btn {
+    font-size: 1.25rem;
+    padding: 0.75rem 2rem;
+  }
+  .otpkiosk-form {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+}
+

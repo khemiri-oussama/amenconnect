@@ -1,0 +1,416 @@
+/* Import global styles */
+@import "../../theme/global.css";
+
+.loginkiosk-container {
+  height: var(--viewport-height);
+  width: var(--viewport-width);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--kiosk-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginkiosk-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  text-align: center;
+  max-width: 1800px;
+  width: 100%;
+  z-index: 10;
+}
+
+.loginkiosk-back-button {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--kiosk-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: var(--kiosk-radius-full);
+  transition: background-color var(--kiosk-transition-normal);
+  z-index: 20;
+}
+
+.loginkiosk-back-button:hover {
+  background-color: rgba(18, 22, 96, 0.1);
+}
+
+.loginkiosk-back-button ion-icon {
+  font-size: 1.5rem;
+}
+
+.loginkiosk-logo {
+  margin-bottom: 40px;
+  max-width: 200px;
+}
+
+.loginkiosk-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.loginkiosk-title {
+  color: var(--kiosk-primary);
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+}
+
+.loginkiosk-form {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 2rem;
+  background-color: var(--kiosk-surface);
+  padding: 1.5rem;
+  border-radius: var(--kiosk-radius-lg);
+  box-shadow: var(--kiosk-shadow-md);
+}
+
+.loginkiosk-password-container {
+  position: relative;
+}
+
+.loginkiosk-password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--kiosk-primary);
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color var(--kiosk-transition-fast);
+}
+
+.loginkiosk-password-toggle:hover {
+  background-color: rgba(18, 22, 96, 0.1);
+}
+
+.loginkiosk-input-container {
+  position: relative;
+}
+
+.loginkiosk-input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--kiosk-primary);
+  font-size: 1.5rem;
+}
+
+.loginkiosk-input-container .kiosk-input,
+.loginkiosk-password-container .kiosk-input {
+  padding-left: 3rem;
+}
+
+.loginkiosk-forgot-password {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.loginkiosk-forgot-password a {
+  color: var(--kiosk-primary);
+  font-size: 1.25rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color var(--kiosk-transition-normal);
+  position: relative;
+  display: inline-block;
+}
+
+.loginkiosk-forgot-password a::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--kiosk-primary-light);
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.loginkiosk-forgot-password a:hover {
+  color: var(--kiosk-primary-light);
+}
+
+.loginkiosk-forgot-password a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.loginkiosk-message {
+  color: var(--kiosk-primary);
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.5rem 0 0 0;
+}
+
+.loginkiosk-qr-section {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.loginkiosk-qr-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--kiosk-radius-lg);
+  box-shadow: var(--kiosk-shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.loginkiosk-qr-instructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  color: var(--kiosk-primary);
+  position: relative;
+  z-index: 1;
+}
+
+.loginkiosk-qr-icon {
+  font-size: 2rem;
+  color: var(--kiosk-primary);
+}
+
+.loginkiosk-qr-instructions p {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.loginkiosk-qr-code {
+  padding: 1.5rem;
+  background: white;
+  border-radius: var(--kiosk-radius-md);
+  box-shadow: var(--kiosk-shadow-sm);
+  position: relative;
+  z-index: 1;
+}
+
+.loginkiosk-alt-login {
+  background: none;
+  border: none;
+  color: var(--kiosk-primary);
+  font-family: "Outfit", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: opacity var(--kiosk-transition-normal);
+  position: relative;
+  z-index: 1;
+}
+
+.loginkiosk-alt-login::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--kiosk-primary);
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.loginkiosk-alt-login:hover {
+  opacity: 0.8;
+}
+
+.loginkiosk-alt-login:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.loginkiosk-subtitle {
+  color: var(--kiosk-primary);
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.loginkiosk-instruction {
+  color: var(--kiosk-text-muted);
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive design */
+/* Landscape mode (1920x1080) */
+@media (min-width: 1081px) and (orientation: landscape) {
+  .loginkiosk-qr-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    max-width: 800px;
+  }
+
+  .loginkiosk-qr-instructions {
+    align-items: flex-start;
+    text-align: left;
+    width: 40%;
+  }
+
+  .loginkiosk-qr-code {
+    width: 50%;
+  }
+
+  .loginkiosk-title {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .loginkiosk-form {
+    padding: 2rem;
+  }
+
+  .loginkiosk-back-button {
+    top: 2.5rem;
+    left: 2.5rem;
+  }
+}
+
+/* Portrait mode (1080x1920) */
+@media (max-width: 1080px) and (orientation: portrait) {
+  .loginkiosk-qr-container {
+    flex-direction: column;
+    padding: 2rem;
+  }
+
+  .loginkiosk-title {
+    font-size: 4rem;
+  }
+
+  .loginkiosk-form {
+    max-width: 90%;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 768px) {
+  .loginkiosk-title {
+    font-size: 3.5rem;
+  }
+
+  .loginkiosk-message {
+    font-size: 2rem;
+  }
+
+  .loginkiosk-form {
+    max-width: 400px;
+  }
+
+  .loginkiosk-back-button {
+    top: 1.5rem;
+    left: 1.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .loginkiosk-qr-container {
+    padding: 1.5rem;
+  }
+
+  .loginkiosk-qr-code svg {
+    width: 220px !important;
+    height: 220px !important;
+  }
+
+  .loginkiosk-qr-instructions {
+    gap: 0.75rem;
+  }
+
+  .loginkiosk-qr-icon {
+    font-size: 1.75rem;
+  }
+
+  .loginkiosk-qr-instructions p {
+    font-size: 1rem;
+  }
+
+  .loginkiosk-alt-login {
+    font-size: 1rem;
+  }
+
+  .loginkiosk-back-button {
+    top: 1rem;
+    left: 1rem;
+    font-size: 1rem;
+  }
+
+  .loginkiosk-back-button ion-icon {
+    font-size: 1.25rem;
+  }
+
+  .loginkiosk-logo {
+    margin-bottom: 30px;
+  }
+
+  .loginkiosk-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .loginkiosk-message {
+    font-size: 1.75rem;
+  }
+
+  .loginkiosk-form {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+
+  .loginkiosk-forgot-password a {
+    font-size: 1rem;
+  }
+
+  .loginkiosk-subtitle {
+    font-size: 2rem;
+  }
+
+  .loginkiosk-instruction {
+    font-size: 1rem;
+  }
+}
+

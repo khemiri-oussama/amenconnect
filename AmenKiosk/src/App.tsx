@@ -4,7 +4,7 @@ import type React from "react"
 import { Redirect, Route } from "react-router-dom"
 import { IonApp, IonRouterOutlet, setupIonicReact, IonSpinner } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
-import { Suspense, lazy, useEffect, useState } from "react"
+import { Suspense, lazy, useEffect } from "react"
 import "./theme/global.css"
 
 /* Core CSS required for Ionic components to work properly */
@@ -37,14 +37,15 @@ import "./theme/variables.css"
 // Context providers
 import { OrientationProvider } from "./context/OrientationContext"
 import { ThemeProvider } from "./context/ThemeContext"
-
+import { AuthProvider } from "./context/AuthContext"
 
 // Lazy load components for better performance
 const Home = lazy(() => import("./pages/Home"))
-const ModeInvite = lazy(() => import("./pages/mode-invite"))
-const Login = lazy(() => import("./pages/login"))
-const AccountCreation = lazy(() => import("./pages/account-creation"))
-const AdminPanel = lazy(() => import("./pages/admin/admin-panel"))
+const ModeInvite = lazy(() => import("./pages/modeinvite/mode-invite"))
+const Login = lazy(() => import("./pages/login/login"))
+const AccountCreation = lazy(() => import("./pages/AccountCreationForm"))
+const ForgotPassword = lazy(() => import("./pages/login/ForgotPassword/ForgotPassword"))
+const Otp = lazy(() => import("./pages/otp/otp"))
 
 // Loading component
 const LoadingFallback: React.FC = () => (
@@ -61,78 +62,57 @@ setupIonicReact({
   hardwareBackButton: false, // Disable hardware back button
 })
 
-// Update the App component with better error handling:
+// App component with better error handling
 const App: React.FC = () => {
-  const [isAppReady, setIsAppReady] = useState(false)
-  const [hasError, setHasError] = useState(false)
-
+  // Handle orientation changes
   useEffect(() => {
-    try {
-      // Simulate splash screen timeout
-      const timer = setTimeout(() => {
-        setIsAppReady(true)
-
-        // Initialize button sounds after app is loaded
-        try {
-          preloadSounds()
-          enableButtonSounds()
-        } catch (error) {
-          console.error("Error initializing sounds:", error)
-        }
-      }, 1000)
-
-      return () => clearTimeout(timer)
-    } catch (error) {
-      console.error("Error in App initialization:", error)
-      setHasError(true)
+    const handleResize = () => {
+      document.documentElement.style.setProperty("--viewport-height", `${window.innerHeight}px`)
+      document.documentElement.style.setProperty("--viewport-width", `${window.innerWidth}px`)
     }
+
+    // Set initial values
+    handleResize()
+
+    // Update on resize
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
-
-  if (hasError) {
-    return (
-      <div className="kiosk-error-container">
-        <div className="kiosk-error-content">
-          <h2>Une erreur est survenue</h2>
-          <p>Impossible de charger l'application. Veuillez rafraîchir la page.</p>
-          <button onClick={() => window.location.reload()}>Rafraîchir</button>
-        </div>
-      </div>
-    )
-  }
-
-  if (!isAppReady) {
-    return <LoadingFallback />
-  }
 
   return (
     <ThemeProvider>
       <OrientationProvider>
-        <IonApp className="kiosk-app">
-          <IonReactRouter>
-            <Suspense fallback={<LoadingFallback />}>
-              <IonRouterOutlet>
-                <Route exact path="/home">
-                  <Home />
-                </Route>
-                <Route exact path="/mode-invite">
-                  <ModeInvite />
-                </Route>
-                <Route exact path="/login">
-                  <Login />
-                </Route>
-                <Route exact path="/account-creation">
-                  <AccountCreation />
-                </Route>
-                <Route exact path="/admin">
-                  <AdminPanel />
-                </Route>
-                <Route exact path="/">
-                  <Redirect to="/home" />
-                </Route>
-              </IonRouterOutlet>
-            </Suspense>
-          </IonReactRouter>
-        </IonApp>
+        <AuthProvider>
+          <IonApp className="kiosk-app">
+            <IonReactRouter>
+              <Suspense fallback={<LoadingFallback />}>
+                <IonRouterOutlet>
+                  <Route exact path="/home">
+                    <Home />
+                  </Route>
+                  <Route exact path="/modeinvite">
+                    <ModeInvite />
+                  </Route>
+                  <Route exact path="/login">
+                    <Login />
+                  </Route>
+                  <Route exact path="/account-creation">
+                    <AccountCreation onBack={() => window.history.back()} />
+                  </Route>
+                  <Route exact path="/otp">
+                    <Otp />
+                  </Route>
+                  <Route exact path="/forgot-password">
+                    <ForgotPassword onBack={() => window.history.back()} />
+                  </Route>
+                  <Route exact path="/">
+                    <Redirect to="/home" />
+                  </Route>
+                </IonRouterOutlet>
+              </Suspense>
+            </IonReactRouter>
+          </IonApp>
+        </AuthProvider>
       </OrientationProvider>
     </ThemeProvider>
   )

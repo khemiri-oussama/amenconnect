@@ -1,147 +1,165 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { IonContent, IonPage, IonButton, IonIcon, IonRippleEffect } from "@ionic/react"
-import { useHistory } from "react-router-dom"
-import { personOutline, logInOutline, peopleOutline, chevronForwardOutline } from "ionicons/icons"
-import KioskLayout from "../components/KioskLayout"
-import AnimatedCard from "../components/AnimatedCard"
-import { useOrientation } from "../context/OrientationContext"
+import { useState, useEffect, useRef, useCallback } from "react"
+import { IonContent, IonPage, IonImg, useIonRouter } from "@ionic/react"
 import "./Home.css"
+import AccountCreationForm from "./AccountCreationForm"
 
-const Home: React.FC = () => {
-  const history = useHistory()
-  const { isLandscape } = useOrientation()
+const HomeKiosk: React.FC = () => {
+  const [active, setActive] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [loadingOption, setLoadingOption] = useState<string | null>(null)
+  const [showAccountForm, setShowAccountForm] = useState(false)
+  const ionRouter = useIonRouter()
 
-  const handleNavigation = (path: string, option: string) => {
-    setIsLoading(true)
-    setLoadingOption(option)
+  const inactivityTimer = useRef<NodeJS.Timeout | null>(null)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
 
-    // Add a small delay for better UX
-    setTimeout(() => {
-      setIsLoading(false)
-      setLoadingOption(null)
-      history.push(path)
-    }, 300)
+  const resetTimer = useCallback(() => {
+    if (inactivityTimer.current) {
+      clearTimeout(inactivityTimer.current)
+    }
+    inactivityTimer.current = setTimeout(() => {
+      setActive(false)
+      setShowOptions(false)
+      setShowAccountForm(false)
+      if (videoRef.current) {
+        videoRef.current.play().catch((error) => console.error("Erreur lors de la lecture de la vidéo :", error))
+      }
+    }, 60000)
+  }, [])
+
+  const handleUserInteraction = useCallback(() => {
+    if (!active) {
+      setActive(true)
+    }
+    resetTimer()
+  }, [active, resetTimer])
+
+  const handleStartClick = () => {
+    // Instead of using CSS transitions that might be causing issues,
+    // let's directly update the state
+    setShowOptions(true)
+    resetTimer()
   }
 
-  const toggleOptions = () => {
-    setShowOptions(!showOptions)
+  const handleGuestMode = () => {
+    ionRouter.push("/modeinvite")
+    resetTimer()
   }
+
+  const handleLogin = () => {
+    try {
+      ionRouter.push("/login", "forward", "push")
+    } catch (error) {
+      console.error("Navigation error:", error)
+      // Fallback navigation
+      window.location.href = "/login"
+    }
+    resetTimer()
+  }
+
+  const handleAccountCreation = () => {
+    setShowOptions(false)
+    setShowAccountForm(true)
+    resetTimer()
+  }
+
+  const handleBackToOptions = () => {
+    setShowAccountForm(false)
+    setShowOptions(true)
+    resetTimer()
+  }
+
+  useEffect(() => {
+    document.addEventListener("touchstart", handleUserInteraction)
+    document.addEventListener("click", handleUserInteraction)
+
+    return () => {
+      document.removeEventListener("touchstart", handleUserInteraction)
+      document.removeEventListener("click", handleUserInteraction)
+      if (inactivityTimer.current) clearTimeout(inactivityTimer.current)
+    }
+  }, [handleUserInteraction])
 
   return (
     <IonPage>
       <IonContent fullscreen>
-        <KioskLayout>
-          <div className="home-container">
-            <AnimatedCard delay={100}>
-              <div className="home-welcome">
-                <h1>Bienvenue chez AmenBank</h1>
-                <p>Quels sont vos besoins bancaires aujourd'hui?</p>
+        {active ? (
+          <div className="homekiosk-container">
+            <div className="homekiosk-content">
+              <div className="homekiosk-logo">
+                <IonImg src="favicon.png" alt="Amen Bank Logo" className="homekiosk-img" />
               </div>
-            </AnimatedCard>
+              <h1 className="homekiosk-title">Bienvenue!</h1>
 
-            <AnimatedCard delay={300}>
-              <div className="home-options-container">
-                {!showOptions ? (
-                  <IonButton className="home-start-button" onClick={toggleOptions} disabled={isLoading}>
-                    <span>Commencer</span>
-                    <div className="home-button-icon">
-                      <IonIcon icon={chevronForwardOutline} />
-                    </div>
-                    <IonRippleEffect />
-                  </IonButton>
-                ) : (
-                  <div className={`home-options-grid ${isLandscape ? "landscape" : "portrait"}`}>
-                    <div className="home-option guest-option">
-                      <IonButton
-                        className="home-option-button"
-                        fill="clear"
-                        disabled={isLoading}
-                        onClick={() => handleNavigation("/mode-invite", "guest")}
-                      >
-                        <div className="home-option-content">
-                          <div className="home-option-icon">
-                            <IonIcon icon={personOutline} />
-                          </div>
-                          <div className="home-option-text">
-                            <h3>Mode invite</h3>
-                            <p>Explorer sans compte</p>
-                          </div>
-                          <div className="home-option-arrow">
-                            <IonIcon icon={chevronForwardOutline} />
-                          </div>
-                        </div>
-                        <IonRippleEffect />
-                      </IonButton>
-                    </div>
-
-                    <div className="home-option login-option">
-                      <IonButton
-                        className="home-option-button"
-                        fill="clear"
-                        disabled={isLoading}
-                        onClick={() => handleNavigation("/login", "login")}
-                      >
-                        <div className="home-option-content">
-                          <div className="home-option-icon">
-                            <IonIcon icon={logInOutline} />
-                          </div>
-                          <div className="home-option-text">
-                            <h3>Se connecter</h3>
-                            <p>Accéder à votre compte</p>
-                          </div>
-                          <div className="home-option-arrow">
-                            <IonIcon icon={chevronForwardOutline} />
-                          </div>
-                        </div>
-                        <IonRippleEffect />
-                      </IonButton>
-                    </div>
-
-                    <div className="home-option register-option">
-                      <IonButton
-                        className="home-option-button"
-                        fill="clear"
-                        disabled={isLoading}
-                        onClick={() => handleNavigation("/account-creation", "register")}
-                      >
-                        <div className="home-option-content">
-                          <div className="home-option-icon">
-                            <IonIcon icon={peopleOutline} />
-                          </div>
-                          <div className="home-option-text">
-                            <h3>Devenir client</h3>
-                            <p>Créer un nouveau compte</p>
-                          </div>
-                          <div className="home-option-arrow">
-                            <IonIcon icon={chevronForwardOutline} />
-                          </div>
-                        </div>
-                        <IonRippleEffect />
-                      </IonButton>
-                    </div>
-
-                    <div className="home-quick-access">
-                      <IonButton className="home-back-button" fill="clear" onClick={toggleOptions}>
-                        Retour
-                        <IonRippleEffect />
-                      </IonButton>
-                    </div>
+              {!showOptions ? (
+                <>
+                  <h2 className="homekiosk-question">
+                    Quels sont vos besoins
+                    <br />
+                    bancaires aujourd'hui ?
+                  </h2>
+                  <button className="kiosk-btn" onClick={handleStartClick}>
+                    Commencez ici
+                  </button>
+                  <p className="homekiosk-message">
+                    La réussite est à
+                    <br />
+                    portée de clic.
+                  </p>
+                </>
+              ) : (
+                <div className="homekiosk-options-container">
+                  <h2 className="homekiosk-question">Choisissez votre mode d'accès</h2>
+                  <div className="homekiosk-buttons">
+                    <button className="homekiosk-button homekiosk-button-guest" onClick={handleGuestMode}>
+                      Mode invite
+                    </button>
+                    <button className="homekiosk-button homekiosk-button-login" onClick={handleLogin}>
+                      Se connecter
+                    </button>
                   </div>
-                )}
+                  <button className="homekiosk-button homekiosk-button-account" onClick={handleAccountCreation}>
+                    Devenir Client
+                  </button>
+                  <p className="homekiosk-message">
+                    La réussite est à
+                    <br />
+                    portée de clic.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Account Form Modal Popup */}
+            {showAccountForm && (
+              <div className="modal-overlay" onClick={handleBackToOptions}>
+                <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+                  <AccountCreationForm onBack={handleBackToOptions} />
+                </div>
               </div>
-            </AnimatedCard>
+            )}
           </div>
-        </KioskLayout>
+        ) : (
+          <div className="homekiosk-video-container">
+            <video
+              ref={videoRef}
+              autoPlay
+              loop
+              playsInline
+              controls={false}
+              onError={(e) => console.error("Erreur lors du chargement de la vidéo :", e)}
+            >
+              <source src="pub.mp4" type="video/mp4" />
+              Votre navigateur ne supporte pas la lecture de vidéos.
+            </video>
+          </div>
+        )}
       </IonContent>
     </IonPage>
   )
 }
 
-export default Home
+export default HomeKiosk
 
