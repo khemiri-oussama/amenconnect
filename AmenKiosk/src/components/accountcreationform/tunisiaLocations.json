@@ -1,0 +1,5142 @@
+{
+    "states": [
+        {
+            "name": "Ariana",
+            "isoCode": "AR",
+            "cities": [
+                {
+                    "name": "Ariana",
+                    "postalCode": "2080"
+                },
+                {
+                    "name": "Borj El Baccouche",
+                    "postalCode": "2037"
+                },
+                {
+                    "name": "Centre Commercial Ikram",
+                    "postalCode": "2037"
+                },
+                {
+                    "name": "Cité Belvedere 2",
+                    "postalCode": "2091"
+                },
+                {
+                    "name": "Cité Borj Turki 1",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "Cité Borj Turki 2",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "Cité des Roses",
+                    "postalCode": "2080"
+                },
+                {
+                    "name": "Cité du Jardin",
+                    "postalCode": "2080"
+                },
+                {
+                    "name": "Cité du Printemps",
+                    "postalCode": "2080"
+                },
+                {
+                    "name": "Cité du Soleil",
+                    "postalCode": "2091"
+                },
+                {
+                    "name": "Cité El Intissar 1",
+                    "postalCode": "2091"
+                },
+                {
+                    "name": "Cité El Intissar 2",
+                    "postalCode": "2091"
+                },
+                {
+                    "name": "Cité Ennasr 1",
+                    "postalCode": "2037"
+                },
+                {
+                    "name": "Cité Ennasr 2",
+                    "postalCode": "2037"
+                },
+                {
+                    "name": "Cité Ennouzha",
+                    "postalCode": "2080"
+                },
+                {
+                    "name": "Cité Essaada (ariana)",
+                    "postalCode": "2080"
+                },
+                {
+                    "name": "Cité Essaada (riadh Andalous)",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "Cité Jaafar",
+                    "postalCode": "2080"
+                },
+                {
+                    "name": "Cité Jamil",
+                    "postalCode": "2091"
+                },
+                {
+                    "name": "Cité Karim",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "Cité Mehrzia 1",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "El Menzah 5",
+                    "postalCode": "2091"
+                },
+                {
+                    "name": "El Menzah 6",
+                    "postalCode": "2091"
+                },
+                {
+                    "name": "El Menzah 7",
+                    "postalCode": "2037"
+                },
+                {
+                    "name": "El Menzah 8",
+                    "postalCode": "2037"
+                },
+                {
+                    "name": "Nouvelle Ariana",
+                    "postalCode": "2080"
+                },
+                {
+                    "name": "Résidence El Ouns",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "Résidence Ennour ( Naser 1)",
+                    "postalCode": "2037"
+                },
+                {
+                    "name": "Résidence Ennour ( Naser 2)",
+                    "postalCode": "2037"
+                },
+                {
+                    "name": "Résidence Ennour (ariana)",
+                    "postalCode": "2080"
+                },
+                {
+                    "name": "Résidence Ibn Zeidoun",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "Résidence Ichbilia",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "Résidence Kortoba",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "Riadh Landlous",
+                    "postalCode": "2058"
+                },
+                {
+                    "name": "Cité 18 Janvier",
+                    "postalCode": "2041"
+                },
+                {
+                    "name": "Cité Ben Yerfes",
+                    "postalCode": "2041"
+                },
+                {
+                    "name": "Cité El Houda",
+                    "postalCode": "2041"
+                },
+                {
+                    "name": "Cité Ennasser",
+                    "postalCode": "2041"
+                },
+                {
+                    "name": "Cité Ettadhamen",
+                    "postalCode": "2041"
+                },
+                {
+                    "name": "Cité Ettayarene",
+                    "postalCode": "2041"
+                },
+                {
+                    "name": "Cité Sfar",
+                    "postalCode": "2041"
+                },
+                {
+                    "name": "Cité Snit 2",
+                    "postalCode": "2041"
+                },
+                {
+                    "name": "Cité Snit Nagra",
+                    "postalCode": "2041"
+                },
+                {
+                    "name": "Borj El Hadj",
+                    "postalCode": "2061"
+                },
+                {
+                    "name": "Cité Bir El Araies",
+                    "postalCode": "2022"
+                },
+                {
+                    "name": "Cité des Martyrs",
+                    "postalCode": "2022"
+                },
+                {
+                    "name": "Cité El Fejja",
+                    "postalCode": "2022"
+                },
+                {
+                    "name": "Cité El Mourouj",
+                    "postalCode": "2022"
+                },
+                {
+                    "name": "Cité El Oulja",
+                    "postalCode": "2022"
+                },
+                {
+                    "name": "Cité Essibous",
+                    "postalCode": "2022"
+                },
+                {
+                    "name": "Cité Tarek Ibn Zied",
+                    "postalCode": "2022"
+                },
+                {
+                    "name": "El Misra",
+                    "postalCode": "2061"
+                },
+                {
+                    "name": "Ferme Hababou",
+                    "postalCode": "2061"
+                },
+                {
+                    "name": "Ferme Mustapha",
+                    "postalCode": "2061"
+                },
+                {
+                    "name": "Henchir Toubias",
+                    "postalCode": "2061"
+                },
+                {
+                    "name": "Kalaat Landlous",
+                    "postalCode": "2022"
+                },
+                {
+                    "name": "Pont de Bizerte",
+                    "postalCode": "2061"
+                },
+                {
+                    "name": "Aéroport Tunis Carthage",
+                    "postalCode": "2035"
+                },
+                {
+                    "name": "Borj Louzir",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Charguia 1",
+                    "postalCode": "2035"
+                },
+                {
+                    "name": "Charguia 2",
+                    "postalCode": "2035"
+                },
+                {
+                    "name": "Chotrana 1",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Chotrana 2",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Chotrana 3",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Astree",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Belabla",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Ben Hessine",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Ben Kilani",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Bou Fares",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Chouachia",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Chouchene",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité de l'aéroport",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité de la Sante",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité de la Terre Libre",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité des Juges",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité El Azzef",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité El Behi Ladghem",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité El Boustene 1",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité El Boustene 2",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité El Feth",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité El Hana",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité El Henaya",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité El Maid",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité El Mansoura",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité El Ouroud",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Elyes",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Ennacim",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Ennouzha 3",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Ettaamir",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Ettaamir 5",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Ezzitoun 1",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Ezzitoun 2",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Ezzouaidia",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Farhat",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Fateh",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Fonciere",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Ghouzaila",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Hedi Nouira",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Jebira",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Snit (Soukra)",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Star",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Cité Touilia",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Dar Fadhal",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "La Soukra",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Mosque Erraoudha",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Résidence 26-26",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Résidence Ahlem",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Résidence El Ouns",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Résidence Ennesrine",
+                    "postalCode": "2073"
+                },
+                {
+                    "name": "Résidence Meriem",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Sidi Frej",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Sidi Salah",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Sidi Soufiene",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Station Marchandises Fret",
+                    "postalCode": "2035"
+                },
+                {
+                    "name": "Village Essahli",
+                    "postalCode": "2036"
+                },
+                {
+                    "name": "Cité Ali Bourguiba",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité de la Republique",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité El Bassatine1",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité El Bassatine2",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité El Bassatine3",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité El Gouabsia",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité El Ouard",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité Ennasr",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité Essaada",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité Rafaha",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Cité Rous El Harayek",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Mnihla",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Résidence Ennasr",
+                    "postalCode": "2094"
+                },
+                {
+                    "name": "Ariana Essoughra",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Borj Touil",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Bou Hnech",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité 7 Novembre",
+                    "postalCode": "2056"
+                },
+                {
+                    "name": "Cité aéroport",
+                    "postalCode": "2056"
+                },
+                {
+                    "name": "Cité Chaker",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité Chargui",
+                    "postalCode": "2056"
+                },
+                {
+                    "name": "Cité de la Mosque",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité de la Rtt 2",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité des Juges",
+                    "postalCode": "2056"
+                },
+                {
+                    "name": "Cité El Abadla",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité El Amel",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité El Ghazala 1",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité El Ghazala 2",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité El Mouaouiet",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité El Mountazeh",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité El Wafa",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité El Yamama",
+                    "postalCode": "2056"
+                },
+                {
+                    "name": "Cité Ennasr",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité Ennkhilet",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité Ennour Jaafar",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité Erriadh",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité Essaada",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité Essahafa",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité Ibn Rachik",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité Mehrzia 2",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Cité Sidi Salah",
+                    "postalCode": "2056"
+                },
+                {
+                    "name": "Cité Sidi Slimene",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité Snit (Raoued)",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Cité Zghab",
+                    "postalCode": "2056"
+                },
+                {
+                    "name": "Complexe Technologique",
+                    "postalCode": "2088"
+                },
+                {
+                    "name": "Douar El Hendi",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "El Brarja",
+                    "postalCode": "2056"
+                },
+                {
+                    "name": "El Hessiene",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Jaafar 1",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Jaafar 2",
+                    "postalCode": "2083"
+                },
+                {
+                    "name": "Oued El Khayat",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Oued El Makhzen",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Raoued",
+                    "postalCode": "2056"
+                },
+                {
+                    "name": "Résidence El Ayech",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Résidence El Ouns",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Résidence Ennarjes",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Résidence Essalem",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Résidence Rim",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Route Ezzaouia",
+                    "postalCode": "2081"
+                },
+                {
+                    "name": "Bejaoua 2",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Borj El Khoukha",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Borj Youssef",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Cebalet Ben Ammar",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Chorfech",
+                    "postalCode": "2057"
+                },
+                {
+                    "name": "Chorfech 12",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Chorfech 2",
+                    "postalCode": "2057"
+                },
+                {
+                    "name": "Chorfech 24",
+                    "postalCode": "2057"
+                },
+                {
+                    "name": "Chorfech 8",
+                    "postalCode": "2057"
+                },
+                {
+                    "name": "Cité 18 Janvier",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité Afh",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité des Agriculteurs",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité des Oranges",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité Dridi",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Cité El Bokri",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Cité El Frachich",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Cité El Ghribi",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Cité El Gouazine",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité El Mbarka",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité El Methalithe",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Cité El Mrezgua",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité Essaada",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité Ettbaieb",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité Jardins",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité Messouda",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Cité Mongi Slim",
+                    "postalCode": "2020"
+                },
+                {
+                    "name": "Cité Ouvriere",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Cité Sidi Marouane",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Ezzaouia",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Jabbes",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Jabbes El Borj",
+                    "postalCode": "2032"
+                },
+                {
+                    "name": "Sidi Thabet",
+                    "postalCode": "2020"
+                }
+            ]
+        },
+        {
+            "name": "Béja",
+            "isoCode": "BÉ",
+            "cities": [
+                {
+                    "name": "Adailia",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Ain El Goussa",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Ain Ghenem",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Beni Melek",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Bouris",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Cité de la Poste",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Cité Erraoudha",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Cité Hached",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Cité Taieb Mhiri",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Eddghabjia",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Edhhirat",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "El Ayayda",
+                    "postalCode": "9084"
+                },
+                {
+                    "name": "El Fraijia",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "El Ghorfa",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "El Graia",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "El Hlikat",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "El Homr",
+                    "postalCode": "9084"
+                },
+                {
+                    "name": "El Jouza",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "El Mjales",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Gaat El Mouhdi",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Ghouzia",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Maghraoua",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Menzel El Gourchi",
+                    "postalCode": "9084"
+                },
+                {
+                    "name": "Menzel Hammed",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Remadhnia",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Sidi Mbarek",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Sidi Saadoun",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Sobah",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Zahret Mediene",
+                    "postalCode": "9030"
+                },
+                {
+                    "name": "Ain Ksar Hadid",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Beja",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Bou Keslane",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Charchara",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Afh",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Ain Bazaz",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Ain Chemes",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Ain El Ghoula",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Beja El Jadida",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Belle Vue",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Bir Hofra",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Boutraa",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Cnrps",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité de la Police",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité de la Sante 1",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité de la Sante 2",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité des Mimosas",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité des Proffesseurs",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité des Roses",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Dhamene",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité du Gouvernorat",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Echifa",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Economie du Nord",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Edhahbia 1",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Edhahbia 2",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Baraka",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Biadha",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Boukhari",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Boustene",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Habib",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Habibia",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Haouari",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Khadhra",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Khadhra Superieur",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Manar 1",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Manar 2",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Manar 3",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Manar 4",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Manar 5",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Mekmda",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Mhella",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Moustakbel",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Mzara",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Olfa",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Ennouzha",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Erriadh 2",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Erriadhi 1",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Essalama",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Essalem",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Essanaouber",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Ezzouhour",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Garde Nationale",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Ibn Khaldoun",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Jardins",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Jebel El Akhdhar",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Ksar Bardo",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Pont Trageon",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité S.r.transport",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Salah El Maghraoui",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Salambo",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Sidi Frej",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Snit",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Taieb Mhiri",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Usine du Sucre1",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité Usine du Sucre2",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "El Hamrounia",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "El Mounchar",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "El Mzara",
+                    "postalCode": "9031"
+                },
+                {
+                    "name": "El Yousri",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Fatnassa",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Hajar Amor",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Kasseb",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Lafarke",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Nagachia",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Tarhouni",
+                    "postalCode": "9000"
+                },
+                {
+                    "name": "Cité El Amel",
+                    "postalCode": "9023"
+                },
+                {
+                    "name": "El Maagoula",
+                    "postalCode": "9023"
+                },
+                {
+                    "name": "Hammam Sayala",
+                    "postalCode": "9052"
+                },
+                {
+                    "name": "Mastouta",
+                    "postalCode": "9021"
+                },
+                {
+                    "name": "Mastouta Gare",
+                    "postalCode": "9021"
+                },
+                {
+                    "name": "Sidi Frej",
+                    "postalCode": "9029"
+                },
+                {
+                    "name": "Sidi Smail",
+                    "postalCode": "9021"
+                },
+                {
+                    "name": "Bir El Euch",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Briouig",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Cheik El Ouediane El Guebli",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Cité des Fonctionnaires",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Cité El Hana",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Cité El Izdihar",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Cité El Kamh",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Cité Essaada",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Cité Essanabel",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Cité Ezzouhour",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Cité Populaire",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Dour Ismail",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "El Fedhailia",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "El Gammarti",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "El Ogla",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Ettraifa",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Goubellat",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Grame",
+                    "postalCode": "9083"
+                },
+                {
+                    "name": "Khacheb",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Khenguet Eddihenne",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Tella",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Zone Industrielle",
+                    "postalCode": "9080"
+                },
+                {
+                    "name": "Argoub Ezzaatar",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Chaouech",
+                    "postalCode": "9072"
+                },
+                {
+                    "name": "Cité 02 Mars",
+                    "postalCode": "9071"
+                },
+                {
+                    "name": "Cité Baccar",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité de la Poste",
+                    "postalCode": "9013"
+                },
+                {
+                    "name": "Cité de la Sante",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité des Proffesseurs",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité Dhamene",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité du Gouvernorat",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité Education",
+                    "postalCode": "9013"
+                },
+                {
+                    "name": "Cité El Azima 1",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité El Azima 2",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité El Azima 3",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité El Bahrine",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité El Behi",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité El Fateh",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité El Ferdaous 1",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité El Hana",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité El Manar",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité El Menchari",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité Enfance",
+                    "postalCode": "9013"
+                },
+                {
+                    "name": "Cité Erriadh",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité Essedk",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité Ettadhamen",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité Ezzouhour",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité Jallazia",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Cité Majerda",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "El Griaat",
+                    "postalCode": "9071"
+                },
+                {
+                    "name": "El Herri",
+                    "postalCode": "9075"
+                },
+                {
+                    "name": "El Ksar",
+                    "postalCode": "9015"
+                },
+                {
+                    "name": "Gueriche El Oued",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Hidous",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Iden",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Louatia",
+                    "postalCode": "9013"
+                },
+                {
+                    "name": "Mejez El Bab",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Oued Ezzitoun",
+                    "postalCode": "9013"
+                },
+                {
+                    "name": "Oued Zarga",
+                    "postalCode": "9013"
+                },
+                {
+                    "name": "Sidi Ahmed Jedidi",
+                    "postalCode": "9070"
+                },
+                {
+                    "name": "Sidi Mediene",
+                    "postalCode": "9034"
+                },
+                {
+                    "name": "Sidi Nasser",
+                    "postalCode": "9044"
+                },
+                {
+                    "name": "Toukabeur",
+                    "postalCode": "9024"
+                },
+                {
+                    "name": "Ain Zakkar",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "Beni Said",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Bou Garnouna",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "Cité de la Liberte",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité de la Poste",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité des Carrieres",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité des Roses",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité El Mhiri",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité Erriadh",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité Essaada",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité Ezzouhour",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité Independance",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité Mixte",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité Mohsen Limam",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité Rim",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Cité Sidi Saad",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Dar El Hit",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "El Amamria",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "El Ayayada Jamila",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "El Hemaidia",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "El Mazdour",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "El Mecherga",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "El Oulija",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "Ettaref",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "Ezzouaraa",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "Fatnassa",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Jbel Diss",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Jemil",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Nefza",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Ouechtata",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "Oued Bouzenna",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Oued Damous",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Ouled Houimel",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Ouled Kacem",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Ouled Salem",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "Oum Laabid",
+                    "postalCode": "9010"
+                },
+                {
+                    "name": "Tababa",
+                    "postalCode": "9011"
+                },
+                {
+                    "name": "Zaga",
+                    "postalCode": "9012"
+                },
+                {
+                    "name": "Ain El Hammam",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Ain El Kehoul",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Ain El Melliti",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Ain Jemmala",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Bir Ettouta",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Borj Brahim",
+                    "postalCode": "9032"
+                },
+                {
+                    "name": "Bouzaida",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Ain El Karma",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Ain Mrad",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité de la Republique",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité des Martyrs",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité du Stade",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité El Bassatine",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité El Glai",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité El Gourjani",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité El Hadj Abdallah",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité El Ksar",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Ennacim",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Ennacim 1",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Ennacim 2",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Ezzayatine 1",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Ezzayatine 2",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Ibn Khaldoun",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Ibn Sina",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Industrielle",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Jardins",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Meska",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Oued Essah",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Cité Sidi Bagga",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Douga",
+                    "postalCode": "9032"
+                },
+                {
+                    "name": "Dougga Rouines",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "El Ayedh",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "El Faouar",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "El Matria",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Fadden Essouk",
+                    "postalCode": "9046"
+                },
+                {
+                    "name": "Khalled",
+                    "postalCode": "9032"
+                },
+                {
+                    "name": "Naffet",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Ouled Marai",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Rihana",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Teboursouk",
+                    "postalCode": "9040"
+                },
+                {
+                    "name": "Ain Tounga",
+                    "postalCode": "9062"
+                },
+                {
+                    "name": "Ain Younes",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Bab Bled",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité 20 Mars",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité 26 Fevrier",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité Bahrnia",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Beharnia",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Ben Karouia",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Ben Othman",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Dar Echabeb",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité des Andalous",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité El Bassatine",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité El Folla",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité El Gadhoum",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité El Izdihar",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité El Malouf",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité El Mendra",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Ennacim",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité Erraoudha",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Essayadine",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Fedden Jemaa",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Gharnata 1",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité Gharnata 2",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité Ibn Zeidoun",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité Jabbess",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Kichtilou",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Ouled Slimane",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Sidi Khouili",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Spiniair",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Cité Tafercha",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Cité Tijani",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "El Glaa",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "El Mellah",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Esskhira",
+                    "postalCode": "9061"
+                },
+                {
+                    "name": "Esslouguia",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Henchir Bou Sofra",
+                    "postalCode": "9061"
+                },
+                {
+                    "name": "Jebel Fellous",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Jlass Bou Issa",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Mezougha",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Oued Jedra",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Ouled Slama",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Ouljet Doukhane",
+                    "postalCode": "9014"
+                },
+                {
+                    "name": "Rhiba",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Testour",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Zeldou",
+                    "postalCode": "9060"
+                },
+                {
+                    "name": "Ain Eddefali",
+                    "postalCode": "9042"
+                },
+                {
+                    "name": "Cité 2 Mars",
+                    "postalCode": "9022"
+                },
+                {
+                    "name": "Cité Commerciale",
+                    "postalCode": "9022"
+                },
+                {
+                    "name": "Cité des Ouvriers",
+                    "postalCode": "9022"
+                },
+                {
+                    "name": "Cité El Olfa",
+                    "postalCode": "9022"
+                },
+                {
+                    "name": "Cité Ennour",
+                    "postalCode": "9022"
+                },
+                {
+                    "name": "Cité Essalama",
+                    "postalCode": "9022"
+                },
+                {
+                    "name": "Cité Hached",
+                    "postalCode": "9022"
+                },
+                {
+                    "name": "Cité Ibn Khaldoun",
+                    "postalCode": "9022"
+                },
+                {
+                    "name": "Djebba",
+                    "postalCode": "9042"
+                },
+                {
+                    "name": "El Henancha",
+                    "postalCode": "9042"
+                },
+                {
+                    "name": "Ennechima",
+                    "postalCode": "9022"
+                },
+                {
+                    "name": "Thibar",
+                    "postalCode": "9022"
+                }
+            ]
+        },
+        {
+            "name": "Ben Arous",
+            "isoCode": "BE",
+            "cities": [
+                {
+                    "name": "Ben Arous",
+                    "postalCode": "2013"
+                },
+                {
+                    "name": "Ben Arous Sud",
+                    "postalCode": "2043"
+                },
+                {
+                    "name": "Bou Mhel",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Ben Gamra",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Ben Joud",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Bou Mhel",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Boutouria",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Chebil",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité de l'interieur",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité des Juges",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Diar Tounes",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Ahmadi",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Amen",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Assil",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Bassatine Ancien",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Ferchichi",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Iklil",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Kenani",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Khalij",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Khalledi",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Mahrajene 1",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Mahrajene 2",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Mouna",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité El Wafa",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Ennacim 1",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Ennacim 2",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Essafa",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Essalem",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Hadrich",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Jlassi",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Mezriou",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Plein Air",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Rabiaa",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Snit",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Cité Sprols",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Résidence du Mediterrane",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Résidence El Imara",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Résidence Ennacim",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Résidence Ezzouhour",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Résidence Sarra",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Résidence Sirine",
+                    "postalCode": "2097"
+                },
+                {
+                    "name": "Bir El Kassaa",
+                    "postalCode": "2059"
+                },
+                {
+                    "name": "Cité Alyssa 1",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Alyssa 2",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Azza 1",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Azza 2",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Commerciale Abou Sofiane",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Commerciale Boukhriss",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité des Oasis",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité El Bassatine",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité El Bochra",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité El Faouz",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité El Foll",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité El Mourouj 3 Bis",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité El Wifak",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Ennakhil",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Ennarjes 1",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Ennarjes 2",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Ennasr 1",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Ennasr 2",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Errachid 1",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Errachid 2",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Erraoudha",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Erriadh",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Erriadh 2",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Essalem",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Ibn Jazzar 2",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Ibn Mandhour",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Jardins",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Moncef Bey",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Taher Haddad",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité Yargoula",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "El Alia 1",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "El Alia 2",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "El Alia 3",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "El Mourouj",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "La Belle Residence",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Chebbi",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Chourouk 1",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Chourouk 2",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Chourouk 3",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence de l'horizon",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence de la Verdure",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence du Printemps",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence El Foll",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence El Khalil",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence El Mourjene",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence El Ouard",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence El Wafa",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Ennacim",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Ennaoures",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Ennesrine",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Erraboua",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Essaad",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Essaada",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Essraya",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Ibn Khaldoun",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Ibn Zeidoun",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Ines",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Jinene El Mourouj",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Meriem",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Sidi Bou Said",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Type",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Résidence Zahret El Mourouj",
+                    "postalCode": "2074"
+                },
+                {
+                    "name": "Cité 18 Janvier",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Ben Miled",
+                    "postalCode": "2065"
+                },
+                {
+                    "name": "Cité Borj Louzir",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité du Port",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité du Wagon",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité El Ahlem",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité El Akacia",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité El Amen",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité El Ezz",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité El Habib",
+                    "postalCode": "2065"
+                },
+                {
+                    "name": "Cité El Houl",
+                    "postalCode": "2065"
+                },
+                {
+                    "name": "Cité El Oulija",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité El Ouns",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité El Ward",
+                    "postalCode": "2065"
+                },
+                {
+                    "name": "Cité El Yasmine",
+                    "postalCode": "2065"
+                },
+                {
+                    "name": "Cité Ennakhil 1",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Ennakhil 2",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Ennasr",
+                    "postalCode": "2065"
+                },
+                {
+                    "name": "Cité Errachid",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Erriadh",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Hedi Khfacha",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Imen",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Industrielle",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Mrad 1",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Mrad 2",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Cité Panorama",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Ezzahra",
+                    "postalCode": "2034"
+                },
+                {
+                    "name": "Ezzahra El Habib",
+                    "postalCode": "2065"
+                },
+                {
+                    "name": "Bir Zendala",
+                    "postalCode": "1135"
+                },
+                {
+                    "name": "Chebedda",
+                    "postalCode": "1135"
+                },
+                {
+                    "name": "Cité 20 Mars",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité Brim",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité Chebbi",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Amel",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Amel 2",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Banefsej",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Fateh",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Hana",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Hidhab",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Izdihar",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Misk",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Moustakbel",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Ward",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité El Wifak",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité Ennasr",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité Ennouzha",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité Erriadh",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité Ezzitoun 1",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité Khouaja",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité Snit",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Cité Trabelsi",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Douar El Houch",
+                    "postalCode": "1135"
+                },
+                {
+                    "name": "El Menaychia",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Fouchana",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Meghira Centre",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Meghira Inzel",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Naassen",
+                    "postalCode": "1135"
+                },
+                {
+                    "name": "Zone Industrielle El Meghira",
+                    "postalCode": "2082"
+                },
+                {
+                    "name": "Bir El Bey",
+                    "postalCode": "2055"
+                },
+                {
+                    "name": "Borj Cedria",
+                    "postalCode": "2084"
+                },
+                {
+                    "name": "Hammam Chatt",
+                    "postalCode": "1164"
+                },
+                {
+                    "name": "Bou Kornine",
+                    "postalCode": "2093"
+                },
+                {
+                    "name": "Cité 7 Novembre",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Bou Kornine 2",
+                    "postalCode": "2093"
+                },
+                {
+                    "name": "Cité Boussouffara",
+                    "postalCode": "2099"
+                },
+                {
+                    "name": "Cité Casino",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Dar El Bey",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité de la Municipalite",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité des Instituteurs",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité des Ouvriers",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Ennahdha",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Ennasr",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Ennouzha",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Essanaoubria",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Hached",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Kortoba",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Mongi Slim",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Office Cereale",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Thermale",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Hammam Lif",
+                    "postalCode": "2050"
+                },
+                {
+                    "name": "Cité Founiz",
+                    "postalCode": "2014"
+                },
+                {
+                    "name": "Megrine",
+                    "postalCode": "2033"
+                },
+                {
+                    "name": "Megrine Chaker",
+                    "postalCode": "2024"
+                },
+                {
+                    "name": "Megrine Coteau",
+                    "postalCode": "2033"
+                },
+                {
+                    "name": "Megrine Jaouhara",
+                    "postalCode": "2024"
+                },
+                {
+                    "name": "Megrine Riadh",
+                    "postalCode": "2014"
+                },
+                {
+                    "name": "Megrine Superieur",
+                    "postalCode": "2033"
+                },
+                {
+                    "name": "Saint Gobin",
+                    "postalCode": "2014"
+                },
+                {
+                    "name": "Sidi Rezig",
+                    "postalCode": "2033"
+                },
+                {
+                    "name": "Zone Industrielle Saint Gobin",
+                    "postalCode": "2014"
+                },
+                {
+                    "name": "Cité Bou Akroucha",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Bourbai",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Cebbalet Chikh",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Chaabane",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Chebbi",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité de la Carriere 1",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité de la Carriere 2",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité du Lycee",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Amen",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Atiq",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Baccouch",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Bassatine",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Elmi 1",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Elmi 2",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Haddad",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Hana",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Ksar",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Omri 1",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité El Omri 2",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Ellouata",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Ennacim 1",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Ennacim 2",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Ennasr",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Ennouzha",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Erriadh",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Essaada 1",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Essaada 2",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Essaada 3",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Essalem",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Ettayari",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Ettouahria",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Ezzitoun 2",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Fattouma Bourguiba",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Hached 1",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Hached 2",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Jaouhara",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Jardins",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Mongi Slim 1",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Mongi Slim 2",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Oudhna",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Taieb Mhiri",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Cité Tnich",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Immeubles de l'interieur",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Mohamadia",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Résidence El Ferdaous",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Résidence El Moustakbel",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Résidence El Ouns",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Résidence Ettaoufik",
+                    "postalCode": "1145"
+                },
+                {
+                    "name": "Ahmed Zaied",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Ain Regad",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "Barrouta",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "Ben Nouiji",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Bir Jedid",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "Borj Essoufi",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Bou Jerdga",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Chala",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Chamine",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Cité Air Nouvelle",
+                    "postalCode": "2064"
+                },
+                {
+                    "name": "Cité Ennasr",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Cité Ettayarane",
+                    "postalCode": "2064"
+                },
+                {
+                    "name": "Douar la Porte",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Douar Salem",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "El Abebsa",
+                    "postalCode": "2064"
+                },
+                {
+                    "name": "El Alelgua",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "El Araba",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "El Fendria",
+                    "postalCode": "2064"
+                },
+                {
+                    "name": "El Gounna",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "El Haouamed",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "El Kabouti",
+                    "postalCode": "2064"
+                },
+                {
+                    "name": "El Ksibi",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Errissala",
+                    "postalCode": "2044"
+                },
+                {
+                    "name": "Ettiayra",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Ferme Marquee",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Henchir Bouchta",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Henchir El Ghobar",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Henchir Kharrouba",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "Henchir Khelil",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Huilerie Bayrem",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Jebel Ersass",
+                    "postalCode": "2064"
+                },
+                {
+                    "name": "Jourjou",
+                    "postalCode": "2064"
+                },
+                {
+                    "name": "Khelidia",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "Kouenjel",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "Mirghna",
+                    "postalCode": "2064"
+                },
+                {
+                    "name": "Mornag",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Ouzra",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Sidi Messaoud",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "Sidi Othman Landari",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "Sidi Saad",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Sidi Salem El Garci",
+                    "postalCode": "2064"
+                },
+                {
+                    "name": "Sondage",
+                    "postalCode": "2054"
+                },
+                {
+                    "name": "Tarhouna 1",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Tarhouna 2",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "Zaouit Mornag",
+                    "postalCode": "2090"
+                },
+                {
+                    "name": "El Yasminette",
+                    "postalCode": "2096"
+                },
+                {
+                    "name": "Nouvelle Medina",
+                    "postalCode": "2063"
+                },
+                {
+                    "name": "Chouchet Rades",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Cité 20 Mars",
+                    "postalCode": "1125"
+                },
+                {
+                    "name": "Cité El Ezz",
+                    "postalCode": "2098"
+                },
+                {
+                    "name": "Cité Ennour",
+                    "postalCode": "1125"
+                },
+                {
+                    "name": "Cité Mohamed Ali",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Cité Nouvelle",
+                    "postalCode": "2098"
+                },
+                {
+                    "name": "Cité Rades 2",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Cité Sfaxi",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Cité Sncft",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Cité Snit",
+                    "postalCode": "2018"
+                },
+                {
+                    "name": "Cité Taieb Mhiri 1",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Cité Taieb Mhiri 2",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Cité Taieb Mhiri 3",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Decouppage Haj Aleya",
+                    "postalCode": "2018"
+                },
+                {
+                    "name": "Rades",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Rades 7 Novembre",
+                    "postalCode": "2018"
+                },
+                {
+                    "name": "Rades El Mrah",
+                    "postalCode": "2098"
+                },
+                {
+                    "name": "Rades Foret",
+                    "postalCode": "2098"
+                },
+                {
+                    "name": "Rades Medina",
+                    "postalCode": "2098"
+                },
+                {
+                    "name": "Rades Meliane",
+                    "postalCode": "2098"
+                },
+                {
+                    "name": "Rades Mongil",
+                    "postalCode": "2098"
+                },
+                {
+                    "name": "Rades Plage",
+                    "postalCode": "2040"
+                },
+                {
+                    "name": "Rades Saline",
+                    "postalCode": "1125"
+                },
+                {
+                    "name": "Village Mediterranee",
+                    "postalCode": "2018"
+                },
+                {
+                    "name": "Ville Sportive",
+                    "postalCode": "2018"
+                },
+                {
+                    "name": "Zone Industrielle 1",
+                    "postalCode": "1125"
+                },
+                {
+                    "name": "Zone Industrielle 2",
+                    "postalCode": "1125"
+                },
+                {
+                    "name": "Zone Petroliere",
+                    "postalCode": "1125"
+                }
+            ]
+        },
+        {
+            "name": "Bizerte",
+            "isoCode": "BI",
+            "cities": [
+                {
+                    "name": "Bizerte",
+                    "postalCode": "7000"
+                },
+                {
+                    "name": "Bizerte Bab Mateur",
+                    "postalCode": "7061"
+                },
+                {
+                    "name": "Bizerte Bougatfa",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité Afh",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité Ain Mariem",
+                    "postalCode": "7000"
+                },
+                {
+                    "name": "Cité Ain Meriem",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité Belvedere",
+                    "postalCode": "7000"
+                },
+                {
+                    "name": "Cité Bougatfa",
+                    "postalCode": "7001"
+                },
+                {
+                    "name": "Cité Bougatfa 2",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité Chourouk Sidi Salem",
+                    "postalCode": "7003"
+                },
+                {
+                    "name": "Cité de la Municipalite",
+                    "postalCode": "7001"
+                },
+                {
+                    "name": "Cité de la Police",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité de la Sante",
+                    "postalCode": "7003"
+                },
+                {
+                    "name": "Cité de Paris",
+                    "postalCode": "7003"
+                },
+                {
+                    "name": "Cité El Hana",
+                    "postalCode": "7003"
+                },
+                {
+                    "name": "Cité El Korniche 1",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité El Korniche 2",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité El Korniche 3",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité El Morjene 3",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité El Morjene 4",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité Ennacim",
+                    "postalCode": "7003"
+                },
+                {
+                    "name": "Cité Erraouabi",
+                    "postalCode": "7003"
+                },
+                {
+                    "name": "Cité Erriadh",
+                    "postalCode": "7001"
+                },
+                {
+                    "name": "Cité Hassen Nouri",
+                    "postalCode": "7001"
+                },
+                {
+                    "name": "Cité Militaire",
+                    "postalCode": "7002"
+                },
+                {
+                    "name": "Cité Nouvelle Plage",
+                    "postalCode": "7001"
+                },
+                {
+                    "name": "Cité Rafaha 1",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Cité Rafaha 2",
+                    "postalCode": "7053"
+                },
+                {
+                    "name": "Ennadhour",
+                    "postalCode": "7029"
+                },
+                {
+                    "name": "Fejjet Errih",
+                    "postalCode": "7029"
+                },
+                {
+                    "name": "Ksar Lahmar",
+                    "postalCode": "7029"
+                },
+                {
+                    "name": "Ksiba",
+                    "postalCode": "7001"
+                },
+                {
+                    "name": "Marnissa",
+                    "postalCode": "7029"
+                },
+                {
+                    "name": "Oued El Marj",
+                    "postalCode": "7003"
+                },
+                {
+                    "name": "Sidi Ahmed",
+                    "postalCode": "7029"
+                },
+                {
+                    "name": "Ain El Berda",
+                    "postalCode": "7029"
+                },
+                {
+                    "name": "Ain Jenane",
+                    "postalCode": "7029"
+                },
+                {
+                    "name": "Bizerte Hached",
+                    "postalCode": "7071"
+                },
+                {
+                    "name": "Borj Challouf",
+                    "postalCode": "7094"
+                },
+                {
+                    "name": "Bou Zaria",
+                    "postalCode": "7064"
+                },
+                {
+                    "name": "Cité El Mourouj",
+                    "postalCode": "7011"
+                },
+                {
+                    "name": "Cité Militaire",
+                    "postalCode": "7011"
+                },
+                {
+                    "name": "El Mrazig",
+                    "postalCode": "7029"
+                },
+                {
+                    "name": "La Pecherie",
+                    "postalCode": "7011"
+                },
+                {
+                    "name": "Louata",
+                    "postalCode": "7041"
+                },
+                {
+                    "name": "Methline",
+                    "postalCode": "7027"
+                },
+                {
+                    "name": "Teskraya",
+                    "postalCode": "7036"
+                },
+                {
+                    "name": "Cité Independance",
+                    "postalCode": "7016"
+                },
+                {
+                    "name": "El Alia",
+                    "postalCode": "7016"
+                },
+                {
+                    "name": "El Hariza",
+                    "postalCode": "7016"
+                },
+                {
+                    "name": "Ezzitoune",
+                    "postalCode": "7081"
+                },
+                {
+                    "name": "Impasse Ezzouhour",
+                    "postalCode": "7016"
+                },
+                {
+                    "name": "Khetmine",
+                    "postalCode": "7081"
+                },
+                {
+                    "name": "Sidi Ali Chebab",
+                    "postalCode": "7093"
+                },
+                {
+                    "name": "Bajou",
+                    "postalCode": "7033"
+                },
+                {
+                    "name": "Cité 7 Novembre",
+                    "postalCode": "7014"
+                },
+                {
+                    "name": "Cité 9 Avril",
+                    "postalCode": "7014"
+                },
+                {
+                    "name": "Cité El Amen",
+                    "postalCode": "7014"
+                },
+                {
+                    "name": "Cité El Mourouj",
+                    "postalCode": "7014"
+                },
+                {
+                    "name": "Cité Khaled Ibn El Walid",
+                    "postalCode": "7014"
+                },
+                {
+                    "name": "Cité Nouvelle",
+                    "postalCode": "7014"
+                },
+                {
+                    "name": "El Aousja",
+                    "postalCode": "7014"
+                },
+                {
+                    "name": "Ghar El Melh",
+                    "postalCode": "7033"
+                },
+                {
+                    "name": "Touibia",
+                    "postalCode": "7024"
+                },
+                {
+                    "name": "Zouaouine",
+                    "postalCode": "7024"
+                },
+                {
+                    "name": "Ain Rekoub",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Beni Brahim",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Bou Jrir",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Cité Afh",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Cité Borj Deheb",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Cité Rurale",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Cité Snit",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "El Atiba",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "El Garia",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "El Jafna",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Ghezala",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Henchir Ettouila",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Laouilia",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Oued Ezzitoun",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Ouled El May",
+                    "postalCode": "7040"
+                },
+                {
+                    "name": "Cité Ben Arous",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Bouchoucha 2",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Calyptus",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité du Soleil",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Ennacim",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Erraja 1",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Erraja 2",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Erraja 3",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Errimel",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Errsass",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Escaliers",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Essadaka",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Gabsi",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Hamdoun",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Jaziri",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Lune",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Mohamed Chehimi",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Cité Nouvelle",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Jarzouna",
+                    "postalCode": "7021"
+                },
+                {
+                    "name": "Bazina",
+                    "postalCode": "7012"
+                },
+                {
+                    "name": "Joumine",
+                    "postalCode": "7020"
+                },
+                {
+                    "name": "Sayah",
+                    "postalCode": "7020"
+                },
+                {
+                    "name": "Smadah",
+                    "postalCode": "7020"
+                },
+                {
+                    "name": "Borj El Adouani",
+                    "postalCode": "7022"
+                },
+                {
+                    "name": "Cité de la Fraternite",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité de la Gare",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité El Manar",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité El Omrane 1",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité El Omrane 2",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité El Omrane 3",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité El Omrane 4",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Ennahdha",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Ennasr",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Erraja 1",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Erraja 2",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Erraja 3",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Essadaka",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Ezzouhour",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Hached",
+                    "postalCode": "7022"
+                },
+                {
+                    "name": "Cité Khemouma",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Montazah",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Snit",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Zarrouk",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "El Aouana",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Ettaref",
+                    "postalCode": "7022"
+                },
+                {
+                    "name": "Henchir El Berna",
+                    "postalCode": "7050"
+                },
+                {
+                    "name": "Henchir El Kahla",
+                    "postalCode": "7022"
+                },
+                {
+                    "name": "Jabouz",
+                    "postalCode": "7022"
+                },
+                {
+                    "name": "Jebel Ichkeul",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Mateur",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Mateur Hached",
+                    "postalCode": "7022"
+                },
+                {
+                    "name": "Oum Jenna",
+                    "postalCode": "7022"
+                },
+                {
+                    "name": "Sidi Mansour",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Sidi Nsir",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Sidi Salem",
+                    "postalCode": "7022"
+                },
+                {
+                    "name": "Souidia",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Tehent",
+                    "postalCode": "7030"
+                },
+                {
+                    "name": "Cité Ben Aleya",
+                    "postalCode": "7050"
+                },
+                {
+                    "name": "Cité de la Douane",
+                    "postalCode": "7050"
+                },
+                {
+                    "name": "Cité la Ruche",
+                    "postalCode": "7050"
+                },
+                {
+                    "name": "Cité Nouvelle",
+                    "postalCode": "7050"
+                },
+                {
+                    "name": "Cité Sidi Yahya",
+                    "postalCode": "7050"
+                },
+                {
+                    "name": "Jouaouda",
+                    "postalCode": "7042"
+                },
+                {
+                    "name": "Menzel Bourguiba",
+                    "postalCode": "7050"
+                },
+                {
+                    "name": "Menzel Bourguiba Ennajah",
+                    "postalCode": "7072"
+                },
+                {
+                    "name": "Cité 7 Novembre",
+                    "postalCode": "7026"
+                },
+                {
+                    "name": "Cité Bir Hmem",
+                    "postalCode": "7035"
+                },
+                {
+                    "name": "Cité Bir Remel",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité Chamelle",
+                    "postalCode": "7035"
+                },
+                {
+                    "name": "Cité des Oranges",
+                    "postalCode": "7026"
+                },
+                {
+                    "name": "Cité Driss Ben Frej",
+                    "postalCode": "7035"
+                },
+                {
+                    "name": "Cité El Ahlem",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité El Baali",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité El Batan",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité El Habib (el Azib)",
+                    "postalCode": "7026"
+                },
+                {
+                    "name": "Cité El Habib (menzel Jemil)",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité El Haddadia",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité El Hbess",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité El Makarem",
+                    "postalCode": "7035"
+                },
+                {
+                    "name": "Cité Ennouzha",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité Ettaffala",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité Ettahrir",
+                    "postalCode": "7035"
+                },
+                {
+                    "name": "Cité Ettakaddoum",
+                    "postalCode": "7035"
+                },
+                {
+                    "name": "Cité Habib Arifa",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité Independance",
+                    "postalCode": "7035"
+                },
+                {
+                    "name": "Cité Nouvelle",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Cité Rurale 1",
+                    "postalCode": "7026"
+                },
+                {
+                    "name": "Cité Rurale 2",
+                    "postalCode": "7026"
+                },
+                {
+                    "name": "El Ain El Kebira",
+                    "postalCode": "7035"
+                },
+                {
+                    "name": "El Azib",
+                    "postalCode": "7026"
+                },
+                {
+                    "name": "Henchir El Moukaouimine",
+                    "postalCode": "7026"
+                },
+                {
+                    "name": "Maghraoua",
+                    "postalCode": "7026"
+                },
+                {
+                    "name": "Menzel Abderrahman",
+                    "postalCode": "7035"
+                },
+                {
+                    "name": "Menzel Jemil",
+                    "postalCode": "7080"
+                },
+                {
+                    "name": "Beni Atta",
+                    "postalCode": "7075"
+                },
+                {
+                    "name": "Cap Zbib",
+                    "postalCode": "7034"
+                },
+                {
+                    "name": "Cité Ain Charchara",
+                    "postalCode": "7070"
+                },
+                {
+                    "name": "Cité Bir Ezzaarour",
+                    "postalCode": "7070"
+                },
+                {
+                    "name": "Cité El Amel",
+                    "postalCode": "7015"
+                },
+                {
+                    "name": "Cité El Benzarti",
+                    "postalCode": "7070"
+                },
+                {
+                    "name": "Cité Ezzayatine",
+                    "postalCode": "7070"
+                },
+                {
+                    "name": "Cité Kaa El Ballout",
+                    "postalCode": "7070"
+                },
+                {
+                    "name": "Cité Taieb Mhiri",
+                    "postalCode": "7015"
+                },
+                {
+                    "name": "El Garia Ras Jebal",
+                    "postalCode": "7098"
+                },
+                {
+                    "name": "Metline",
+                    "postalCode": "7034"
+                },
+                {
+                    "name": "Rafraf",
+                    "postalCode": "7015"
+                },
+                {
+                    "name": "Rafraf Plage",
+                    "postalCode": "7045"
+                },
+                {
+                    "name": "Ras Jebel",
+                    "postalCode": "7070"
+                },
+                {
+                    "name": "Sounine",
+                    "postalCode": "7025"
+                },
+                {
+                    "name": "Cité Air Nouvelle",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Aouassia",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Commerciale",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité des Mines",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité des Ouvriers",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité du Projet",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité El Bassatine",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité El Ghabette",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité El Mouasker",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Essaada",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Ezzouhour",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Ezzouhour 2",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Ibn Khaldoun",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Khaled Ibn El Walid",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Mougaad",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Sidi Mansour",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Cité Taieb Mhiri",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Dhouahria",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "El Abebsa",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "El Guetma",
+                    "postalCode": "7097"
+                },
+                {
+                    "name": "El Hania",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "El Mrifeg",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Essmayria",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Haddada",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Sejnane",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Sidi Machreg",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Tamra",
+                    "postalCode": "7031"
+                },
+                {
+                    "name": "Touajnia",
+                    "postalCode": "7010"
+                },
+                {
+                    "name": "Ain Faroua",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Cité de le Liberte",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Cité Douar Chatt",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Cité El Fateh",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Cité El Fouladh",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Cité El Khadhraoui",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Cité Ikbal",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Cité Sidi Rezig",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Cité Sprols",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Cité Zghaba",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Kharrata",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Tinja",
+                    "postalCode": "7032"
+                },
+                {
+                    "name": "Ain Ghelal",
+                    "postalCode": "7013"
+                },
+                {
+                    "name": "Ain Smara",
+                    "postalCode": "7013"
+                },
+                {
+                    "name": "Bach Hamba",
+                    "postalCode": "7043"
+                },
+                {
+                    "name": "Cité Bourguiba",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Cité Chateau D Eau",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Cité de la Laiterie",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Cité de la Poste",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Cité Ejjamaa",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Cité Ezzayatine",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Cité Houmet Souk",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Degma",
+                    "postalCode": "7023"
+                },
+                {
+                    "name": "El Besbassia",
+                    "postalCode": "7013"
+                },
+                {
+                    "name": "El Bhalil Chargui",
+                    "postalCode": "7013"
+                },
+                {
+                    "name": "El Brij",
+                    "postalCode": "7013"
+                },
+                {
+                    "name": "El Fejja",
+                    "postalCode": "7013"
+                },
+                {
+                    "name": "El Mabtouh",
+                    "postalCode": "7023"
+                },
+                {
+                    "name": "Essakak",
+                    "postalCode": "7023"
+                },
+                {
+                    "name": "Ghornata",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Lahouidh",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Sidi Othman",
+                    "postalCode": "7023"
+                },
+                {
+                    "name": "Utique",
+                    "postalCode": "7060"
+                },
+                {
+                    "name": "Utique Nouvelle",
+                    "postalCode": "7063"
+                }
+            ]
+        },
+        {
+            "name": "Gabes",
+            "isoCode": "GA",
+            "cities": [
+                {
+                    "name": "Bechima",
+                    "postalCode": "6092"
+                },
+                {
+                    "name": "Beni Ghilouf",
+                    "postalCode": "6062"
+                },
+                {
+                    "name": "Bou Attouche",
+                    "postalCode": "6027"
+                },
+                {
+                    "name": "Chenchou",
+                    "postalCode": "6095"
+                },
+                {
+                    "name": "El Hamma",
+                    "postalCode": "6020"
+                },
+                {
+                    "name": "El Hamma Sud",
+                    "postalCode": "6060"
+                },
+                {
+                    "name": "Sombat",
+                    "postalCode": "6013"
+                },
+                {
+                    "name": "Cité El Fankar",
+                    "postalCode": "6010"
+                },
+                {
+                    "name": "Cité El Maya",
+                    "postalCode": "6010"
+                },
+                {
+                    "name": "Cité El Mrachda",
+                    "postalCode": "6010"
+                },
+                {
+                    "name": "Cité Ennacim",
+                    "postalCode": "6010"
+                },
+                {
+                    "name": "Cité Essalem",
+                    "postalCode": "6052"
+                },
+                {
+                    "name": "Cité Ezzouhour",
+                    "postalCode": "6010"
+                },
+                {
+                    "name": "Cité Kheireddine",
+                    "postalCode": "6052"
+                },
+                {
+                    "name": "Cité Nehila Farhat",
+                    "postalCode": "6010"
+                },
+                {
+                    "name": "El Akarit",
+                    "postalCode": "6042"
+                },
+                {
+                    "name": "El Aouinette",
+                    "postalCode": "6010"
+                },
+                {
+                    "name": "El Hicha",
+                    "postalCode": "6042"
+                },
+                {
+                    "name": "El Imarat",
+                    "postalCode": "6010"
+                },
+                {
+                    "name": "El Mida",
+                    "postalCode": "6052"
+                },
+                {
+                    "name": "Metouia El Maya",
+                    "postalCode": "6089"
+                },
+                {
+                    "name": "Ouali",
+                    "postalCode": "6052"
+                },
+                {
+                    "name": "Oudhref",
+                    "postalCode": "6052"
+                },
+                {
+                    "name": "Oued El Ghram",
+                    "postalCode": "6010"
+                },
+                {
+                    "name": "Chatt Essalem",
+                    "postalCode": "6061"
+                },
+                {
+                    "name": "Cité 26-26",
+                    "postalCode": "6061"
+                },
+                {
+                    "name": "Cité Ben Kilani",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Cité Commerciale",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Cité des Oasis",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Cité El Bled",
+                    "postalCode": "6061"
+                },
+                {
+                    "name": "Cité El Ftarcha",
+                    "postalCode": "6061"
+                },
+                {
+                    "name": "Cité El Hana",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Cité El Khalij",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Cité El Korniche",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Cité El Mansoura",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Cité El Ouns",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Cité Mohamed Ali",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "El Mouazir",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Gabes",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Gabes El Hidaya",
+                    "postalCode": "6099"
+                },
+                {
+                    "name": "Gabes Hached",
+                    "postalCode": "6001"
+                },
+                {
+                    "name": "Gabes Port",
+                    "postalCode": "6071"
+                },
+                {
+                    "name": "Gabes Republique",
+                    "postalCode": "6040"
+                },
+                {
+                    "name": "Limaoua",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Oued Khelifa Mahmoud",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Remathi",
+                    "postalCode": "6000"
+                },
+                {
+                    "name": "Barguia",
+                    "postalCode": "6041"
+                },
+                {
+                    "name": "Bou Chemma",
+                    "postalCode": "6031"
+                },
+                {
+                    "name": "Chenini Gabes",
+                    "postalCode": "6041"
+                },
+                {
+                    "name": "Cité 2 Mars",
+                    "postalCode": "6031"
+                },
+                {
+                    "name": "Cité Ettahrir",
+                    "postalCode": "6031"
+                },
+                {
+                    "name": "Maita",
+                    "postalCode": "6041"
+                },
+                {
+                    "name": "Nahal",
+                    "postalCode": "6051"
+                },
+                {
+                    "name": "Cité 7 Novembre",
+                    "postalCode": "6032"
+                },
+                {
+                    "name": "Cité Afh",
+                    "postalCode": "6012"
+                },
+                {
+                    "name": "Cité Ancien Militaire",
+                    "postalCode": "6012"
+                },
+                {
+                    "name": "Cité Azaiez",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité Bedis",
+                    "postalCode": "6032"
+                },
+                {
+                    "name": "Cité Bidani",
+                    "postalCode": "6012"
+                },
+                {
+                    "name": "Cité de la Famille",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité des Enseignants",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité des Infirmiers",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité El Ahrach",
+                    "postalCode": "6072"
+                },
+                {
+                    "name": "Cité El Amel",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité El Amel 1",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité El Amel 2",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité El Amel 3",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité El Amel 4",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité El Amel 5",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité El Amel 6",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité El Guefercha",
+                    "postalCode": "6072"
+                },
+                {
+                    "name": "Cité El Hana Boudoura",
+                    "postalCode": "6012"
+                },
+                {
+                    "name": "Cité El Izdihar",
+                    "postalCode": "6011"
+                },
+                {
+                    "name": "Cité El Maarifa",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité El Medina",
+                    "postalCode": "6011"
+                },
+                {
+                    "name": "Cité El Misk",
+                    "postalCode": "6012"
+                },
+                {
+                    "name": "Cité El Mzahid",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité El Wafa",
+                    "postalCode": "6032"
+                },
+                {
+                    "name": "Cité El Yasmine",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité Ennakhil",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité Ennour",
+                    "postalCode": "6033"
+                },
+                {
+                    "name": "Cité Ennozh",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité Esseptia",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité Ezzouhour 1",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité Ezzouhour 2",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité Hached",
+                    "postalCode": "6032"
+                },
+                {
+                    "name": "Cité Hached 1",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité Hached 2",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité Ibn Khaldoun",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Cité Medenine",
+                    "postalCode": "6011"
+                },
+                {
+                    "name": "Cité Militaire Dimassi",
+                    "postalCode": "6012"
+                },
+                {
+                    "name": "Cité Rhouma",
+                    "postalCode": "6012"
+                },
+                {
+                    "name": "Cité Snit",
+                    "postalCode": "6072"
+                },
+                {
+                    "name": "Cité Sprols",
+                    "postalCode": "6072"
+                },
+                {
+                    "name": "El Mdou",
+                    "postalCode": "6022"
+                },
+                {
+                    "name": "Gabes El Menara",
+                    "postalCode": "6011"
+                },
+                {
+                    "name": "Mtorrech",
+                    "postalCode": "6014"
+                },
+                {
+                    "name": "Sidi Boulbaba",
+                    "postalCode": "6012"
+                },
+                {
+                    "name": "Teboulbou",
+                    "postalCode": "6032"
+                },
+                {
+                    "name": "Zrig",
+                    "postalCode": "6072"
+                },
+                {
+                    "name": "Cité El Izdihar",
+                    "postalCode": "6021"
+                },
+                {
+                    "name": "Cité Errimel",
+                    "postalCode": "6021"
+                },
+                {
+                    "name": "Cité Ettahrir",
+                    "postalCode": "6021"
+                },
+                {
+                    "name": "Ghannouche",
+                    "postalCode": "6021"
+                },
+                {
+                    "name": "Ain Tounine",
+                    "postalCode": "6035"
+                },
+                {
+                    "name": "Ancien Bled",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Arram",
+                    "postalCode": "6016"
+                },
+                {
+                    "name": "Ayoune Ezzerkine",
+                    "postalCode": "6015"
+                },
+                {
+                    "name": "Azeiza",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Betahra",
+                    "postalCode": "6081"
+                },
+                {
+                    "name": "Betahra Sud",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Braouka",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité Commerciale",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité Debaba",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Amel",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Argoub",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Charfia",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Ghardek1",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Ghardek2",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Ghardek3",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Hafaya",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Kribia",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Masla",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité El Melayha",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité Ennouzha",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité Garde Nationale",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Cité Populaire",
+                    "postalCode": "6036"
+                },
+                {
+                    "name": "Cité Snit",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Dekhilet Toujane",
+                    "postalCode": "6055"
+                },
+                {
+                    "name": "El Akhmes",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "El Alaya",
+                    "postalCode": "6023"
+                },
+                {
+                    "name": "El Frada",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "El Kaouakba",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Ezzerkine",
+                    "postalCode": "6056"
+                },
+                {
+                    "name": "Graa Beiri",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Kettana",
+                    "postalCode": "6036"
+                },
+                {
+                    "name": "Mareth",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Mazraa Ben Slama",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Mejni",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Oued El Ghirane",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Oued El Hajel",
+                    "postalCode": "6036"
+                },
+                {
+                    "name": "Ourifen",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Sidi Slam",
+                    "postalCode": "6036"
+                },
+                {
+                    "name": "Sidi Touati",
+                    "postalCode": "6046"
+                },
+                {
+                    "name": "Toujane",
+                    "postalCode": "6045"
+                },
+                {
+                    "name": "Zarat",
+                    "postalCode": "6026"
+                },
+                {
+                    "name": "Zmorten",
+                    "postalCode": "6080"
+                },
+                {
+                    "name": "Zrig El Barrania",
+                    "postalCode": "6036"
+                },
+                {
+                    "name": "Zrig El Ghandri",
+                    "postalCode": "6036"
+                },
+                {
+                    "name": "Bou Dhafer",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Chouabet Esmaala",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Cité El Azezna",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Cité Hafi Rassa",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Cité Hedi Chaker",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Cité Independance",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Cité Mohamed Ali",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Cité Ras El Oued",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Haddej",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Ksar Beni Aissa",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Matmata",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Tamezrat",
+                    "postalCode": "6054"
+                },
+                {
+                    "name": "Taoujout",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Techine",
+                    "postalCode": "6034"
+                },
+                {
+                    "name": "Tijma",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "Zriba",
+                    "postalCode": "6070"
+                },
+                {
+                    "name": "El Fejij",
+                    "postalCode": "6030"
+                },
+                {
+                    "name": "El Mida",
+                    "postalCode": "6030"
+                },
+                {
+                    "name": "Hejri",
+                    "postalCode": "6030"
+                },
+                {
+                    "name": "Mehamla",
+                    "postalCode": "6030"
+                },
+                {
+                    "name": "Menzel Habib",
+                    "postalCode": "6030"
+                },
+                {
+                    "name": "Ouali",
+                    "postalCode": "6030"
+                },
+                {
+                    "name": "Oued Ezzitoun",
+                    "postalCode": "6030"
+                },
+                {
+                    "name": "Ouled Dhaou",
+                    "postalCode": "6030"
+                },
+                {
+                    "name": "Zograta",
+                    "postalCode": "6030"
+                },
+                {
+                    "name": "Ancienne Zraoua",
+                    "postalCode": "6024"
+                },
+                {
+                    "name": "Beni Zelten",
+                    "postalCode": "6025"
+                },
+                {
+                    "name": "Bou Sbah",
+                    "postalCode": "6044"
+                },
+                {
+                    "name": "Chobet Chemlali",
+                    "postalCode": "6044"
+                },
+                {
+                    "name": "Cité Edechaicha",
+                    "postalCode": "6044"
+                },
+                {
+                    "name": "Cité El Izdihar",
+                    "postalCode": "6044"
+                },
+                {
+                    "name": "Cité Guedouala",
+                    "postalCode": "6044"
+                },
+                {
+                    "name": "Cité Ouled Slama",
+                    "postalCode": "6044"
+                },
+                {
+                    "name": "Dhokara",
+                    "postalCode": "6044"
+                },
+                {
+                    "name": "Douiouira",
+                    "postalCode": "6044"
+                },
+                {
+                    "name": "El Amra",
+                    "postalCode": "6025"
+                },
+                {
+                    "name": "Ezzahra",
+                    "postalCode": "6025"
+                },
+                {
+                    "name": "Laffam",
+                    "postalCode": "6043"
+                },
+                {
+                    "name": "Mzaten",
+                    "postalCode": "6025"
+                },
+                {
+                    "name": "Nouvelle Matmata",
+                    "postalCode": "6044"
+                },
+                {
+                    "name": "Nouvelle Zraoua",
+                    "postalCode": "6024"
+                },
+                {
+                    "name": "Oued El Harika",
+                    "postalCode": "6043"
+                },
+                {
+                    "name": "Sidi Gnaou",
+                    "postalCode": "6024"
+                },
+                {
+                    "name": "Zaten Beni Zelten",
+                    "postalCode": "6043"
+                },
+                {
+                    "name": "Zaten Haddej",
+                    "postalCode": "6043"
+                }
+            ]
+        }
+    ]
+}

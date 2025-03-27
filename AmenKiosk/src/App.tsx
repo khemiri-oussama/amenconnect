@@ -41,11 +41,11 @@ import { ThemeProvider } from "./context/ThemeContext"
 
 // Lazy load components for better performance
 const Home = lazy(() => import("./pages/Home"))
-const ModeInvite = lazy(() => import("./pages/mode-invite"))
-const Login = lazy(() => import("./pages/login"))
-const AccountCreation = lazy(() => import("./pages/account-creation"))
-const AdminPanel = lazy(() => import("./pages/admin/admin-panel"))
-
+const ModeInvite = lazy(() => import("./pages/modeinvite/mode-invite"))
+const Login = lazy(() => import("./pages/login/login"))
+const AccountCreation = lazy(() => import("./pages/AccountCreationForm"))
+const ForgotPassword = lazy(() => import("./pages/login/ForgotPassword/ForgotPassword"))
+const Otp = lazy(() => import("./pages/otp/otp"))
 // Loading component
 const LoadingFallback: React.FC = () => (
   <div className="kiosk-loading-container">
@@ -66,44 +66,6 @@ const App: React.FC = () => {
   const [isAppReady, setIsAppReady] = useState(false)
   const [hasError, setHasError] = useState(false)
 
-  useEffect(() => {
-    try {
-      // Simulate splash screen timeout
-      const timer = setTimeout(() => {
-        setIsAppReady(true)
-
-        // Initialize button sounds after app is loaded
-        try {
-          preloadSounds()
-          enableButtonSounds()
-        } catch (error) {
-          console.error("Error initializing sounds:", error)
-        }
-      }, 1000)
-
-      return () => clearTimeout(timer)
-    } catch (error) {
-      console.error("Error in App initialization:", error)
-      setHasError(true)
-    }
-  }, [])
-
-  if (hasError) {
-    return (
-      <div className="kiosk-error-container">
-        <div className="kiosk-error-content">
-          <h2>Une erreur est survenue</h2>
-          <p>Impossible de charger l'application. Veuillez rafraîchir la page.</p>
-          <button onClick={() => window.location.reload()}>Rafraîchir</button>
-        </div>
-      </div>
-    )
-  }
-
-  if (!isAppReady) {
-    return <LoadingFallback />
-  }
-
   return (
     <ThemeProvider>
       <OrientationProvider>
@@ -114,17 +76,22 @@ const App: React.FC = () => {
                 <Route exact path="/home">
                   <Home />
                 </Route>
-                <Route exact path="/mode-invite">
+                <Route exact path="/modeinvite">
                   <ModeInvite />
                 </Route>
                 <Route exact path="/login">
                   <Login />
                 </Route>
                 <Route exact path="/account-creation">
-                  <AccountCreation />
+                  <AccountCreation onBack={function (): void {
+                    throw new Error("Function not implemented.")
+                  } } />
                 </Route>
-                <Route exact path="/admin">
-                  <AdminPanel />
+                <Route exact path="/otp">
+                  <Otp />
+                </Route>
+                <Route exact path="/forgot-password">
+                <ForgotPassword onBack={() => window.history.back()} />
                 </Route>
                 <Route exact path="/">
                   <Redirect to="/home" />
