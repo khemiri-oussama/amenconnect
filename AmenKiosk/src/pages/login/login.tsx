@@ -171,6 +171,10 @@ const LoginKiosk: React.FC = () => {
     <IonPage>
       <IonContent fullscreen>
         <div className="loginkiosk-container">
+          <div className="loginkiosk-bg-circle-1"></div>
+          <div className="loginkiosk-bg-circle-2"></div>
+          <div className="loginkiosk-bg-blob"></div>
+
           <div className="loginkiosk-content">
             <div className="loginkiosk-back-button" onClick={handleBack}>
               <IonIcon icon={arrowBack} />

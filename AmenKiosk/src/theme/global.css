@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
 
 /* Import variables */
 @import "./variables.css";
@@ -55,7 +55,7 @@ body {
 .kiosk-btn {
   background: linear-gradient(to right, var(--kiosk-primary), var(--kiosk-primary-dark));
   border: none;
-  border-radius: 2rem;
+  border-radius: var(--kiosk-radius-full);
   color: white;
   cursor: pointer;
   font-family: "Outfit", sans-serif;
@@ -63,29 +63,67 @@ body {
   font-weight: 600;
   padding: 1rem 3rem;
   margin-bottom: 2.5rem;
-  box-shadow: 0 4px 10px rgba(18, 22, 96, 0.3);
+  box-shadow: var(--kiosk-shadow-md);
   text-transform: uppercase;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--kiosk-transition-fast), box-shadow var(--kiosk-transition-fast);
   display: inline-block;
   text-align: center;
   min-width: 250px;
+  position: relative;
+  overflow: hidden;
+}
+
+.kiosk-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
 }
 
 .kiosk-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(18, 22, 96, 0.4);
+  box-shadow: var(--kiosk-shadow-lg);
+}
+
+.kiosk-btn:hover::after {
+  transform: translateX(100%);
 }
 
 .kiosk-btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(18, 22, 96, 0.3);
+  box-shadow: var(--kiosk-shadow-sm);
 }
 
 .kiosk-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 4px 10px rgba(18, 22, 96, 0.2);
+  box-shadow: var(--kiosk-shadow-sm);
+}
+
+.kiosk-btn-secondary {
+  background: var(--kiosk-secondary);
+  color: var(--kiosk-primary);
+}
+
+.kiosk-btn-accent {
+  background: var(--kiosk-accent);
+  color: var(--kiosk-primary);
+}
+
+.kiosk-btn-outline {
+  background: transparent;
+  border: 2px solid var(--kiosk-primary);
+  color: var(--kiosk-primary);
+}
+
+.kiosk-btn-outline:hover {
+  background: rgba(18, 22, 96, 0.05);
 }
 
 /* Animations */
@@ -111,8 +149,39 @@ body {
   }
 }
 
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
 }
 
 .animate-staggered {
@@ -186,10 +255,10 @@ body {
   width: 90%;
   max-width: 1200px;
   max-height: 90vh;
-  border-radius: 16px;
+  border-radius: var(--kiosk-radius-lg);
   overflow: hidden;
   animation: scaleIn 0.3s ease-out;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--kiosk-shadow-lg);
   background-color: var(--kiosk-background);
 }
 
@@ -220,13 +289,13 @@ body {
 
 .kiosk-input {
   width: 100%;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   font-size: 1.25rem;
   font-family: "Outfit", sans-serif;
   border: 2px solid var(--kiosk-border);
-  border-radius: 0.75rem;
+  border-radius: var(--kiosk-radius-md);
   background-color: var(--kiosk-surface);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color var(--kiosk-transition-normal), box-shadow var(--kiosk-transition-normal);
 }
 
 .kiosk-input:focus {
@@ -239,7 +308,7 @@ body {
 .success-message {
   background-color: rgba(71, 206, 101, 0.1);
   border: 1px solid var(--kiosk-secondary);
-  border-radius: 0.5rem;
+  border-radius: var(--kiosk-radius-sm);
   padding: 1rem;
   margin-bottom: 1rem;
   text-align: center;
@@ -249,11 +318,44 @@ body {
 .error-message {
   background-color: rgba(255, 73, 97, 0.1);
   border: 1px solid var(--kiosk-danger);
-  border-radius: 0.5rem;
+  border-radius: var(--kiosk-radius-sm);
   padding: 1rem;
   margin-bottom: 1rem;
   text-align: center;
   color: var(--kiosk-danger);
+}
+
+/* Common card styles */
+.kiosk-card {
+  background-color: var(--kiosk-surface);
+  border-radius: var(--kiosk-radius-lg);
+  box-shadow: var(--kiosk-shadow-md);
+  padding: 1.5rem;
+  transition: transform var(--kiosk-transition-normal), box-shadow var(--kiosk-transition-normal);
+}
+
+.kiosk-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--kiosk-shadow-lg);
+}
+
+/* Background decorations */
+.background-decoration {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.background-circle {
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--kiosk-primary-light), var(--kiosk-primary));
+  opacity: 0.05;
+}
+
+.background-blob {
+  background: var(--kiosk-secondary);
+  opacity: 0.1;
+  filter: blur(40px);
 }
 
 /* Responsive design for different orientations */
@@ -263,6 +365,19 @@ body {
     font-size: 1.5rem;
     padding: 0.875rem 2.5rem;
   }
+
+  .landscape-layout {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .landscape-content {
+    flex: 1;
+  }
+
+  .landscape-sidebar {
+    width: 30%;
+  }
 }
 
 /* Portrait mode (1080x1920) */
@@ -270,6 +385,11 @@ body {
   .kiosk-btn {
     font-size: 1.75rem;
     padding: 1rem 3rem;
+  }
+
+  .portrait-stack {
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -286,7 +406,7 @@ body {
 
   .kiosk-input {
     font-size: 1.1rem;
-    padding: 0.875rem;
+    padding: 0.875rem 1.25rem;
   }
 }
 
@@ -303,7 +423,7 @@ body {
 
   .kiosk-input {
     font-size: 1rem;
-    padding: 0.75rem;
+    padding: 0.75rem 1rem;
   }
 }
 

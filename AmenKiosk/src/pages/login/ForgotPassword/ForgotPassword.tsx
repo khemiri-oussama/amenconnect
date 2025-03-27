@@ -8,9 +8,10 @@ import axios from "axios"
 
 interface ForgotPasswordKioskProps {
   onBack: () => void
+  onSubmit?: (email: string) => Promise<void>
 }
 
-const ForgotPasswordKiosk: React.FC<ForgotPasswordKioskProps> = ({ onBack }) => {
+const ForgotPasswordKiosk: React.FC<ForgotPasswordKioskProps> = ({ onBack, onSubmit }) => {
   const [CIN, setCIN] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
@@ -20,7 +21,7 @@ const ForgotPasswordKiosk: React.FC<ForgotPasswordKioskProps> = ({ onBack }) => 
     e.preventDefault()
     setErrorMessage("")
     setSuccessMessage("")
-    
+
     if (!CIN.trim() || CIN.length !== 8 || !/^[0-9]+$/.test(CIN)) {
       setErrorMessage("Veuillez saisir un numéro CIN valide à 8 chiffres.")
       return
@@ -28,10 +29,15 @@ const ForgotPasswordKiosk: React.FC<ForgotPasswordKioskProps> = ({ onBack }) => 
 
     setIsLoading(true)
     try {
-      const response = await axios.post("/api/password/forgot-password", { cin: CIN })
-      setSuccessMessage(
-        response.data.message || "Un e-mail de réinitialisation a été envoyé à l'adresse associée à ce CIN."
-      )
+      if (onSubmit) {
+        await onSubmit(CIN)
+        setSuccessMessage("Un e-mail de réinitialisation a été envoyé à l'adresse associée à ce CIN.")
+      } else {
+        const response = await axios.post("/api/password/forgot-password", { cin: CIN })
+        setSuccessMessage(
+          response.data.message || "Un e-mail de réinitialisation a été envoyé à l'adresse associée à ce CIN.",
+        )
+      }
       setCIN("")
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || "Une erreur s'est produite. Veuillez réessayer.")
@@ -42,20 +48,30 @@ const ForgotPasswordKiosk: React.FC<ForgotPasswordKioskProps> = ({ onBack }) => 
 
   return (
     <div className="animate-fade-in">
+      <div className="loginkiosk-bg-circle-1"></div>
+      <div className="loginkiosk-bg-circle-2"></div>
+      <div className="loginkiosk-bg-blob"></div>
+
+      <div className="loginkiosk-logo">
+        <img src="favicon.png" alt="Amen Bank Logo" className="loginkiosk-img" />
+      </div>
+
       <h2 className="loginkiosk-subtitle">Réinitialisation du mot de passe</h2>
       <p className="loginkiosk-instruction">
         Entrez votre numéro CIN ci-dessous. Nous vous enverrons un lien pour réinitialiser votre mot de passe.
       </p>
 
       <form className="loginkiosk-form" onSubmit={handleSubmit}>
-        <div className="loginkiosk-form-group">
-          <label htmlFor="cin" className="loginkiosk-label">Numéro CIN</label>
+        <div className="kiosk-form-group">
+          <label htmlFor="cin" className="kiosk-label">
+            Numéro CIN
+          </label>
           <div className="loginkiosk-input-container">
             <IonIcon icon={idCardOutline} className="loginkiosk-input-icon" />
             <input
               type="text"
               id="cin"
-              className="loginkiosk-input"
+              className="kiosk-input"
               value={CIN}
               onChange={(e) => setCIN(e.target.value)}
               placeholder="Entrez votre numéro CIN"
@@ -66,15 +82,22 @@ const ForgotPasswordKiosk: React.FC<ForgotPasswordKioskProps> = ({ onBack }) => 
           </div>
         </div>
 
-        {errorMessage && <p className="error-message" style={{ color: "red" }}>{errorMessage}</p>}
-        {successMessage && <p className="success-message" style={{ color: "green" }}>{successMessage}</p>}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        {successMessage && <p className="success-message">{successMessage}</p>}
 
-        <button type="submit" className="loginkiosk-btn" disabled={isLoading}>
+        <button type="submit" className="kiosk-btn" disabled={isLoading}>
           {isLoading ? "Envoi en cours..." : "Envoyer le lien de réinitialisation"}
         </button>
       </form>
+
+      <p className="loginkiosk-message">
+        La réussite est à
+        <br />
+        portée de clic.
+      </p>
     </div>
   )
 }
 
 export default ForgotPasswordKiosk
+

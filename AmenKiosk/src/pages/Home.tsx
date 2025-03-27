@@ -37,16 +37,10 @@ const HomeKiosk: React.FC = () => {
   }, [active, resetTimer])
 
   const handleStartClick = () => {
-    const content = document.querySelector(".homekiosk-content")
-    if (content) {
-      content.classList.add("animate-transition")
-      content.classList.add("fade-out")
-    }
-
-    setTimeout(() => {
-      setShowOptions(true)
-      resetTimer()
-    }, 300)
+    // Instead of using CSS transitions that might be causing issues,
+    // let's directly update the state
+    setShowOptions(true)
+    resetTimer()
   }
 
   const handleGuestMode = () => {
@@ -55,8 +49,6 @@ const HomeKiosk: React.FC = () => {
   }
 
   const handleLogin = () => {
-    console.log("Se connecter selected")
-    // Navigate to the login route
     try {
       ionRouter.push("/login", "forward", "push")
     } catch (error) {
@@ -118,26 +110,20 @@ const HomeKiosk: React.FC = () => {
                   </p>
                 </>
               ) : (
-                <div className="homekiosk-options">
-                  <h2 className="homekiosk-question animate-fade-in">Choisissez votre mode d'accès</h2>
+                <div className="homekiosk-options-container">
+                  <h2 className="homekiosk-question">Choisissez votre mode d'accès</h2>
                   <div className="homekiosk-buttons">
-                    <button
-                      className="kiosk-btn homekiosk-btn-guest animate-staggered delay-1"
-                      onClick={handleGuestMode}
-                    >
+                    <button className="homekiosk-button homekiosk-button-guest" onClick={handleGuestMode}>
                       Mode invite
                     </button>
-                    <button className="kiosk-btn homekiosk-btn-login animate-staggered delay-2" onClick={handleLogin}>
+                    <button className="homekiosk-button homekiosk-button-login" onClick={handleLogin}>
                       Se connecter
                     </button>
                   </div>
-                  <button
-                    className="kiosk-btn homekiosk-btn-account animate-staggered delay-3"
-                    onClick={handleAccountCreation}
-                  >
+                  <button className="homekiosk-button homekiosk-button-account" onClick={handleAccountCreation}>
                     Devenir Client
                   </button>
-                  <p className="homekiosk-message animate-fade-in delay-4">
+                  <p className="homekiosk-message">
                     La réussite est à
                     <br />
                     portée de clic.
@@ -146,7 +132,7 @@ const HomeKiosk: React.FC = () => {
               )}
             </div>
 
-            {/* Account Form Modal Popup - Pass resetTimer to the AccountCreationForm */}
+            {/* Account Form Modal Popup */}
             {showAccountForm && (
               <div className="modal-overlay" onClick={handleBackToOptions}>
                 <div className="modal-container" onClick={(e) => e.stopPropagation()}>
@@ -156,7 +142,7 @@ const HomeKiosk: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="homekiosk-video-container" style={{ width: "100vw", height: "100vh" }}>
+          <div className="homekiosk-video-container">
             <video
               ref={videoRef}
               autoPlay
@@ -164,7 +150,6 @@ const HomeKiosk: React.FC = () => {
               playsInline
               controls={false}
               onError={(e) => console.error("Erreur lors du chargement de la vidéo :", e)}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             >
               <source src="pub.mp4" type="video/mp4" />
               Votre navigateur ne supporte pas la lecture de vidéos.

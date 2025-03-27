@@ -20,14 +20,9 @@
   align-items: center;
   padding: 2rem;
   text-align: center;
-  transition: opacity 0.3s ease, transform 0.3s ease;
   max-width: 1200px;
   width: 100%;
-}
-
-.homekiosk-content.fade-out {
-  opacity: 0;
-  transform: translateY(-20px);
+  z-index: 10;
 }
 
 .homekiosk-logo {
@@ -59,39 +54,67 @@
   margin-bottom: 2.5rem;
 }
 
+/* Options container */
+.homekiosk-options-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Buttons container */
 .homekiosk-buttons {
   display: flex;
   gap: 2rem;
   margin-bottom: 2.5rem;
-}
-
-.homekiosk-btn-guest {
-  background: var(--kiosk-accent);
-  color: var(--kiosk-primary);
-}
-
-.homekiosk-btn-login {
-  background: linear-gradient(to right, var(--kiosk-primary), var(--kiosk-primary-dark));
-}
-
-.homekiosk-btn-account {
-  background: linear-gradient(to right, #ffffff, #ffffff);
-  color: var(--kiosk-primary-light);
-  margin-bottom: 2.5rem;
-  border: 2px solid var(--kiosk-primary-light);
-  box-shadow: 0 4px 10px rgba(71, 206, 101, 0.3);
-}
-
-.homekiosk-btn-account:hover {
-  background: linear-gradient(to right, var(--kiosk-primary-light), var(--kiosk-secondary-dark));
-  color: rgb(255, 255, 255);
-}
-
-.homekiosk-options {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   width: 100%;
+  max-width: 800px;
+  justify-content: center;
+}
+
+/* Common button styles */
+.homekiosk-button {
+  border-radius: 2rem;
+  cursor: pointer;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  padding: 1rem 3rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  min-width: 250px;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.homekiosk-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+/* Guest button */
+.homekiosk-button-guest {
+  background-color: #ffcc00;
+  color: #121660;
+}
+
+/* Login button */
+.homekiosk-button-login {
+  background-color: #121660;
+  color: white;
+}
+
+/* Account button */
+.homekiosk-button-account {
+  background-color: white;
+  color: #121660;
+  border: 2px solid #121660;
 }
 
 .homekiosk-message {
@@ -105,6 +128,39 @@
 .homekiosk-video-container {
   width: var(--viewport-width);
   height: var(--viewport-height);
+  position: relative;
+}
+
+.homekiosk-video-container video {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  border-radius: 1rem;
+  overflow: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  padding: 2rem;
 }
 
 /* Responsive design */
@@ -129,6 +185,8 @@
   .homekiosk-buttons {
     flex-direction: column;
     gap: 1.5rem;
+    width: 100%;
+    max-width: 500px;
   }
 
   .homekiosk-title {
@@ -138,6 +196,10 @@
   .homekiosk-question,
   .homekiosk-message {
     font-size: 2.5rem;
+  }
+
+  .homekiosk-button {
+    width: 100%;
   }
 }
 

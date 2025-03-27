@@ -18,7 +18,6 @@ import {
   IonToolbar,
   IonTitle,
   IonButtons,
-  IonBackButton,
   IonText,
   IonGrid,
   IonRow,
