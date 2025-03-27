@@ -56,7 +56,7 @@ const HomeKiosk: React.FC = () => {
   const handleLogin = () => {
     console.log("Se connecter selected")
     // Navigate to the login route
-    ionRouter.push("/login")
+    ionRouter.push("/kiosk/login")
     resetTimer()
   }
 
@@ -98,7 +98,7 @@ const HomeKiosk: React.FC = () => {
             </svg>
             <div className="homekiosk-content">
               <div className="homekiosk-logo">
-                <IonImg src="favicon.png" alt="Amen Bank Logo" className="homekiosk-img" />
+                <IonImg src="../../favicon.png" alt="Amen Bank Logo" className="homekiosk-img" />
               </div>
               <h1 className="homekiosk-title">Bienvenue!</h1>
 
@@ -164,7 +164,7 @@ const HomeKiosk: React.FC = () => {
               onError={(e) => console.error("Erreur lors du chargement de la vidéo :", e)}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             >
-              <source src="pub.mp4" type="video/mp4" />
+              <source src="../../pub.mp4" type="video/mp4" />
               Votre navigateur ne supporte pas la lecture de vidéos.
             </video>
           </div>

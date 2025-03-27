@@ -4,12 +4,14 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Route, Redirect } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';
-import { AdminAuthProvider, useAdminAuth } from './AdminAuthContext';
+import { AdminAuthProvider } from './AdminAuthContext';
 import { CarteProvider } from './CarteContext';
 import PrivateRoute from './PrivateRoute';
-import AdminPrivateRoute from './AdminPrivateRoute'; // A separate private route for admin pages
+import AdminPrivateRoute from './AdminPrivateRoute';
+import KioskPrivateRoute from './KioskPrivateRoute'; // Import the kiosk private route
 import JitsiMeetComponent from "./components/JitsiMeetComponent";
-import NotFound from "./components/NotFound"
+import NotFound from "./components/NotFound";
+
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -25,12 +27,13 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-// Lazy load public pages
+// Lazy load pages and components (existing ones)
 import Home from './pages/Home';
+import HomeKiosk from './pages/HomeKiosk';
 import KioskSetup from './components/KioskComponents/kiosk-setup';
-
 import Login from './pages/Login/Login';
 import ModeInvite from './pages/ModeInvite/ModeInvite';
+import LoginKiosk from './pages/Login/LoginKiosk';
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword/ResetPassword'));
 const AccountCreationForm = lazy(() => import('./pages/AccountCreationForm'));
@@ -45,11 +48,12 @@ const ChatBot = lazy(() => import('./pages/Client/chatBot/chatBot'));
 const Virement = lazy(() => import('./pages/Client/virement/virement'));
 const ProfileMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/ProfileMobile'));
 const SecuritySettingsMobile = lazy(() => import('./pages/Client/accueil/MenuMobile/SecuritySettingsMobile'));
-const ResetPasswordAdmin =  lazy(() => import('./pages/AdminForgetPassword/ResetPassword'));
-const AdminForgetPassword =  lazy(() => import('./pages/AdminForgetPassword/forgot-password'));
+const ResetPasswordAdmin = lazy(() => import('./pages/AdminForgetPassword/ResetPassword'));
+const AdminForgetPassword = lazy(() => import('./pages/AdminForgetPassword/forgot-password'));
+
 // Lazy load admin pages
 const AdminLogin = lazy(() => import('./pages/AdminLogin/AdminLogin'));
-const AdminOtp = lazy (() => import('./pages/AdminOtp/AdminOtp'));
+const AdminOtp = lazy(() => import('./pages/AdminOtp/AdminOtp'));
 const Dashboard = lazy(() => import('./pages/Admin/Dashboard/Dashboard'));
 const UserManagement = lazy(() => import('./pages/Admin/GestionUtilisateur/UserManagement'));
 const SurveillanceMonitoring = lazy(() => import('./pages/Admin/SurveillanceMonitoring/SurveillanceMonitoring'));
@@ -57,26 +61,31 @@ const PermissionsManagement = lazy(() => import('./pages/Admin/Permissions/permi
 const AuthenticationSecurity = lazy(() => import('./pages/Admin/AuthenticationSecurity/AuthenticationSecurity'));
 const InteractiveTotemManagement = lazy(() => import('./pages/Admin/GestiondesTotem/InteractiveTotemManagement'));
 const VideoConferenceManagement = lazy(() => import('./pages/Admin/videoconfmanage/videoconfmanage'));
+
+// Lazy load your kiosk component
+const KioskComponent = lazy(() => import('./pages/HomeKiosk'));
+
 const AppContent: React.FC = () => {
   const { isAuthenticated, pendingUser } = useAuth();
-  const { isAuthenticated: adminAuthenticated } = useAdminAuth();
 
   useEffect(() => {
-    // Additional side effects can be added here
-  }, [isAuthenticated, adminAuthenticated]);
+    // Additional side effects can be added here if needed.
+  }, [isAuthenticated]);
 
   return (
     <IonReactRouter>
       <Suspense fallback={<div>Loading...</div>}>
         <IonRouterOutlet>
           {/* Public Routes */}
-          <Route exact path="/admin/reset-password" component={ResetPasswordAdmin}/>
-          <Route exact path="/admin/forgot-password" component={AdminForgetPassword}/>
+          <Route exact path="/admin/reset-password" component={ResetPasswordAdmin} />
+          <Route exact path="/admin/forgot-password" component={AdminForgetPassword} />
           <Route exact path="/home" component={Home} />
-          <Route exact path="/setup" component={KioskSetup}/>
+          <Route exact path="/setup" component={KioskSetup} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/kiosk/login" component={LoginKiosk}/>
           <Route exact path="/admin/otp" component={AdminOtp} />
           <Route exact path="/admin/login" component={AdminLogin} />
+          <Route exact path="/totem/kiosk" component={HomeKiosk} />
           <Route exact path="/ForgotPassword" component={ForgotPassword} />
           <Route exact path="/ResetPassword" component={ResetPassword} />
           <Route exact path="/ModeInvite" component={ModeInvite} />
@@ -166,6 +175,16 @@ const AppContent: React.FC = () => {
             component={VideoConferenceManagement}
           />
 
+          {/* Protected Kiosk Route */}
+          <KioskPrivateRoute
+            exact
+            path="/totem/login"
+            component={KioskComponent}
+          />
+          <KioskPrivateRoute 
+          path="/Home/HomeKiosk"
+          component={HomeKiosk}
+         />
 
           <Route exact path="/" render={() => <Redirect to="/home" />} />
           <Route component={NotFound} />

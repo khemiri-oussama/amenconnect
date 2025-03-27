@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 const Login: React.FC = () => {
   const [isPortrait, setIsPortrait] = useState(window.matchMedia("(orientation: portrait)").matches)
   const [isTouchable, setIsTouchable] = useState(false)
-  const isMobile = isPlatform("mobile")
+  const isMobile = isPlatform("android") || isPlatform("ios")
 
   useEffect(() => {
     const handleResize = () => {
@@ -23,7 +23,7 @@ const Login: React.FC = () => {
   }, [])
 
   // Detect if it's a borne interactive (not mobile, portrait, and touch screen)
-  const isBorneInteractive = !isMobile && isPortrait 
+  const isBorneInteractive = !isMobile && isPortrait && isTouchable
 
   return (
     <>

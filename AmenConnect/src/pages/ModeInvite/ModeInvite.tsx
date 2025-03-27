@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 const ModeInvite: React.FC = () => {
   const [isPortrait, setIsPortrait] = useState(window.matchMedia("(orientation: portrait)").matches)
   const [isTouchable, setIsTouchable] = useState(false)
-  const isMobile = isPlatform("mobile")
+  const isMobile = isPlatform("android") || isPlatform("ios")
   useEffect(() => {
     const handleResize = () => {
       setIsPortrait(window.matchMedia("(orientation: portrait)").matches)
