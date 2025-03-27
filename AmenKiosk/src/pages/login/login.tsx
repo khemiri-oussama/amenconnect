@@ -15,6 +15,7 @@ const LoginKiosk: React.FC = () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [isQrLoading, setIsQrLoading] = useState(true)
   const ionRouter = useIonRouter()
 
   // Ref for managing inactivity timer
@@ -25,10 +26,11 @@ const LoginKiosk: React.FC = () => {
   // Generate a unique session ID for the QR code when the component loads
   const sessionId = useRef(Math.random().toString(36).substring(2, 15))
 
-  // Create a QR session in the database
+  // Create a QR session in the database with improved error handling
   useEffect(() => {
     const createSession = async () => {
       try {
+        setIsQrLoading(true)
         const response = await fetch("/api/qr-login/create", {
           method: "POST",
           headers: {
@@ -38,23 +40,27 @@ const LoginKiosk: React.FC = () => {
           body: JSON.stringify({ sessionId: sessionId.current }),
         })
         if (!response.ok) {
-          console.error("Failed to create QR session")
+          console.error("Failed to create QR session:", await response.text())
         }
       } catch (err) {
         console.error("Error creating QR session:", err)
+      } finally {
+        setIsQrLoading(false)
       }
     }
     createSession()
   }, [])
 
   // Reset inactivity timer (session timeout)
+  const INACTIVITY_TIMEOUT = 60000 // 60 seconds
+
   const resetTimer = useCallback(() => {
     if (inactivityTimer.current) {
       clearTimeout(inactivityTimer.current)
     }
     inactivityTimer.current = setTimeout(() => {
       ionRouter.push("/home")
-    }, 60000)
+    }, INACTIVITY_TIMEOUT)
   }, [ionRouter])
 
   const handleUserInteraction = useCallback(() => {
@@ -131,26 +137,33 @@ const LoginKiosk: React.FC = () => {
   // Polling: periodically check if the mobile app has authenticated the session.
   // When authenticated, redirect the kiosk to /accueil.
   useEffect(() => {
-    const intervalId = setInterval(async () => {
-      try {
-        const response = await fetch(`/api/qr-login/${sessionId.current}?t=${Date.now()}`, {
-          credentials: "include",
-          cache: "no-store",
-        })
-        if (response.ok) {
-          const data = await response.json()
-          if (data.status === "authenticated") {
-            console.log("Session authenticated, redirecting to accueil...")
-            clearInterval(intervalId)
-            window.location.href = "/accueil"
+    let intervalId: NodeJS.Timeout
+
+    if (!showForgotPassword) {
+      intervalId = setInterval(async () => {
+        try {
+          const response = await fetch(`/api/qr-login/${sessionId.current}?t=${Date.now()}`, {
+            credentials: "include",
+            cache: "no-store",
+          })
+          if (response.ok) {
+            const data = await response.json()
+            if (data.status === "authenticated") {
+              console.log("Session authenticated, redirecting to accueil...")
+              clearInterval(intervalId)
+              window.location.href = "/accueil"
+            }
           }
+        } catch (error) {
+          console.error("Polling error:", error)
         }
-      } catch (error) {
-        console.error("Polling error:", error)
-      }
-    }, 3000)
-    return () => clearInterval(intervalId)
-  }, [ionRouter])
+      }, 3000)
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId)
+    }
+  }, [showForgotPassword])
 
   useEffect(() => {
     document.addEventListener("touchstart", handleUserInteraction)
@@ -194,14 +207,18 @@ const LoginKiosk: React.FC = () => {
                         <p>Scannez ce code QR avec votre application mobile</p>
                       </div>
                       <div className="loginkiosk-qr-code">
-                        <QRCodeSVG
-                          value={qrCodeData}
-                          size={280}
-                          level="H"
-                          includeMargin={true}
-                          bgColor="#ffffff"
-                          fgColor="#121660"
-                        />
+                        {isQrLoading ? (
+                          <div className="qr-loading-spinner"></div>
+                        ) : (
+                          <QRCodeSVG
+                            value={qrCodeData}
+                            size={280}
+                            level="H"
+                            includeMargin={true}
+                            bgColor="#ffffff"
+                            fgColor="#121660"
+                          />
+                        )}
                       </div>
                       <button onClick={showIdentifierLogin} className="loginkiosk-alt-login">
                         Continuez avec identifiant

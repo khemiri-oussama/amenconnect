@@ -17,6 +17,10 @@ body {
   width: 100%;
   overflow: hidden;
   background-color: var(--kiosk-background);
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+  -webkit-touch-callout: none; /* Disable callout on long-press */
+  -webkit-user-select: none; /* Disable text selection for better kiosk experience */
+  user-select: none;
 }
 
 /* Kiosk app container */
@@ -49,6 +53,12 @@ body {
   width: 48px;
   height: 48px;
   color: var(--kiosk-primary);
+}
+
+.loading-text {
+  font-size: 1.25rem;
+  color: var(--kiosk-primary);
+  font-weight: 500;
 }
 
 /* Common button styles */
@@ -339,23 +349,63 @@ body {
   box-shadow: var(--kiosk-shadow-lg);
 }
 
-/* Background decorations */
-.background-decoration {
-  position: absolute;
-  z-index: -1;
-  pointer-events: none;
+/* Error container */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: 2rem;
 }
 
-.background-circle {
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--kiosk-primary-light), var(--kiosk-primary));
-  opacity: 0.05;
+.error-container h1 {
+  color: var(--kiosk-primary);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
 }
 
-.background-blob {
-  background: var(--kiosk-secondary);
-  opacity: 0.1;
-  filter: blur(40px);
+.error-container p {
+  color: var(--kiosk-text-muted);
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Add global scrollbar styling to ensure consistency across all pages */
+ion-content::part(scroll) {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+ion-content::part(scroll)::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Ensure modal styling is consistent across the app */
+ion-modal {
+  --background: var(--kiosk-background);
+  --box-shadow: var(--kiosk-shadow-lg);
+}
+
+ion-modal ion-header {
+  --background: var(--kiosk-background);
+}
+
+ion-modal ion-toolbar {
+  --background: var(--kiosk-background);
+  --color: var(--kiosk-primary);
+  --border-color: rgba(18, 22, 96, 0.1);
+}
+
+ion-modal ion-content {
+  --background: var(--kiosk-background);
+  --color: var(--kiosk-primary-text);
 }
 
 /* Responsive design for different orientations */
@@ -424,6 +474,14 @@ body {
   .kiosk-input {
     font-size: 1rem;
     padding: 0.75rem 1rem;
+  }
+
+  .error-container h1 {
+    font-size: 1.75rem;
+  }
+
+  .error-container p {
+    font-size: 1rem;
   }
 }
 
