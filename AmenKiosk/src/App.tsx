@@ -29,7 +29,7 @@ import "./theme/variables.css"
 // Context providers for public routes (if needed)
 import { OrientationProvider } from "./context/OrientationContext"
 import { ThemeProvider } from "./context/ThemeContext"
-
+import ThemeLoader from "./context/ThemeLoader";
 // Lazy loaded components for public pages
 const Accueil = lazy(() => import("./pages/accueil/AccueilKiosk"))
 const Compte = lazy(() => import("./pages/Compte/CompteKiosk"))
@@ -148,6 +148,8 @@ const App: React.FC = () => {
         <AuthProvider>
         <CarteProvider>
           <IonApp className="kiosk-app">
+            {/* Load theme variables from MongoDB */}
+            <ThemeLoader/>
             <IonReactRouter>
               <Suspense fallback={<LoadingFallback />}>
                 <IonRouterOutlet>
@@ -178,7 +180,6 @@ const App: React.FC = () => {
                   <Route exact path="/theme">
                     <ThemeCustomizerPage />
                   </Route>
-
                   {/* Private Routes are still nested within the AuthProvider */}
                   <PrivatePages />
                 </IonRouterOutlet>
