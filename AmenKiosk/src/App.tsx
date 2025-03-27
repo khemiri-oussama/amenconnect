@@ -39,16 +39,50 @@ import { OrientationProvider } from "./context/OrientationContext"
 import { ThemeProvider } from "./context/ThemeContext"
 import { AuthProvider } from "./context/AuthContext"
 
-// Lazy load components for better performance
-const Home = lazy(() => import("./pages/Home"))
-const ModeInvite = lazy(() => import("./pages/modeinvite/mode-invite"))
-const Login = lazy(() => import("./pages/login/login"))
-const AccountCreation = lazy(() => import("./pages/AccountCreationForm"))
-const ForgotPassword = lazy(() => import("./pages/login/ForgotPassword/ForgotPassword"))
-const Otp = lazy(() => import("./pages/otp/otp"))
-const Accueil = lazy(() => import("./pages/accueil/AccueilKiosk"))
-const ThemeCustomizerPage = lazy(() => import("./theme-customizer-page"))
-// Loading component
+// Lazy load components for better performance with improved error handling
+const Home = lazy(() =>
+  import("./pages/Home").catch((err) => {
+    console.error("Failed to load Home component:", err)
+    return { default: () => <div>An error occurred while loading the Home component.</div> }
+  }),
+)
+
+const ModeInvite = lazy(() =>
+  import("./pages/modeinvite/mode-invite").catch((err) => {
+    console.error("Failed to load ModeInvite component:", err);
+    return { default: () => <div>An error occurred while loading ModeInvite.</div> };
+  }),
+)
+
+const Login = lazy(() =>
+  import("./pages/login/login").catch((err) => {
+    console.error("Failed to load Login component:", err)
+    return { default: () => <div>An error occurred while loading the Login component.</div> }
+  }),
+)
+
+const AccountCreation = lazy(() =>
+  import("./pages/AccountCreationForm").catch((err) => {
+    console.error("Failed to load AccountCreation component:", err)
+    return { default: () => <div>An error occurred while loading the AccountCreation component.</div> }
+  }),
+)
+
+const ForgotPassword = lazy(() =>
+  import("./pages/login/ForgotPassword/ForgotPassword").catch((err) => {
+    console.error("Failed to load ForgotPassword component:", err)
+    return { default: require("./components/ErrorBoundary").default }
+  }),
+)
+
+const Otp = lazy(() =>
+  import("./pages/otp/otp").catch((err) => {
+    console.error("Failed to load Otp component:", err)
+    return { default: require("./components/ErrorBoundary").default }
+  }),
+)
+
+// Enhanced loading component with animation
 const LoadingFallback: React.FC = () => (
   <div className="kiosk-loading-container">
     <div className="kiosk-loading-content">
