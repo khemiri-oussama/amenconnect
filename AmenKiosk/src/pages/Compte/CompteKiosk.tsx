@@ -12,8 +12,8 @@ import {
 } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts"
 import { useHistory } from "react-router-dom"
-import { useAuth } from "../../../AuthContext"
-import NavbarKiosk from "../../../components/NavbarKiosk"
+import { useAuth } from "../../context/AuthContext"
+import NavbarKiosk from "../../components/NavbarKiosk"
 import "./CompteKiosk.css"
 
 interface Operation {

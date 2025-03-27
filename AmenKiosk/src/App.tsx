@@ -113,6 +113,7 @@ setupIonicReact({
 // These routes are wrapped with AuthProvider to get authentication context.
 import PrivateRoute from "./context/PrivateRoute"
 import { AuthProvider } from "./context/AuthContext"
+import { CarteProvider } from "./context/CarteContext"
 
 const PrivatePages: React.FC = () => (
   <AuthProvider>
@@ -145,6 +146,7 @@ const App: React.FC = () => {
       <OrientationProvider>
         {/* Wrap the entire routing tree with AuthProvider */}
         <AuthProvider>
+        <CarteProvider>
           <IonApp className="kiosk-app">
             <IonReactRouter>
               <Suspense fallback={<LoadingFallback />}>
@@ -183,6 +185,7 @@ const App: React.FC = () => {
               </Suspense>
             </IonReactRouter>
           </IonApp>
+          </CarteProvider>
         </AuthProvider>
       </OrientationProvider>
     </ThemeProvider>
