@@ -313,7 +313,9 @@ const ModeInviteKiosk: React.FC = () => {
                   </IonButtons>
                 </IonToolbar>
               </IonHeader>
-              <IonContent className="ion-padding modal-content">{renderModalContent()}</IonContent>
+              <IonContent className="ion-padding modal-content" scrollEvents={true}>
+                {renderModalContent()}
+              </IonContent>
             </IonModal>
           </div>
         ) : (

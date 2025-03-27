@@ -332,7 +332,7 @@
 
 /* Modal */
 .kiosk-modal {
-  --background: var(--ion-background-color);
+  --background: var(--kiosk-background);
   --width: 90%;
   --max-width: 1200px;
   --height: 80%;
@@ -341,17 +341,18 @@
 }
 
 .kiosk-modal ion-header {
-  --background: var(--ion-background-color);
+  --background: var(--kiosk-background);
 }
 
 .kiosk-modal ion-toolbar {
-  --background: var(--ion-background-color);
+  --background: var(--kiosk-background);
   --color: var(--kiosk-primary);
+  --border-color: rgba(18, 22, 96, 0.1);
 }
 
 .kiosk-modal ion-content {
-  --background: var(--ion-background-color);
-  --color: var(--kiosk-primary);
+  --background: var(--kiosk-background);
+  --color: var(--kiosk-primary-text);
 }
 
 .modal-content {
@@ -359,6 +360,116 @@
   --padding-end: 16px;
   --padding-top: 16px;
   --padding-bottom: 16px;
+}
+
+/* Ensure all cards in modals have consistent styling */
+.kiosk-modal ion-card {
+  --background: var(--kiosk-surface);
+  --color: var(--kiosk-primary-text);
+  box-shadow: var(--kiosk-shadow-md);
+  border-radius: var(--kiosk-radius-lg);
+}
+
+.kiosk-modal ion-card-header {
+  --background: var(--kiosk-surface);
+  --color: var(--kiosk-primary);
+}
+
+.kiosk-modal ion-card-title {
+  --color: var(--kiosk-primary);
+}
+
+.kiosk-modal ion-card-subtitle {
+  --color: var(--kiosk-text-muted);
+}
+
+.kiosk-modal ion-card-content {
+  --color: var(--kiosk-primary-text);
+}
+
+/* Ensure form elements in modals have consistent styling */
+.kiosk-modal ion-item {
+  --background: var(--kiosk-surface);
+  --color: var(--kiosk-primary-text);
+  --border-color: rgba(18, 22, 96, 0.1);
+}
+
+.kiosk-modal ion-label {
+  --color: var(--kiosk-primary);
+}
+
+.kiosk-modal ion-input,
+.kiosk-modal ion-textarea,
+.kiosk-modal ion-select {
+  --color: var(--kiosk-primary-text);
+  --placeholder-color: var(--kiosk-text-muted);
+}
+
+/* Ensure consistent text colors */
+.kiosk-modal p,
+.kiosk-modal h1,
+.kiosk-modal h2,
+.kiosk-modal h3,
+.kiosk-modal h4,
+.kiosk-modal h5,
+.kiosk-modal h6 {
+  color: var(--kiosk-primary-text);
+}
+
+/* Add component card styling for consistent appearance */
+.kiosk-component-card {
+  --background: var(--kiosk-surface);
+  --color: var(--kiosk-primary-text);
+  box-shadow: var(--kiosk-shadow-md);
+  border-radius: var(--kiosk-radius-lg);
+  margin-bottom: 1.5rem;
+}
+
+.kiosk-component-card ion-card-header {
+  --background: var(--kiosk-surface);
+  --color: var(--kiosk-primary);
+}
+
+.kiosk-component-card ion-card-title {
+  --color: var(--kiosk-primary);
+  font-weight: 600;
+}
+
+.kiosk-component-card ion-card-subtitle {
+  --color: var(--kiosk-text-muted);
+}
+
+.kiosk-component-card ion-card-content {
+  --color: var(--kiosk-primary-text);
+}
+
+/* Ensure form elements in components have consistent styling */
+.kiosk-component-card ion-item {
+  --background: var(--kiosk-surface);
+  --color: var(--kiosk-primary-text);
+  --border-color: rgba(18, 22, 96, 0.1);
+}
+
+.kiosk-component-card ion-label {
+  --color: var(--kiosk-primary);
+}
+
+.kiosk-component-card ion-input,
+.kiosk-component-card ion-textarea,
+.kiosk-component-card ion-select {
+  --color: var(--kiosk-primary-text);
+  --placeholder-color: var(--kiosk-text-muted);
+}
+
+/* Ensure consistent text colors */
+.kiosk-component-card p,
+.kiosk-component-card h1,
+.kiosk-component-card h2,
+.kiosk-component-card h3,
+.kiosk-component-card h4,
+.kiosk-component-card h5,
+.kiosk-component-card h6 {
+  color: var(--kiosk-primary-text);
 }
 
 /* Video container */
@@ -563,5 +674,15 @@
     font-size: 1rem;
     padding: 8px 16px;
   }
+}
+
+/* Add these styles to hide scrollbar while maintaining functionality */
+.mode-invite-kiosk ion-content::part(scroll) {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.mode-invite-kiosk ion-content::part(scroll)::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 

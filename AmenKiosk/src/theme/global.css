@@ -377,6 +377,37 @@ body {
   gap: 1rem;
 }
 
+/* Add global scrollbar styling to ensure consistency across all pages */
+ion-content::part(scroll) {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+ion-content::part(scroll)::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Ensure modal styling is consistent across the app */
+ion-modal {
+  --background: var(--kiosk-background);
+  --box-shadow: var(--kiosk-shadow-lg);
+}
+
+ion-modal ion-header {
+  --background: var(--kiosk-background);
+}
+
+ion-modal ion-toolbar {
+  --background: var(--kiosk-background);
+  --color: var(--kiosk-primary);
+  --border-color: rgba(18, 22, 96, 0.1);
+}
+
+ion-modal ion-content {
+  --background: var(--kiosk-background);
+  --color: var(--kiosk-primary-text);
+}
+
 /* Responsive design for different orientations */
 /* Landscape mode (1920x1080) */
 @media (min-width: 1081px) and (orientation: landscape) {
