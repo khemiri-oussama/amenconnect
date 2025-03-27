@@ -73,11 +73,13 @@ const ForgotPasswordKiosk: React.FC<ForgotPasswordKioskProps> = ({ onBack, onSub
               id="cin"
               className="kiosk-input"
               value={CIN}
-              onChange={(e) => setCIN(e.target.value)}
+              onChange={(e) => setCIN(e.target.value.replace(/\D/g, "").slice(0, 8))}
               placeholder="Entrez votre numéro CIN"
               maxLength={8}
               minLength={8}
               required
+              inputMode="numeric"
+              pattern="[0-9]{8}"
             />
           </div>
         </div>

@@ -10,10 +10,14 @@ const HomeKiosk: React.FC = () => {
   const [active, setActive] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
   const [showAccountForm, setShowAccountForm] = useState(false)
+  const [videoLoaded, setVideoLoaded] = useState(false)
   const ionRouter = useIonRouter()
 
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
+
+  // Enhanced timer reset with configurable timeout
+  const INACTIVITY_TIMEOUT = 60000 // 60 seconds
 
   const resetTimer = useCallback(() => {
     if (inactivityTimer.current) {
@@ -24,9 +28,10 @@ const HomeKiosk: React.FC = () => {
       setShowOptions(false)
       setShowAccountForm(false)
       if (videoRef.current) {
+        videoRef.current.currentTime = 0 // Reset video to beginning
         videoRef.current.play().catch((error) => console.error("Erreur lors de la lecture de la vidéo :", error))
       }
-    }, 60000)
+    }, INACTIVITY_TIMEOUT)
   }, [])
 
   const handleUserInteraction = useCallback(() => {
@@ -37,14 +42,18 @@ const HomeKiosk: React.FC = () => {
   }, [active, resetTimer])
 
   const handleStartClick = () => {
-    // Instead of using CSS transitions that might be causing issues,
-    // let's directly update the state
     setShowOptions(true)
     resetTimer()
   }
 
   const handleGuestMode = () => {
-    ionRouter.push("/modeinvite")
+    try {
+      ionRouter.push("/modeinvite", "forward", "push")
+    } catch (error) {
+      console.error("Navigation error:", error)
+      // Fallback navigation
+      window.location.href = "/modeinvite"
+    }
     resetTimer()
   }
 
@@ -71,6 +80,16 @@ const HomeKiosk: React.FC = () => {
     resetTimer()
   }
 
+  // Handle video loading
+  const handleVideoLoad = () => {
+    setVideoLoaded(true)
+  }
+
+  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    console.error("Erreur lors du chargement de la vidéo :", e)
+    setVideoLoaded(true) // Still set to true to show UI even if video fails
+  }
+
   useEffect(() => {
     document.addEventListener("touchstart", handleUserInteraction)
     document.addEventListener("click", handleUserInteraction)
@@ -87,6 +106,10 @@ const HomeKiosk: React.FC = () => {
       <IonContent fullscreen>
         {active ? (
           <div className="homekiosk-container">
+            <div className="homekiosk-bg-circle-1"></div>
+            <div className="homekiosk-bg-circle-2"></div>
+            <div className="homekiosk-bg-blob"></div>
+
             <div className="homekiosk-content">
               <div className="homekiosk-logo">
                 <IonImg src="favicon.png" alt="Amen Bank Logo" className="homekiosk-img" />
@@ -94,7 +117,7 @@ const HomeKiosk: React.FC = () => {
               <h1 className="homekiosk-title">Bienvenue!</h1>
 
               {!showOptions ? (
-                <>
+                <div className="homekiosk-welcome animate-fade-in">
                   <h2 className="homekiosk-question">
                     Quels sont vos besoins
                     <br />
@@ -108,9 +131,9 @@ const HomeKiosk: React.FC = () => {
                     <br />
                     portée de clic.
                   </p>
-                </>
+                </div>
               ) : (
-                <div className="homekiosk-options-container">
+                <div className="homekiosk-options-container animate-fade-in">
                   <h2 className="homekiosk-question">Choisissez votre mode d'accès</h2>
                   <div className="homekiosk-buttons">
                     <button className="homekiosk-button homekiosk-button-guest" onClick={handleGuestMode}>
@@ -132,7 +155,7 @@ const HomeKiosk: React.FC = () => {
               )}
             </div>
 
-            {/* Account Form Modal Popup */}
+            {/* Account Form Modal Popup with improved styling and animation */}
             {showAccountForm && (
               <div className="modal-overlay" onClick={handleBackToOptions}>
                 <div className="modal-container" onClick={(e) => e.stopPropagation()}>
@@ -143,17 +166,31 @@ const HomeKiosk: React.FC = () => {
           </div>
         ) : (
           <div className="homekiosk-video-container">
+            {!videoLoaded && (
+              <div className="video-loading">
+                <IonImg src="favicon.png" alt="Amen Bank Logo" className="video-loading-logo" />
+                <div className="video-loading-spinner"></div>
+              </div>
+            )}
             <video
               ref={videoRef}
               autoPlay
               loop
+              muted
               playsInline
               controls={false}
-              onError={(e) => console.error("Erreur lors du chargement de la vidéo :", e)}
+              onLoadedData={handleVideoLoad}
+              onError={handleVideoError}
+              className={videoLoaded ? "video-loaded" : ""}
             >
               <source src="pub.mp4" type="video/mp4" />
               Votre navigateur ne supporte pas la lecture de vidéos.
             </video>
+            <div className="video-overlay">
+              <div className="video-tap-instruction">
+                <span>Touchez l'écran pour continuer</span>
+              </div>
+            </div>
           </div>
         )}
       </IonContent>

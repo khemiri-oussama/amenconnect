@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { IonContent, IonPage, IonImg, IonIcon, IonButton, IonInput, IonText, useIonRouter } from "@ionic/react"
 import { arrowBack } from "ionicons/icons"
 import { useAuth } from "../../context/AuthContext"
@@ -11,6 +11,7 @@ import "./otp.css"
 const OtpKiosk: React.FC = () => {
   const ionRouter = useIonRouter()
   const { pendingUser, isAuthenticated, setIsAuthenticated } = useAuth()
+  const inactivityTimer = useRef<NodeJS.Timeout | null>(null)
 
   // Redirect to login if there's no pending user and the user is not authenticated.
   useEffect(() => {
@@ -18,6 +19,18 @@ const OtpKiosk: React.FC = () => {
       ionRouter.push("/login")
     }
   }, [pendingUser, isAuthenticated, ionRouter])
+
+  // Reset inactivity timer (session timeout)
+  const INACTIVITY_TIMEOUT = 60000 // 60 seconds
+
+  const resetTimer = () => {
+    if (inactivityTimer.current) {
+      clearTimeout(inactivityTimer.current)
+    }
+    inactivityTimer.current = setTimeout(() => {
+      ionRouter.push("/login")
+    }, INACTIVITY_TIMEOUT)
+  }
 
   // On successful OTP verification, set the user as authenticated and redirect.
   const onSuccess = () => {
@@ -44,11 +57,29 @@ const OtpKiosk: React.FC = () => {
     ionRouter.push("/login")
   }
 
+  // Handle user interaction to reset timer
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      resetTimer()
+    }
+
+    document.addEventListener("touchstart", handleUserInteraction)
+    document.addEventListener("click", handleUserInteraction)
+
+    // Set initial timer
+    resetTimer()
+
+    return () => {
+      document.removeEventListener("touchstart", handleUserInteraction)
+      document.removeEventListener("click", handleUserInteraction)
+      if (inactivityTimer.current) clearTimeout(inactivityTimer.current)
+    }
+  }, [ionRouter])
+
   return (
     <IonPage>
       <IonContent fullscreen>
         <div className="otpkiosk-container">
-          <div className="background-white"></div>
           <div className="otpkiosk-bg-circle-1"></div>
           <div className="otpkiosk-bg-circle-2"></div>
           <div className="otpkiosk-bg-blob"></div>
@@ -89,6 +120,7 @@ const OtpKiosk: React.FC = () => {
                         }
                       }}
                       className="otpkiosk-input"
+                      inputMode="numeric"
                     />
                   ))}
                 </div>
