@@ -37,7 +37,7 @@ import "./theme/variables.css"
 // Context providers
 import { OrientationProvider } from "./context/OrientationContext"
 import { ThemeProvider } from "./context/ThemeContext"
-
+import { AuthProvider } from "./context/AuthContext"
 
 // Lazy load components for better performance
 const Home = lazy(() => import("./pages/Home"))
@@ -46,6 +46,7 @@ const Login = lazy(() => import("./pages/login/login"))
 const AccountCreation = lazy(() => import("./pages/AccountCreationForm"))
 const ForgotPassword = lazy(() => import("./pages/login/ForgotPassword/ForgotPassword"))
 const Otp = lazy(() => import("./pages/otp/otp"))
+
 // Loading component
 const LoadingFallback: React.FC = () => (
   <div className="kiosk-loading-container">
@@ -61,45 +62,60 @@ setupIonicReact({
   hardwareBackButton: false, // Disable hardware back button
 })
 
-// Update the App component with better error handling:
+// App component with better error handling
 const App: React.FC = () => {
   const [isAppReady, setIsAppReady] = useState(false)
   const [hasError, setHasError] = useState(false)
 
+  // Handle orientation changes
+  useEffect(() => {
+    const handleResize = () => {
+      document.documentElement.style.setProperty("--viewport-height", `${window.innerHeight}px`)
+      document.documentElement.style.setProperty("--viewport-width", `${window.innerWidth}px`)
+    }
+
+    // Set initial values
+    handleResize()
+
+    // Update on resize
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
   return (
     <ThemeProvider>
       <OrientationProvider>
-        <IonApp className="kiosk-app">
-          <IonReactRouter>
-            <Suspense fallback={<LoadingFallback />}>
-              <IonRouterOutlet>
-                <Route exact path="/home">
-                  <Home />
-                </Route>
-                <Route exact path="/modeinvite">
-                  <ModeInvite />
-                </Route>
-                <Route exact path="/login">
-                  <Login />
-                </Route>
-                <Route exact path="/account-creation">
-                  <AccountCreation onBack={function (): void {
-                    throw new Error("Function not implemented.")
-                  } } />
-                </Route>
-                <Route exact path="/otp">
-                  <Otp />
-                </Route>
-                <Route exact path="/forgot-password">
-                <ForgotPassword onBack={() => window.history.back()} />
-                </Route>
-                <Route exact path="/">
-                  <Redirect to="/home" />
-                </Route>
-              </IonRouterOutlet>
-            </Suspense>
-          </IonReactRouter>
-        </IonApp>
+        <AuthProvider>
+          <IonApp className="kiosk-app">
+            <IonReactRouter>
+              <Suspense fallback={<LoadingFallback />}>
+                <IonRouterOutlet>
+                  <Route exact path="/home">
+                    <Home />
+                  </Route>
+                  <Route exact path="/modeinvite">
+                    <ModeInvite />
+                  </Route>
+                  <Route exact path="/login">
+                    <Login />
+                  </Route>
+                  <Route exact path="/account-creation">
+                    <AccountCreation onBack={() => window.history.back()} />
+                  </Route>
+                  <Route exact path="/otp">
+                    <Otp />
+                  </Route>
+                  <Route exact path="/forgot-password">
+                    <ForgotPassword onBack={() => window.history.back()} />
+                  </Route>
+                  <Route exact path="/">
+                    <Redirect to="/home" />
+                  </Route>
+                </IonRouterOutlet>
+              </Suspense>
+            </IonReactRouter>
+          </IonApp>
+        </AuthProvider>
       </OrientationProvider>
     </ThemeProvider>
   )

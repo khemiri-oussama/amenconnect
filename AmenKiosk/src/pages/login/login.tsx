@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { IonContent, IonPage, IonImg, useIonRouter, IonIcon } from "@ionic/react"
 import { arrowBack, eyeOutline, eyeOffOutline, phonePortrait } from "ionicons/icons"
 import { QRCodeSVG } from "qrcode.react"
-import { useLogin } from "../../hooks/useLogin" // Import the useLogin hook
+import { useLogin } from "../../hooks/useLogin" // Import the updated useLogin hook
 import ForgotPasswordKiosk from "./ForgotPassword/ForgotPassword"
 import "./login.css"
 
@@ -66,7 +66,14 @@ const LoginKiosk: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    await login(username, password)
+    try {
+      await login(username, password)
+      // If login is successful, redirect to the appropriate page
+      ionRouter.push("/accueil")
+    } catch (error) {
+      // Error is already handled by the hook
+      console.error("Login failed:", error)
+    }
     resetTimer()
   }
 
@@ -176,15 +183,14 @@ const LoginKiosk: React.FC = () => {
               stroke="#47CE65"
             />
           </svg>
-          
+
           <div className="loginkiosk-content">
-          <div className="loginkiosk-back-button" onClick={handleBack}>
-                  <IonIcon icon={arrowBack} />
-                  <span>Retour</span>
-          </div>
+            <div className="loginkiosk-back-button" onClick={handleBack}>
+              <IonIcon icon={arrowBack} />
+              <span>Retour</span>
+            </div>
             {!showForgotPassword ? (
               <>
-                
                 <div className="loginkiosk-logo">
                   <IonImg src="favicon.png" alt="Amen Bank Logo" className="loginkiosk-img" />
                 </div>
@@ -247,11 +253,7 @@ const LoginKiosk: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    {errorMessage && (
-                      <p className="error-message" style={{ color: "red" }}>
-                        {errorMessage}
-                      </p>
-                    )}
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <button type="submit" className="loginkiosk-btn" disabled={isLoading}>
                       {isLoading ? "Connexion en cours..." : "Se connecter"}
                     </button>

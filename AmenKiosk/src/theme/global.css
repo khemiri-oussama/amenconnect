@@ -1,0 +1,251 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+
+/* Import variables */
+@import "./variables.css";
+
+/* Global styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: "Outfit", sans-serif;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Kiosk app container */
+.kiosk-app {
+  --ion-background-color: #ffffff;
+  --ion-text-color: var(--kiosk-primary-text);
+  font-family: "Outfit", sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+/* Background elements */
+.background-white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  z-index: -2;
+}
+
+.background-svg {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1080px;
+  height: 1920px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+/* Loading styles */
+.kiosk-loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.kiosk-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.kiosk-spinner {
+  width: 48px;
+  height: 48px;
+  color: var(--kiosk-primary);
+}
+
+/* Common button styles */
+.kiosk-btn {
+  background: linear-gradient(to right, var(--kiosk-primary), var(--kiosk-primary-dark));
+  border: none;
+  border-radius: 2rem;
+  color: white;
+  cursor: pointer;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  padding: 1rem 3rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 4px 10px rgba(18, 22, 96, 0.3);
+  text-transform: uppercase;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kiosk-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(18, 22, 96, 0.4);
+}
+
+.kiosk-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(18, 22, 96, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-staggered {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-transition {
+  transition: opacity 0.3s ease;
+}
+
+/* Staggered animation delays */
+.delay-0 {
+  animation-delay: 0.1s;
+}
+.delay-1 {
+  animation-delay: 0.15s;
+}
+.delay-2 {
+  animation-delay: 0.2s;
+}
+.delay-3 {
+  animation-delay: 0.25s;
+}
+.delay-4 {
+  animation-delay: 0.3s;
+}
+.delay-5 {
+  animation-delay: 0.35s;
+}
+.delay-6 {
+  animation-delay: 0.4s;
+}
+.delay-7 {
+  animation-delay: 0.45s;
+}
+
+/* Fade-in Animation for sections */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(20vh);
+  visibility: hidden;
+  transition: opacity 0.6s ease-out, transform 1.2s ease-out;
+  will-change: opacity, visibility;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.modal-container {
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  border-radius: 8px;
+  overflow: hidden;
+  animation: scaleIn 0.3s ease-out;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive design for different orientations */
+/* Landscape mode (1920x1080) */
+@media (min-width: 1081px) and (orientation: landscape) {
+  .background-svg {
+    width: 1920px;
+    height: 1080px;
+    left: 50%;
+    top: 40%;
+  }
+}
+
+/* Portrait mode (1080x1920) */
+@media (max-width: 1080px) and (orientation: portrait) {
+  .background-svg {
+    width: 1080px;
+    height: 1920px;
+    left: 40%;
+    top: 50%;
+  }
+}
+
+/* Tablet and mobile adjustments */
+@media (max-width: 768px) {
+  .kiosk-btn {
+    font-size: 1.5rem;
+    padding: 0.875rem 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .kiosk-btn {
+    font-size: 1.25rem;
+    padding: 0.75rem 2rem;
+  }
+}
+

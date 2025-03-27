@@ -49,14 +49,20 @@ const HomeKiosk: React.FC = () => {
   }
 
   const handleGuestMode = () => {
-    ionRouter.push("/ModeInvite")
+    ionRouter.push("/modeinvite")
     resetTimer()
   }
 
   const handleLogin = () => {
     console.log("Se connecter selected")
     // Navigate to the login route
-    ionRouter.push("/login")
+    try {
+      ionRouter.push("/login", "forward", "push")
+    } catch (error) {
+      console.error("Navigation error:", error)
+      // Fallback navigation
+      window.location.href = "/login"
+    }
     resetTimer()
   }
 
@@ -148,7 +154,7 @@ const HomeKiosk: React.FC = () => {
             {showAccountForm && (
               <div className="modal-overlay" onClick={handleBackToOptions}>
                 <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-                  <AccountCreationForm onBack={handleBackToOptions} resetTimer={resetTimer} />
+                  <AccountCreationForm onBack={handleBackToOptions} />
                 </div>
               </div>
             )}

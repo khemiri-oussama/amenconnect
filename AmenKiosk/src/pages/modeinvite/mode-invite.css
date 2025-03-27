@@ -1,16 +1,17 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+/* Import global styles */
+@import "../../theme/global.css";
 
 .mode-invite-kiosk {
-  --ion-color-primary: #47ce65;
-  --ion-color-secondary: #ffcc00;
+  --ion-color-primary: var(--kiosk-secondary);
+  --ion-color-secondary: var(--kiosk-accent);
   --ion-color-tertiary: #6a64ff;
   --ion-color-success: #2fdf75;
   --ion-color-warning: #ffd534;
   --ion-color-danger: #ff4961;
   --ion-color-light: #f4f5f8;
   --ion-color-medium: #989aa2;
-  --ion-background-color: #ffffff;
-  --ion-text-color: #121660;
+  --ion-background-color: var(--kiosk-background);
+  --ion-text-color: var(--kiosk-primary-text);
   font-family: "Outfit", sans-serif;
   background-color: var(--ion-background-color);
   color: var(--ion-text-color);
@@ -19,33 +20,11 @@
 }
 
 /* Base styles */
-
 .kiosk-container {
   position: relative;
-  height: 100vh;
-  width: 100vw;
+  height: var(--viewport-height);
+  width: var(--viewport-width);
   overflow: hidden;
-}
-
-/* Background elements */
-.background-white {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ffffff;
-  z-index: -2;
-}
-
-.background-svg {
-  position: absolute;
-  top: 50%;
-  left: 40%;
-  width: 1080px;
-  height: 1920px;
-  transform: translate(-50%, -50%);
-  z-index: -1;
 }
 
 /* Content layout */
@@ -83,8 +62,8 @@
 }
 
 .kiosk-nav-button {
-  --color: #121660;
-  --color-hover: var(--ion-color-primary);
+  --color: var(--kiosk-primary);
+  --color-hover: var(--kiosk-secondary);
   font-weight: 500;
   text-transform: none;
   font-size: 1.2rem;
@@ -101,12 +80,12 @@
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #121660;
+  color: var(--kiosk-primary);
 }
 
 .kiosk-searchbar {
   --background: rgba(18, 22, 96, 0.1);
-  --color: #121660;
+  --color: var(--kiosk-primary);
   --placeholder-color: rgba(18, 22, 96, 0.5);
   --icon-color: rgba(18, 22, 96, 0.5);
   --clear-button-color: rgba(18, 22, 96, 0.5);
@@ -122,7 +101,7 @@
 /* Cards */
 .kiosk-card {
   --background: rgba(255, 255, 255, 0.9);
-  --color: #121660;
+  --color: var(--kiosk-primary);
   border-radius: 16px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 100%;
@@ -152,7 +131,7 @@
 .kiosk-card ion-card-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #121660;
+  color: var(--kiosk-primary);
   text-align: center;
 }
 
@@ -164,7 +143,7 @@
 }
 
 .kiosk-card-button {
-  --color: var(--ion-color-primary);
+  --color: var(--kiosk-secondary);
   font-weight: 500;
   text-transform: none;
   font-size: 1.2rem;
@@ -177,7 +156,7 @@
 }
 
 .kiosk-footer h3 {
-  color: #121660;
+  color: var(--kiosk-primary);
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -185,7 +164,7 @@
 
 .kiosk-footer p,
 .kiosk-footer ul {
-  color: rgba(18, 22, 96, 0.7);
+  color: var(--kiosk-text-muted);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -200,13 +179,13 @@
 }
 
 .kiosk-footer ul a {
-  color: var(--ion-color-primary);
+  color: var(--kiosk-secondary);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .kiosk-footer ul a:hover {
-  color: var(--ion-color-primary-shade);
+  color: var(--kiosk-secondary-dark);
 }
 
 .kiosk-copyright {
@@ -224,7 +203,7 @@
   position: fixed;
   bottom: 2rem;
   left: 2rem;
-  --color: #121660;
+  --color: var(--kiosk-primary);
   --background: rgba(255, 255, 255, 0.8);
   --border-radius: 25px;
   --padding-start: 1.5rem;
@@ -250,85 +229,47 @@
 
 .kiosk-modal ion-toolbar {
   --background: var(--ion-background-color);
-  --color: #121660;
+  --color: var(--kiosk-primary);
 }
 
 .kiosk-modal ion-content {
   --background: var(--ion-background-color);
-  --color: #121660;
+  --color: var(--kiosk-primary);
 }
 
 /* Video container */
 .kiosk-video-container {
-  width: 100vw;
-  height: 100vh;
+  width: var(--viewport-width);
+  height: var(--viewport-height);
   position: absolute;
   top: 0;
   left: 0;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+/* Responsive design */
+/* Landscape mode (1920x1080) */
+@media (min-width: 1081px) and (orientation: landscape) {
+  .kiosk-grid ion-col {
+    --ion-grid-column-padding: 12px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .kiosk-card-icon {
+    font-size: 3.5rem;
+  }
+
+  .kiosk-card ion-card-title {
+    font-size: 1.75rem;
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+/* Portrait mode (1080x1920) */
+@media (max-width: 1080px) and (orientation: portrait) {
+  .kiosk-grid ion-col {
+    --ion-grid-column-padding: 10px;
+  }
 }
 
-.animate-staggered {
-  opacity: 0;
-  animation: fadeIn 0.5s ease-out forwards;
-}
-
-.delay-0 {
-  animation-delay: 0.1s;
-}
-.delay-1 {
-  animation-delay: 0.15s;
-}
-.delay-2 {
-  animation-delay: 0.2s;
-}
-.delay-3 {
-  animation-delay: 0.25s;
-}
-.delay-4 {
-  animation-delay: 0.3s;
-}
-.delay-5 {
-  animation-delay: 0.35s;
-}
-.delay-6 {
-  animation-delay: 0.4s;
-}
-.delay-7 {
-  animation-delay: 0.45s;
-}
-
-/* Fade-in Animation for sections */
-.fade-in-section {
-  opacity: 0;
-  transform: translateY(20vh);
-  visibility: hidden;
-  transition: opacity 0.6s ease-out, transform 1.2s ease-out;
-  will-change: opacity, visibility;
-}
-
-.fade-in-section.is-visible {
-  opacity: 1;
-  transform: none;
-  visibility: visible;
-}
-
-/* Responsive Design */
+/* Tablet adjustments */
 @media (max-width: 768px) {
   .kiosk-title {
     font-size: 2.5rem;
@@ -361,6 +302,7 @@
   }
 }
 
+/* Mobile adjustments */
 @media (max-width: 480px) {
   .kiosk-title {
     font-size: 2rem;
