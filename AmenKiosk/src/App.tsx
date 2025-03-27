@@ -2,52 +2,99 @@
 
 import type React from "react"
 import { Redirect, Route } from "react-router-dom"
-import { IonApp, IonRouterOutlet, setupIonicReact, IonSpinner } from "@ionic/react"
+import {
+  IonApp,
+  IonRouterOutlet,
+  setupIonicReact,
+  IonSpinner,
+} from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
 import { Suspense, lazy, useEffect } from "react"
 import "./theme/global.css"
 
-/* Core CSS required for Ionic components to work properly */
+// Core & Basic CSS for Ionic
 import "@ionic/react/css/core.css"
-
-/* Basic CSS for apps built with Ionic */
 import "@ionic/react/css/normalize.css"
 import "@ionic/react/css/structure.css"
 import "@ionic/react/css/typography.css"
-
-/* Optional CSS utils that can be commented out */
 import "@ionic/react/css/padding.css"
 import "@ionic/react/css/float-elements.css"
 import "@ionic/react/css/text-alignment.css"
 import "@ionic/react/css/text-transformation.css"
 import "@ionic/react/css/flex-utils.css"
 import "@ionic/react/css/display.css"
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
 import "@ionic/react/css/palettes/dark.system.css"
-
-/* Theme variables */
 import "./theme/variables.css"
 
-// Context providers
+// Context providers for public routes (if needed)
 import { OrientationProvider } from "./context/OrientationContext"
 import { ThemeProvider } from "./context/ThemeContext"
-import { AuthProvider } from "./context/AuthContext"
 
-// Lazy load components for better performance
-const Home = lazy(() => import("./pages/Home"))
-const ModeInvite = lazy(() => import("./pages/modeinvite/mode-invite"))
-const Login = lazy(() => import("./pages/login/login"))
-const AccountCreation = lazy(() => import("./pages/AccountCreationForm"))
-const ForgotPassword = lazy(() => import("./pages/login/ForgotPassword/ForgotPassword"))
-const Otp = lazy(() => import("./pages/otp/otp"))
+// Lazy loaded components for public pages
+const Accueil = lazy(() => import("./pages/accueil/AccueilKiosk"))
+const Compte = lazy(() => import("./pages/Compte/CompteKiosk"))
+const Carte = lazy(() => import("./pages/Carte/CarteKiosk"))
+const ThemeCustomizerPage = lazy(() => import("./theme-customizer-page"))
+const Home = lazy(() =>
+  import("./pages/Home").catch((err) => {
+    console.error("Failed to load Home component:", err)
+    return {
+      default: () => (
+        <div>An error occurred while loading the Home component.</div>
+      ),
+    }
+  }),
+)
+const ModeInvite = lazy(() =>
+  import("./pages/modeinvite/mode-invite").catch((err) => {
+    console.error("Failed to load ModeInvite component:", err)
+    return {
+      default: () => (
+        <div>An error occurred while loading ModeInvite.</div>
+      ),
+    }
+  }),
+)
+const Login = lazy(() =>
+  import("./pages/login/login").catch((err) => {
+    console.error("Failed to load Login component:", err)
+    return {
+      default: () => (
+        <div>An error occurred while loading the Login component.</div>
+      ),
+    }
+  }),
+)
+const AccountCreation = lazy(() =>
+  import("./pages/AccountCreationForm").catch((err) => {
+    console.error("Failed to load AccountCreation component:", err)
+    return {
+      default: () => (
+        <div>An error occurred while loading the AccountCreation component.</div>
+      ),
+    }
+  }),
+)
+const ForgotPassword = lazy(() =>
+  import("./pages/login/ForgotPassword/ForgotPassword").catch((err) => {
+    console.error("Failed to load ForgotPassword component:", err)
+    return {
+      default: () =>
+        <div>An error occurred while loading ForgotPassword.</div>,
+    }
+  }),
+)
+const Otp = lazy(() =>
+  import("./pages/otp/otp").catch((err) => {
+    console.error("Failed to load Otp component:", err)
+    return {
+      default: () =>
+        <div>An error occurred while loading the Otp component.</div>,
+    }
+  }),
+)
 
-// Loading component
+// Loading fallback component
 const LoadingFallback: React.FC = () => (
   <div className="kiosk-loading-container">
     <div className="kiosk-loading-content animate-fade-in">
@@ -58,56 +105,53 @@ const LoadingFallback: React.FC = () => (
 )
 
 setupIonicReact({
-  mode: "md", // Use material design mode for all platforms
-  hardwareBackButton: false, // Disable hardware back button
-  animated: true, // Enable animations
+  mode: "md",
+  hardwareBackButton: false,
 })
 
-// App component with better error handling and performance optimizations
+// A wrapper for private pages, which are only accessible when authenticated.
+// These routes are wrapped with AuthProvider to get authentication context.
+import PrivateRoute from "./context/PrivateRoute"
+import { AuthProvider } from "./context/AuthContext"
+import { CarteProvider } from "./context/CarteContext"
+
+const PrivatePages: React.FC = () => (
+  <AuthProvider>
+    <PrivateRoute exact path="/accueil" component={Accueil} />
+    <PrivateRoute exact path="/compte" component={Compte} />
+    <PrivateRoute exact path="/carte" component={Carte} />
+  </AuthProvider>
+);
+
 const App: React.FC = () => {
-  // Handle orientation changes and viewport dimensions
+  // Remove any useAuth calls here since this part of the app is public.
   useEffect(() => {
     const handleResize = () => {
-      // Set CSS variables for viewport dimensions
-      document.documentElement.style.setProperty("--viewport-height", `${window.innerHeight}px`)
-      document.documentElement.style.setProperty("--viewport-width", `${window.innerWidth}px`)
-
-      // Set orientation class for conditional styling
-      const isLandscape = window.innerWidth > window.innerHeight
-      document.documentElement.classList.toggle("landscape", isLandscape)
-      document.documentElement.classList.toggle("portrait", !isLandscape)
+      document.documentElement.style.setProperty(
+        "--viewport-height",
+        `${window.innerHeight}px`
+      )
+      document.documentElement.style.setProperty(
+        "--viewport-width",
+        `${window.innerWidth}px`
+      )
     }
-
-    // Set initial values
     handleResize()
-
-    // Update on resize with debounce for better performance
-    let resizeTimer: NodeJS.Timeout
-    const debouncedResize = () => {
-      clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(handleResize, 100)
-    }
-
-    window.addEventListener("resize", debouncedResize)
-
-    // Handle orientation change specifically for mobile devices
-    window.addEventListener("orientationchange", handleResize)
-
-    return () => {
-      window.removeEventListener("resize", debouncedResize)
-      window.removeEventListener("orientationchange", handleResize)
-      clearTimeout(resizeTimer)
-    }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   return (
     <ThemeProvider>
       <OrientationProvider>
+        {/* Wrap the entire routing tree with AuthProvider */}
         <AuthProvider>
+        <CarteProvider>
           <IonApp className="kiosk-app">
             <IonReactRouter>
               <Suspense fallback={<LoadingFallback />}>
                 <IonRouterOutlet>
+                  {/* Public Routes */}
                   <Route exact path="/home">
                     <Home />
                   </Route>
@@ -120,24 +164,31 @@ const App: React.FC = () => {
                   <Route exact path="/account-creation">
                     <AccountCreation onBack={() => window.history.back()} />
                   </Route>
-                  <Route exact path="/otp">
-                    <Otp />
-                  </Route>
+                  <Route
+                    exact
+                    path="/otp"
+                    render={(props) => <Otp {...props} />}
+                  />
                   <Route exact path="/forgot-password">
                     <ForgotPassword onBack={() => window.history.back()} />
                   </Route>
                   <Route exact path="/">
                     <Redirect to="/home" />
                   </Route>
+                  <Route exact path="/theme">
+                    <ThemeCustomizerPage />
+                  </Route>
+
+                  {/* Private Routes are still nested within the AuthProvider */}
+                  <PrivatePages />
                 </IonRouterOutlet>
               </Suspense>
             </IonReactRouter>
           </IonApp>
+          </CarteProvider>
         </AuthProvider>
       </OrientationProvider>
     </ThemeProvider>
-  )
+  );
 }
-
 export default App
-

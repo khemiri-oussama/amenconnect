@@ -5,7 +5,6 @@ import { useAuth } from "./AuthContext";
 
 interface PrivateRouteProps extends RouteProps {
   component: React.ComponentType<any>;
-  isAuthenticated: boolean;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, ...rest }) => {
@@ -30,4 +29,3 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, ...re
 };
 
 export default PrivateRoute;
-
