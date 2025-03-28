@@ -19,7 +19,6 @@ import {
   notificationsOutline,
   lockClosedOutline,
   downloadOutline,
-  arrowBack,
   eyeOutline,
   eyeOffOutline,
   chevronForward,
