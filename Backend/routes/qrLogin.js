@@ -9,17 +9,18 @@ const verifyToken = require("../middleware/auth");
 router.post("/create", async (req, res) => {
   const { sessionId } = req.body;
   try {
-    let session = await QRSession.findOne({ sessionId });
-    if (!session) {
-      session = new QRSession({ sessionId });
-      await session.save();
-    }
-    return res.json({ message: "Session created", sessionId });
+    const session = await QRSession.findOneAndUpdate(
+      { sessionId },
+      { $setOnInsert: { sessionId, status: "pending", createdAt: new Date() } },
+      { upsert: true, new: true }
+    );
+    return res.json({ message: "Session created", sessionId: session.sessionId });
   } catch (error) {
-    console.error(error);
+    console.error("Error creating session:", error);
     return res.status(500).json({ message: "Server error" });
   }
 });
+
 
 // POST endpoint: Authenticate a QR session using the authenticated mobile user
 router.post("/", verifyToken, async (req, res) => {
