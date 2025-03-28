@@ -42,24 +42,38 @@ router.post("/", verifyToken, async (req, res) => {
 });
 
 // GET endpoint: Check the status of a QR session and issue a token for the kiosk if authenticated
+// routes/qrLogin.js
+const Session = require("../models/Session"); // Import the Session model
+
 router.get("/:sessionId", async (req, res) => {
   const { sessionId } = req.params;
   try {
-    const session = await QRSession.findOne({ sessionId });
-    if (!session) return res.status(404).json({ message: "Session not found" });
+    const sessionQR = await QRSession.findOne({ sessionId });
+    if (!sessionQR) return res.status(404).json({ message: "Session not found" });
 
-    if (session.status === "authenticated" && session.user) {
+    if (sessionQR.status === "authenticated" && sessionQR.user) {
+      // Create or update the corresponding session in the Session collection
+      await Session.findOneAndUpdate(
+        { sessionId: sessionQR.sessionId },
+        { user: sessionQR.user, status: sessionQR.status, updatedAt: new Date() },
+        { upsert: true, new: true }
+      );
+
       // Generate a new token for the kiosk
-      const token = jwt.sign({ id: session.user, sessionId: session.sessionId }, process.env.JWT_SECRET, { expiresIn: "1h" });
-      // Set a secure, HTTP-only cookie so that the kiosk browser is authenticated
-      res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
-      return res.json({ status: session.status, user: session.user, token });
+      const token = jwt.sign({ id: sessionQR.user, sessionId: sessionQR.sessionId }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      });
+      return res.json({ status: sessionQR.status, user: sessionQR.user, token });
     }
-    return res.json({ status: session.status, user: session.user });
+    return res.json({ status: sessionQR.status, user: sessionQR.user });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });
   }
 });
+
 
 module.exports = router;

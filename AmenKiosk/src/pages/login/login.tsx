@@ -158,7 +158,7 @@ const LoginKiosk: React.FC = () => {
             if (data.status === "authenticated") {
               console.log("Session authenticated, redirecting to accueil...")
               clearInterval(intervalId)
-              window.location.href = "/accueil"
+             window.location.href = "/accueil"
             }
           }
         } catch (error) {

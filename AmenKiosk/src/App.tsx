@@ -45,16 +45,8 @@ const Home = lazy(() =>
     }
   }),
 )
-const ModeInvite = lazy(() =>
-  import("./pages/modeinvite/mode-invite").catch((err) => {
-    console.error("Failed to load ModeInvite component:", err)
-    return {
-      default: () => (
-        <div>An error occurred while loading ModeInvite.</div>
-      ),
-    }
-  }),
-)
+import ModeInvite from "./pages/modeinvite/mode-invite"
+
 const Login = lazy(() =>
   import("./pages/login/login").catch((err) => {
     console.error("Failed to load Login component:", err)
