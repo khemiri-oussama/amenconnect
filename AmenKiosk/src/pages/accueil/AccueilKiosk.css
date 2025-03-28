@@ -12,7 +12,12 @@
   position: relative;
   overflow: hidden;
 }
-
+.Logo {
+  display: block;
+  margin: 0 auto;
+  width: 350px;
+  height: auto;
+}
 .background-white {
   position: absolute;
   top: 0;
