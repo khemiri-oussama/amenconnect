@@ -117,6 +117,7 @@ import { CarteProvider } from "./context/CarteContext"
 
 const PrivatePages: React.FC = () => (
   <AuthProvider>
+    <ThemeLoader/>
     <PrivateRoute exact path="/accueil" component={Accueil} />
     <PrivateRoute exact path="/compte" component={Compte} />
     <PrivateRoute exact path="/carte" component={Carte} />

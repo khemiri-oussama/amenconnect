@@ -1,11 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+/* Removed static import of ../../theme/variables.css to allow dynamic values to override */
 
+/* Global container using dynamic background */
 .compte-kiosk-container {
   font-family: "Outfit", sans-serif;
   height: 100vh;
   width: 100vw;
   position: relative;
   overflow: hidden;
+  background-color: var(--kiosk-background, #ffffff);
 }
 
 .background-white {
@@ -14,7 +17,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ffffff;
+  background-color: var(--kiosk-surface, #ffffff);
   z-index: -2;
 }
 
@@ -48,7 +51,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
@@ -65,7 +68,7 @@
 }
 
 .compte-kiosk-title {
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 3rem;
   font-weight: 700;
   line-height: 1.1;
@@ -73,7 +76,7 @@
 }
 
 .compte-kiosk-subtitle {
-  color: #121660;
+  color: var(--kiosk-primary-text, #121660);
   font-size: 1.5rem;
   opacity: 0.8;
 }
@@ -86,12 +89,12 @@
 }
 
 .compte-kiosk-account-card {
-  background: white;
+  background: var(--kiosk-surface, #ffffff);
   border-radius: 1.5rem;
   padding: 1.5rem;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--kiosk-shadow-sm, 0 4px 15px rgba(0, 0, 0, 0.08));
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -100,7 +103,7 @@
 
 .compte-kiosk-account-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--kiosk-shadow-md, 0 6px 20px rgba(0, 0, 0, 0.12));
 }
 
 .compte-kiosk-account-icon {
@@ -116,7 +119,7 @@
 
 .compte-kiosk-account-icon ion-icon {
   font-size: 2rem;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
 }
 
 .compte-kiosk-account-details {
@@ -126,27 +129,27 @@
 .compte-kiosk-account-type {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   margin-bottom: 0.25rem;
 }
 
 .compte-kiosk-account-number {
   font-size: 1rem;
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
 }
 
 .compte-kiosk-account-balance {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
 }
 
 .compte-kiosk-section {
-  background: white;
+  background: var(--kiosk-surface, #ffffff);
   border-radius: 1.5rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--kiosk-shadow-sm, 0 4px 15px rgba(0, 0, 0, 0.08));
 }
 
 .compte-kiosk-section-header {
@@ -157,7 +160,7 @@
 }
 
 .compte-kiosk-section-title {
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0;
@@ -175,7 +178,7 @@
 }
 
 .compte-kiosk-action-button {
-  --background: linear-gradient(to right, #121660, #181e92);
+  --background: linear-gradient(to right, var(--kiosk-primary, #121660), var(--kiosk-secondary, #181e92));
   --color: white;
   --border-radius: 1rem;
   --padding-top: 1.25rem;
@@ -204,7 +207,7 @@
 
 .compte-kiosk-update-date {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
 }
 
 .compte-kiosk-operations-list {
@@ -218,7 +221,7 @@
   align-items: center;
   padding: 1.25rem;
   border-radius: 1rem;
-  background-color: #f8f8f8;
+  background-color: var(--kiosk-surface, #f8f8f8);
   position: relative;
   overflow: hidden;
 }
@@ -236,7 +239,7 @@
 
 .compte-kiosk-operation-icon ion-icon {
   font-size: 1.75rem;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
 }
 
 .compte-kiosk-operation-details {
@@ -246,13 +249,13 @@
 .compte-kiosk-operation-description {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   margin-bottom: 0.25rem;
 }
 
 .compte-kiosk-operation-date {
   font-size: 1rem;
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
 }
 
 .compte-kiosk-operation-amount {
@@ -261,11 +264,11 @@
 }
 
 .compte-kiosk-operation-amount.credit {
-  color: #47ce65;
+  color: var(--kiosk-success, #47ce65);
 }
 
 .compte-kiosk-operation-amount.debit {
-  color: #e74c3c;
+  color: var(--kiosk-danger, #e74c3c);
 }
 
 .compte-kiosk-loading {
@@ -275,9 +278,10 @@
   height: 100vh;
   font-family: "Outfit", sans-serif;
   font-size: 1.5rem;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
 }
 
+/* Responsive rules */
 @media (min-width: 768px) {
   .compte-kiosk-actions-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -288,28 +292,22 @@
   .compte-kiosk-title {
     font-size: 2.5rem;
   }
-
   .compte-kiosk-subtitle {
     font-size: 1.25rem;
   }
-
   .compte-kiosk-account-icon {
     width: 3.5rem;
     height: 3.5rem;
   }
-
   .compte-kiosk-account-icon ion-icon {
     font-size: 1.75rem;
   }
-
   .compte-kiosk-account-type {
     font-size: 1.25rem;
   }
-
   .compte-kiosk-account-balance {
     font-size: 1.5rem;
   }
-
   .compte-kiosk-section-title {
     font-size: 1.5rem;
   }
@@ -320,61 +318,47 @@
     top: 1rem;
     left: 1rem;
   }
-
   .compte-kiosk-content {
     padding: 1rem;
     padding-top: 4rem;
   }
-
   .compte-kiosk-title {
     font-size: 2rem;
   }
-
   .compte-kiosk-subtitle {
     font-size: 1rem;
   }
-
   .compte-kiosk-account-icon {
     width: 3rem;
     height: 3rem;
     margin-right: 1rem;
   }
-
   .compte-kiosk-account-icon ion-icon {
     font-size: 1.5rem;
   }
-
   .compte-kiosk-account-type {
     font-size: 1.1rem;
   }
-
   .compte-kiosk-account-balance {
     font-size: 1.25rem;
   }
-
   .compte-kiosk-action-content ion-icon {
     font-size: 1.5rem;
   }
-
   .compte-kiosk-action-content span {
     font-size: 1rem;
   }
-
   .compte-kiosk-operation-icon {
     width: 2.5rem;
     height: 2.5rem;
   }
-
   .compte-kiosk-operation-icon ion-icon {
     font-size: 1.25rem;
   }
-
   .compte-kiosk-operation-description {
     font-size: 1rem;
   }
-
   .compte-kiosk-operation-amount {
     font-size: 1.25rem;
   }
 }
-

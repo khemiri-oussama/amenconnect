@@ -32,10 +32,7 @@ const ThemeCustomizerPage: React.FC = () => {
   };
 
   // Apply theme: update context and the root CSS variables.
-  const applyThemeHandler = () => {
-    setTheme(localTheme);
-    updateRootVariables();
-  };
+
 
   // Export the current theme by sending the CSS content to the backend (to be stored in MongoDB).
   const exportCSS = async () => {
@@ -151,7 +148,7 @@ const ThemeCustomizerPage: React.FC = () => {
       if (response.ok) {
         alert('Theme settings updated successfully in the database.');
       } else {
-        alert('Failed to update theme settings: ' + (responseData.error || 'Unknown error'));
+        alert('Failed to update theme settings: ' + (responseData || 'Unknown error'));
       }
     } catch (error) {
       console.error("Error updating theme settings:", error);
@@ -176,9 +173,6 @@ const ThemeCustomizerPage: React.FC = () => {
           </label>
         </div>
       ))}
-      <button onClick={applyThemeHandler} style={{ marginRight: "1rem" }}>
-        Apply Theme
-      </button>
       <button onClick={exportCSS}>Export CSS</button>
     </div>
   );

@@ -15,15 +15,12 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useHistory } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
-import { useTheme } from "../../context/ThemeContext"
 import NavbarKiosk from "../../components/NavbarKiosk"
 import "./AccueilKiosk.css"
-// Remove the direct import of variables.css if it's causing issues
-// import "./variables.css"
 
 // Import jsPDF and autoTable
-import jsPDF from "jspdf"
-import "jspdf-autotable"
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 interface Account {
   _id: string
@@ -51,7 +48,6 @@ const AccueilKiosk: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true)
   const [errorTransactions, setErrorTransactions] = useState<string | null>(null)
-  const { isDark, toggleTheme } = useTheme()
 
   const history = useHistory()
   const { profile, authLoading } = useAuth()
@@ -72,6 +68,7 @@ const AccueilKiosk: React.FC = () => {
     ExpiryDate: card.ExpiryDate,
     CardHolder: card.CardHolder,
   }))
+
   // Fetch transactions from the API.
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -94,12 +91,6 @@ const AccueilKiosk: React.FC = () => {
     }
     fetchTransactions()
   }, [])
-  const recentTransactions: Transaction[] = [
-    { id: 1, description: "Supermarché", amount: 85.5, date: "2025-01-20", type: "debit" },
-    { id: 2, description: "Salaire", amount: 2500.0, date: "2025-01-15", type: "credit" },
-    { id: 3, description: "Restaurant", amount: 45.0, date: "2025-01-18", type: "debit" },
-    { id: 4, description: "Transport", amount: 30.0, date: "2025-01-17", type: "debit" },
-  ]
 
   const totalBalance = useMemo(() => accounts.reduce((sum, account) => sum + account.solde, 0), [accounts])
 
@@ -129,8 +120,6 @@ const AccueilKiosk: React.FC = () => {
   }
 
   // Function to generate and print the PDF statement
-  // Updated handlePrintStatement with enhanced styling
-
   const defaultBankBranding = {
     name: "Amen Bank",
     logo: "amen_logo.png", // Ensure this path is accessible
@@ -176,10 +165,9 @@ const AccueilKiosk: React.FC = () => {
         CardHolder: `${prenom} ${nom}`,
       }
 
-      // Calculate total balance, total credits, and debits from recent transactions
-      const totalBalanceFormatted = totalBalance.toFixed(2)
-      const totalCredit = recentTransactions.filter((t) => t.type === "credit").reduce((sum, t) => sum + t.amount, 0)
-      const totalDebit = recentTransactions.filter((t) => t.type === "debit").reduce((sum, t) => sum + t.amount, 0)
+      // Calculate total credits and debits from transactions from the API
+      const totalCredit = transactions.filter((t) => t.type === "credit").reduce((sum, t) => sum + t.amount, 0)
+      const totalDebit = transactions.filter((t) => t.type === "debit").reduce((sum, t) => sum + t.amount, 0)
       const netBalance = totalCredit - totalDebit
 
       const doc = new jsPDF({
@@ -314,14 +302,14 @@ const AccueilKiosk: React.FC = () => {
 
       // ─── Transactions Table ──────────────────────────────
       const tableHead = [["Date", "Description", "Type", "Montant"]]
-      const tableData = recentTransactions.map((t) => [
-        t.date,
+      const tableData = transactions.map((t) => [
+        new Date(t.date).toLocaleDateString(defaultStatementConfig.locale),
         t.description,
         t.type === "credit" ? "+" : "-",
         formatCurrency(t.amount),
       ])
 
-      doc.autoTable({
+      autoTable(doc, {
         startY: summaryBoxY + 50,
         head: tableHead,
         body: tableData,
@@ -392,7 +380,7 @@ const AccueilKiosk: React.FC = () => {
     <IonPage>
       <NavbarKiosk currentPage="accueil" />
       <IonContent fullscreen>
-        <div className={`accueil-kiosk-container ${isDark ? "dark-theme" : ""}`}>
+        <div className={`accueil-kiosk-container`}>
           <div className="accueil-kiosk-content">
             <div className="accueil-kiosk-header">
               <IonImg class="Logo" src="amen_logo.png" alt="Amen Bank Logo"></IonImg>
@@ -567,4 +555,3 @@ const AccueilKiosk: React.FC = () => {
 }
 
 export default AccueilKiosk
-

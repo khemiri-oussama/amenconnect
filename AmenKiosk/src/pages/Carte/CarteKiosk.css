@@ -6,6 +6,7 @@
   width: 100vw;
   position: relative;
   overflow: hidden;
+  background-color: var(--kiosk-background, #ffffff);
 }
 
 .background-white {
@@ -14,7 +15,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ffffff;
+  background-color: var(--kiosk-surface, #ffffff);
   z-index: -2;
 }
 
@@ -48,7 +49,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
@@ -65,7 +66,7 @@
 }
 
 .carte-kiosk-title {
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 3rem;
   font-weight: 700;
   line-height: 1.1;
@@ -73,7 +74,7 @@
 }
 
 .carte-kiosk-subtitle {
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 1.5rem;
   opacity: 0.8;
 }
@@ -88,7 +89,7 @@
 
 .carte-kiosk-pagination-text {
   font-size: 1rem;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   margin-bottom: 0.5rem;
 }
 
@@ -107,7 +108,7 @@
 }
 
 .carte-kiosk-pagination-dot.active {
-  background-color: #121660;
+  background-color: var(--kiosk-primary, #121660);
   transform: scale(1.2);
 }
 
@@ -150,7 +151,7 @@
 
 .carte-kiosk-nav-button ion-icon {
   font-size: 1.25rem;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
 }
 
 /* Swipe hint */
@@ -162,7 +163,7 @@
 
 .carte-kiosk-swipe-text {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
   background-color: rgba(18, 22, 96, 0.1);
   padding: 0.5rem 1rem;
   border-radius: 1rem;
@@ -180,11 +181,11 @@
   width: 100%;
   max-width: 450px;
   aspect-ratio: 1.6 / 1;
-  background: linear-gradient(135deg, #121660, #181e92);
-  border-radius: 1.5rem;
+  background: linear-gradient(135deg, var(--kiosk-primary, #121660), var(--kiosk-secondary, #181e92));
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
   padding: 1.5rem;
-  color: white;
-  box-shadow: 0 10px 30px rgba(18, 22, 96, 0.3);
+  color: var(--kiosk-primary-text, white);
+  box-shadow: var(--kiosk-shadow-lg, 0 10px 30px rgba(18, 22, 96, 0.3));
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -263,7 +264,7 @@
 
 .carte-kiosk-toggle-visibility ion-icon {
   font-size: 1.25rem;
-  color: white;
+  color: var(--kiosk-primary-text, white);
 }
 
 .carte-kiosk-card-bottom {
@@ -312,9 +313,9 @@
 }
 
 .carte-kiosk-action-button {
-  --background: linear-gradient(to right, #121660, #181e92);
+  --background: linear-gradient(to right, var(--kiosk-primary, #121660), var(--kiosk-secondary, #181e92));
   --color: white;
-  --border-radius: 1rem;
+  --border-radius: var(--kiosk-radius-md, 1rem);
   --padding-top: 1.25rem;
   --padding-bottom: 1.25rem;
   height: auto;
@@ -322,11 +323,11 @@
 }
 
 .carte-kiosk-section {
-  background: white;
-  border-radius: 1.5rem;
+  background: var(--kiosk-surface, #ffffff);
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--kiosk-shadow-sm, 0 4px 15px rgba(0, 0, 0, 0.08));
 }
 
 .carte-kiosk-section-header {
@@ -334,7 +335,7 @@
 }
 
 .carte-kiosk-section-title {
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0;
@@ -353,7 +354,7 @@
 }
 
 .carte-kiosk-limit-info {
-  color: #000;
+  color: var(--kiosk-primary, #121660);
   display: flex;
   justify-content: space-between;
   font-size: 1.1rem;
@@ -361,10 +362,10 @@
 
 .carte-kiosk-tabs {
   display: flex;
-  background-color: white;
-  border-radius: 1rem;
+  background-color: var(--kiosk-surface, #ffffff);
+  border-radius: var(--kiosk-radius-md, 1rem);
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--kiosk-shadow-sm, 0 4px 15px rgba(0, 0, 0, 0.08));
   overflow: hidden;
 }
 
@@ -374,13 +375,13 @@
   padding: 1rem;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .carte-kiosk-tab.active {
-  background-color: #121660;
+  background-color: var(--kiosk-primary, #121660);
   color: white;
 }
 
@@ -392,28 +393,28 @@
 }
 
 .carte-kiosk-balance-card {
-  background: white;
-  border-radius: 1.5rem;
+  background: var(--kiosk-surface, #ffffff);
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
   padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--kiosk-shadow-sm, 0 4px 15px rgba(0, 0, 0, 0.08));
 }
 
 .carte-kiosk-balance-card h4 {
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
   font-size: 1.1rem;
   margin: 0 0 0.5rem 0;
   font-weight: 500;
 }
 
 .carte-kiosk-balance-amount {
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
 }
 
 .carte-kiosk-pending-count {
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
   font-size: 0.9rem;
 }
 
@@ -427,8 +428,8 @@
   display: flex;
   align-items: center;
   padding: 1.25rem;
-  border-radius: 1rem;
-  background-color: #f8f8f8;
+  border-radius: var(--kiosk-radius-md, 1rem);
+  background-color: var(--kiosk-surface, #f8f8f8);
   position: relative;
   overflow: hidden;
 }
@@ -452,18 +453,18 @@
 .carte-kiosk-transaction-merchant {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   margin-bottom: 0.25rem;
 }
 
 .carte-kiosk-transaction-info {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
 }
 
 .carte-kiosk-transaction-description {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
   font-style: italic;
   margin-top: 0.25rem;
 }
@@ -474,11 +475,11 @@
 }
 
 .carte-kiosk-transaction-amount.positive {
-  color: #47ce65;
+  color: var(--kiosk-success, #47ce65);
 }
 
 .carte-kiosk-transaction-amount.negative {
-  color: #e74c3c;
+  color: var(--kiosk-danger, #e74c3c);
 }
 
 .carte-kiosk-details-grid {
@@ -494,14 +495,14 @@
 }
 
 .carte-kiosk-detail-item h4 {
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
   font-size: 1.1rem;
   margin: 0;
   font-weight: 500;
 }
 
 .carte-kiosk-detail-item p {
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
@@ -519,12 +520,12 @@
 
 .carte-kiosk-status-chip.active {
   background-color: rgba(71, 206, 101, 0.2);
-  color: #47ce65;
+  color: var(--kiosk-success, #47ce65);
 }
 
 .carte-kiosk-status-chip.locked {
   background-color: rgba(231, 76, 60, 0.2);
-  color: #e74c3c;
+  color: var(--kiosk-danger, #e74c3c);
 }
 
 .carte-kiosk-security-features {
@@ -551,7 +552,7 @@
 
 .carte-kiosk-feature-icon ion-icon {
   font-size: 1.5rem;
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
 }
 
 .carte-kiosk-feature-details {
@@ -559,14 +560,14 @@
 }
 
 .carte-kiosk-feature-details h4 {
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0 0 0.25rem 0;
 }
 
 .carte-kiosk-feature-details p {
-  color: #666;
+  color: var(--kiosk-text-muted, #666);
   font-size: 1rem;
   margin: 0;
 }
@@ -584,36 +585,31 @@
 
 .carte-kiosk-loading p,
 .carte-kiosk-error p {
-  color: #121660;
+  color: var(--kiosk-primary, #121660);
   font-size: 1.5rem;
   font-weight: 600;
 }
 
+/* Responsive rules */
 @media (max-width: 768px) {
   .carte-kiosk-title {
     font-size: 2.5rem;
   }
-
   .carte-kiosk-subtitle {
     font-size: 1.25rem;
   }
-
   .carte-kiosk-credit-card {
     max-width: 400px;
   }
-
   .carte-kiosk-card-number {
     font-size: 1.25rem;
   }
-
   .carte-kiosk-card-holder {
     font-size: 1rem;
   }
-
   .carte-kiosk-balance-summary {
     grid-template-columns: 1fr;
   }
-
   .carte-kiosk-details-grid {
     grid-template-columns: 1fr;
   }
@@ -624,66 +620,51 @@
     top: 1rem;
     left: 1rem;
   }
-
   .carte-kiosk-content {
     padding: 1rem;
     padding-top: 4rem;
   }
-
   .carte-kiosk-title {
     font-size: 2rem;
   }
-
   .carte-kiosk-subtitle {
     font-size: 1rem;
   }
-
   .carte-kiosk-credit-card {
     max-width: 320px;
   }
-
   .carte-kiosk-chip {
     width: 40px;
   }
-
   .carte-kiosk-card-type {
     font-size: 1rem;
   }
-
   .carte-kiosk-card-number {
     font-size: 1rem;
   }
-
   .carte-kiosk-toggle-visibility {
     width: 2rem;
     height: 2rem;
   }
-
   .carte-kiosk-toggle-visibility ion-icon {
     font-size: 1rem;
   }
-
   .carte-kiosk-card-holder {
     font-size: 0.9rem;
   }
-
   .carte-kiosk-expiry {
     font-size: 0.8rem;
   }
-
   .carte-kiosk-quick-actions {
     grid-template-columns: 1fr;
   }
-
   .carte-kiosk-section-title {
     font-size: 1.5rem;
   }
-
   .carte-kiosk-tab {
     font-size: 1rem;
     padding: 0.75rem;
   }
-  
   .carte-kiosk-nav-button {
     width: 30px;
     height: 30px;
