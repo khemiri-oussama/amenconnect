@@ -1,6 +1,6 @@
 // middleware/auth.js
 const jwt = require('jsonwebtoken');
-
+const Session = require('../models/Session');
 const verifyToken = async (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
