@@ -140,11 +140,11 @@ const AccueilKiosk: React.FC = () => {
     locale: "en-US",
     currency: "TND",
     theme: {
-      headerColor: [0, 51, 102],
-      textColor: [33, 33, 33],
-      accentColor: [0, 102, 204],
-      tableHeaderColor: [0, 51, 102],
-      alternateRowColor: [240, 240, 240],
+      headerColor: [0, 51, 102] as [number, number, number],
+      textColor: [33, 33, 33] as [number, number, number],
+      accentColor: [0, 102, 204] as [number, number, number],
+      tableHeaderColor: [0, 51, 102] as [number, number, number],
+      alternateRowColor: [240, 240, 240] as [number, number, number],
     },
   }
 

@@ -6,6 +6,7 @@
     "ionicons": "^7.4.0",
     "react": "^19.0.0",
     "react-router-dom": "^5.3.4",
+    "react-simple-keyboard": "^3.8.57",
     "recharts": "^2.15.1",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.17.0"
