@@ -172,20 +172,20 @@ const HomeKiosk: React.FC = () => {
                 <div className="video-loading-spinner"></div>
               </div>
             )}
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted
-              playsInline
-              controls={false}
-              onLoadedData={handleVideoLoad}
-              onError={handleVideoError}
-              className={videoLoaded ? "video-loaded" : ""}
-            >
-              <source src="pub.mp4" type="video/mp4" />
-              Votre navigateur ne supporte pas la lecture de vidéos.
-            </video>
+<video
+  ref={videoRef}
+  autoPlay
+  loop
+  playsInline
+  controls={false}
+  onLoadedData={handleVideoLoad}
+  onError={handleVideoError}
+  className={videoLoaded ? "video-loaded" : ""}
+>
+  <source src="pub.mp4" type="video/mp4" />
+  Votre navigateur ne supporte pas la lecture de vidéos.
+</video>
+
             <div className="video-overlay">
               <div className="video-tap-instruction">
                 <span>Touchez l'écran pour continuer</span>
