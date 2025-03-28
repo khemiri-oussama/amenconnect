@@ -2,10 +2,12 @@
 
 import type React from "react"
 import { useEffect, useRef } from "react"
-import { IonContent, IonPage, IonImg, IonIcon, IonButton, IonInput, IonText, useIonRouter } from "@ionic/react"
+import { IonContent, IonPage, IonImg, IonIcon, IonButton, IonText, useIonRouter, IonInput } from "@ionic/react"
 import { arrowBack } from "ionicons/icons"
 import { useAuth } from "../../context/AuthContext"
 import useOtp from "../../hooks/useOtp"
+import Keyboard from "react-simple-keyboard"
+import "react-simple-keyboard/build/css/index.css"
 import "./otp.css"
 
 const OtpKiosk: React.FC = () => {
@@ -22,7 +24,6 @@ const OtpKiosk: React.FC = () => {
 
   // Reset inactivity timer (session timeout)
   const INACTIVITY_TIMEOUT = 60000 // 60 seconds
-
   const resetTimer = () => {
     if (inactivityTimer.current) {
       clearTimeout(inactivityTimer.current)
@@ -41,6 +42,7 @@ const OtpKiosk: React.FC = () => {
   // Use the custom OTP hook.
   const {
     otp,
+    setOtp,
     inputRefs,
     errorMessage,
     isLoading,
@@ -57,24 +59,39 @@ const OtpKiosk: React.FC = () => {
     ionRouter.push("/login")
   }
 
-  // Handle user interaction to reset timer
+  // Reset inactivity timer on user interaction
   useEffect(() => {
     const handleUserInteraction = () => {
       resetTimer()
     }
-
     document.addEventListener("touchstart", handleUserInteraction)
     document.addEventListener("click", handleUserInteraction)
-
-    // Set initial timer
     resetTimer()
-
     return () => {
       document.removeEventListener("touchstart", handleUserInteraction)
       document.removeEventListener("click", handleUserInteraction)
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current)
     }
   }, [ionRouter])
+
+  // Handle OTP keyboard key press for numeric keyboard only.
+  const handleOtpKeyboardKeyPress = (button: string) => {
+    if (button === "{bksp}") {
+      setOtp((prev: string) => prev.slice(0, -1))
+    } else if (button === "{enter}") {
+      // If 6 digits have been entered, trigger submission.
+      if (otp.length === 6) {
+        // Create a synthetic event to pass to handleSubmit.
+        const event = new Event("submit", { bubbles: true, cancelable: true })
+        handleSubmit(event as any)
+      }
+    } else {
+      // Append numeric digit if less than 6 characters.
+      if (otp.length < 6) {
+        setOtp((prev: string) => prev + button)
+      }
+    }
+  }
 
   return (
     <IonPage>
@@ -145,6 +162,24 @@ const OtpKiosk: React.FC = () => {
             </form>
             <p className="otpkiosk-message">La réussite est à portée de clic.</p>
           </div>
+          {/* Render numeric virtual keyboard */}
+          <div
+            className="virtual-keyboard-container"
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            <Keyboard
+              layout={{
+                default: [
+                  "1 2 3",
+                  "4 5 6",
+                  "7 8 9",
+                  "0 {bksp} {enter}"
+                ]
+              }}
+              layoutName="default"
+              onKeyPress={handleOtpKeyboardKeyPress}
+            />
+          </div>
         </div>
       </IonContent>
     </IonPage>
@@ -152,4 +187,3 @@ const OtpKiosk: React.FC = () => {
 }
 
 export default OtpKiosk
-
