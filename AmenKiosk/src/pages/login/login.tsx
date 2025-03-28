@@ -3,25 +3,37 @@
 import type React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { IonContent, IonPage, IonImg, useIonRouter, IonIcon } from "@ionic/react"
-import { arrowBack, eyeOutline, eyeOffOutline, phonePortrait, mailOutline, lockClosedOutline } from "ionicons/icons"
+import {
+  arrowBack,
+  eyeOutline,
+  eyeOffOutline,
+  phonePortrait,
+  mailOutline,
+  lockClosedOutline,
+} from "ionicons/icons"
 import { QRCodeSVG } from "qrcode.react"
 import { useLogin } from "../../hooks/useLogin"
 import ForgotPasswordKiosk from "./ForgotPassword/ForgotPassword"
 import "./login.css"
+import Keyboard from "react-simple-keyboard"
+import "react-simple-keyboard/build/css/index.css"
 
 const LoginKiosk: React.FC = () => {
   const [showLoginForm, setShowLoginForm] = useState(false)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
-  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [isQrLoading, setIsQrLoading] = useState(true)
+  // activeInput holds the name of the input that is currently focused ("email" or "password")
+  const [activeInput, setActiveInput] = useState<string | null>(null)
+
   const ionRouter = useIonRouter()
 
-  // Ref for managing inactivity timer
+  // Refs for managing inactivity timer and input elements
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null)
-  // Ref to focus on the username input when the form is shown
-  const usernameInputRef = useRef<HTMLInputElement | null>(null)
+  const emailInputRef = useRef<HTMLInputElement | null>(null)
+  const passwordInputRef = useRef<HTMLInputElement | null>(null)
 
   // Generate a unique session ID for the QR code when the component loads
   const sessionId = useRef(Math.random().toString(36).substring(2, 15))
@@ -53,7 +65,6 @@ const LoginKiosk: React.FC = () => {
 
   // Reset inactivity timer (session timeout)
   const INACTIVITY_TIMEOUT = 60000 // 60 seconds
-
   const resetTimer = useCallback(() => {
     if (inactivityTimer.current) {
       clearTimeout(inactivityTimer.current)
@@ -73,9 +84,8 @@ const LoginKiosk: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await login(username, password)
+      await login(email, password)
     } catch (error) {
-      // Error is already handled by the hook
       console.error("Login failed:", error)
     }
     resetTimer()
@@ -123,8 +133,6 @@ const LoginKiosk: React.FC = () => {
         const errorData = await response.json()
         throw new Error(errorData.message || "Une erreur s'est produite")
       }
-
-      // Success - the email was sent
       return
     } catch (error: any) {
       throw error
@@ -135,7 +143,6 @@ const LoginKiosk: React.FC = () => {
   const qrCodeData = `http://localhost:8200/auth?session=${sessionId.current}`
 
   // Polling: periodically check if the mobile app has authenticated the session.
-  // When authenticated, redirect the kiosk to /accueil.
   useEffect(() => {
     let intervalId: NodeJS.Timeout
 
@@ -169,8 +176,8 @@ const LoginKiosk: React.FC = () => {
     document.addEventListener("touchstart", handleUserInteraction)
     document.addEventListener("click", handleUserInteraction)
 
-    if (showLoginForm && usernameInputRef.current) {
-      usernameInputRef.current.focus()
+    if (showLoginForm && emailInputRef.current) {
+      emailInputRef.current.focus()
     }
 
     return () => {
@@ -179,6 +186,42 @@ const LoginKiosk: React.FC = () => {
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current)
     }
   }, [handleUserInteraction, showLoginForm])
+
+  // Virtual keyboard change handler updates the active input field's value
+  const onKeyboardChange = (input: string) => {
+    if (activeInput === "email") {
+      setEmail(input)
+    } else if (activeInput === "password") {
+      setPassword(input)
+    }
+  }
+
+  // Hide the keyboard on Enter
+  const onKeyboardKeyPress = (button: string) => {
+    if (button === "{enter}") {
+      setActiveInput(null)
+    }
+  }
+
+  // Handlers for input focus to display the virtual keyboard
+  const handleInputFocus = (inputName: string) => {
+    setActiveInput(inputName)
+  }
+
+  // Optionally, you can still use onBlur to hide the keyboard when clicking elsewhere
+  const handleInputBlur = () => {
+    setTimeout(() => {
+      setActiveInput(null)
+    }, 200)
+  }
+
+  // Determine the current value to pass to the keyboard
+  const keyboardValue =
+    activeInput === "email"
+      ? email
+      : activeInput === "password"
+      ? password
+      : ""
 
   return (
     <IonPage>
@@ -228,19 +271,21 @@ const LoginKiosk: React.FC = () => {
                 ) : (
                   <form className="loginkiosk-form animate-fade-in" onSubmit={handleLogin}>
                     <div className="kiosk-form-group">
-                      <label htmlFor="username" className="kiosk-label">
-                        Identifiant
+                      <label htmlFor="email" className="kiosk-label">
+                        Adresse Email
                       </label>
                       <div className="loginkiosk-input-container">
                         <IonIcon icon={mailOutline} className="loginkiosk-input-icon" />
                         <input
-                          ref={usernameInputRef}
-                          type="text"
-                          id="username"
+                          ref={emailInputRef}
+                          type="email"
+                          id="email"
                           className="kiosk-input"
-                          value={username}
-                          onChange={(e) => setUsername(e.target.value)}
-                          placeholder="Entrez votre identifiant"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          onFocus={() => handleInputFocus("email")}
+                          onBlur={handleInputBlur}
+                          placeholder="Entrez votre adresse email"
                           required
                         />
                       </div>
@@ -252,11 +297,14 @@ const LoginKiosk: React.FC = () => {
                       <div className="loginkiosk-password-container">
                         <IonIcon icon={lockClosedOutline} className="loginkiosk-input-icon" />
                         <input
+                          ref={passwordInputRef}
                           type={showPassword ? "text" : "password"}
                           id="password"
                           className="kiosk-input"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
+                          onFocus={() => handleInputFocus("password")}
+                          onBlur={handleInputBlur}
                           placeholder="Entrez votre mot de passe"
                           required
                         />
@@ -286,6 +334,20 @@ const LoginKiosk: React.FC = () => {
               <ForgotPasswordKiosk onBack={handleBack} onSubmit={handleForgotPasswordSubmit} />
             )}
           </div>
+          {/* Render virtual keyboard if an input is active.
+              The onMouseDown prevents keyboard clicks from triggering a blur on the input. */}
+          {activeInput && (
+            <div
+              className="virtual-keyboard-container"
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              <Keyboard
+                onChange={onKeyboardChange}
+                onKeyPress={onKeyboardKeyPress}
+                value={keyboardValue}
+              />
+            </div>
+          )}
         </div>
       </IonContent>
     </IonPage>
@@ -293,4 +355,3 @@ const LoginKiosk: React.FC = () => {
 }
 
 export default LoginKiosk
-
