@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect, useRef, useCallback } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import { IonContent, IonPage, IonImg, useIonRouter, IonIcon } from "@ionic/react"
 import {
   arrowBack,
@@ -140,13 +139,14 @@ const LoginKiosk: React.FC = () => {
   }
 
   // Embed the session ID in the QR code URL for the mobile app to scan
-  const qrCodeData = `http://localhost:8200/auth?session=${sessionId.current}`
+  const qrCodeData = `http://localhost:8100/auth?session=${sessionId.current}`
 
   // Polling: periodically check if the mobile app has authenticated the session.
+  // Run polling only when the QR code is being shown (i.e. when both showForgotPassword and showLoginForm are false)
   useEffect(() => {
     let intervalId: NodeJS.Timeout
 
-    if (!showForgotPassword) {
+    if (!showForgotPassword && !showLoginForm) {
       intervalId = setInterval(async () => {
         try {
           const response = await fetch(`/api/qr-login/${sessionId.current}?t=${Date.now()}`, {
@@ -170,7 +170,7 @@ const LoginKiosk: React.FC = () => {
     return () => {
       if (intervalId) clearInterval(intervalId)
     }
-  }, [showForgotPassword])
+  }, [showForgotPassword, showLoginForm])
 
   useEffect(() => {
     document.addEventListener("touchstart", handleUserInteraction)
