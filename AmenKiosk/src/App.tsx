@@ -167,11 +167,9 @@ const App: React.FC = () => {
                   <Route exact path="/account-creation">
                     <AccountCreation onBack={() => window.history.back()} />
                   </Route>
-                  <Route
-                    exact
-                    path="/otp"
-                    render={(props) => <Otp {...props} />}
-                  />
+                  <Route exact path="/otp">
+                    <Otp />
+                  </Route>
                   <Route exact path="/forgot-password">
                     <ForgotPassword onBack={() => window.history.back()} />
                   </Route>
