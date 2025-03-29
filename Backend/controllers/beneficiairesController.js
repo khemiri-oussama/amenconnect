@@ -43,7 +43,7 @@ exports.updateBeneficiaire = async (req, res) => {
     const { id } = req.params;
     // Ensure that only the owner can update
     const updatedBeneficiaire = await Beneficiaire.findOneAndUpdate(
-      { _id: id, userId: req.user._id },
+      {  _id: id, userId: req.user.id },
       req.body,
       { new: true }
     );
@@ -62,7 +62,7 @@ exports.deleteBeneficiaire = async (req, res) => {
   try {
     const { id } = req.params;
     // Ensure that only the owner can delete
-    const deleted = await Beneficiaire.findOneAndDelete({ _id: id, userId: req.user._id });
+    const deleted = await Beneficiaire.findOneAndDelete({ _id: id, userId: req.user.id });
     if (!deleted) {
       return res.status(404).json({ message: "Bénéficiaire non trouvé" });
     }
