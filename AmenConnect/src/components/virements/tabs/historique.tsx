@@ -44,6 +44,7 @@ const Historique: React.FC = () => {
     // Fetch transactions
     const fetchTransactions = async () => {
       try {
+        setLoading(true)
         const response = await fetch("/api/historique", {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -52,27 +53,25 @@ const Historique: React.FC = () => {
           throw new Error("Failed to fetch transactions")
         }
 
-        // Add some mock data for virements specifically
         const data = await response.json()
-        const enhancedData = data.map((tx: any) => ({
-          ...tx,
-          status: Math.random() > 0.9 ? "pending" : Math.random() > 0.95 ? "failed" : "completed",
-          beneficiary: tx.type === "debit" ? "Jean Dupont" : "Vous-même",
-          reference: `REF-${Math.floor(Math.random() * 1000000)}`,
-        }))
-
-        setTransactions(enhancedData)
-        setFilteredTransactions(enhancedData)
-      } catch (error: any) {
-        console.error("Error fetching transactions:", error)
-        setError(error.message || "Une erreur est survenue lors de la récupération des transactions")
+        setTransactions(data)
+        setFilteredTransactions(data)
+      } catch (err: any) {
+        console.error("Error fetching transactions:", err)
+        setError(err.message || "Une erreur est survenue lors de la récupération des transactions")
       } finally {
         setLoading(false)
       }
     }
 
-    fetchTransactions()
-  }, [])
+    // Only call if user is logged in or has a profile
+    if (profile) {
+      fetchTransactions()
+    } else {
+      setLoading(false)
+      setError("Veuillez vous connecter pour voir l'historique.")
+    }
+  }, [profile])
 
   useEffect(() => {
     // Apply filters
@@ -84,7 +83,7 @@ const Historique: React.FC = () => {
         (tx) =>
           tx.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
           (tx.beneficiary && tx.beneficiary.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (tx.reference && tx.reference.toLowerCase().includes(searchTerm.toLowerCase())),
+          (tx.reference && tx.reference.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     }
 
@@ -288,7 +287,7 @@ const Historique: React.FC = () => {
                   <tr key={tx._id}>
                     <td>{new Date(tx.date).toLocaleDateString()}</td>
                     <td>{tx.description}</td>
-                    <td>{tx.beneficiary}</td>
+                    <td>{tx.beneficiary || ""}</td>
                     <td className={tx.type === "credit" ? "text-positive" : "text-negative"}>
                       {tx.type === "credit" ? "+" : "-"} {formatCurrency(Math.abs(tx.amount))}
                     </td>
@@ -297,7 +296,7 @@ const Historique: React.FC = () => {
                         {getStatusLabel(tx.status)}
                       </span>
                     </td>
-                    <td>{tx.reference}</td>
+                    <td>{tx.reference || ""}</td>
                   </tr>
                 ))}
               </tbody>
@@ -310,4 +309,3 @@ const Historique: React.FC = () => {
 }
 
 export default Historique
-
