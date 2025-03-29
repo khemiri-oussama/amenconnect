@@ -1,0 +1,402 @@
+/* Dashboard specific styles */
+.tableau-de-bord {
+    padding: 0 8px;
+  }
+  
+  .dashboard-header {
+    margin-bottom: 32px;
+  }
+  
+  .dashboard-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #ffffff;
+  }
+  
+  .dashboard-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+  }
+  
+  /* Account cards */
+  .dashboard-accounts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .dashboard-account-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .dashboard-account-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .dashboard-account-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(71, 206, 101, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+  }
+  
+  .dashboard-account-icon ion-icon {
+    font-size: 24px;
+    color: #47ce65;
+  }
+  
+  .dashboard-account-type {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  
+  .dashboard-account-balance {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-account-details {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  
+  .dashboard-account-detail {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+  
+  .dashboard-account-detail span:first-child {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .dashboard-account-number {
+    font-family: "Courier New", monospace;
+    letter-spacing: 1px;
+  }
+  
+  .dashboard-account-limits {
+    margin-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 16px;
+  }
+  
+  .dashboard-account-limit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  
+  .dashboard-limit-label {
+    display: flex;
+    align-items: center;
+  }
+  
+  .dashboard-limit-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  
+  .dashboard-limit-icon.min {
+    background-color: #ff9800;
+  }
+  
+  .dashboard-limit-icon.max {
+    background-color: #2196f3;
+  }
+  
+  /* Dashboard sections */
+  .dashboard-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  
+  .dashboard-section {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .dashboard-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .dashboard-section-title {
+    display: flex;
+    align-items: center;
+  }
+  
+  .dashboard-section-title ion-icon {
+    font-size: 24px;
+    color: #47ce65;
+    margin-right: 12px;
+  }
+  
+  .dashboard-section-title h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+  }
+  
+  .dashboard-section-action {
+    background: transparent;
+    border: none;
+    color: #47ce65;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+  
+  .dashboard-section-action:hover {
+    background: rgba(71, 206, 101, 0.1);
+  }
+  
+  .dashboard-section-action ion-icon {
+    margin-right: 8px;
+  }
+  
+  /* Transactions */
+  .dashboard-transactions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .dashboard-transaction {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+  }
+  
+  .dashboard-transaction-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+  }
+  
+  .dashboard-transaction-icon ion-icon {
+    font-size: 20px;
+    color: #ffffff;
+  }
+  
+  .dashboard-transaction-details {
+    flex: 1;
+  }
+  
+  .dashboard-transaction-description {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+  
+  .dashboard-transaction-date {
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+  }
+  
+  .dashboard-transaction-date ion-icon {
+    font-size: 14px;
+    margin-right: 6px;
+  }
+  
+  .dashboard-transaction-amount {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .dashboard-transaction-amount.credit {
+    color: #47ce65;
+  }
+  
+  .dashboard-transaction-amount.debit {
+    color: #ff2b2b;
+  }
+  
+  /* Limits */
+  .dashboard-limits {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .dashboard-limit-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  
+  .dashboard-limit-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .dashboard-limit-card-header h4 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+    margin: 0;
+  }
+  
+  .dashboard-limit-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  
+  .dashboard-limit-progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .dashboard-limit-progress {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .dashboard-limit-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #47ce65 0%, #2eb851 100%);
+    border-radius: 4px;
+  }
+  
+  .dashboard-limit-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  /* Support card */
+  .dashboard-support-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 8px;
+  }
+  
+  .dashboard-support-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+    margin: 0 0 16px 0;
+  }
+  
+  .dashboard-support-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-support-contact {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #ffffff;
+  }
+  
+  .dashboard-support-contact ion-icon {
+    font-size: 16px;
+    margin-right: 8px;
+    color: #47ce65;
+  }
+  
+  .dashboard-support-hours {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .dashboard-support-button {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #47ce65;
+    color: #47ce65;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  
+  .dashboard-support-button:hover {
+    background: rgba(71, 206, 101, 0.1);
+  }
+  
+  /* Loading and empty states */
+  .dashboard-loading,
+  .dashboard-empty {
+    padding: 32px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 1024px) {
+    .dashboard-sections {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .dashboard-accounts {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  
