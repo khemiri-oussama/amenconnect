@@ -20,7 +20,9 @@ export const useBeneficiaries = () => {
   const fetchBeneficiaires = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/beneficiaires");
+      const response = await fetch("/api/beneficiaires", {
+        credentials: "include", // include credentials so that the cookie is sent
+      });
       if (!response.ok) {
         throw new Error("Erreur lors de la récupération des bénéficiaires");
       }
@@ -42,6 +44,7 @@ export const useBeneficiaries = () => {
       const response = await fetch("/api/beneficiaires", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // include credentials
         body: JSON.stringify(newBeneficiaire),
       });
       if (!response.ok) {
@@ -59,6 +62,7 @@ export const useBeneficiaries = () => {
       const response = await fetch(`/api/beneficiaires/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // include credentials
         body: JSON.stringify(updatedData),
       });
       if (!response.ok) {
@@ -77,6 +81,7 @@ export const useBeneficiaries = () => {
     try {
       const response = await fetch(`/api/beneficiaires/${id}`, {
         method: "DELETE",
+        credentials: "include", // include credentials
       });
       if (!response.ok) {
         throw new Error("Erreur lors de la suppression du bénéficiaire");
