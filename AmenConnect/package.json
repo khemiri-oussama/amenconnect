@@ -37,8 +37,8 @@
     "framer-motion": "^12.4.7",
     "html5-qrcode": "^2.3.8",
     "ionicons": "^7.4.0",
-    "jspdf": "2.5.2",
-    "jspdf-autotable": "3.8.4",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.474.0",
     "mongoose": "^8.10.1",
     "nodemailer": "^6.10.0",
@@ -48,6 +48,7 @@
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.0",
     "react-country-state-city": "^1.1.11",
+    "react-datepicker": "^8.2.1",
     "react-dom": "^18.3.1",
     "react-google-recaptcha": "^3.1.0",
     "react-icons": "^5.4.0",
@@ -76,7 +77,7 @@
     "jsdom": "^22.1.0",
     "terser": "^5.4.0",
     "typescript": "^5.1.6",
-    "vite": "5.4.14",
+    "vite": "^5.4.15",
     "vitest": "^0.34.6"
   },
   "description": "An Ionic project"
