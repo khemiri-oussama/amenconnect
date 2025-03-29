@@ -81,6 +81,7 @@ const ThemesPage = () => {
         kioskSurface: "#ffffff",
         kioskBorder: "#e2e8f0",
         kioskTextMuted: "#64748b",
+        
       },
     },
     {
@@ -214,6 +215,24 @@ const ThemesPage = () => {
   --kiosk-surface: ${localTheme.kioskSurface};
   --kiosk-border: ${localTheme.kioskBorder};
   --kiosk-text-muted: ${localTheme.kioskTextMuted};
+    /* Additional variables (status, shadows, transitions, border radii, etc.) */
+  --kiosk-success: #2fdf75;
+  --kiosk-warning: #ffd534;
+  --kiosk-danger: #ff4961;
+  --kiosk-shadow-sm: 0 2px 8px rgba(18, 22, 96, 0.1);
+  --kiosk-shadow-md: 0 4px 12px rgba(18, 22, 96, 0.15);
+  --kiosk-shadow-lg: 0 8px 24px rgba(18, 22, 96, 0.2);
+  --kiosk-transition-fast: 0.2s ease;
+  --kiosk-transition-normal: 0.3s ease;
+  --kiosk-transition-slow: 0.5s ease;
+  --kiosk-radius-sm: 0.5rem;
+  --kiosk-radius-md: 1rem;
+  --kiosk-radius-lg: 1.5rem;
+  --kiosk-radius-xl: 2rem;
+  --kiosk-radius-full: 9999px;
+  --viewport-height: 100vh;
+  --viewport-width: 100vw;
+  /* Ionic color overrides and font settings omitted for brevity */
 }`
 
     try {
