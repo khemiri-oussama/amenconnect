@@ -1,6 +1,6 @@
 // theme-customizer-page.tsx
 import React, { useContext, useState } from 'react';
-import { ThemeContext, Theme } from '../src/context/ThemeContext';
+import { ThemeContext, Theme } from '../../ThemeContext';
 
 const ThemeCustomizerPage: React.FC = () => {
   const { theme, setTheme } = useContext(ThemeContext);

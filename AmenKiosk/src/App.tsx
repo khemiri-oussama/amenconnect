@@ -28,7 +28,7 @@ import "./theme/variables.css"
 
 // Context providers for public routes (if needed)
 import { OrientationProvider } from "./context/OrientationContext"
-import { ThemeProvider } from "./context/ThemeContext"
+import { ThemeProvider } from "../../ThemeContext"
 import ThemeLoader from "./context/ThemeLoader";
 // Lazy loaded components for public pages
 const Accueil = lazy(() => import("./pages/accueil/AccueilKiosk"))

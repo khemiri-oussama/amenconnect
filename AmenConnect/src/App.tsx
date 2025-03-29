@@ -61,7 +61,7 @@ const PermissionsManagement = lazy(() => import('./pages/Admin/Permissions/permi
 const AuthenticationSecurity = lazy(() => import('./pages/Admin/AuthenticationSecurity/AuthenticationSecurity'));
 const InteractiveTotemManagement = lazy(() => import('./pages/Admin/GestiondesTotem/InteractiveTotemManagement'));
 const VideoConferenceManagement = lazy(() => import('./pages/Admin/videoconfmanage/videoconfmanage'));
-
+const theme = lazy(() => import('./pages/Admin/Themes/page'));
 // Lazy load your kiosk component
 const KioskComponent = lazy(() => import('./pages/HomeKiosk'));
 
@@ -91,6 +91,7 @@ const AppContent: React.FC = () => {
           <Route exact path="/ModeInvite" component={ModeInvite} />
           <Route exact path="/qr-scanner" component={QRScanner} />
           <Route exact path="/accountcreation" component={AccountCreationForm} />
+          <Route exact path="/admin/Themes" component={theme} />
           <Route path="/video/:roomId" component={JitsiMeetComponent} />
           <Route
             exact

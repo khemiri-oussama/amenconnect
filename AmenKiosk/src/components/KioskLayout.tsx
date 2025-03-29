@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import { IonIcon } from "@ionic/react"
 import { timeOutline, logoEuro, settingsOutline } from "ionicons/icons"
 import { useOrientation } from "../context/OrientationContext"
-import { useTheme } from "../context/ThemeContext"
+import { useTheme } from "../../../ThemeContext"
 import { useHistory } from "react-router-dom"
 
 interface KioskLayoutProps {
