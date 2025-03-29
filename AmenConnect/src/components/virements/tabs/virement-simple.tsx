@@ -5,6 +5,7 @@ import type React from "react"
 import { IonIcon } from "@ionic/react"
 import { walletOutline, personOutline, cashOutline, documentTextOutline, checkmarkCircleOutline } from "ionicons/icons"
 import { useAuth } from "../../../AuthContext"
+import useVirement from "../../../hooks/useVirement"  // adjust the import path as needed
 
 interface Compte {
   _id: string
@@ -29,9 +30,10 @@ const VirementSimple: React.FC = () => {
   const [beneficiaire, setBeneficiaire] = useState("")
   const [montant, setMontant] = useState("")
   const [motif, setMotif] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [error, setError] = useState("")
+
+  // Import our custom hook which handles virements
+  const { loading, error, response, makeVirement } = useVirement()
 
   useEffect(() => {
     // Fetch accounts from profile
@@ -42,15 +44,14 @@ const VirementSimple: React.FC = () => {
       }
     }
 
-    // Fetch beneficiaries
+    // Fetch beneficiaries (this is mocked; replace with your API call if needed)
     const fetchBeneficiaires = async () => {
       try {
-        // This would be replaced with an actual API call
         const mockBeneficiaires = [
-          { _id: "b1", nom: "Dupont", prenom: "Jean", numeroCompte: "TN5910000123456789", banque: "Banque Nationale" },
-          { _id: "b2", nom: "Martin", prenom: "Sophie", numeroCompte: "TN5910000987654321", banque: "Banque Centrale" },
-          { _id: "b3", nom: "Trabelsi", prenom: "Ahmed", numeroCompte: "TN5910000567891234", banque: "Banque du Sud" },
-        ]
+          { _id: "67bd28b921c1fed19b865a16", nom: "Dupont", prenom: "Jean", numeroCompte: "183241033", banque: "Banque Nationale" },
+          { _id: "63b2f1c0a2e8f2a123456790", nom: "Martin", prenom: "Sophie", numeroCompte: "TN5910000987654321", banque: "Banque Centrale" },
+          { _id: "63b2f1c0a2e8f2a123456791", nom: "Trabelsi", prenom: "Ahmed", numeroCompte: "TN5910000567891234", banque: "Banque du Sud" },
+        ];        
         setBeneficiaires(mockBeneficiaires)
         if (mockBeneficiaires.length > 0) {
           setBeneficiaire(mockBeneficiaires[0]._id)
@@ -65,32 +66,33 @@ const VirementSimple: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
-    setError("")
-    setSuccess(false)
-
-    try {
-      // Validate form
-      if (!compteSource || !beneficiaire || !montant) {
-        throw new Error("Veuillez remplir tous les champs obligatoires")
-      }
-
-      if (Number.parseFloat(montant) <= 0) {
-        throw new Error("Le montant doit être supérieur à 0")
-      }
-
-      // This would be replaced with an actual API call
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Reset form and show success message
+    
+    // Basic validations
+    if (!compteSource || !beneficiaire || !montant) {
+      alert("Veuillez remplir tous les champs obligatoires")
+      return
+    }
+    if (Number.parseFloat(montant) <= 0) {
+      alert("Le montant doit être supérieur à 0")
+      return
+    }
+    
+    // Create the virement payload
+    const virementData = {
+      fromAccount: compteSource,
+      toAccount: beneficiaire,
+      amount: Number.parseFloat(montant),
+      description: motif,
+    }
+    
+    // Call the hook to make the virement
+    await makeVirement(virementData)
+    
+    // If the hook response indicates success, reset the form
+    if (response?.success) {
       setMontant("")
       setMotif("")
       setSuccess(true)
-    } catch (error: any) {
-      setError(error.message || "Une erreur est survenue lors du traitement de votre virement")
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -199,8 +201,8 @@ const VirementSimple: React.FC = () => {
                 />
               </div>
 
-              <button type="submit" className="virement-form__button" disabled={isSubmitting}>
-                {isSubmitting ? "Traitement en cours..." : "Effectuer le virement"}
+              <button type="submit" className="virement-form__button" disabled={loading}>
+                {loading ? "Traitement en cours..." : "Effectuer le virement"}
               </button>
             </form>
           )}
@@ -264,29 +266,6 @@ const VirementSimple: React.FC = () => {
                 <p className="virement-recap__empty">Aucun bénéficiaire sélectionné</p>
               )}
             </div>
-
-            <div className="virement-recap__group">
-              <h4 className="virement-recap__title">
-                <IonIcon icon={cashOutline} />
-                Détails du virement
-              </h4>
-              <div className="virement-recap__content">
-                <div className="virement-recap__item">
-                  <span className="virement-recap__label">Montant:</span>
-                  <span className="virement-recap__value">
-                    {montant ? formatCurrency(Number.parseFloat(montant)) : "0,00 TND"}
-                  </span>
-                </div>
-                <div className="virement-recap__item">
-                  <span className="virement-recap__label">Motif:</span>
-                  <span className="virement-recap__value">{motif || "Non spécifié"}</span>
-                </div>
-                <div className="virement-recap__item">
-                  <span className="virement-recap__label">Date d'exécution:</span>
-                  <span className="virement-recap__value">Immédiate</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -295,4 +274,3 @@ const VirementSimple: React.FC = () => {
 }
 
 export default VirementSimple
-

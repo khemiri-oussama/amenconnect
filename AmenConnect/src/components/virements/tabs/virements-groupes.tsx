@@ -6,6 +6,9 @@ import { IonIcon } from "@ionic/react"
 import { documentOutline, addCircleOutline, trashOutline, cloudUploadOutline } from "ionicons/icons"
 import { useAuth } from "../../../AuthContext"
 
+// Import our custom hook
+import useVirementGroupe from "../../../hooks/useVirementGroupe"
+
 interface Compte {
   _id: string
   numéroCompte: string
@@ -29,17 +32,30 @@ interface VirementGroupe {
 
 const VirementsGroupes: React.FC = () => {
   const { profile } = useAuth()
+
   const [comptes, setComptes] = useState<Compte[]>([])
   const [beneficiaires, setBeneficiaires] = useState<Beneficiaire[]>([])
   const [compteSource, setCompteSource] = useState("")
   const [mode, setMode] = useState<"csv" | "manuel">("manuel")
-  const [virements, setVirements] = useState<VirementGroupe[]>([{ beneficiaireId: "", montant: "", motif: "" }])
+
+  const [virements, setVirements] = useState<VirementGroupe[]>([
+    { beneficiaireId: "", montant: "", motif: "" },
+  ])
+
   const [csvFile, setCsvFile] = useState<File | null>(null)
   const [csvPreview, setCsvPreview] = useState<any[]>([])
-  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Use our custom hook for group virements
+  const {
+    loading,
+    error: hookError,
+    response,
+    makeVirementGroupe,
+  } = useVirementGroupe()
 
   useEffect(() => {
     // Fetch accounts from profile
@@ -50,19 +66,41 @@ const VirementsGroupes: React.FC = () => {
       }
     }
 
-    // Fetch beneficiaries
+    // Fetch beneficiaries (mocked)
     const fetchBeneficiaires = async () => {
       try {
-        // This would be replaced with an actual API call
+        // Replace with an actual API call
         const mockBeneficiaires = [
-          { _id: "b1", nom: "Dupont", prenom: "Jean", numeroCompte: "TN5910000123456789", banque: "Banque Nationale" },
-          { _id: "b2", nom: "Martin", prenom: "Sophie", numeroCompte: "TN5910000987654321", banque: "Banque Centrale" },
-          { _id: "b3", nom: "Trabelsi", prenom: "Ahmed", numeroCompte: "TN5910000567891234", banque: "Banque du Sud" },
+          {
+            _id: "63b2f1c0a2e8f2a123456789",
+            nom: "Dupont",
+            prenom: "Jean",
+            numeroCompte: "TN5910000123456789",
+            banque: "Banque Nationale",
+          },
+          {
+            _id: "63b2f1c0a2e8f2a123456790",
+            nom: "Martin",
+            prenom: "Sophie",
+            numeroCompte: "TN5910000987654321",
+            banque: "Banque Centrale",
+          },
+          {
+            _id: "63b2f1c0a2e8f2a123456791",
+            nom: "Trabelsi",
+            prenom: "Ahmed",
+            numeroCompte: "TN5910000567891234",
+            banque: "Banque du Sud",
+          },
         ]
         setBeneficiaires(mockBeneficiaires)
-        setVirements([{ beneficiaireId: mockBeneficiaires[0]._id, montant: "", motif: "" }])
-      } catch (error) {
-        console.error("Error fetching beneficiaries:", error)
+
+        // Pre-populate the first row
+        if (mockBeneficiaires.length > 0) {
+          setVirements([{ beneficiaireId: mockBeneficiaires[0]._id, montant: "", motif: "" }])
+        }
+      } catch (err) {
+        console.error("Error fetching beneficiaries:", err)
       }
     }
 
@@ -70,7 +108,10 @@ const VirementsGroupes: React.FC = () => {
   }, [profile])
 
   const handleAddVirement = () => {
-    setVirements([...virements, { beneficiaireId: beneficiaires[0]?._id || "", montant: "", motif: "" }])
+    setVirements([
+      ...virements,
+      { beneficiaireId: beneficiaires[0]?._id || "", montant: "", motif: "" },
+    ])
   }
 
   const handleRemoveVirement = (index: number) => {
@@ -79,7 +120,11 @@ const VirementsGroupes: React.FC = () => {
     setVirements(newVirements)
   }
 
-  const handleVirementChange = (index: number, field: keyof VirementGroupe, value: string) => {
+  const handleVirementChange = (
+    index: number,
+    field: keyof VirementGroupe,
+    value: string
+  ) => {
     const newVirements = [...virements]
     newVirements[index][field] = value
     setVirements(newVirements)
@@ -116,56 +161,6 @@ const VirementsGroupes: React.FC = () => {
     reader.readAsText(file)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setError("")
-    setSuccess(false)
-
-    try {
-      // Validate form
-      if (!compteSource) {
-        throw new Error("Veuillez sélectionner un compte source")
-      }
-
-      if (mode === "manuel") {
-        // Validate manual entries
-        const invalidEntries = virements.some(
-          (v) => !v.beneficiaireId || !v.montant || Number.parseFloat(v.montant) <= 0,
-        )
-        if (invalidEntries) {
-          throw new Error("Veuillez remplir correctement tous les champs pour chaque virement")
-        }
-      } else {
-        // Validate CSV
-        if (!csvFile || csvPreview.length === 0) {
-          throw new Error("Veuillez importer un fichier CSV valide")
-        }
-      }
-
-      // This would be replaced with an actual API call
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Reset form and show success message
-      if (mode === "csv") {
-        setCsvFile(null)
-        setCsvPreview([])
-        if (fileInputRef.current) {
-          fileInputRef.current.value = ""
-        }
-      } else {
-        setVirements([{ beneficiaireId: beneficiaires[0]?._id || "", montant: "", motif: "" }])
-      }
-
-      setSuccess(true)
-    } catch (error: any) {
-      setError(error.message || "Une erreur est survenue lors du traitement de vos virements")
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("fr-TN", {
       style: "currency",
@@ -175,10 +170,85 @@ const VirementsGroupes: React.FC = () => {
 
   const selectedCompte = comptes.find((compte) => compte._id === compteSource)
 
+  // Calculate total amount from either manual entries or CSV preview
   const totalAmount =
     mode === "manuel"
       ? virements.reduce((sum, v) => sum + (Number.parseFloat(v.montant) || 0), 0)
       : csvPreview.reduce((sum, row) => sum + (Number.parseFloat(row.amount) || 0), 0)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+    setSuccess(false)
+
+    // Basic validations
+    if (!compteSource) {
+      setError("Veuillez sélectionner un compte source")
+      return
+    }
+
+    if (mode === "manuel") {
+      // Validate manual entries
+      const invalidEntries = virements.some(
+        (v) => !v.beneficiaireId || !v.montant || Number.parseFloat(v.montant) <= 0
+      )
+      if (invalidEntries) {
+        setError("Veuillez remplir correctement tous les champs pour chaque virement")
+        return
+      }
+    } else {
+      // Validate CSV
+      if (!csvFile || csvPreview.length === 0) {
+        setError("Veuillez importer un fichier CSV valide")
+        return
+      }
+    }
+
+    // Construct the payload for the API
+    // "beneficiary" must match what the backend expects
+    if (mode === "manuel") {
+      const data = {
+        fromAccount: compteSource,
+        virements: virements.map((v) => ({
+          beneficiary: v.beneficiaireId,
+          amount: Number.parseFloat(v.montant),
+          motif: v.motif,
+        })),
+      }
+
+      await makeVirementGroupe(data)
+    } else {
+      // For CSV data
+      const data = {
+        fromAccount: compteSource,
+        virements: csvPreview.map((row) => ({
+          beneficiary: row.accountNumber, // Or some ID if your backend requires an actual ObjectId
+          amount: Number.parseFloat(row.amount),
+          motif: row.reason || "",
+        })),
+      }
+
+      await makeVirementGroupe(data)
+    }
+
+    // Check response from the hook
+    if (response?.success) {
+      // Reset form
+      if (mode === "csv") {
+        setCsvFile(null)
+        setCsvPreview([])
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ""
+        }
+      } else {
+        setVirements([
+          { beneficiaireId: beneficiaires[0]?._id || "", montant: "", motif: "" },
+        ])
+      }
+
+      setSuccess(true)
+    }
+  }
 
   return (
     <div className="virements-groupes">
@@ -205,7 +275,10 @@ const VirementsGroupes: React.FC = () => {
 
         {!success && (
           <form className="virement-form" onSubmit={handleSubmit}>
+            {/* Local error from validation */}
             {error && <div className="virement-form__error">{error}</div>}
+            {/* Hook error from API */}
+            {hookError && <div className="virement-form__error">{hookError}</div>}
 
             <div className="virement-form__group">
               <label className="virement-form__label" htmlFor="compteSource">
@@ -382,9 +455,9 @@ const VirementsGroupes: React.FC = () => {
             <button
               type="submit"
               className="virement-form__button"
-              disabled={isSubmitting || (mode === "manuel" ? virements.length === 0 : csvPreview.length === 0)}
+              disabled={loading || (mode === "manuel" ? virements.length === 0 : csvPreview.length === 0)}
             >
-              {isSubmitting ? "Traitement en cours..." : "Effectuer les virements"}
+              {loading ? "Traitement en cours..." : "Effectuer les virements"}
             </button>
           </form>
         )}
@@ -394,4 +467,3 @@ const VirementsGroupes: React.FC = () => {
 }
 
 export default VirementsGroupes
-

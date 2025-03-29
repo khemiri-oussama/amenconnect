@@ -1,22 +1,8 @@
-// routes/virementRoutes.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const virementController = require('../controllers/virementController');
-const verifyToken = require('../middleware/auth');
+const virementController = require("../controllers/virementController");
 
-// Create a new virement (transfer)
-router.post('/', verifyToken, virementController.createVirement);
-
-// Get all virements for the authenticated user
-router.get('/', verifyToken, virementController.getVirements);
-
-// Get a specific virement by ID
-router.get('/:id', verifyToken, virementController.getVirementById);
-
-// Update the status of a virement (e.g., mark as completed)
-router.patch('/:id/status', verifyToken, virementController.updateVirementStatus);
-
-// Delete a virement
-router.delete('/:id', verifyToken, virementController.deleteVirement);
+// Endpoint to create a new virement
+router.post("/", virementController.createVirement);
 
 module.exports = router;

@@ -14,6 +14,9 @@ import {
 } from "ionicons/icons"
 import { useAuth } from "../../../AuthContext"
 
+// Import the custom hook
+import useVirementProgramme from "../../../hooks/useVirementProgramme"
+
 interface Compte {
   _id: string
   numéroCompte: string
@@ -40,16 +43,15 @@ const VirementsProgrammes: React.FC = () => {
   const [frequence, setFrequence] = useState("mensuel")
   const [dateDebut, setDateDebut] = useState("")
   const [dateFin, setDateFin] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
+
+  // Use the virement programme hook
+  const { loading, error: hookError, response, makeVirementProgramme } = useVirementProgramme()
 
   useEffect(() => {
     // Set default dates
     const today = new Date()
-    const nextMonth = new Date()
-    nextMonth.setMonth(today.getMonth() + 1)
-
     const nextYear = new Date()
     nextYear.setFullYear(today.getFullYear() + 1)
 
@@ -64,14 +66,32 @@ const VirementsProgrammes: React.FC = () => {
       }
     }
 
-    // Fetch beneficiaries
+    // Fetch beneficiaries (mocked)
     const fetchBeneficiaires = async () => {
       try {
-        // This would be replaced with an actual API call
+        // Replace with your actual API call
         const mockBeneficiaires = [
-          { _id: "b1", nom: "Dupont", prenom: "Jean", numeroCompte: "TN5910000123456789", banque: "Banque Nationale" },
-          { _id: "b2", nom: "Martin", prenom: "Sophie", numeroCompte: "TN5910000987654321", banque: "Banque Centrale" },
-          { _id: "b3", nom: "Trabelsi", prenom: "Ahmed", numeroCompte: "TN5910000567891234", banque: "Banque du Sud" },
+          {
+            _id: "63b2f1c0a2e8f2a123456789",
+            nom: "Dupont",
+            prenom: "Jean",
+            numeroCompte: "TN5910000123456789",
+            banque: "Banque Nationale",
+          },
+          {
+            _id: "63b2f1c0a2e8f2a123456790",
+            nom: "Martin",
+            prenom: "Sophie",
+            numeroCompte: "TN5910000987654321",
+            banque: "Banque Centrale",
+          },
+          {
+            _id: "63b2f1c0a2e8f2a123456791",
+            nom: "Trabelsi",
+            prenom: "Ahmed",
+            numeroCompte: "TN5910000567891234",
+            banque: "Banque du Sud",
+          },
         ]
         setBeneficiaires(mockBeneficiaires)
         if (mockBeneficiaires.length > 0) {
@@ -87,39 +107,45 @@ const VirementsProgrammes: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
     setError("")
     setSuccess(false)
 
-    try {
-      // Validate form
-      if (!compteSource || !beneficiaire || !montant || !dateDebut || !dateFin || !frequence) {
-        throw new Error("Veuillez remplir tous les champs obligatoires")
-      }
+    // Basic validations
+    if (!compteSource || !beneficiaire || !montant || !dateDebut || !dateFin || !frequence) {
+      setError("Veuillez remplir tous les champs obligatoires")
+      return
+    }
 
-      if (Number.parseFloat(montant) <= 0) {
-        throw new Error("Le montant doit être supérieur à 0")
-      }
+    if (Number.parseFloat(montant) <= 0) {
+      setError("Le montant doit être supérieur à 0")
+      return
+    }
 
-      const startDate = new Date(dateDebut)
-      const endDate = new Date(dateFin)
+    const startDate = new Date(dateDebut)
+    const endDate = new Date(dateFin)
+    if (startDate >= endDate) {
+      setError("La date de fin doit être postérieure à la date de début")
+      return
+    }
 
-      if (startDate >= endDate) {
-        throw new Error("La date de fin doit être postérieure à la date de début")
-      }
+    // Prepare payload for the scheduled virement
+    const payload = {
+      fromAccount: compteSource,
+      toAccount: beneficiaire,
+      amount: Number.parseFloat(montant),
+      description: motif,
+      frequency: frequence as "quotidien" | "hebdomadaire" | "mensuel" | "trimestriel" | "annuel",
+      startDate: dateDebut,
+      endDate: dateFin,
+    }
 
-      // This would be replaced with an actual API call
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+    await makeVirementProgramme(payload)
 
-      // Reset form and show success message
+    // If the hook has a response, handle success
+    if (response?.data) {
       setMontant("")
       setMotif("")
       setSuccess(true)
-    } catch (error: any) {
-      setError(error.message || "Une erreur est survenue lors de la programmation de votre virement")
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -213,6 +239,7 @@ const VirementsProgrammes: React.FC = () => {
           {!success && (
             <form className="virement-form" onSubmit={handleSubmit}>
               {error && <div className="virement-form__error">{error}</div>}
+              {hookError && <div className="virement-form__error">{hookError}</div>}
 
               <div className="virement-form__group">
                 <label className="virement-form__label" htmlFor="compteSource">
@@ -332,8 +359,8 @@ const VirementsProgrammes: React.FC = () => {
                 </div>
               </div>
 
-              <button type="submit" className="virement-form__button" disabled={isSubmitting}>
-                {isSubmitting ? "Traitement en cours..." : "Programmer le virement"}
+              <button type="submit" className="virement-form__button" disabled={loading}>
+                {loading ? "Traitement en cours..." : "Programmer le virement"}
               </button>
             </form>
           )}
@@ -451,6 +478,4 @@ const VirementsProgrammes: React.FC = () => {
     </div>
   )
 }
-
 export default VirementsProgrammes
-
