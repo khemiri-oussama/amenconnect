@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
 import type React from "react"
-
 import { IonIcon } from "@ionic/react"
 import {
   peopleOutline,
@@ -12,23 +11,20 @@ import {
   closeCircleOutline,
   searchOutline,
 } from "ionicons/icons"
-
-interface Beneficiaire {
-  _id: string
-  nom: string
-  prenom: string
-  numeroCompte: string
-  banque: string
-  email?: string
-  telephone?: string
-  dateAjout: string
-}
+import { useBeneficiaries, Beneficiaire } from "../../../hooks/useBeneficiaries" // adjust the path as needed
 
 const GestionBeneficiaires: React.FC = () => {
-  const [beneficiaires, setBeneficiaires] = useState<Beneficiaire[]>([])
+  const {
+    beneficiaires,
+    loading,
+    error,
+    addBeneficiaire,
+    updateBeneficiaire,
+    deleteBeneficiaire,
+    fetchBeneficiaires,
+  } = useBeneficiaries()
+
   const [filteredBeneficiaires, setFilteredBeneficiaires] = useState<Beneficiaire[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
 
   // Form states
@@ -45,62 +41,8 @@ const GestionBeneficiaires: React.FC = () => {
   const [formError, setFormError] = useState("")
   const [formSuccess, setFormSuccess] = useState("")
 
+  // Filter beneficiaries when they change or searchTerm updates
   useEffect(() => {
-    // Fetch beneficiaries
-    const fetchBeneficiaires = async () => {
-      try {
-        // This would be replaced with an actual API call
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-
-        const mockBeneficiaires = [
-          {
-            _id: "b1",
-            nom: "Dupont",
-            prenom: "Jean",
-            numeroCompte: "TN5910000123456789",
-            banque: "Banque Nationale",
-            email: "jean.dupont@email.com",
-            telephone: "+216 71 123 456",
-            dateAjout: "2023-01-15",
-          },
-          {
-            _id: "b2",
-            nom: "Martin",
-            prenom: "Sophie",
-            numeroCompte: "TN5910000987654321",
-            banque: "Banque Centrale",
-            email: "sophie.martin@email.com",
-            telephone: "+216 71 234 567",
-            dateAjout: "2023-03-22",
-          },
-          {
-            _id: "b3",
-            nom: "Trabelsi",
-            prenom: "Ahmed",
-            numeroCompte: "TN5910000567891234",
-            banque: "Banque du Sud",
-            email: "ahmed.trabelsi@email.com",
-            telephone: "+216 71 345 678",
-            dateAjout: "2023-05-10",
-          },
-        ]
-
-        setBeneficiaires(mockBeneficiaires)
-        setFilteredBeneficiaires(mockBeneficiaires)
-      } catch (error: any) {
-        console.error("Error fetching beneficiaries:", error)
-        setError(error.message || "Une erreur est survenue lors de la récupération des bénéficiaires")
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchBeneficiaires()
-  }, [])
-
-  useEffect(() => {
-    // Apply search filter
     if (searchTerm) {
       const filtered = beneficiaires.filter(
         (ben) =>
@@ -156,14 +98,8 @@ const GestionBeneficiaires: React.FC = () => {
   const handleDeleteBeneficiaire = async (id: string) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce bénéficiaire ?")) {
       try {
-        // This would be replaced with an actual API call
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 500))
-
-        setBeneficiaires((prev) => prev.filter((ben) => ben._id !== id))
+        await deleteBeneficiaire(id)
         setFormSuccess("Bénéficiaire supprimé avec succès")
-
-        // Hide success message after 3 seconds
         setTimeout(() => setFormSuccess(""), 3000)
       } catch (error: any) {
         console.error("Error deleting beneficiary:", error)
@@ -188,42 +124,13 @@ const GestionBeneficiaires: React.FC = () => {
         throw new Error("Le numéro de compte doit être au format TN suivi de 20 chiffres")
       }
 
-      // This would be replaced with an actual API call
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
       if (editingId) {
         // Update existing beneficiary
-        setBeneficiaires((prev) =>
-          prev.map((ben) =>
-            ben._id === editingId
-              ? {
-                  ...ben,
-                  prenom: formData.prenom,
-                  nom: formData.nom,
-                  numeroCompte: formData.numeroCompte,
-                  banque: formData.banque,
-                  email: formData.email,
-                  telephone: formData.telephone,
-                }
-              : ben,
-          ),
-        )
+        await updateBeneficiaire(editingId, formData)
         setFormSuccess("Bénéficiaire modifié avec succès")
       } else {
-        // Add new beneficiary
-        const newBeneficiaire: Beneficiaire = {
-          _id: `b${Date.now()}`,
-          prenom: formData.prenom,
-          nom: formData.nom,
-          numeroCompte: formData.numeroCompte,
-          banque: formData.banque,
-          email: formData.email,
-          telephone: formData.telephone,
-          dateAjout: new Date().toISOString().split("T")[0],
-        }
-
-        setBeneficiaires((prev) => [...prev, newBeneficiaire])
+        // Add new beneficiary. The backend should automatically assign an _id and dateAjout.
+        await addBeneficiaire(formData)
         setFormSuccess("Bénéficiaire ajouté avec succès")
       }
 
@@ -446,7 +353,9 @@ const GestionBeneficiaires: React.FC = () => {
                     )}
                     <div className="beneficiaire-item__detail">
                       <span className="beneficiaire-item__label">Ajouté le:</span>
-                      <span className="beneficiaire-item__value">{new Date(ben.dateAjout).toLocaleDateString()}</span>
+                      <span className="beneficiaire-item__value">
+                        {new Date(ben.dateAjout).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -473,4 +382,3 @@ const GestionBeneficiaires: React.FC = () => {
 }
 
 export default GestionBeneficiaires
-

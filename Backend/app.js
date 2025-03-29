@@ -18,7 +18,7 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const virementRoutes = require("./routes/virementRoutes");
 const virementProgrammeRoutes = require("./routes/virementProgrammeRoutes");
 const virementGroupeRoutes = require("./routes/virementGroupeRoutes");
-const beneficiaryRoutes = require("./routes/beneficiaryRoutes");
+const beneficiairesRoutes = require("./routes/beneficiaires");
 const videoConferenceRoutes = require("./routes/videoConferenceRoutes");
 const adminNotificationsRoutes = require("./routes/adminNotificationsRoutes");
 const adminListRoutes = require("./routes/adminList");
@@ -78,7 +78,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/virements", virementRoutes);
 app.use("/api/virements/programme", virementProgrammeRoutes);
 app.use("/api/virements/group", virementGroupeRoutes);
-app.use("/api/beneficiaries", beneficiaryRoutes);
+app.use("/api/beneficiaires", beneficiairesRoutes);
 app.use("/api/video-requests", videoConferenceRoutes);
 app.use("/api/admin/notifications", adminNotificationsRoutes);
 app.use("/api/admin/reset",adminRoutes)

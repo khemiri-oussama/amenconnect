@@ -1,68 +1,99 @@
 // hooks/useBeneficiaries.tsx
-import { useState } from "react";
-import axios from "axios";
-import type { Beneficiary } from "./../components/virements/types/beneficiary";
+import { useState, useEffect } from "react";
 
-export function useBeneficiaries() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
+export interface Beneficiaire {
+  _id: string;
+  nom: string;
+  prenom: string;
+  numeroCompte: string;
+  banque: string;
+  email?: string;
+  telephone?: string;
+  dateAjout: string;
+}
 
-  const fetchBeneficiaries = async () => {
-    setErrorMessage("");
-    setIsLoading(true);
+export const useBeneficiaries = () => {
+  const [beneficiaires, setBeneficiaires] = useState<Beneficiaire[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchBeneficiaires = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get("/api/beneficiaries", {
-        withCredentials: true,
-      });
-      setBeneficiaries(response.data);
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Unexpected error.");
+      const response = await fetch("/api/beneficiaires");
+      if (!response.ok) {
+        throw new Error("Erreur lors de la récupération des bénéficiaires");
+      }
+      const data = await response.json();
+      setBeneficiaires(data);
+    } catch (err: any) {
+      setError(err.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const addBeneficiary = async (
-    name: string,
-    accountNumber: string,
-    bank: string,
-    IBAN?: string
-  ) => {
-    setErrorMessage("");
-    setIsLoading(true);
+  useEffect(() => {
+    fetchBeneficiaires();
+  }, []);
+
+  const addBeneficiaire = async (newBeneficiaire: Partial<Beneficiaire>) => {
     try {
-      const response = await axios.post(
-        "/api/beneficiaries",
-        {
-          name,
-          accountNumber,
-          bankName: bank, // backend expects "bankName"
-          IBAN,
-        },
-        {
-          withCredentials: true,
-        }
+      const response = await fetch("/api/beneficiaires", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBeneficiaire),
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'ajout du bénéficiaire");
+      }
+      const created = await response.json();
+      setBeneficiaires((prev) => [...prev, created]);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const updateBeneficiaire = async (id: string, updatedData: Partial<Beneficiaire>) => {
+    try {
+      const response = await fetch(`/api/beneficiaires/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors de la mise à jour du bénéficiaire");
+      }
+      const updated = await response.json();
+      setBeneficiaires((prev) =>
+        prev.map((ben) => (ben._id === id ? updated : ben))
       );
-      // Depending on your backend, the newly created beneficiary may be at response.data or response.data.beneficiary
-      const newBeneficiary: Beneficiary =
-        response.data.beneficiary || response.data;
-      setBeneficiaries((prev) => [...prev, newBeneficiary]);
-      return newBeneficiary;
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Unexpected error.");
-      throw error;
-    } finally {
-      setIsLoading(false);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const deleteBeneficiaire = async (id: string) => {
+    try {
+      const response = await fetch(`/api/beneficiaires/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression du bénéficiaire");
+      }
+      setBeneficiaires((prev) => prev.filter((ben) => ben._id !== id));
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
   return {
-    beneficiaries,
-    isLoading,
-    errorMessage,
-    fetchBeneficiaries,
-    addBeneficiary,
-    setBeneficiaries,
+    beneficiaires,
+    loading,
+    error,
+    fetchBeneficiaires,
+    addBeneficiaire,
+    updateBeneficiaire,
+    deleteBeneficiaire,
   };
-}
+};
