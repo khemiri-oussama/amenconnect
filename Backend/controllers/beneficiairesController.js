@@ -3,17 +3,22 @@ const Beneficiaire = require("../models/Beneficiaire");
 
 exports.getBeneficiaires = async (req, res) => {
   try {
-    const beneficiaires = await Beneficiaire.find();
+    // Only return beneficiaries belonging to the current user
+    const beneficiaires = await Beneficiaire.find({ userId: req.user.id });
     res.status(200).json(beneficiaires);
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }
 };
 
+// In createBeneficiaire controller (for testing only)
 exports.createBeneficiaire = async (req, res) => {
   try {
     const { nom, prenom, numeroCompte, banque, email, telephone } = req.body;
+    // Use _id or id from req.user; if none, use a fallback (for testing only)
+    const userId = req.user ? (req.user._id || req.user.id) : "60d21b4667d0d8992e610c85"; 
     const newBeneficiaire = new Beneficiaire({
+      userId,
       nom,
       prenom,
       numeroCompte,
@@ -24,16 +29,24 @@ exports.createBeneficiaire = async (req, res) => {
     const savedBeneficiaire = await newBeneficiaire.save();
     res.status(201).json(savedBeneficiaire);
   } catch (error) {
+    console.error("Error in createBeneficiaire:", error);
     res
       .status(500)
       .json({ message: "Erreur lors de la création du bénéficiaire", error });
   }
 };
 
+
+
 exports.updateBeneficiaire = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedBeneficiaire = await Beneficiaire.findByIdAndUpdate(id, req.body, { new: true });
+    // Ensure that only the owner can update
+    const updatedBeneficiaire = await Beneficiaire.findOneAndUpdate(
+      { _id: id, userId: req.user._id },
+      req.body,
+      { new: true }
+    );
     if (!updatedBeneficiaire) {
       return res.status(404).json({ message: "Bénéficiaire non trouvé" });
     }
@@ -48,7 +61,8 @@ exports.updateBeneficiaire = async (req, res) => {
 exports.deleteBeneficiaire = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await Beneficiaire.findByIdAndDelete(id);
+    // Ensure that only the owner can delete
+    const deleted = await Beneficiaire.findOneAndDelete({ _id: id, userId: req.user._id });
     if (!deleted) {
       return res.status(404).json({ message: "Bénéficiaire non trouvé" });
     }
