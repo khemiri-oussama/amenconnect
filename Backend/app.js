@@ -40,6 +40,7 @@ const Twofa = require("./routes/2fa");
 const themeRoutes = require("./routes/theme")
 const themesPresetRoutes = require("./routes/themeRoutes");
 const app = express();
+const logoRoutes = require('./routes/logoRoutes');
 
 // Middlewares
 app.use(helmet());
@@ -99,7 +100,7 @@ app.use("/api/mongo-ops", mongoOpsRoute);
 app.use("/api/alerts", alertsRouter);
 app.use("/api/audit-logs", auditLogsRoutes);
 app.use("/api/kiosk", kioskRoutes);
-
+app.use("/api/", logoRoutes);
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 app.use('/api/theme', themeRoutes);

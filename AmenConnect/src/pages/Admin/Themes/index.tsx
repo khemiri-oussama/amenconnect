@@ -17,7 +17,9 @@ import {
 import { ThemeContext, type Theme } from "../../../../../ThemeContext"
 import SidebarAdmin from "../../../components/SidebarAdmin"
 import AdminPageHeader from "../adminpageheader"
+import LogoUploader from "./logo-uploader"
 import "./themes.css"
+import "./logo-uploader.css"
 
 // Define the interface for a theme preset
 interface ThemePreset {
@@ -25,6 +27,7 @@ interface ThemePreset {
   name: string
   theme: Theme
   isDefault?: boolean
+  logo?: string | null
 }
 
 const ThemesPage = () => {
@@ -36,6 +39,8 @@ const ThemesPage = () => {
   const [newPresetName, setNewPresetName] = useState<string>("")
   const [editingPresetId, setEditingPresetId] = useState<string | null>(null)
   const [editingPresetName, setEditingPresetName] = useState<string>("")
+  const [currentLogo, setCurrentLogo] = useState<string | null>(null)
+
   useEffect(() => {
     const loadCustomPresets = async () => {
       try {
@@ -49,6 +54,7 @@ const ThemesPage = () => {
               name: preset.name,
               theme: preset.theme,
               isDefault: false,
+              logo: preset.logo || null,
             })),
           ])
         }
@@ -56,10 +62,25 @@ const ThemesPage = () => {
         console.error("Error loading custom theme presets:", error)
       }
     }
-  
+
     loadCustomPresets()
+
+    // Load current logo
+    const loadCurrentLogo = async () => {
+      try {
+        const response = await fetch("/api/logo")
+        if (response.ok) {
+          const data = await response.json()
+          setCurrentLogo(data.logoUrl)
+        }
+      } catch (error) {
+        console.error("Error loading logo:", error)
+      }
+    }
+
+    loadCurrentLogo()
   }, [])
-  
+
   // Default theme presets
   const defaultPresets: ThemePreset[] = [
     {
@@ -81,7 +102,6 @@ const ThemesPage = () => {
         kioskSurface: "#ffffff",
         kioskBorder: "#e2e8f0",
         kioskTextMuted: "#64748b",
-        
       },
     },
     {
@@ -167,6 +187,7 @@ const ThemesPage = () => {
               name: preset.name,
               theme: preset.theme,
               isDefault: false,
+              logo: preset.logo || null,
             })),
           ])
         }
@@ -182,6 +203,22 @@ const ThemesPage = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setLocalTheme({ ...localTheme, [name]: value })
+  }
+
+  // Handle logo change
+  const handleLogoChange = async (logoUrl: string | null) => {
+    setCurrentLogo(logoUrl)
+
+    // In a real app, you would save the logo URL to your database
+    try {
+      await fetch("/api/logo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ logoUrl }),
+      })
+    } catch (error) {
+      console.error("Error saving logo:", error)
+    }
   }
 
   // Apply theme changes to preview
@@ -282,6 +319,7 @@ const ThemesPage = () => {
         body: JSON.stringify({
           name: newPresetName,
           theme: localTheme,
+          logo: currentLogo,
         }),
       })
 
@@ -294,6 +332,7 @@ const ThemesPage = () => {
             name: newPresetName,
             theme: localTheme,
             isDefault: false,
+            logo: currentLogo,
           },
         ])
         setNewPresetName("")
@@ -356,8 +395,11 @@ const ThemesPage = () => {
   }
 
   // Apply a preset theme
-  const applyPreset = (presetTheme: Theme) => {
-    setLocalTheme(presetTheme)
+  const applyPreset = (preset: ThemePreset) => {
+    setLocalTheme(preset.theme)
+    if (preset.logo !== undefined) {
+      setCurrentLogo(preset.logo)
+    }
   }
 
   // Group theme colors by category for better organization
@@ -436,6 +478,9 @@ const ThemesPage = () => {
             </button>
           </div>
 
+          {/* Logo Uploader Component */}
+          <LogoUploader currentLogo={currentLogo || undefined} onLogoChange={handleLogoChange} />
+
           <div className="admin-theme-container">
             <div className="admin-theme-editor">
               {themeGroups.map((group) => (
@@ -474,7 +519,13 @@ const ThemesPage = () => {
               <h3 className="admin-theme-preview-title">Aperçu du Thème</h3>
               <div id="theme-preview" className={`admin-theme-preview ${previewMode === "dark" ? "dark-theme" : ""}`}>
                 <div className="preview-header">
-                  <div className="preview-logo"></div>
+                  {currentLogo ? (
+                    <div className="preview-logo">
+                      <img src={currentLogo || "/placeholder.svg"} alt="Logo" className="preview-logo-image" />
+                    </div>
+                  ) : (
+                    <div className="preview-logo"></div>
+                  )}
                   <div className="preview-nav">
                     <div className="preview-nav-item active"></div>
                     <div className="preview-nav-item"></div>
@@ -546,11 +597,16 @@ const ThemesPage = () => {
                 <div className="admin-theme-preset-card" key={preset.id}>
                   <div
                     className="admin-theme-preset-preview"
-                    onClick={() => applyPreset(preset.theme)}
+                    onClick={() => applyPreset(preset)}
                     style={{
                       cursor: "pointer",
                     }}
                   >
+                    {preset.logo ? (
+                      <div className="preset-logo">
+                        <img src={preset.logo || "/placeholder.svg"} alt="Logo" className="preset-logo-image" />
+                      </div>
+                    ) : null}
                     <div className="preset-color primary" style={{ backgroundColor: preset.theme.kioskPrimary }}></div>
                     <div
                       className="preset-color secondary"
