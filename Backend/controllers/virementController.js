@@ -1,16 +1,21 @@
-const Virement = require("../models/Virement");
+// controllers/virementController.js
+const Virement = require("../models/virement");
 const Compte = require("../models/Compte");
 
 exports.createVirement = async (req, res) => {
   try {
     const { fromAccount, toAccount, amount, description } = req.body;
 
-    // Validate sender and receiver accounts
+    // Validate sender account
     const sender = await Compte.findById(fromAccount);
-    const receiver = await Compte.findById(toAccount);
+    if (!sender) {
+      return res.status(404).json({ message: "Sender account not found" });
+    }
 
-    if (!sender || !receiver) {
-      return res.status(404).json({ message: "Sender or receiver account not found" });
+    // Find the receiver account using its RIB
+    const receiver = await Compte.findOne({ RIB: toAccount });
+    if (!receiver) {
+      return res.status(404).json({ message: "Receiver account not found using provided RIB" });
     }
 
     // Check if sender has sufficient funds
@@ -21,7 +26,7 @@ exports.createVirement = async (req, res) => {
     // Create virement record (assuming immediate completion for simplicity)
     const virement = await Virement.create({
       fromAccount,
-      toAccount,
+      toAccount: receiver._id, // you might store the internal id for reference
       amount,
       description,
       status: "Completed",

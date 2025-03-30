@@ -6,7 +6,7 @@ const BeneficiaireSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   nom: { type: String, required: true },
   prenom: { type: String, required: true },
-  numeroCompte: { type: String, required: true, unique: true },
+  RIB: { type: String, required: true, unique: true }, // New field
   banque: { type: String, required: true },
   email: { type: String },
   telephone: { type: String },
@@ -14,3 +14,4 @@ const BeneficiaireSchema = new Schema({
 });
 
 module.exports = mongoose.model("Beneficiaire", BeneficiaireSchema);
+

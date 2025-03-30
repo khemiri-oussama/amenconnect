@@ -33,7 +33,7 @@ const GestionBeneficiaires: React.FC = () => {
   const [formData, setFormData] = useState({
     prenom: "",
     nom: "",
-    numeroCompte: "",
+    RIB: "",
     banque: "",
     email: "",
     telephone: "",
@@ -48,7 +48,7 @@ const GestionBeneficiaires: React.FC = () => {
         (ben) =>
           ben.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
           ben.prenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          ben.numeroCompte.includes(searchTerm) ||
+          ben.RIB.includes(searchTerm) ||
           ben.banque.toLowerCase().includes(searchTerm.toLowerCase()),
       )
       setFilteredBeneficiaires(filtered)
@@ -67,7 +67,7 @@ const GestionBeneficiaires: React.FC = () => {
     setFormData({
       prenom: "",
       nom: "",
-      numeroCompte: "",
+      RIB: "",
       banque: "",
       email: "",
       telephone: "",
@@ -84,7 +84,7 @@ const GestionBeneficiaires: React.FC = () => {
       setFormData({
         prenom: beneficiaire.prenom,
         nom: beneficiaire.nom,
-        numeroCompte: beneficiaire.numeroCompte,
+        RIB: beneficiaire.RIB,
         banque: beneficiaire.banque,
         email: beneficiaire.email || "",
         telephone: beneficiaire.telephone || "",
@@ -115,12 +115,12 @@ const GestionBeneficiaires: React.FC = () => {
 
     try {
       // Validate form
-      if (!formData.prenom || !formData.nom || !formData.numeroCompte || !formData.banque) {
+      if (!formData.prenom || !formData.nom || !formData.RIB || !formData.banque) {
         throw new Error("Veuillez remplir tous les champs obligatoires")
       }
 
       // Validate account number format
-      if (!/^TN\d{20}$/.test(formData.numeroCompte)) {
+      if (!/^TN\d{20}$/.test(formData.RIB)) {
         throw new Error("Le numéro de compte doit être au format TN suivi de 20 chiffres")
       }
 
@@ -138,7 +138,7 @@ const GestionBeneficiaires: React.FC = () => {
       setFormData({
         prenom: "",
         nom: "",
-        numeroCompte: "",
+        RIB: "",
         banque: "",
         email: "",
         telephone: "",
@@ -225,15 +225,15 @@ const GestionBeneficiaires: React.FC = () => {
               </div>
 
               <div className="virement-form__group">
-                <label className="virement-form__label" htmlFor="numeroCompte">
-                  Numéro de compte (IBAN) *
+                <label className="virement-form__label" htmlFor="RIB">
+                  RIB
                 </label>
                 <input
-                  id="numeroCompte"
-                  name="numeroCompte"
+                  id="RIB"
+                  name="RIB"
                   type="text"
                   className="virement-form__input"
-                  value={formData.numeroCompte}
+                  value={formData.RIB}
                   onChange={handleInputChange}
                   placeholder="TN59..."
                   required
@@ -333,7 +333,7 @@ const GestionBeneficiaires: React.FC = () => {
                   <div className="beneficiaire-item__details">
                     <div className="beneficiaire-item__detail">
                       <span className="beneficiaire-item__label">Compte:</span>
-                      <span className="beneficiaire-item__value">{ben.numeroCompte}</span>
+                      <span className="beneficiaire-item__value">{ben.RIB}</span>
                     </div>
                     <div className="beneficiaire-item__detail">
                       <span className="beneficiaire-item__label">Banque:</span>

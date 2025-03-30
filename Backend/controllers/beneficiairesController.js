@@ -14,14 +14,13 @@ exports.getBeneficiaires = async (req, res) => {
 // In createBeneficiaire controller (for testing only)
 exports.createBeneficiaire = async (req, res) => {
   try {
-    const { nom, prenom, numeroCompte, banque, email, telephone } = req.body;
-    // Use _id or id from req.user; if none, use a fallback (for testing only)
+    const { nom, prenom, RIB, banque, email, telephone } = req.body;
     const userId = req.user ? (req.user._id || req.user.id) : "60d21b4667d0d8992e610c85"; 
     const newBeneficiaire = new Beneficiaire({
       userId,
       nom,
       prenom,
-      numeroCompte,
+      RIB,
       banque,
       email,
       telephone,
@@ -30,13 +29,9 @@ exports.createBeneficiaire = async (req, res) => {
     res.status(201).json(savedBeneficiaire);
   } catch (error) {
     console.error("Error in createBeneficiaire:", error);
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la création du bénéficiaire", error });
+    res.status(500).json({ message: "Erreur lors de la création du bénéficiaire", error });
   }
 };
-
-
 
 exports.updateBeneficiaire = async (req, res) => {
   try {

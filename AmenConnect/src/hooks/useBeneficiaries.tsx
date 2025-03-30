@@ -5,12 +5,13 @@ export interface Beneficiaire {
   _id: string;
   nom: string;
   prenom: string;
-  numeroCompte: string;
+  RIB: string;
   banque: string;
   email?: string;
   telephone?: string;
   dateAjout: string;
 }
+
 
 export const useBeneficiaries = () => {
   const [beneficiaires, setBeneficiaires] = useState<Beneficiaire[]>([]);
