@@ -1,11 +1,11 @@
-// helpers.js (or inside your controller file)
-const BANK_CODE = "12345";
-const BRANCH_CODE = "67890";
-const DOMICILIATION = "AMEN BANK - Agence Centrale"; // Modify as needed
+// helpers.js
+const COUNTRY_CODE = "TN";
+const BANK_CODE = "35";    // Code AmenBank
+const BRANCH_CODE = "006"; // 3 chiffres (modifiez si besoin)
+const DOMICILIATION = "AMEN BANK - Agence Centrale";
 
 /**
- * Compute modulo 97 on a large number represented as a string.
- * (This algorithm processes one digit at a time.)
+ * Calcule le modulo 97 d'une grande chaîne numérique.
  */
 function mod97(numStr) {
   let remainder = 0;
@@ -16,14 +16,12 @@ function mod97(numStr) {
 }
 
 /**
- * Converts each character of the account number to a numeric string:
- * For letters, A -> 10, B -> 11, …, Z -> 35.
+ * Convertit une chaîne en chaîne numérique en remplaçant les lettres (A -> 10, B -> 11, …).
  */
-function convertAccountNumber(accountNumber) {
+function convertToNumeric(str) {
   let converted = "";
-  for (const char of accountNumber.toUpperCase()) {
+  for (const char of str.toUpperCase()) {
     if (/[A-Z]/.test(char)) {
-      // 'A'.charCodeAt(0) is 65 so 65 - 55 = 10, etc.
       converted += (char.charCodeAt(0) - 55).toString();
     } else {
       converted += char;
@@ -33,35 +31,57 @@ function convertAccountNumber(accountNumber) {
 }
 
 /**
- * Compute the 2-digit RIB key.
- * Formula: clé = 97 - ( (BANK_CODE + BRANCH_CODE + convertedAccountNumber) mod 97 )
+ * Calcule le check digit (clé RIB) à 2 chiffres.
+ * Formule : clé = 97 - ( (BANK_CODE + BRANCH_CODE + accountNumber) mod 97 )
  */
-function computeRibKey(accountNumber) {
-  const accountNumberConverted = convertAccountNumber(accountNumber);
-  const combined = BANK_CODE + BRANCH_CODE + accountNumberConverted;
+function computeInternalCheckDigit(accountNumber) {
+  const combined = BANK_CODE + BRANCH_CODE + accountNumber;
   const remainder = mod97(combined);
   let key = 97 - remainder;
-  // If key equals 97, the result should be 00.
   if (key === 97) key = 0;
   return key.toString().padStart(2, "0");
 }
 
 /**
- * Generate the full RIB.
- * Format: [BANK_CODE][BRANCH_CODE][accountNumber][RIB_key]
+ * Calcule l'IBAN checksum (2 chiffres) à partir du BBAN complet.
  */
-function generateRIB(accountNumber) {
-  const ribKey = computeRibKey(accountNumber);
-  return BANK_CODE + BRANCH_CODE + accountNumber + ribKey;
+function computeIbanChecksum(accountNumber) {
+  const checkDigit = computeInternalCheckDigit(accountNumber);
+  const bban = BANK_CODE + BRANCH_CODE + accountNumber + checkDigit;
+  const numericCountry = convertToNumeric(COUNTRY_CODE);
+  const checkString = bban + numericCountry + "00";
+  const remainder = mod97(checkString);
+  const ibanChecksum = 98 - remainder;
+  return ibanChecksum.toString().padStart(2, "0");
 }
 
 /**
- * (Optional) Generate an 11-character alphanumeric account number.
- * Adjust the algorithm as needed.
+ * Génère l'IBAN tunisien complet.
+ * Format : [COUNTRY_CODE][IBAN_checksum][BANK_CODE][BRANCH_CODE][accountNumber][check digit]
  */
+function generateIBAN(accountNumber) {
+  // Le numéro de compte doit comporter 13 chiffres.
+  if (!/^[0-9]{13}$/.test(accountNumber)) {
+    throw new Error("Le numéro de compte doit contenir exactement 13 chiffres.");
+  }
+  const internalCheckDigit = computeInternalCheckDigit(accountNumber);
+  const ibanChecksum = computeIbanChecksum(accountNumber);
+  return `${COUNTRY_CODE}${ibanChecksum}${BANK_CODE}${BRANCH_CODE}${accountNumber}${internalCheckDigit}`;
+}
 
+// Pour rester compatible avec votre contrôleur, exportez generateRIB comme alias de generateIBAN.
+const generateRIB = generateIBAN;
+
+/**
+ * (Optionnel) Génère un OTP à 6 chiffres.
+ */
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 module.exports = {
   generateRIB,
+  generateIBAN,
   DOMICILIATION,
+  generateOTP,
 };

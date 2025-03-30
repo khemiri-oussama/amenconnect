@@ -262,3 +262,12 @@
 {"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-03-29T16:10:50.470Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"900a16d97574d3759a793cf9611886f5","timestamp":"2025-03-29T16:11:13.249Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-03-29T16:11:13.435Z"}
+{"email":"rayen1ouertani@gamil.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-30T15:28:45.296Z"}
+{"email":"rayen1ouertani@gamil.com","level":"warn","message":"Invalid login attempt: admin not found","timestamp":"2025-03-30T15:28:45.382Z"}
+{"email":"rayen1ouertani@gamil.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-30T15:28:48.061Z"}
+{"email":"rayen1ouertani@gamil.com","level":"warn","message":"Invalid login attempt: admin not found","timestamp":"2025-03-30T15:28:48.130Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-03-30T15:28:56.788Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-03-30T15:28:57.373Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-03-30T15:29:00.169Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"2360a341684bbf4efe5e61e1a915f230","timestamp":"2025-03-30T15:29:18.622Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-03-30T15:29:18.698Z"}

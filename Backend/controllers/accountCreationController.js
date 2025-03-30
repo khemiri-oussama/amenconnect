@@ -6,7 +6,7 @@ const Compte = require("../models/Compte");
 const Carte = require("../models/Cartes");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
-const { generateRIB, DOMICILIATION, generateOTP } = require("../config/helper"); // adjust if needed
+const { generateRIB, DOMICILIATION, generateOTP } = require("../config/helper");
 
 // Helper: generate a random password (adjust complexity as required)
 const generateRandomPassword = () => {
@@ -15,7 +15,11 @@ const generateRandomPassword = () => {
 
 // Helper: generate a unique account number (ensuring uniqueness as needed)
 const generateAccountNumber = () => {
-  return Math.floor(100000000 + Math.random() * 900000000).toString();
+  let num = "";
+  for (let i = 0; i < 13; i++) {
+    num += Math.floor(Math.random() * 10).toString();
+  }
+  return num;
 };
 // Configure nodemailer transporter (adjust service and auth as needed)
 const transporter = nodemailer.createTransport({
