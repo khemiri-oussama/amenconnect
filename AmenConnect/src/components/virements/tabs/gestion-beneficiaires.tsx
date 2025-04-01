@@ -57,10 +57,48 @@ const GestionBeneficiaires: React.FC = () => {
     }
   }, [beneficiaires, searchTerm])
 
+  const bankCodes: { [key: string]: string } = {
+    "01": "Banque Centrale de Tunisie (BCT)",
+    "02": "Banque de Tunisie (BT)",
+    "03": "Société Tunisienne de Banque (STB)",
+    "04": "Banque Nationale Agricole (BNA)",
+    "05": "Banque de l’Habitat (BH)",
+    "07": "Amen Bank",
+    "08": "BIAT",
+    "10": "Banque Tuniso-Koweitienne (BTK)",
+    "11": "Banque de Tunisie et des Emirats (BTE)",
+    "12": "Union Internationale de Banques (UIB)",
+    "13": "Union Bancaire pour le Commerce et l’Industrie (UBCI)",
+    "14": "Arab Tunisian Bank (ATB)",
+    "16": "Banque de Financement des Petites et Moyennes Entreprises (BFPME)",
+    "17": "Banque Zitouna",
+    "18": "Attijari Bank Tunisia",
+    "20": "Société Générale Tunisie (SGT)",
+    "21": "QNB Tunisia",
+    "22": "Al Baraka Bank Tunisia",
+    "23": "Banque Tuniso-Libyenne (BTL)",
+    "24": "STUSID Bank",
+    "25": "Citibank Tunisia",
+    "26": "Wifak International Bank",
+    "31": "NSIA Bank Tunisia",
+    "32": "Al-Yusr Islamic Bank",
+  }
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    setFormData((prev) => {
+      let newFormData = { ...prev, [name]: value }
+  
+      if (name === "RIB" && value.length >= 6) {
+        const bankCode = value.substring(4, 6) // Extract 3rd and 4th digit
+        const bankName = bankCodes[bankCode] || ""
+        newFormData.banque = bankName
+      }
+  
+      return newFormData
+    })
   }
+  
 
   const handleAddBeneficiaire = () => {
     setEditingId(null)

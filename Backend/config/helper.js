@@ -1,7 +1,7 @@
 // helpers.js
 const COUNTRY_CODE = "TN";
-const BANK_CODE = "35";    // Code AmenBank
-const BRANCH_CODE = "006"; // 3 chiffres (modifiez si besoin)
+const BANK_CODE = "07";
+const BRANCH_CODE = "006";
 const DOMICILIATION = "AMEN BANK - Agence Centrale";
 
 /**
