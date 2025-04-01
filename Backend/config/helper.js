@@ -1,8 +1,4 @@
-// helpers.js
 const COUNTRY_CODE = "TN";
-const BANK_CODE = "07";
-const BRANCH_CODE = "006";
-const DOMICILIATION = "AMEN BANK - Agence Centrale";
 
 /**
  * Calcule le modulo 97 d'une grande chaîne numérique.
@@ -31,46 +27,39 @@ function convertToNumeric(str) {
 }
 
 /**
- * Calcule le check digit (clé RIB) à 2 chiffres.
- * Formule : clé = 97 - ( (BANK_CODE + BRANCH_CODE + accountNumber) mod 97 )
+ * Calcule la clé de contrôle pour un RIB sans clé (18 chiffres).
+ * La clé est calculée à l'aide de l'algorithme modulo 97.
  */
-function computeInternalCheckDigit(accountNumber) {
-  const combined = BANK_CODE + BRANCH_CODE + accountNumber;
-  const remainder = mod97(combined);
-  let key = 97 - remainder;
-  if (key === 97) key = 0;
-  return key.toString().padStart(2, "0");
-}
-
-/**
- * Calcule l'IBAN checksum (2 chiffres) à partir du BBAN complet.
- */
-function computeIbanChecksum(accountNumber) {
-  const checkDigit = computeInternalCheckDigit(accountNumber);
-  const bban = BANK_CODE + BRANCH_CODE + accountNumber + checkDigit;
-  const numericCountry = convertToNumeric(COUNTRY_CODE);
-  const checkString = bban + numericCountry + "00";
-  const remainder = mod97(checkString);
-  const ibanChecksum = 98 - remainder;
-  return ibanChecksum.toString().padStart(2, "0");
-}
-
-/**
- * Génère l'IBAN tunisien complet.
- * Format : [COUNTRY_CODE][IBAN_checksum][BANK_CODE][BRANCH_CODE][accountNumber][check digit]
- */
-function generateIBAN(accountNumber) {
-  // Le numéro de compte doit comporter 13 chiffres.
-  if (!/^[0-9]{13}$/.test(accountNumber)) {
-    throw new Error("Le numéro de compte doit contenir exactement 13 chiffres.");
+function computeControlKey(ribWithoutControl) {
+  if (!/^\d{18}$/.test(ribWithoutControl)) {
+    throw new Error("Le RIB sans clé doit contenir exactement 18 chiffres.");
   }
-  const internalCheckDigit = computeInternalCheckDigit(accountNumber);
-  const ibanChecksum = computeIbanChecksum(accountNumber);
-  return `${COUNTRY_CODE}${ibanChecksum}${BANK_CODE}${BRANCH_CODE}${accountNumber}${internalCheckDigit}`;
+  const remainder = mod97(ribWithoutControl);
+  const key = (97 - remainder).toString().padStart(2, "0");
+  return key;
 }
 
-// Pour rester compatible avec votre contrôleur, exportez generateRIB comme alias de generateIBAN.
-const generateRIB = generateIBAN;
+/**
+ * Génère l'IBAN tunisien complet à partir d'un RIB complet.
+ * Le RIB doit être une chaîne de 20 chiffres composée de :
+ *   - Code Banque (2 chiffres)
+ *   - Code Agence (3 chiffres)
+ *   - Numéro de compte (13 chiffres)
+ *   - Clé de contrôle (2 chiffres)
+ * L'IBAN aura le format : [COUNTRY_CODE][IBAN Checksum][RIB]
+ */
+function generateRIB(rib) {
+  const ribClean = rib.replace(/\s+/g, "");
+  if (!/^\d{20}$/.test(ribClean)) {
+    throw new Error("Le RIB doit contenir exactement 20 chiffres.");
+  }
+  // Pour calculer le checksum de l'IBAN, on déplace le RIB puis le code pays (converti en chiffres) et "00"
+  const numericCountry = convertToNumeric(COUNTRY_CODE);
+  const checkString = ribClean + numericCountry + "00";
+  const remainder = mod97(checkString);
+  const ibanChecksum = (98 - remainder).toString().padStart(2, "0");
+  return `${COUNTRY_CODE}${ibanChecksum}${ribClean}`;
+}
 
 /**
  * (Optionnel) Génère un OTP à 6 chiffres.
@@ -81,7 +70,7 @@ function generateOTP() {
 
 module.exports = {
   generateRIB,
-  generateIBAN,
-  DOMICILIATION,
   generateOTP,
+  computeControlKey,
+  // autres exports si nécessaire
 };

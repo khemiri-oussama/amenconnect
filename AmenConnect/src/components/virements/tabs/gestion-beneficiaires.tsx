@@ -1,3 +1,4 @@
+//components/virements/tabs/gestion-beneficiaires.tsx
 "use client"
 import { useState, useEffect } from "react"
 import type React from "react"
@@ -83,22 +84,24 @@ const GestionBeneficiaires: React.FC = () => {
     "31": "NSIA Bank Tunisia",
     "32": "Al-Yusr Islamic Bank",
   }
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => {
       let newFormData = { ...prev, [name]: value }
-  
-      if (name === "RIB" && value.length >= 6) {
-        const bankCode = value.substring(4, 6) // Extract 3rd and 4th digit
-        const bankName = bankCodes[bankCode] || ""
-        newFormData.banque = bankName
+      // When the user types in the RIB field, remove any spaces for validation/extraction
+      if (name === "RIB") {
+        const valueNoSpaces = value.replace(/\s+/g, "")
+        // Extract the bank code from the first 2 digits of the RIB
+        if (valueNoSpaces.length >= 2) {
+          const bankCode = valueNoSpaces.substring(0, 2)
+          const bankName = bankCodes[bankCode] || ""
+          newFormData.banque = bankName
+        }
       }
-  
       return newFormData
     })
   }
-  
 
   const handleAddBeneficiaire = () => {
     setEditingId(null)
@@ -152,14 +155,18 @@ const GestionBeneficiaires: React.FC = () => {
     setFormSuccess("")
 
     try {
-      // Validate form
+      // Validate that required fields are filled
       if (!formData.prenom || !formData.nom || !formData.RIB || !formData.banque) {
         throw new Error("Veuillez remplir tous les champs obligatoires")
       }
 
-      // Validate account number format
-      if (!/^TN\d{20}$/.test(formData.RIB)) {
-        throw new Error("Le numéro de compte doit être au format TN suivi de 20 chiffres")
+      // Remove spaces from the RIB input
+      const ribNoSpaces = formData.RIB.replace(/\s+/g, "")
+      // Validate that the RIB is exactly 20 digits
+      if (!/^\d{20}$/.test(ribNoSpaces)) {
+        throw new Error(
+          "Le numéro de compte (RIB) doit contenir exactement 20 chiffres: Code Banque (2), Code Agence (3), Numéro de compte (13), Clé de contrôle (2)"
+        )
       }
 
       if (editingId) {
@@ -167,7 +174,7 @@ const GestionBeneficiaires: React.FC = () => {
         await updateBeneficiaire(editingId, formData)
         setFormSuccess("Bénéficiaire modifié avec succès")
       } else {
-        // Add new beneficiary. The backend should automatically assign an _id and dateAjout.
+        // Add new beneficiary. The backend should automatically generate and store the IBAN using the RIB.
         await addBeneficiaire(formData)
         setFormSuccess("Bénéficiaire ajouté avec succès")
       }
@@ -273,10 +280,12 @@ const GestionBeneficiaires: React.FC = () => {
                   className="virement-form__input"
                   value={formData.RIB}
                   onChange={handleInputChange}
-                  placeholder="TN59..."
+                  placeholder="Ex: 10 006 0351835984788 31"
                   required
                 />
-                <div className="virement-form__hint">Format: TN suivi de 20 chiffres</div>
+                <div className="virement-form__hint">
+                  Format : Code Banque (2 chiffres), Code Agence (3 chiffres), Numéro de compte (13 chiffres), Clé (2 chiffres)
+                </div>
               </div>
 
               <div className="virement-form__group">
