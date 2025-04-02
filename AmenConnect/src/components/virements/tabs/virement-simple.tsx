@@ -1,3 +1,4 @@
+//components/virements/tabs/virement-simple.tsx
 "use client"
 import { useState, useEffect } from "react"
 import type React from "react"
