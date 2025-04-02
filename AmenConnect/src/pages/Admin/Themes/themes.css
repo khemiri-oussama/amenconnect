@@ -1,3 +1,11 @@
+@import "../Dashboard/Dashboard.css";
+@import "../AuthenticationSecurity/AuthenticationSecurity.css";
+@import "../GestionUtilisateur/UserManagement.css";
+@import "../GestiondesTotem/InteractiveTotemManagement.css";
+@import "../SurveillanceMonitoring/SurveillanceMonitoring.css";
+@import "../videoconfmanage/videoconfmanage.css";
+@import "../PermissionManagement/PermissionManagement.css";
+
 /* Theme Page Styles */
 .admin-theme-actions {
   display: flex;

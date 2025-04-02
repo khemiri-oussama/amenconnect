@@ -110,7 +110,7 @@ const PermissionsManagement: React.FC = () => {
       (log.adminId && String(log.adminId).toLowerCase().includes(searchQuery.toLowerCase()))
 
     const matchesDate =
-      dateFilter === "all" ||
+      dateFilter === "today" ||
       (() => {
         const logDate = new Date(log.timestamp)
         const today = new Date()
@@ -296,10 +296,10 @@ const PermissionsManagement: React.FC = () => {
           <div className="audit-filter">
             <IonIcon icon={timeOutline} className="audit-filter-icon" />
             <select className="audit-filter-select" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}>
-              <option value="all">All Time</option>
-              <option value="today">Today</option>
+            <option value="today">Today</option>
               <option value="yesterday">Yesterday</option>
               <option value="week">Last 7 Days</option>
+              <option value="all">All Time</option>
             </select>
           </div>
 

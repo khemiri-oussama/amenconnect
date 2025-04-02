@@ -522,6 +522,7 @@ ion-content {
 
 /* Add these styles for the request details modal */
 .request-details-container {
+  background: white;
   padding: 1rem;
 }
 
@@ -590,3 +591,6 @@ ion-content {
   }
 }
 
+#background-content{
+  background-color: #f8fafc;
+}
