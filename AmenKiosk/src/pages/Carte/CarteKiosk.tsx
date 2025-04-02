@@ -32,7 +32,8 @@ import { generateBankStatement, type CardDetails, type Transaction } from "../..
 import { useCarte } from "../../context/CarteContext"
 import { useHistory } from "react-router-dom"
 import { createGesture } from "@ionic/react"
-
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 interface CreditCardTransaction {
   _id: string
   transactionDate: string
@@ -193,48 +194,199 @@ const CarteKiosk: React.FC = () => {
     }).format(amount)
   }
 
-  const handleDownloadStatement = async () => {
-    try {
-      if (!cardDetails || !transactions.length || !accountDetails) {
-        throw new Error("Les données ne sont pas disponibles")
-      }
+// Add these imports at the top with other imports
 
-      const pdfCardDetails: CardDetails = {
-        cardNumber: cardDetails.CardNumber,
-        cardHolder: cardDetails.CardHolder,
-        expiryDate: cardDetails.ExpiryDate,
-        cardType: cardDetails.TypeCarte,
-        balance: accountDetails.solde,
-        pendingTransactions: cardDetails.pendingTransactions?.amount || 0,
-        monthlySpendingLimit: cardDetails.monthlyExpenses?.limit || 0,
-        monthlySpending: cardDetails.monthlyExpenses?.current || 0,
-        withdrawalLimit: cardDetails.atmWithdrawal?.limit || 0,
-        withdrawalAmount: cardDetails.atmWithdrawal?.current || 0,
-      }
+// Add these constants above the component
+const bankBranding = {
+  name: "Amen Bank",
+  logo: "/amen_logo.png",
+  primaryColor: [0, 51, 102],
+  secondaryColor: [0, 85, 165],
+  address: ["Avenue Mohamed V", "Tunis 1002", "Tunisie"],
+  website: "www.amenbank.com.tn",
+  phone: "(+216) 71 148 000",
+  email: "contact@amenbank.com.tn",
+};
 
-      const pdfTransactions: Transaction[] = transactions.map((t) => ({
-        id: t._id,
-        date: new Date(t.transactionDate).toLocaleDateString(),
-        merchant: t.merchant,
-        amount: t.amount,
-        type: t.amount < 0 ? "debit" : "credit",
-        category: "Non catégorisé",
-        icon: "💳",
-        status: t.status,
-        description: t.description,
-      }))
+const statementConfig = {
+  showLogo: true,
+  showFooter: true,
+  dateFormat: "fr-FR",
+  locale: "fr-FR",
+  currency: "TND",
+  theme: {
+    headerColor: [0, 51, 102],
+    textColor: [33, 33, 33],
+    accentColor: [0, 102, 204],
+    tableHeaderColor: [0, 51, 102],
+    alternateRowColor: [240, 240, 240],
+  },
+};
 
-      await generateBankStatement({
-        cardDetails: pdfCardDetails,
-        transactions: pdfTransactions,
-        branding: {
-          logo: "/amen_logo.png",
-        },
-      })
-    } catch (error) {
-      console.error("Erreur lors de la génération du relevé:", error)
+// Modified handleDownloadStatement function
+const handleDownloadStatement = async () => {
+  try {
+    if (!cardDetails || !transactions.length || !accountDetails) {
+      throw new Error("Les données ne sont pas disponibles");
     }
+
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    // ─── Header ──────────────────────────────
+    const headerHeight = 40;
+    doc.setFillColor(...statementConfig.theme.headerColor);
+    doc.rect(0, 0, doc.internal.pageSize.getWidth(), headerHeight, "F");
+
+    // Bank Info
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text(bankBranding.address, 15, 15);
+
+    // Title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.text("Relevé de Carte", doc.internal.pageSize.getWidth() / 2, 25, { align: "center" });
+
+    // Logo
+    if (statementConfig.showLogo) {
+      const img = new Image();
+      img.src = bankBranding.logo;
+      await new Promise((resolve) => (img.onload = resolve));
+      doc.addImage(img, "PNG", doc.internal.pageSize.getWidth() - 55, 10, 45, 20);
+    }
+
+    // ─── Card Details ──────────────────────────────
+    const cardDetailsY = headerHeight + 15;
+    doc.setFontSize(12);
+    doc.setTextColor(...statementConfig.theme.textColor);
+    
+    autoTable(doc, {
+      startY: cardDetailsY,
+      body: [
+        ["Titulaire", cardDetails.CardHolder],
+        ["Numéro de carte", `**** **** **** ${cardDetails.CardNumber.slice(-4)}`],
+        ["Date d'expiration", cardDetails.ExpiryDate],
+        ["Statut", isCardLocked ? "Bloquée" : "Active"],
+        ["Solde associé", formatCurrency(accountDetails.solde)],
+      ],
+      theme: "plain",
+      styles: {
+        fontSize: 12,
+        cellPadding: 8,
+        textColor: statementConfig.theme.textColor,
+      },
+      columnStyles: {
+        0: { fontStyle: "bold", fillColor: [245, 245, 245] },
+        1: { halign: "right" }
+      }
+    });
+
+    // ─── Limits Section ──────────────────────────────
+    const limitsY = (doc as any).lastAutoTable.finalY + 15;
+    doc.setFontSize(14);
+    doc.setTextColor(...statementConfig.theme.headerColor);
+    doc.text("Limites de la carte", 15, limitsY);
+
+    autoTable(doc, {
+      startY: limitsY + 10,
+      head: [["Type de limite", "Utilisé", "Limite", "Progression"]],
+      body: [
+        [
+          "Dépenses mensuelles",
+          formatCurrency(cardDetails.monthlyExpenses?.current || 0),
+          formatCurrency(cardDetails.monthlyExpenses?.limit || 0),
+          `${Math.round((cardDetails.monthlyExpenses?.current / cardDetails.monthlyExpenses?.limit) * 100)}%`
+        ],
+        [
+          "Retrait DAB",
+          formatCurrency(cardDetails.atmWithdrawal?.current || 0),
+          formatCurrency(cardDetails.atmWithdrawal?.limit || 0),
+          `${Math.round((cardDetails.atmWithdrawal?.current / cardDetails.atmWithdrawal?.limit) * 100)}%`
+        ]
+      ],
+      theme: "grid",
+      headStyles: {
+        fillColor: statementConfig.theme.tableHeaderColor,
+        textColor: 255,
+        fontSize: 12
+      },
+      alternateRowStyles: {
+        fillColor: statementConfig.theme.alternateRowColor
+      },
+      columnStyles: {
+        3: { cellWidth: 30 }
+      }
+    });
+
+    // ─── Transactions Section ──────────────────────────────
+    const transactionsY = (doc as any).lastAutoTable.finalY + 15;
+    doc.setFontSize(14);
+    doc.setTextColor(...statementConfig.theme.headerColor);
+    doc.text("Transactions récentes", 15, transactionsY);
+
+    autoTable(doc, {
+      startY: transactionsY + 10,
+      head: [["Date", "Marchand", "Montant", "Statut"]],
+      body: transactions.map(t => [
+        new Date(t.transactionDate).toLocaleDateString(statementConfig.locale),
+        t.merchant,
+        formatCurrency(t.amount),
+        t.status
+      ]),
+      theme: "grid",
+      headStyles: {
+        fillColor: statementConfig.theme.tableHeaderColor,
+        textColor: 255,
+        fontSize: 12
+      },
+      alternateRowStyles: {
+        fillColor: statementConfig.theme.alternateRowColor
+      },
+      styles: {
+        fontSize: 10,
+        cellPadding: 6
+      },
+      columnStyles: {
+        3: { cellWidth: 30 }
+      }
+    });
+
+    // ─── Footer ──────────────────────────────
+    if (statementConfig.showFooter) {
+      const pageCount = (doc.internal as any).getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFillColor(...statementConfig.theme.headerColor);
+        doc.rect(0, doc.internal.pageSize.getHeight() - 20, doc.internal.pageSize.getWidth(), 20, "F");
+        doc.setFontSize(9);
+        doc.setTextColor(255, 255, 255);
+        doc.text(
+          `Généré le ${new Date().toLocaleDateString(statementConfig.locale)} • Page ${i}/${pageCount}`,
+          doc.internal.pageSize.getWidth() / 2,
+          doc.internal.pageSize.getHeight() - 10,
+          { align: "center" }
+        );
+      }
+    }
+
+    // ─── Open Print Dialog ──────────────────────────────
+    doc.autoPrint();
+    const blobUrl = doc.output("bloburl");
+    const printWindow = window.open(blobUrl);
+    if (printWindow) {
+      printWindow.focus();
+    }
+
+  } catch (error) {
+    console.error("Erreur lors de la génération du relevé:", error);
+    setError("Échec de la génération du relevé");
   }
+};
 
   const handleBack = () => {
     history.push("/")
