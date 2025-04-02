@@ -54,30 +54,38 @@ exports.createVirement = async (req, res) => {
     await sender.save();
 
     // Immediate processing: update receiver's account if found
-    if (processingDelay === 0) {
-      const receiver = await Compte.findOne({ RIB: toAccount });
-      if (receiver) {
-        receiver.solde += amount;
-        await receiver.save();
-      }
-      return res.status(201).json({ message: "Virement successful", data: virement });
-    } else {
-      // Scheduled processing: use setTimeout to complete the virement later
-      setTimeout(async () => {
-        // Find receiver account at processing time (it might have been created meanwhile)
-        const receiver = await Compte.findOne({ RIB: toAccount });
-        if (receiver) {
-          receiver.solde += amount;
-          await receiver.save();
-        }
-        // Update the virement record to reflect completion
-        virement.status = "Completed";
-        await virement.save();
-      }, processingDelay);
-      return res.status(201).json({
-        message: `Virement scheduled. It will be processed in ${processingDelay / 60000} minute(s).`,
-        data: virement,
-      });
+    // Immediate processing: update receiver's account if found
+if (processingDelay === 0) {
+  const receiver = await Compte.findOne({ RIB: toAccount });
+  if (receiver) {
+    receiver.solde += amount;
+    await receiver.save();
+  }
+  return res.status(201).json({
+    success: true,
+    message: "Virement effectué avec succès",
+    data: virement,
+  });
+}
+ else {
+// Scheduled processing: use setTimeout to complete the virement later
+setTimeout(async () => {
+  // Find receiver account at processing time (it might have been created meanwhile)
+  const receiver = await Compte.findOne({ RIB: toAccount });
+  if (receiver) {
+    receiver.solde += amount;
+    await receiver.save();
+  }
+  // Update the virement record to reflect completion
+  virement.status = "Completed";
+  await virement.save();
+}, processingDelay);
+
+return res.status(201).json({
+  success: true,
+  message: `Virement programmé. Il sera traité dans ${processingDelay / 60000} minute(s).`,
+  data: virement,
+});
     }
   } catch (error) {
     console.error(error);
