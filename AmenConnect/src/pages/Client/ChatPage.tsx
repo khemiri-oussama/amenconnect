@@ -4,7 +4,6 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import {
   IonPage,
-  IonHeader,
   IonContent,
   IonButton,
   IonTextarea,
@@ -23,9 +22,8 @@ import {
   helpCircleOutline,
   documentTextOutline,
 } from "ionicons/icons"
-import { useAuth } from "../../../AuthContext"
-import Navbar from "../../../components/Navbar"
-import "./ChatBotDesktop.css"
+import { useAuth } from "../../AuthContext"
+import "./ChatPage.css"
 
 interface Message {
   id: number
@@ -34,13 +32,13 @@ interface Message {
   timestamp: Date
 }
 
-const ChatBotDesktop: React.FC = () => {
+const ChatPage: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const [message, setMessage] = useState<string>("")
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: `Bonjour ${profile?.user.prenom || ""} ! Je suis votre assistant bancaire. Comment puis-je vous aider aujourd'hui ?	`,
+      text: "Bonjour ! Je suis votre assistant bancaire. Comment puis-je vous aider aujourd'hui ?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -68,6 +66,7 @@ const ChatBotDesktop: React.FC = () => {
   }
 
   // Déterminer si l'utilisateur est authentifié
+  // Déterminer si l'utilisateur est authentifié
   const isAuthenticated = Boolean(profile)
 
   const userName = profile?.user ? `${profile.user.prenom} ${profile.user.nom}` : ""
@@ -76,8 +75,7 @@ const ChatBotDesktop: React.FC = () => {
   const userCin = profile?.user?.cin || ""
   const userPhone = profile?.user?.telephone || ""
   const userAddress = profile?.user?.adresseEmployeur || ""
-  
-
+  const userCreatedAt = profile?.user?.createdAt || ""
 
   const sendMessage = async (text = message) => {
     if (!text.trim()) return
@@ -101,12 +99,13 @@ const ChatBotDesktop: React.FC = () => {
         ? {
             message: text,
             user: {
-              name: userName,
-              email: userEmail,
-              accounts: userAccounts,
-              cin: userCin,
-              phone: userPhone,
-              address: userAddress,
+                name: userName,
+                email: userEmail,
+                accounts: userAccounts,
+                cin: userCin,
+                phone: userPhone,
+                address: userAddress,
+                createdAt: userCreatedAt,
             },
           }
         : { message: text }
@@ -160,15 +159,6 @@ const ChatBotDesktop: React.FC = () => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
-  // Formater le texte du message pour préserver les sauts de ligne
-  const formatMessageText = (text: string) => {
-    return text.split("\n").map((line, i) => (
-      <p key={i} className="message-paragraph">
-        {line || " "}
-      </p>
-    ))
-  }
-
   // Messages de suggestion rapide
   const suggestions = [
     { text: "Quel est le solde de mon compte ?", icon: informationCircleOutline },
@@ -182,18 +172,14 @@ const ChatBotDesktop: React.FC = () => {
 
   return (
     <IonPage className="chat-page">
-      <IonHeader>
-        <Navbar currentPage="chat" />
-      </IonHeader>
+
 
       <IonContent className="chat-content">
         <div className="chat-desktop-layout">
           <div className="chat-sidebar">
             <div className="chat-sidebar-header">
               <h2>Assistant Bancaire</h2>
-              <p className="sidebar-description">
-                Posez-moi n'importe quelle question sur vos comptes, transactions ou services bancaires.
-              </p>
+              <p>Posez-moi n'importe quelle question sur vos comptes, transactions ou services bancaires.</p>
             </div>
 
             {isAuthenticated ? (
@@ -204,8 +190,8 @@ const ChatBotDesktop: React.FC = () => {
                   </IonAvatar>
                 </div>
                 <div className="user-details">
-                  <h3 className="user-name">{userName}</h3>
-                  <p className="user-email">{userEmail}</p>
+                  <h3>{userName}</h3>
+                  <p>{userEmail}</p>
                   <div className="account-badge">
                     <IonChip color="success">
                       <IonLabel>Authentifié</IonLabel>
@@ -219,8 +205,8 @@ const ChatBotDesktop: React.FC = () => {
                   <IonIcon icon={personCircleOutline} />
                 </div>
                 <div className="guest-details">
-                  <h3 className="guest-title">Utilisateur Invité</h3>
-                  <p className="guest-description">Accès limité aux fonctionnalités bancaires</p>
+                  <h3>Utilisateur Invité</h3>
+                  <p>Accès limité aux fonctionnalités bancaires</p>
                   <div className="account-badge">
                     <IonChip color="medium">
                       <IonLabel>Mode Invité</IonLabel>
@@ -231,8 +217,8 @@ const ChatBotDesktop: React.FC = () => {
             )}
 
             <div className="chat-info-section">
-              <h3 className="info-title">À propos de l'Assistant Bancaire</h3>
-              <ul className="info-list">
+              <h3>À propos de l'Assistant Bancaire</h3>
+              <ul>
                 <li>Obtenir des informations sur le compte</li>
                 <li>Vérifier l'historique des transactions</li>
                 <li>Se renseigner sur les services bancaires</li>
@@ -240,7 +226,7 @@ const ChatBotDesktop: React.FC = () => {
               </ul>
 
               <div className="chat-disclaimer">
-                <p className="disclaimer-text">
+                <p>
                   Pour des raisons de sécurité, certaines opérations peuvent nécessiter une authentification
                   supplémentaire.
                 </p>
@@ -284,7 +270,7 @@ const ChatBotDesktop: React.FC = () => {
                         </div>
                       )}
                       <div className="message-text">
-                        <div className="message-text-content">{formatMessageText(msg.text)}</div>
+                        <p>{msg.text}</p>
                         <span className="message-time">{formatTime(msg.timestamp)}</span>
                       </div>
                     </div>
@@ -332,18 +318,17 @@ const ChatBotDesktop: React.FC = () => {
 
             <IonFooter className="chat-footer">
               <div className="message-input-container">
-              <IonTextarea
-                value={message}
-                placeholder="Tapez votre message ici..."
-                onIonChange={(e) => setMessage(e.detail.value!)}
-                onKeyDown={handleKeyPress} // Updated from onKeyPress to onKeyDown
-                autoGrow={true}
-                rows={1}
-                maxlength={500}
-                className="message-input"
+                <IonTextarea
+                  value={message}
+                  placeholder="Tapez votre message ici..."
+                  onIonChange={(e) => setMessage(e.detail.value!)}
+                  onKeyPress={handleKeyPress}
+                  autoGrow={true}
+                  rows={1}
+                  maxlength={500}
+                  className="message-input"
                 />
-
-                <IonButton className="send-button" onClick={() => sendMessage()}>
+                <IonButton className="send-button" onSubmit={()=>sendMessage()}  onClick={() => sendMessage()}>
                   <IonIcon icon={sendOutline} />
                 </IonButton>
               </div>
@@ -367,5 +352,5 @@ const ChatBotDesktop: React.FC = () => {
   )
 }
 
-export default ChatBotDesktop
+export default ChatPage
 

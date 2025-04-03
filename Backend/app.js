@@ -41,7 +41,12 @@ const themeRoutes = require("./routes/theme")
 const themesPresetRoutes = require("./routes/themeRoutes");
 const app = express();
 const logoRoutes = require('./routes/logoRoutes');
+// At the top of your app.js (with other route imports)
+const chatRoutes = require("./routes/chatRoutes");
 
+
+// Ensure OPTIONS preflight requests are handled
+app.options('*', cors());
 // Middlewares
 app.use(helmet());
 app.use(express.json({ limit: "50mb" }));
@@ -96,6 +101,9 @@ app.use(
   adminpassport.authenticate("admin-jwt", { session: false }),
   Twofa
 );
+
+// Then mount the route (for example, below your other /api routes)
+app.use("/api/chat", chatRoutes);
 app.use("/api/mongo-ops", mongoOpsRoute);
 app.use("/api/alerts", alertsRouter);
 app.use("/api/audit-logs", auditLogsRoutes);

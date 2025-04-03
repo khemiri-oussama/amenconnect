@@ -34,6 +34,7 @@ interface Message {
 }
 
 const HelpDeskButton: React.FC = () => {
+  const [desktop, setDesktop] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [activeOption, setActiveOption] = useState<
     "main" | "chat" | "video" | "video-form" | "waiting-approval"
