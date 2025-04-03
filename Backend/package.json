@@ -38,6 +38,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "systeminformation": "^5.25.11",
+    "together-ai": "^0.13.0",
     "ua-parser-js": "^2.0.2",
     "uuid": "^11.1.0",
     "winston": "^3.17.0"

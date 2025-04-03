@@ -1,49 +1,37 @@
 /* Global Variables */
 :root {
   --primary-green: #47ce65;
-  --primary-red: #ff5722;
   --background-dark: #1e1e1e;
   --card-background: rgba(255, 255, 255, 0.1);
   --text-gray: rgba(255, 255, 255, 0.6);
   --accent-blue: #3b82f6;
   --gradient-start: #2c3e50;
   --gradient-end: #1a1a1a;
-  --status-pending: #f59e0b;
-  --status-processing: #3b82f6;
-  --status-completed: #10b981;
-  --status-failed: #ef4444;
+  --danger-red: #ff4d4d;
+  --warning-yellow: #ffcc00;
 }
 
 /* Content Styles */
-ion-content {
+.custom-content-mobile {
   --background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  --padding-bottom: 70px;
-}
-
-/* Dark Theme */
-.dark-theme {
-  --background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  --ion-background-color: transparent;
-  --ion-text-color: white;
-  --padding-start: 16px;
-  --padding-end: 16px;
+  --padding-top: 0;
   --padding-bottom: 80px;
 }
 
-/* Status Bar */
-.status-bar {
-  height: 44px;
-  background: transparent;
+/* Hide scrollbar for Chrome, Safari and Opera */
+.custom-content-mobile::-webkit-scrollbar {
+  display: none;
 }
 
-/* iOS Specific Styles */
-.ios .status-bar {
-  height: 50px;
+/* Hide scrollbar for IE, Edge and Firefox */
+.custom-content-mobile {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
-/* Android Specific Styles */
-.md .status-bar {
-  height: 24px;
+.content-wrapper-mobile {
+  padding: 16px;
+  padding-bottom: 80px; /* Adjust based on your bottom tabs height */
 }
 
 /* Page Title */
@@ -51,30 +39,18 @@ ion-content {
   font-size: 28px;
   font-weight: 700;
   color: white;
-  margin: 60px 0 30px;
-  animation: fadeIn 0.5s ease-out;
+  margin: 20px 0 30px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Transfer Options */
-.transfer-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.transfer-card {
+/* Account Card */
+.account-card-mobile {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
   border-radius: 20px;
   padding: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-  border: none;
-  color: white;
-  min-height: 160px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: slideIn 0.5s ease-out;
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
@@ -82,30 +58,54 @@ ion-content {
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.transfer-card:active {
+.account-card-mobile:active {
   transform: scale(0.98);
   box-shadow: 0 0 20px rgba(71, 206, 101, 0.4);
 }
 
-.transfer-icon {
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+.account-header-mobile {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
 }
 
-.transfer-icon ion-icon {
-  font-size: 24px;
+.account-header-mobile h2 {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.stats-icon-mobile {
   color: var(--primary-green);
+  font-size: 24px;
 }
 
-.transfer-card p {
+.account-details-mobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.balance-mobile {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin: 0 0 8px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.account-number-mobile {
+  color: var(--text-gray);
   margin: 0;
   font-size: 14px;
-  line-height: 1.4;
+}
+
+.expiry-date-mobile {
+  color: var(--text-gray);
+  margin: 0;
+  font-size: 14px;
 }
 
 /* Custom Segment */
@@ -129,116 +129,100 @@ ion-segment-button {
   transition: all 0.3s ease;
 }
 
-/* History Section */
-.history-section {
-  margin-top: 24px;
-  animation: fadeIn 0.5s ease-out;
-}
-
-.history-section h2 {
-  font-size: 24px;
-  font-weight: 600;
-  color: white;
-  margin: 0 0 16px;
-}
-
-/* Custom Searchbar */
-.custom-searchbar {
-  --background: rgba(255, 255, 255, 0.05);
-  --border-radius: 16px;
-  --box-shadow: none;
-  --placeholder-color: var(--text-gray);
-  --icon-color: var(--text-gray);
-  margin-bottom: 16px;
-  backdrop-filter: blur(8px);
-}
-
-/* Transfer History Item */
-.transfer-history-item {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  animation: fadeIn 0.5s ease-out;
-}
-
-.transfer-history-header {
+/* Section Header */
+.section-header-mobile {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 
-.transfer-history-header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.transfer-amount {
+.section-title {
+  color: white;
   font-size: 20px;
-  font-weight: 700;
-  margin: 8px 0;
+  font-weight: 600;
+  margin: 0;
 }
 
-.transfer-date {
+/* Common Form Styles */
+.form-group {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  color: var(--text-gray);
-  margin: 8px 0;
-}
-
-.transfer-date ion-icon {
-  font-size: 16px;
-}
-
-.transfer-reference {
-  font-size: 14px;
-  color: var(--text-gray);
-  margin: 8px 0 0;
-}
-
-.transfer-actions {
-  display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: 8px;
-  margin-top: 12px;
+  margin-bottom: 16px;
 }
 
-/* Status Badge */
-.status-badge {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 12px;
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-label {
+  color: white;
+  font-size: 16px;
   font-weight: 500;
 }
 
-.status-pending {
-  background: rgba(245, 158, 11, 0.2);
-  color: var(--status-pending);
+.form-input,
+.form-select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
 }
 
-.status-processing {
-  background: rgba(59, 130, 246, 0.2);
-  color: var(--status-processing);
+.form-hint {
+  color: var(--text-gray);
+  font-size: 12px;
+  margin-top: 4px;
 }
 
-.status-completed {
-  background: rgba(16, 185, 129, 0.2);
-  color: var(--status-completed);
+.submit-button {
+  --background: var(--primary-green);
+  --color: black;
+  --border-radius: 12px;
+  margin-top: 16px;
+  font-weight: 600;
 }
 
-.status-failed {
-  background: rgba(239, 68, 68, 0.2);
-  color: var(--status-failed);
+/* Error and Success Messages */
+.error-message,
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 16px;
 }
 
-/* Empty State */
-.empty-state {
+.error-message {
+  background: rgba(255, 77, 77, 0.1);
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  color: var(--danger-red);
+}
+
+.success-message {
+  background: rgba(71, 206, 101, 0.1);
+  border: 1px solid rgba(71, 206, 101, 0.3);
+  color: var(--primary-green);
+}
+
+/* Loading and Empty States */
+.loading-state,
+.empty-state,
+.error-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -248,300 +232,367 @@ ion-segment-button {
   color: var(--text-gray);
 }
 
-.empty-state ion-icon {
+.empty-icon,
+.error-icon {
   font-size: 48px;
   margin-bottom: 16px;
+  opacity: 0.5;
 }
 
-.empty-state p {
-  font-size: 16px;
-  margin: 0 0 8px;
+.error-icon {
+  color: var(--danger-red);
 }
 
-.empty-state-subtitle {
-  font-size: 14px;
-  opacity: 0.7;
+/* Dashboard Component Styles */
+.virement-dashboard-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-/* Modal Styles */
-ion-modal ion-toolbar {
-  --background: var(--gradient-start);
-  --color: white;
+.limits-section,
+.transactions-section,
+.support-section {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-ion-modal ion-content {
-  --background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-}
-
-ion-modal ion-item {
-  --background: rgba(255, 255, 255, 0.05);
-  --border-color: rgba(255, 255, 255, 0.1);
-  --color: white;
-  --border-radius: 8px;
-  margin-bottom: 8px;
-}
-
-ion-modal ion-label {
-  --color: white;
-}
-
-ion-modal ion-input,
-ion-modal ion-select,
-ion-modal ion-datetime {
-  --color: white;
-  --placeholder-color: var(--text-gray);
-}
-
-/* Beneficiary Card */
-.beneficiary-card {
-  --background: rgba(255, 255, 255, 0.05);
-  --border-color: rgba(255, 255, 255, 0.1);
+.limit-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
   margin-bottom: 16px;
 }
 
-.beneficiary-title {
+.limit-card:last-child {
+  margin-bottom: 0;
+}
+
+.limit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.limit-label {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.limit-value {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.limit-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.limit-progress {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.limit-progress-bar {
+  height: 100%;
+  background: var(--primary-green);
+  border-radius: 4px;
+}
+
+.limit-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--text-gray);
+}
+
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.transaction-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+}
+
+.transaction-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.transaction-primary {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Scheduled Transfer Card */
-.scheduled-transfer-card {
-  --background: rgba(255, 255, 255, 0.05);
-  --border-color: rgba(255, 255, 255, 0.1);
-  margin-bottom: 16px;
+.transaction-description {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-.transfer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
-}
-
-.transfer-header h3 {
-  margin: 0;
-  font-size: 18px;
+.transaction-amount {
+  font-size: 16px;
   font-weight: 600;
 }
 
-.transfer-iban {
-  font-size: 14px;
-  color: var(--text-gray);
-  margin: 0 0 12px;
+.transaction-amount.credit {
+  color: var(--primary-green);
 }
 
-.label {
+.transaction-amount.debit {
+  color: var(--danger-red);
+}
+
+.transaction-secondary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-gray);
+  font-size: 14px;
+}
+
+.transaction-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.transaction-status {
   font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.transaction-status.status-success {
+  background: rgba(71, 206, 101, 0.2);
+  color: var(--primary-green);
+}
+
+.transaction-status.status-pending {
+  background: rgba(255, 204, 0, 0.2);
+  color: var(--warning-yellow);
+}
+
+.transaction-status.status-failed {
+  background: rgba(255, 77, 77, 0.2);
+  color: var(--danger-red);
+}
+
+.transaction-tertiary {
   color: var(--text-gray);
-  margin: 0 0 4px;
+  font-size: 14px;
+  margin-top: 4px;
 }
 
-.value {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0;
+.support-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
 }
 
-.transfer-details {
+.support-contact {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin: 12px 0;
+  margin-bottom: 12px;
 }
 
-.transfer-date {
+.support-hours {
   display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.recurring-details {
-  margin-top: 12px;
+  justify-content: space-between;
   padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.recurring-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  font-size: 14px;
+.support-label {
   color: var(--text-gray);
 }
 
-.recurring-item ion-icon {
-  font-size: 16px;
-}
-
-/* Toast */
-.toast-container {
-  position: fixed;
-  bottom: 80px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  z-index: 9999;
-  animation: slideUp 0.3s ease-out;
-}
-
-.toast-message {
-  background: var(--primary-green);
+.support-value {
   color: white;
-  padding: 12px 20px;
-  border-radius: 30px;
+  font-weight: 500;
+}
+
+/* Simple Virement Component Styles */
+.virement-simple-mobile {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.processing-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
 }
 
-.toast-message ion-icon {
-  font-size: 18px;
+.processing-animation {
+  margin-bottom: 24px;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.processing-icon {
+  font-size: 48px;
+  color: var(--warning-yellow);
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Responsive Adjustments */
-@media (max-width: 360px) {
-  .transfer-options {
-    grid-template-columns: 1fr;
-  }
-
-  .transfer-card {
-    min-height: 120px;
-  }
-}
-/* Custom styles for SimpleTransferModal */
-
-/* Fix for IonSelectOption text visibility */
-.custom-select {
-  --color: white;
-  --placeholder-color: rgba(255, 255, 255, 0.6);
-}
-
-/* These styles target the popover that appears when selecting options */
-ion-select-popover {
-  --background: #1e1e1e !important;
-  --ion-background-color: #1e1e1e !important;
-}
-
-ion-select-popover ion-item {
-  --background: #1e1e1e !important;
-  --color: white !important;
-}
-
-ion-select-popover ion-radio {
-  --color: white !important;
-  --color-checked: var(--primary-green) !important;
-}
-
-ion-select-popover .select-interface-option {
-  --color: white !important;
-  color: white !important;
-  background-color: #1e1e1e !important;
-}
-
-ion-select-popover .alert-radio-label {
-  color: white !important;
-}
-
-/* Fix for IonDatetime */
-.custom-datetime {
-  --background: #1e1e1e;
-  --color: white;
-  color: white;
-}
-
-ion-datetime-button {
-  --color: white;
-}
-
-ion-datetime {
-  --background: #1e1e1e;
-  --ion-color-step-100: #2d2d2d;
-  --ion-color-step-150: #363636;
-  --ion-color-step-200: #414141;
-  --ion-color-step-250: #4d4d4d;
-  --ion-color-step-300: #595959;
-  --ion-color-step-350: #656565;
-  --ion-color-step-400: #717171;
-  --ion-color-step-450: #7d7d7d;
-  --ion-color-step-500: #898989;
-  --ion-color-step-550: #949494;
-  --ion-color-step-600: #a0a0a0;
-  --ion-color-step-650: #acacac;
-  --ion-color-step-700: #b8b8b8;
-  --ion-color-step-750: #c4c4c4;
-  --ion-color-step-800: #d0d0d0;
-  --ion-color-step-850: #dbdbdb;
-  --ion-color-step-900: #e7e7e7;
-  --ion-color-step-950: #f3f3f3;
-
-  --ion-text-color: white;
-  --ion-text-color-rgb: 255, 255, 255;
-
-  --ion-color-primary: var(--primary-green);
-  --ion-color-primary-rgb: 71, 206, 101;
-
-  color: white;
-}
-
-/* Calendar specific styles */
-ion-datetime .calendar-day {
-  color: white !important;
-}
-
-ion-datetime .calendar-day.calendar-day-active {
-  color: black !important;
-}
-
-ion-datetime .datetime-time {
-  color: white !important;
-}
-
-/* Popover styles for date picker */
-ion-popover ion-datetime {
-  --background: #1e1e1e;
-  --ion-background-color: #1e1e1e;
-  color: white;
-}
-
-/* Make sure buttons in the datetime are visible */
-ion-datetime .datetime-buttons button {
+.processing-icon.success {
   color: var(--primary-green);
 }
 
+.processing-title {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.processing-description {
+  color: var(--text-gray);
+  margin-bottom: 24px;
+}
+
+.processing-progress {
+  height: 4px;
+  background: var(--primary-green);
+  border-radius: 2px;
+  margin-bottom: 24px;
+  width: 0;
+}
+
+.transfer-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.transfer-account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 40%;
+}
+
+.transfer-account-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+  color: white;
+}
+
+.transfer-account-number {
+  font-size: 12px;
+  color: var(--text-gray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+}
+
+.transfer-arrow {
+  color: var(--primary-green);
+  font-size: 24px;
+}
+
+.transfer-amount {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin-top: 16px;
+}
+
+.transfer-summary {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 24px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  color: var(--text-gray);
+}
+
+.summary-value {
+  color: white;
+  font-weight: 500;
+}
+
+/* Programmes Virement Component Styles */
+.virement-programmes-mobile {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.schedule-summary {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+}
 
