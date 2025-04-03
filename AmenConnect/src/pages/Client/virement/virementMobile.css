@@ -594,5 +594,497 @@ ion-segment-button {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   padding: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.summary-header h4 {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.summary-header ion-icon {
+  color: var(--primary-green);
+}
+
+.summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Historique Component Styles */
+.virement-historique-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.history-search {
+  flex: 1;
+  --background: rgba(255, 255, 255, 0.05);
+  --color: white;
+  --placeholder-color: var(--text-gray);
+  --icon-color: var(--text-gray);
+  --border-radius: 12px;
+  --box-shadow: none;
+  padding: 0;
+}
+
+.filter-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.filters-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-label {
+  color: var(--text-gray);
+  font-size: 14px;
+}
+
+.filter-input,
+.filter-select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  padding: 8px;
+}
+
+/* Groupes Virement Component Styles */
+.virement-groupes-mobile {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.mode-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.toggle-button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-gray);
+  padding: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.toggle-button.active {
+  background: rgba(71, 206, 101, 0.2);
+  color: white;
+}
+
+.manual-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.virement-entry {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+}
+
+.remove-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 77, 77, 0.2);
+  border: none;
+  color: var(--danger-red);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-button {
+  background: rgba(71, 206, 101, 0.1);
+  border: 1px dashed rgba(71, 206, 101, 0.3);
+  color: var(--primary-green);
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.file-upload-container {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.file-upload-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: white;
+}
+
+.file-upload-button ion-icon {
+  font-size: 32px;
+  color: var(--primary-green);
+}
+
+.file-format-info {
+  color: var(--text-gray);
+  font-size: 12px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.csv-preview {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.csv-preview h4 {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 12px 0;
+}
+
+.preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preview-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.preview-name {
+  color: white;
+}
+
+.preview-amount {
+  color: var(--primary-green);
+  font-weight: 500;
+}
+
+.preview-more {
+  text-align: center;
+  color: var(--text-gray);
+  padding: 8px;
+}
+
+/* Beneficiaires Component Styles */
+.gestion-beneficiaires-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.beneficiaries-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.beneficiary-search {
+  flex: 1;
+  --background: rgba(255, 255, 255, 0.05);
+  --color: white;
+  --placeholder-color: var(--text-gray);
+  --icon-color: var(--text-gray);
+  --border-radius: 12px;
+  --box-shadow: none;
+  padding: 0;
+}
+
+.add-button {
+  --color: var(--primary-green);
+}
+
+.beneficiary-form {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.form-header h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.beneficiaries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.beneficiary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.beneficiary-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+}
+
+.beneficiary-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.beneficiary-name {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.beneficiary-account,
+.beneficiary-bank {
+  color: var(--text-gray);
+  font-size: 14px;
+}
+
+.beneficiary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-button,
+.delete-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-button {
+  color: var(--accent-blue);
+}
+
+.delete-button {
+  color: var(--danger-red);
+}
+
+/* Success Container */
+.success-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 64px;
+  color: var(--primary-green);
+  margin-bottom: 16px;
+}
+
+.success-title {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.success-message {
+  color: var(--text-gray);
+  margin-bottom: 24px;
+}
+
+/* More Options Section */
+.more-options {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.options-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Segment Content */
+.segment-content {
+  min-height: 300px;
+}
+
+/* Transfer Options */
+.transfer-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Safe Area Padding */
+.safe-area-padding {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 360px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .filters-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .content-wrapper-mobile {
+    max-width: 600px;
+    margin: 0 auto;
+  }
 }
 
