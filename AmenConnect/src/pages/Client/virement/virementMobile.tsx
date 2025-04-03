@@ -173,7 +173,7 @@ const VirementMobile: React.FC = () => {
           </div>
         </div>
       </IonContent>
-      <NavMobile currentPage="virement" />
+      <NavMobile currentPage="virements" />
     </IonPage>
   )
 }

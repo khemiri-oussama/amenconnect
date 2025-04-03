@@ -1,202 +1,332 @@
+"use client"
+
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import {
-  IonContent,
   IonPage,
+  IonHeader,
+  IonContent,
+  IonButton,
+  IonTextarea,
   IonIcon,
   IonFooter,
-  IonToolbar,
-  IonInput,
-  IonRippleEffect,
-  IonButton,
   IonAvatar,
-  IonHeader,
-  IonButtons,
+  IonSpinner,
+  IonToolbar,
+  IonTitle,
 } from "@ionic/react"
 import {
   sendOutline,
-  personOutline,
-  chevronBackOutline,
+  personCircleOutline,
+  informationCircleOutline,
+  helpCircleOutline,
+  documentTextOutline,
   chatbubbleEllipsesOutline,
-  menuOutline,
 } from "ionicons/icons"
-import { motion, AnimatePresence } from "framer-motion"
+import { useAuth } from "../../../AuthContext"
+import Navbar from "../../../components/NavMobile"
 import "./ChatBotMobile.css"
 
 interface Message {
-  id: string
+  id: number
   text: string
-  isUser: boolean
+  sender: "user" | "bot"
   timestamp: Date
 }
 
 const ChatBotMobile: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [inputMessage, setInputMessage] = useState("")
-  const [showQuickReplies, setShowQuickReplies] = useState(true)
+  const { profile, authLoading } = useAuth()
+  const [message, setMessage] = useState<string>("")
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      text: `Bonjour ${profile?.user.prenom || ""} ! Je suis votre assistant bancaire. Comment puis-je vous aider aujourd'hui ?`,
+      sender: "bot",
+      timestamp: new Date(),
+    },
+  ])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(true)
+  const [keyboardOpen, setKeyboardOpen] = useState<boolean>(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLIonContentElement>(null)
 
-  const quickReplies = [
-    "Vérifier mon solde",
-    "Effectuer un virement",
-    "Demander un prêt",
-    "Signaler une carte perdue",
-    "Modifier mes informations",
-    "Parler à un conseiller",
-  ]
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
+  // Scroll to bottom of messages
   const scrollToBottom = () => {
     if (contentRef.current) {
       contentRef.current.scrollToBottom(300)
     }
   }
 
-  const handleSendMessage = () => {
-    if (inputMessage.trim()) {
-      const newMessage: Message = {
-        id: Date.now().toString(),
-        text: inputMessage,
-        isUser: true,
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
+  // Handle keyboard appearance
+  useEffect(() => {
+    const handleKeyboardShow = () => {
+      setKeyboardOpen(true)
+      // Force scroll to bottom when keyboard appears
+      setTimeout(() => {
+        scrollToBottom()
+      }, 100)
+    }
+
+    const handleKeyboardHide = () => {
+      setKeyboardOpen(false)
+    }
+
+    window.addEventListener("keyboardWillShow", handleKeyboardShow)
+    window.addEventListener("keyboardWillHide", handleKeyboardHide)
+    window.addEventListener("focusin", handleKeyboardShow)
+    window.addEventListener("focusout", handleKeyboardHide)
+
+    return () => {
+      window.removeEventListener("keyboardWillShow", handleKeyboardShow)
+      window.removeEventListener("keyboardWillHide", handleKeyboardHide)
+      window.removeEventListener("focusin", handleKeyboardShow)
+      window.removeEventListener("focusout", handleKeyboardHide)
+    }
+  }, [])
+
+  if (authLoading) {
+    return (
+      <div className="loading-container">
+        <IonSpinner name="crescent" />
+        <p>Chargement de votre profil...</p>
+      </div>
+    )
+  }
+
+  // Determine if user is authenticated
+  const isAuthenticated = Boolean(profile)
+
+  const userName = profile?.user ? `${profile.user.prenom} ${profile.user.nom}` : ""
+  const userEmail = profile?.user?.email || ""
+  const userAccounts = profile?.comptes || []
+  const userCin = profile?.user?.cin || ""
+  const userPhone = profile?.user?.telephone || ""
+  const userAddress = profile?.user?.adresseEmployeur || ""
+  const sendMessage = async (text = message) => {
+    if (!text.trim()) return
+  
+    // Add user message to chat
+    const userMessage: Message = {
+      id: messages.length + 1,
+      text: text,
+      sender: "user",
+      timestamp: new Date(),
+    }
+  
+    setMessages((prev) => [...prev, userMessage])
+    setLoading(true)
+    setMessage("") // Clear input field
+    setShowSuggestions(false) // Hide suggestions after sending a message
+  
+    try {
+      // Prepare request payload based on authentication status
+      const payload = isAuthenticated
+        ? {
+            message: text,
+            user: {
+              name: userName,
+              email: userEmail,
+              accounts: userAccounts,
+              cin: userCin,
+              phone: userPhone,
+              address: userAddress,
+            },
+          }
+        : { message: text }
+  
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+  
+      const data = await response.json()
+  
+      // Add bot response to chat
+      const botMessage: Message = {
+        id: messages.length + 2,
+        text: data.response || "Je suis désolé, je n'ai pas pu traiter votre demande.",
+        sender: "bot",
         timestamp: new Date(),
       }
-      setMessages([...messages, newMessage])
-      setInputMessage("")
-      setShowQuickReplies(false)
+  
+      setMessages((prev) => [...prev, botMessage])
+  
+      // Remove the line below so suggestions do not reappear:
+      // setShowSuggestions(true)
+    } catch (error) {
+      console.error("Erreur:", error)
+  
+      // Add error message to chat
+      const errorMessage: Message = {
+        id: messages.length + 2,
+        text: "Une erreur s'est produite lors de la communication avec l'API. Veuillez réessayer plus tard.",
+        sender: "bot",
+        timestamp: new Date(),
+      }
+  
+      setMessages((prev) => [...prev, errorMessage])
+    }
+  
+    setLoading(false)
+  }
+  
 
-      // Simulate assistant response
-      setTimeout(() => {
-        const assistantMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          text: "Je comprends votre demande. Comment puis-je vous aider davantage ?",
-          isUser: false,
-          timestamp: new Date(),
-        }
-        setMessages((prev) => [...prev, assistantMessage])
-      }, 1000)
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
     }
   }
 
-  const handleQuickReply = (reply: string) => {
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: reply,
-      isUser: true,
-      timestamp: new Date(),
-    }
-    setMessages([...messages, userMessage])
-    setShowQuickReplies(false)
+  // Format timestamp
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  }
 
-    // Simulate assistant response
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "Merci pour votre question. Je vais vous aider avec cela.",
-        isUser: false,
-        timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, assistantMessage])
-    }, 1000)
+  // Format message text to preserve line breaks
+  const formatMessageText = (text: string) => {
+    return text.split("\n").map((line, i) => (
+      <p key={i} className="message-paragraph">
+        {line || " "}
+      </p>
+    ))
+  }
+
+  // Quick suggestion messages
+  const suggestions = [
+    { text: "Quel est le solde de mon compte ?", icon: informationCircleOutline },
+    { text: "Comment puis-je effectuer un virement ?", icon: helpCircleOutline },
+    { text: "Afficher mes transactions récentes", icon: documentTextOutline },
+  ]
+
+  const handleSuggestionClick = (suggestionText: string) => {
+    sendMessage(suggestionText)
   }
 
   return (
-    <IonPage className="chat-mobile-page">
-      <IonHeader className="chat-mobile-header">
-        <div className="chat-mobile-toolbar">
-          <IonButtons slot="start">
-            <IonButton className="chat-mobile-back-button">
-              <IonIcon icon={chevronBackOutline} />
-            </IonButton>
-          </IonButtons>
-          <h1 className="chat-mobile-title">Assistant virtuel</h1>
-          <IonButtons slot="end">
-            <IonButton className="chat-mobile-menu-button">
-              <IonIcon icon={menuOutline} />
-            </IonButton>
-          </IonButtons>
-        </div>
+    <IonPage className={`chat-page ${keyboardOpen ? "keyboard-open" : ""}`}>
+      <IonHeader className="chat-header-mobile">
+        <IonToolbar className="chat-toolbar">
+          <IonTitle className="chat-title">
+            <div className="chat-title-content">
+              <IonIcon icon={chatbubbleEllipsesOutline} />
+              <span>Assistant Bancaire</span>
+            </div>
+          </IonTitle>
+        </IonToolbar>
       </IonHeader>
 
-      <IonContent ref={contentRef} className="chat-mobile-content" scrollEvents={true}>
-        {messages.length === 0 && (
-          <div className="chat-mobile-welcome">
-            <IonIcon icon={chatbubbleEllipsesOutline} className="chat-mobile-welcome-icon" />
-            <h2>Bienvenue!</h2>
-            <p>Comment puis-je vous aider aujourd'hui ?</p>
-          </div>
-        )}
-
-        <div className="chat-mobile-messages">
-          <AnimatePresence>
-            {messages.map((message) => (
-              <motion.div
-                key={message.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className={`chat-mobile-message-group ${message.isUser ? "user" : "assistant"}`}
+      <IonContent ref={contentRef} className="chat-content" scrollEvents={true}>
+        <div className="chat-mobile-layout">
+          {/* Messages container */}
+          <div className="messages-container-mobile">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`message-bubble-mobile ${msg.sender === "user" ? "user-message" : "bot-message"}`}
               >
-                <div className="chat-mobile-avatar">
-                  <IonAvatar>
-                    <img
-                      src={message.isUser ? "/assets/user-avatar.png" : "/assets/assistant-avatar.png"}
-                      alt="Avatar"
-                    />
-                  </IonAvatar>
+                <div className="message-content-mobile">
+                  {msg.sender === "bot" && (
+                    <div className="message-avatar-mobile">
+                      <IonAvatar>
+                        <img src="./bot.png" alt="Bot" />
+                      </IonAvatar>
+                    </div>
+                  )}
+                  <div className="message-text-mobile">
+                    <div className="message-text-content-mobile">{formatMessageText(msg.text)}</div>
+                    <span className="message-time-mobile">{formatTime(msg.timestamp)}</span>
+                  </div>
                 </div>
-                <div className="chat-mobile-message-content">
-                  <div className="chat-mobile-message-bubble">{message.text}</div>
-                  <div className="chat-mobile-timestamp">{message.timestamp.toLocaleTimeString()}</div>
-                </div>
-              </motion.div>
+              </div>
             ))}
-          </AnimatePresence>
+
+            {/* Loading indicator */}
+            {loading && (
+              <div className="message-bubble-mobile bot-message">
+                <div className="message-content-mobile">
+                  <div className="message-avatar-mobile">
+                    <IonAvatar>
+                      <img src="./bot.png" alt="Bot" />
+                    </IonAvatar>
+                  </div>
+                  <div className="message-text-mobile typing-indicator-mobile">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Quick suggestions */}
+            {showSuggestions && !loading && (
+              <div className="suggestions-container-mobile">
+                {suggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className="suggestion-chip-mobile"
+                    onClick={() => handleSuggestionClick(suggestion.text)}
+                  >
+                    <IonIcon icon={suggestion.icon} />
+                    <span>{suggestion.text}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Invisible element for scrolling */}
+            <div ref={messagesEndRef} />
+          </div>
         </div>
       </IonContent>
 
-      <IonFooter className="chat-mobile-footer">
-        {showQuickReplies && (
-          <div className="chat-mobile-quick-replies">
-            {quickReplies.map((reply, index) => (
-              <motion.button
-                key={index}
-                className="chat-mobile-quick-reply-btn ion-activatable"
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleQuickReply(reply)}
-              >
-                {reply}
-                <IonRippleEffect />
-              </motion.button>
-            ))}
+      <IonFooter className="chat-footer-mobile">
+        <div className="message-input-container-mobile">
+          <IonTextarea
+            value={message}
+            placeholder="Tapez votre message ici..."
+            onIonChange={(e) => setMessage(e.detail.value!)}
+            onKeyDown={handleKeyPress}
+            autoGrow={true}
+            rows={1}
+            maxlength={500}
+            className="message-input-mobile"
+          />
+
+          <IonButton
+            className="send-button-mobile"
+            onClick={() => sendMessage()}
+            disabled={!message.trim()}
+            strong={true}
+          >
+            <IonIcon icon={sendOutline} slot="icon-only" />
+          </IonButton>
+        </div>
+
+        {isAuthenticated ? (
+          <div className="chat-footer-info-mobile authenticated">
+            <IonIcon icon={personCircleOutline} />
+            <span>Les réponses incluront vos informations de compte personnelles</span>
+          </div>
+        ) : (
+          <div className="chat-footer-info-mobile guest">
+            <IonIcon icon={personCircleOutline} />
+            <span>Connectez-vous pour obtenir une assistance bancaire personnalisée</span>
           </div>
         )}
-
-        <IonToolbar className="chat-mobile-toolbar">
-          <div className="chat-mobile-input-container">
-            <IonInput
-              value={inputMessage}
-              onIonChange={(e) => setInputMessage(e.detail.value!)}
-              placeholder="Tapez votre message..."
-              className="chat-mobile-input"
-              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-            />
-            <motion.button
-              className="chat-mobile-send-button ion-activatable"
-              whileTap={{ scale: 0.9 }}
-              onClick={handleSendMessage}
-            >
-              <IonIcon icon={sendOutline} />
-              <IonRippleEffect />
-            </motion.button>
-          </div>
-        </IonToolbar>
       </IonFooter>
+      {/* Only show Navbar when keyboard is not open */}
+      {!keyboardOpen && <Navbar currentPage="chat" />}
     </IonPage>
   )
 }
 
 export default ChatBotMobile
+
