@@ -26,7 +26,6 @@ exports.getHistorique = async (req, res) => {
       .lean();
 
     const mappedVirements = virements.map((v) => {
-      console.log("v.fromAccount:", v.fromAccount?.toString());
       const isSender = userCompteIds.includes(v.fromAccount?.toString());
       return {
         _id: v._id.toString(),
