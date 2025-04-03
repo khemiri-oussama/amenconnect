@@ -295,9 +295,10 @@ const Historique: React.FC = () => {
                     <td>{tx.description}</td>
                     <td>{tx.beneficiary || "N/A"}</td>
                     <td className={tx.type === "credit" ? "text-positive" : "text-negative"}>
-                      {tx.type === "credit" ? "+ " : "- "}
-                      {formatCurrency(Math.abs(tx.amount))}
-                    </td>
+  {tx.type === "credit" ? "+ " : "- "}
+  {formatCurrency(tx.amount)}
+</td>
+
                     <td>
                       <span className={`virement-table__status ${getStatusClass(tx.status)}`}>
                         {getStatusLabel(tx.status)}

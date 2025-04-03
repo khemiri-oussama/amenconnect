@@ -1,70 +1,71 @@
 const Virement = require("../models/Virement");
 const VirementGroupe = require("../models/VirementGroupe");
 const VirementProgramme = require("../models/VirementProgramme");
-// If transactions also come from somewhere else (e.g., direct account transactions), import as needed
+
+// Helper function to format dates
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("fr-FR");
+};
 
 exports.getHistorique = async (req, res) => {
   try {
-    // Suppose you have `req.user` or a user ID from JWT to find relevant transactions.
-    // For simplicity, let's assume your user ID is `req.user._id`.
-    // If you're storing user reference in your Virement model, you can query by user reference.
+    // For example, if req.user.compteIds exists, use the first one as main account
+    const userMainAccountId = req.user?.compteIds?.[0]?.toString();
+    console.log("User main account ID:", userMainAccountId);
 
-    // Example: find immediate virements
     const virements = await Virement.find({ /* match user somehow */ })
       .sort({ createdAt: -1 })
       .lean();
 
-    // Example: find grouped virements
     const groupes = await VirementGroupe.find({ /* match user somehow */ })
       .sort({ createdAt: -1 })
       .lean();
 
-    // Example: find scheduled (programmed) virements
     const programmes = await VirementProgramme.find({ /* match user somehow */ })
       .sort({ createdAt: -1 })
       .lean();
 
-    // Combine all results in a single array
-    // Each item in the array can be standardized to a common shape
-    // For example, for a normal Virement, we might do:
-    const mappedVirements = virements.map((v) => ({
-      _id: v._id.toString(),
-      date: v.createdAt,
-      amount: v.amount,
-      description: v.description || "Virement simple",
-      type: v.fromAccount === req.user.mainAccountId ? "debit" : "credit", // or your logic
-      status: v.status,
-      beneficiary: "N/A", // or retrieve from relationship if needed
-      reference: `VIR-${v._id.toString().slice(-6)}`,
-    }));
-
-    // For grouped virements, you might flatten each child virement
-    // or store them as separate items. Example of flattening:
+    const mappedVirements = virements.map((v) => {
+      console.log("v.fromAccount:", v.fromAccount?.toString());
+      console.log("userMainAccountId:", userMainAccountId);
+    
+      const isSender = v.fromAccount?.toString() === userMainAccountId;
+      return {
+        _id: v._id.toString(),
+        date: formatDate(v.createdAt),
+        description: "y", // Demo sample
+        beneficiary: "N/A",
+        amount: v.amount,
+        type: isSender ? "debit" : "credit",
+        status: v.status,
+        reference: `VIR-${v._id.toString().slice(-6)}`,
+      };
+    });
+    
     let mappedGroupes = [];
     groupes.forEach((group) => {
       group.virements.forEach((entry) => {
         mappedGroupes.push({
           _id: `${group._id.toString()}-${entry._id.toString()}`,
-          date: group.createdAt,
+          date: formatDate(group.createdAt),
           amount: entry.amount,
           description: entry.motif || "Virement groupé",
-          type: group.fromAccount === req.user.mainAccountId ? "debit" : "credit",
-          status: group.status === "Pending" ? "pending" : "completed", // or your logic
-          beneficiary: `Bénéficiaire ${entry.beneficiary}`, // if needed, or fetch from Beneficiaire model
+          type: group.fromAccount?.toString() === userMainAccountId ? "debit" : "credit",
+          status: group.status === "Pending" ? "pending" : "completed",
+          beneficiary: `Bénéficiaire ${entry.beneficiary}`,
           reference: `GRP-${group._id.toString().slice(-6)}-${entry._id.toString().slice(-4)}`,
         });
       });
     });
 
-    // For scheduled (programmed) virements
     const mappedProgrammes = programmes.map((p) => ({
       _id: p._id.toString(),
-      date: p.createdAt,
+      date: formatDate(p.createdAt),
       amount: p.amount,
       description: p.description || `Virement programmé (${p.frequency})`,
-      type: p.fromAccount === req.user.mainAccountId ? "debit" : "credit",
+      type: p.fromAccount?.toString() === userMainAccountId ? "debit" : "credit",
       status: p.status === "Scheduled" ? "pending" : "completed",
-      beneficiary: `Bénéficiaire ${p.toAccount}`, // or fetch from Beneficiaire model
+      beneficiary: `Bénéficiaire ${p.toAccount}`,
       reference: `PRG-${p._id.toString().slice(-6)}`,
     }));
 
@@ -72,7 +73,7 @@ exports.getHistorique = async (req, res) => {
       ...mappedVirements,
       ...mappedGroupes,
       ...mappedProgrammes,
-    ].sort((a, b) => new Date(b.date) - new Date(a.date)); // sort descending by date
+    ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     res.json(allTransactions);
   } catch (error) {
