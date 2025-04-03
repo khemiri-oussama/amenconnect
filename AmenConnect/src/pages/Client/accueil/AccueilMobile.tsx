@@ -266,7 +266,7 @@ const AccueilMobile: React.FC = () => {
                 <div>
                   <div className="balance-container-mobile">
                     <p className="balance-mobile">
-                      {showBalance ? (account ? `${account.solde} TND` : "450.0 TND") : "••••• TND"}
+                      {showBalance ? (account ? `${account.solde} TND` : "000.0 TND") : "••••• TND"}
                     </p>
                     <IonButton
                       fill="clear"
@@ -380,18 +380,8 @@ const AccueilMobile: React.FC = () => {
                       <div className="card-preview-content">
                         <div className="card-preview-top">
                           <div className="card-chip-container">
-                            <div className="card-chip"></div>
-                            <svg
-                              className="contactless-icon"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-2-2-1.5 0-2 .62-2 2s.5 2 2 2z" />
-                              <path d="M2 15.5a5.5 0 0 0 8.5-4.5c0-2.75-1-4-4-4-3 0-4 1.25-4 4s1 4 4 4z" />
-                              <path d="M14.5 12a2.5 2.5 0 0 0 5 0c0-1.38-.5-2-2-2-1.5 0-2 .62-2 2s.5 2 2 2z" />
-                            </svg>
+                            <div className="card-chip"><img src="./puce.png" alt="" className="contactless-icon"  /></div>
+                            
                           </div>
                           <div className="card-brand">
                             <span className="brand-text">{selectedCard.cardType}</span>
