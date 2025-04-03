@@ -12,7 +12,7 @@ interface Transaction {
   amount: number
   description: string
   type: "credit" | "debit"
-  status: "completed" | "pending" | "failed"
+  status: string // Changed to string to handle any status value
   beneficiary?: string
   reference?: string
 }
@@ -54,6 +54,7 @@ const Historique: React.FC = () => {
         }
 
         const data = await response.json()
+        console.log("Transaction data:", data) // Log the data to see its format
         setTransactions(data)
         setFilteredTransactions(data)
       } catch (err: any) {
@@ -83,7 +84,7 @@ const Historique: React.FC = () => {
         (tx) =>
           tx.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
           (tx.beneficiary && tx.beneficiary.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (tx.reference && tx.reference.toLowerCase().includes(searchTerm.toLowerCase()))
+          (tx.reference && tx.reference.toLowerCase().includes(searchTerm.toLowerCase())),
       )
     }
 
@@ -99,7 +100,8 @@ const Historique: React.FC = () => {
 
     // Status
     if (statusFilter !== "all") {
-      filtered = filtered.filter((tx) => tx.status === statusFilter)
+      // Handle case-insensitive status filtering
+      filtered = filtered.filter((tx) => tx.status.toLowerCase() === statusFilter.toLowerCase())
     }
 
     // Type
@@ -111,17 +113,18 @@ const Historique: React.FC = () => {
   }, [transactions, searchTerm, dateFrom, dateTo, statusFilter, typeFilter])
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("fr-TN", {
-      style: "currency",
-      currency: "TND",
-    }).format(amount)
+    // Format with comma as decimal separator and no currency symbol
+    return Math.abs(amount).toFixed(3).replace(".", ",") + " DT"
   }
 
   const getStatusLabel = (status: string) => {
-    switch (status) {
+    // Handle case-insensitive status matching
+    const statusLower = status.toLowerCase()
+    switch (statusLower) {
       case "completed":
-        return "Effectué"
+        return "Completed"
       case "pending":
+      case "scheduled":
         return "En attente"
       case "failed":
         return "Échoué"
@@ -131,10 +134,13 @@ const Historique: React.FC = () => {
   }
 
   const getStatusClass = (status: string) => {
-    switch (status) {
+    // Handle case-insensitive status matching
+    const statusLower = status.toLowerCase()
+    switch (statusLower) {
       case "completed":
         return "virement-table__status--success"
       case "pending":
+      case "scheduled":
         return "virement-table__status--pending"
       case "failed":
         return "virement-table__status--failed"
@@ -150,7 +156,7 @@ const Historique: React.FC = () => {
       new Date(tx.date).toLocaleDateString(),
       tx.description,
       tx.beneficiary || "",
-      `${tx.type === "credit" ? "+" : "-"}${Math.abs(tx.amount).toFixed(2)}`,
+      `${tx.type === "credit" ? "+" : "-"}${Math.abs(tx.amount).toFixed(3)}`,
       getStatusLabel(tx.status),
       tx.reference || "",
     ])
@@ -287,10 +293,12 @@ const Historique: React.FC = () => {
                   <tr key={tx._id}>
                     <td>{new Date(tx.date).toLocaleDateString()}</td>
                     <td>{tx.description}</td>
-                    <td>{tx.beneficiary || ""}</td>
+                    <td>{tx.beneficiary || "N/A"}</td>
                     <td className={tx.type === "credit" ? "text-positive" : "text-negative"}>
-                      {tx.type === "credit" ? "+" : "-"} {formatCurrency(Math.abs(tx.amount))}
-                    </td>
+  {tx.type === "credit" ? "+ " : "- "}
+  {formatCurrency(tx.amount)}
+</td>
+
                     <td>
                       <span className={`virement-table__status ${getStatusClass(tx.status)}`}>
                         {getStatusLabel(tx.status)}
@@ -309,3 +317,4 @@ const Historique: React.FC = () => {
 }
 
 export default Historique
+

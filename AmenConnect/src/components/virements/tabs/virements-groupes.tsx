@@ -1,27 +1,18 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
 import type React from "react"
-
 import { IonIcon } from "@ionic/react"
 import { documentOutline, addCircleOutline, trashOutline, cloudUploadOutline } from "ionicons/icons"
 import { useAuth } from "../../../AuthContext"
-
-// Import our custom hook
+// Import the custom hooks
 import useVirementGroupe from "../../../hooks/useVirementGroupe"
+import { useBeneficiaries } from "../../../hooks/useBeneficiaries"
 
 interface Compte {
   _id: string
   numéroCompte: string
   solde: number
   type: string
-}
-
-interface Beneficiaire {
-  _id: string
-  nom: string
-  prenom: string
-  numeroCompte: string
-  banque: string
 }
 
 interface VirementGroupe {
@@ -34,28 +25,25 @@ const VirementsGroupes: React.FC = () => {
   const { profile } = useAuth()
 
   const [comptes, setComptes] = useState<Compte[]>([])
-  const [beneficiaires, setBeneficiaires] = useState<Beneficiaire[]>([])
   const [compteSource, setCompteSource] = useState("")
   const [mode, setMode] = useState<"csv" | "manuel">("manuel")
-
   const [virements, setVirements] = useState<VirementGroupe[]>([
     { beneficiaireId: "", montant: "", motif: "" },
   ])
-
   const [csvFile, setCsvFile] = useState<File | null>(null)
   const [csvPreview, setCsvPreview] = useState<any[]>([])
-
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Use our custom hook for group virements
+  // Use our custom hooks for group virements and beneficiaries
   const {
     loading,
     error: hookError,
     response,
     makeVirementGroupe,
   } = useVirementGroupe()
+  const { beneficiaires, loading: beneficiariesLoading, error: beneficiariesError } = useBeneficiaries()
 
   useEffect(() => {
     // Fetch accounts from profile
@@ -65,47 +53,14 @@ const VirementsGroupes: React.FC = () => {
         setCompteSource(profile.comptes[0]._id)
       }
     }
-
-    // Fetch beneficiaries (mocked)
-    const fetchBeneficiaires = async () => {
-      try {
-        // Replace with an actual API call
-        const mockBeneficiaires = [
-          {
-            _id: "63b2f1c0a2e8f2a123456789",
-            nom: "Dupont",
-            prenom: "Jean",
-            numeroCompte: "TN5910000123456789",
-            banque: "Banque Nationale",
-          },
-          {
-            _id: "63b2f1c0a2e8f2a123456790",
-            nom: "Martin",
-            prenom: "Sophie",
-            numeroCompte: "TN5910000987654321",
-            banque: "Banque Centrale",
-          },
-          {
-            _id: "63b2f1c0a2e8f2a123456791",
-            nom: "Trabelsi",
-            prenom: "Ahmed",
-            numeroCompte: "TN5910000567891234",
-            banque: "Banque du Sud",
-          },
-        ]
-        setBeneficiaires(mockBeneficiaires)
-
-        // Pre-populate the first row
-        if (mockBeneficiaires.length > 0) {
-          setVirements([{ beneficiaireId: mockBeneficiaires[0]._id, montant: "", motif: "" }])
-        }
-      } catch (err) {
-        console.error("Error fetching beneficiaries:", err)
-      }
-    }
-
-    fetchBeneficiaires()
   }, [profile])
+
+  // When beneficiaries are loaded, pre-populate the first virement row if needed
+  useEffect(() => {
+    if (beneficiaires.length > 0 && virements[0].beneficiaireId === "") {
+      setVirements([{ beneficiaireId: beneficiaires[0]._id, montant: "", motif: "" }])
+    }
+  }, [beneficiaires])
 
   const handleAddVirement = () => {
     setVirements([
@@ -205,7 +160,6 @@ const VirementsGroupes: React.FC = () => {
     }
 
     // Construct the payload for the API
-    // "beneficiary" must match what the backend expects
     if (mode === "manuel") {
       const data = {
         fromAccount: compteSource,
@@ -218,11 +172,10 @@ const VirementsGroupes: React.FC = () => {
 
       await makeVirementGroupe(data)
     } else {
-      // For CSV data
       const data = {
         fromAccount: compteSource,
         virements: csvPreview.map((row) => ({
-          beneficiary: row.accountNumber, // Or some ID if your backend requires an actual ObjectId
+          beneficiary: row.accountNumber,
           amount: Number.parseFloat(row.amount),
           motif: row.reason || "",
         })),
@@ -233,7 +186,7 @@ const VirementsGroupes: React.FC = () => {
 
     // Check response from the hook
     if (response?.success) {
-      // Reset form
+      // Reset form based on mode
       if (mode === "csv") {
         setCsvFile(null)
         setCsvPreview([])
@@ -241,11 +194,8 @@ const VirementsGroupes: React.FC = () => {
           fileInputRef.current.value = ""
         }
       } else {
-        setVirements([
-          { beneficiaireId: beneficiaires[0]?._id || "", montant: "", motif: "" },
-        ])
+        setVirements([{ beneficiaireId: beneficiaires[0]?._id || "", montant: "", motif: "" }])
       }
-
       setSuccess(true)
     }
   }
@@ -275,9 +225,7 @@ const VirementsGroupes: React.FC = () => {
 
         {!success && (
           <form className="virement-form" onSubmit={handleSubmit}>
-            {/* Local error from validation */}
             {error && <div className="virement-form__error">{error}</div>}
-            {/* Hook error from API */}
             {hookError && <div className="virement-form__error">{hookError}</div>}
 
             <div className="virement-form__group">
@@ -330,7 +278,7 @@ const VirementsGroupes: React.FC = () => {
                       >
                         {beneficiaires.map((ben) => (
                           <option key={ben._id} value={ben._id}>
-                            {ben.prenom} {ben.nom} - {ben.numeroCompte}
+                            {ben.prenom} {ben.nom} - {ben.RIB}
                           </option>
                         ))}
                       </select>

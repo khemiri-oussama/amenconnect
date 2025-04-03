@@ -277,3 +277,4 @@
 {"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-04-01T20:32:30.925Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"d8fc1f557282c83184c5b02783f3daf4","timestamp":"2025-04-01T20:32:44.349Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-04-01T20:32:44.417Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"Admin logged out","timestamp":"2025-04-01T21:13:11.580Z"}

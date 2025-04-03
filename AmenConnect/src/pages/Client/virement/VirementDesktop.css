@@ -21,6 +21,125 @@
   --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Processing animation styles */
+.virement-processing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  min-height: 300px;
+}
+
+.virement-processing__container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.virement-processing__animation {
+  margin-bottom: var(--spacing-lg);
+}
+
+.virement-processing__icon {
+  font-size: 64px;
+  color: var(--color-warning);
+}
+
+.virement-processing__icon--success {
+  color: var(--color-positive);
+}
+
+.virement-processing__details {
+  width: 100%;
+}
+
+.virement-processing__title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+}
+
+.virement-processing__description {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+.virement-processing__progress {
+  height: 4px;
+  background-color: var(--color-positive);
+  border-radius: 2px;
+  margin: var(--spacing-md) 0;
+}
+
+.virement-processing__transfer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-sm);
+}
+
+.virement-processing__account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 40%;
+}
+
+.virement-processing__account-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+}
+
+.virement-processing__account-number {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+}
+
+.virement-processing__arrow {
+  color: var(--color-positive);
+  font-size: 24px;
+}
+
+.virement-processing__amount {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-positive);
+  margin-top: var(--spacing-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .virement-processing__transfer {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .virement-processing__account {
+    max-width: 100%;
+  }
+
+  .virement-processing__arrow {
+    transform: rotate(90deg);
+  }
+}
+
 .virement-desktop__content {
   --background: var(--color-background);
 }
