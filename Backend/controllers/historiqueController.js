@@ -30,8 +30,8 @@ exports.getHistorique = async (req, res) => {
       return {
         _id: v._id.toString(),
         date: formatDate(v.createdAt),
-        description: "y", // Demo sample
-        beneficiary: "N/A",
+        description: v.description,
+        beneficiary: v.toAccount,
         amount: v.amount,
         type: isSender ? "debit" : "credit",
         status: v.status,
