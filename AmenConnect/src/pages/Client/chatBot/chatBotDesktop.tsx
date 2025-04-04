@@ -14,6 +14,7 @@ import {
   IonChip,
   IonLabel,
   IonSpinner,
+  IonToast,
 } from "@ionic/react"
 import {
   sendOutline,
@@ -22,6 +23,8 @@ import {
   informationCircleOutline,
   helpCircleOutline,
   documentTextOutline,
+  chevronBackOutline,
+  chevronForwardOutline,
 } from "ionicons/icons"
 import { useAuth } from "../../../AuthContext"
 import Navbar from "../../../components/Navbar"
@@ -46,8 +49,15 @@ const ChatBotDesktop: React.FC = () => {
     },
   ])
   const [loading, setLoading] = useState<boolean>(false)
+  const [showToast, setShowToast] = useState<boolean>(false)
+  const [toastMessage, setToastMessage] = useState<string>("")
+  const [sidebarVisible, setSidebarVisible] = useState<boolean>(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLIonTextareaElement>(null)
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true)
+  const [typingMessageId, setTypingMessageId] = useState<number | null>(null)
+  const [visibleText, setVisibleText] = useState<string>("")
+  const typingSpeed = 10 // milliseconds per character
 
   // Défilement vers le bas des messages
   const scrollToBottom = () => {
@@ -57,6 +67,44 @@ const ChatBotDesktop: React.FC = () => {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Focus on textarea when component mounts
+  useEffect(() => {
+    if (!authLoading && textareaRef.current) {
+      setTimeout(() => {
+        textareaRef.current?.setFocus()
+      }, 500)
+    }
+  }, [authLoading])
+
+  // Handle typing animation for bot messages
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1]
+
+    if (lastMessage && lastMessage.sender === "bot" && !loading) {
+      // Start typing animation for this message
+      setTypingMessageId(lastMessage.id)
+      setVisibleText("")
+
+      let currentText = ""
+      let charIndex = 0
+
+      const typeNextChar = () => {
+        if (charIndex < lastMessage.text.length) {
+          currentText += lastMessage.text.charAt(charIndex)
+          setVisibleText(currentText)
+          charIndex++
+          setTimeout(typeNextChar, typingSpeed)
+        } else {
+          // Animation complete
+          setTypingMessageId(null)
+        }
+      }
+
+      // Start typing animation
+      typeNextChar()
+    }
+  }, [messages, loading])
 
   if (authLoading) {
     return (
@@ -76,8 +124,10 @@ const ChatBotDesktop: React.FC = () => {
   const userCin = profile?.user?.cin || ""
   const userPhone = profile?.user?.telephone || ""
   const userAddress = profile?.user?.adresseEmployeur || ""
-  
 
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible)
+  }
 
   const sendMessage = async (text = message) => {
     if (!text.trim()) return
@@ -117,6 +167,10 @@ const ChatBotDesktop: React.FC = () => {
         body: JSON.stringify(payload),
       })
 
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`)
+      }
+
       const data = await response.json()
 
       // Ajouter la réponse du bot au chat
@@ -134,6 +188,10 @@ const ChatBotDesktop: React.FC = () => {
     } catch (error) {
       console.error("Erreur:", error)
 
+      // Show toast instead of error message in chat
+      setToastMessage("Une erreur s'est produite. Veuillez réessayer plus tard.")
+      setShowToast(true)
+
       // Ajouter un message d'erreur au chat
       const errorMessage: Message = {
         id: messages.length + 2,
@@ -146,6 +204,11 @@ const ChatBotDesktop: React.FC = () => {
     }
 
     setLoading(false)
+
+    // Focus back on textarea after sending
+    setTimeout(() => {
+      textareaRef.current?.setFocus()
+    }, 100)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -162,6 +225,7 @@ const ChatBotDesktop: React.FC = () => {
 
   // Formater le texte du message pour préserver les sauts de ligne
   const formatMessageText = (text: string) => {
+    if (!text) return <p className="message-paragraph"> </p>
     return text.split("\n").map((line, i) => (
       <p key={i} className="message-paragraph">
         {line || " "}
@@ -188,7 +252,17 @@ const ChatBotDesktop: React.FC = () => {
 
       <IonContent className="chat-content">
         <div className="chat-desktop-layout">
-          <div className="chat-sidebar">
+          {/* Sidebar toggle button for mobile */}
+          <button
+            className="sidebar-toggle-btn"
+            onClick={toggleSidebar}
+            aria-label={sidebarVisible ? "Masquer le panneau latéral" : "Afficher le panneau latéral"}
+          >
+            <IonIcon icon={sidebarVisible ? chevronBackOutline : chevronForwardOutline} />
+          </button>
+
+          {/* Sidebar with conditional class for visibility */}
+          <div className={`chat-sidebar ${sidebarVisible ? "visible" : "hidden"}`}>
             <div className="chat-sidebar-header">
               <h2>Assistant Bancaire</h2>
               <p className="sidebar-description">
@@ -200,7 +274,7 @@ const ChatBotDesktop: React.FC = () => {
               <div className="user-profile-section">
                 <div className="user-avatar">
                   <IonAvatar>
-                    <img src="./avatar.png" alt="Utilisateur" />
+                    <img src="./avatar.png" alt="Photo de profil" />
                   </IonAvatar>
                 </div>
                 <div className="user-details">
@@ -216,7 +290,7 @@ const ChatBotDesktop: React.FC = () => {
             ) : (
               <div className="guest-profile-section">
                 <div className="guest-avatar">
-                  <IonIcon icon={personCircleOutline} />
+                  <IonIcon icon={personCircleOutline} aria-hidden="true" />
                 </div>
                 <div className="guest-details">
                   <h3 className="guest-title">Utilisateur Invité</h3>
@@ -252,24 +326,29 @@ const ChatBotDesktop: React.FC = () => {
             <div className="chat-container">
               <div className="chat-header-desktop">
                 <div className="chat-title">
-                  <IonIcon icon={chatbubbleEllipsesOutline} />
+                  <IonIcon icon={chatbubbleEllipsesOutline} aria-hidden="true" />
                   <h2>Discuter avec l'Assistant Bancaire</h2>
                 </div>
                 {isAuthenticated ? (
                   <div className="chat-status">
-                    <span className="status-dot authenticated"></span>
+                    <span className="status-dot authenticated" aria-hidden="true"></span>
                     <span>Authentifié en tant que {userName}</span>
                   </div>
                 ) : (
                   <div className="chat-status">
-                    <span className="status-dot guest"></span>
+                    <span className="status-dot guest" aria-hidden="true"></span>
                     <span>Mode Invité</span>
                   </div>
                 )}
               </div>
 
               {/* Conteneur de messages */}
-              <div className="messages-container">
+              <div
+                className="messages-container"
+                role="log"
+                aria-live="polite"
+                aria-label="Conversation avec l'assistant bancaire"
+              >
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
@@ -279,12 +358,21 @@ const ChatBotDesktop: React.FC = () => {
                       {msg.sender === "bot" && (
                         <div className="message-avatar">
                           <IonAvatar>
-                            <img src="./bot.png" alt="Bot" />
+                            <img src="./bot.png" alt="Avatar de l'assistant" />
                           </IonAvatar>
                         </div>
                       )}
                       <div className="message-text">
-                        <div className="message-text-content">{formatMessageText(msg.text)}</div>
+                        <div className="message-text-content">
+                          {msg.sender === "bot" && typingMessageId === msg.id
+                            ? // Show the currently visible text for the typing message
+                              formatMessageText(visibleText)
+                            : // Show the full text for other messages
+                              formatMessageText(msg.text)}
+                          {msg.sender === "bot" && typingMessageId === msg.id && (
+                            <span className="typing-cursor"></span>
+                          )}
+                        </div>
                         <span className="message-time">{formatTime(msg.timestamp)}</span>
                       </div>
                     </div>
@@ -297,10 +385,10 @@ const ChatBotDesktop: React.FC = () => {
                     <div className="message-content">
                       <div className="message-avatar">
                         <IonAvatar>
-                          <img src="./bot.png" alt="Bot" />
+                          <img src="./bot.png" alt="Avatar de l'assistant" />
                         </IonAvatar>
                       </div>
-                      <div className="message-text typing-indicator">
+                      <div className="message-text typing-indicator" aria-label="L'assistant est en train d'écrire">
                         <span></span>
                         <span></span>
                         <span></span>
@@ -313,14 +401,15 @@ const ChatBotDesktop: React.FC = () => {
                 {showSuggestions && !loading && (
                   <div className="suggestions-container">
                     {suggestions.map((suggestion, index) => (
-                      <div
+                      <button
                         key={index}
                         className="suggestion-chip"
                         onClick={() => handleSuggestionClick(suggestion.text)}
+                        aria-label={`Suggestion: ${suggestion.text}`}
                       >
-                        <IonIcon icon={suggestion.icon} />
+                        <IonIcon icon={suggestion.icon} aria-hidden="true" />
                         <span>{suggestion.text}</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 )}
@@ -332,30 +421,37 @@ const ChatBotDesktop: React.FC = () => {
 
             <IonFooter className="chat-footer">
               <div className="message-input-container">
-              <IonTextarea
-                value={message}
-                placeholder="Tapez votre message ici..."
-                onIonChange={(e) => setMessage(e.detail.value!)}
-                onKeyDown={handleKeyPress} // Updated from onKeyPress to onKeyDown
-                autoGrow={true}
-                rows={1}
-                maxlength={500}
-                className="message-input"
+                <IonTextarea
+                  ref={textareaRef}
+                  value={message}
+                  placeholder="Tapez votre message ici..."
+                  onIonInput={(e) => setMessage(e.detail.value!)}
+                  onKeyDown={handleKeyPress}
+                  autoGrow={true}
+                  rows={1}
+                  maxlength={500}
+                  className="message-input"
+                  aria-label="Zone de saisie de message"
                 />
 
-                <IonButton className="send-button" onClick={() => sendMessage()}>
-                  <IonIcon icon={sendOutline} />
+                <IonButton
+                  className="send-button"
+                  onClick={() => sendMessage()}
+                  disabled={!message.trim()}
+                  aria-label="Envoyer le message"
+                >
+                  <IonIcon icon={sendOutline} aria-hidden="true" />
                 </IonButton>
               </div>
 
               {isAuthenticated ? (
                 <div className="chat-footer-info authenticated">
-                  <IonIcon icon={personCircleOutline} />
+                  <IonIcon icon={personCircleOutline} aria-hidden="true" />
                   <span>Les réponses incluront vos informations de compte personnelles</span>
                 </div>
               ) : (
                 <div className="chat-footer-info guest">
-                  <IonIcon icon={personCircleOutline} />
+                  <IonIcon icon={personCircleOutline} aria-hidden="true" />
                   <span>Connectez-vous pour obtenir une assistance bancaire personnalisée</span>
                 </div>
               )}
@@ -363,6 +459,21 @@ const ChatBotDesktop: React.FC = () => {
           </div>
         </div>
       </IonContent>
+
+      <IonToast
+        isOpen={showToast}
+        onDidDismiss={() => setShowToast(false)}
+        message={toastMessage}
+        duration={3000}
+        position="top"
+        color="danger"
+        buttons={[
+          {
+            text: "Fermer",
+            role: "cancel",
+          },
+        ]}
+      />
     </IonPage>
   )
 }
