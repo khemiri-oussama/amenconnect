@@ -4,7 +4,7 @@
 @import "../GestiondesTotem/InteractiveTotemManagement.css";
 @import "../SurveillanceMonitoring/SurveillanceMonitoring.css";
 @import "../videoconfmanage/videoconfmanage.css";
-@import "../PermissionManagement/PermissionManagement.css";
+@import "../Permissions/permissionsManagement.css";
 
 /* Theme Page Styles */
 .admin-theme-actions {
