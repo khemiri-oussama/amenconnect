@@ -1,0 +1,668 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+/* Import the variables from the correct location in your project */
+@import "../../theme/variables.css";
+
+/* Base styles */
+.kiosk-chat-page {
+  font-family: var(--kiosk-font-family, "Outfit", sans-serif);
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.kiosk-chat-content {
+  --background: var(--kiosk-background, #ffffff);
+  --overflow: auto;
+}
+
+.kiosk-chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 133%;
+  padding: 0;
+  position: relative;
+  overflow-y: auto;
+}
+
+.background-white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--kiosk-background, #ffffff);
+  z-index: -2;
+}
+
+.background-svg {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1080px;
+  height: 1920px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+/* Header */
+.kiosk-chat-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  position: relative;
+  text-align: center;
+}
+
+.kiosk-back-button {
+  position: absolute;
+  left: 2rem;
+  top: 2rem;
+}
+
+.kiosk-back-btn {
+  --color: var(--kiosk-primary-text, #121660);
+  --background: rgba(18, 22, 96, 0.1);
+  --border-radius: 50%;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-size: 1.5rem;
+}
+
+.kiosk-logo {
+  width: 350px;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
+
+.kiosk-chat-title {
+  margin-bottom: 1rem;
+}
+
+.kiosk-title {
+  color: var(--kiosk-primary-text, #121660);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+.kiosk-subtitle {
+  color: var(--kiosk-primary-text, #121660);
+  font-size: 1.5rem;
+  opacity: 0.8;
+}
+
+/* Main chat area */
+.kiosk-chat-main {
+  padding: 0 2rem 2rem 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* User info */
+.kiosk-user-info {
+  margin-bottom: 1.5rem;
+}
+
+.kiosk-user-profile {
+  display: flex;
+  align-items: center;
+  background: var(--kiosk-surface, #f8f8f8);
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
+  padding: 1.5rem;
+  box-shadow: var(--kiosk-shadow-md, 0 4px 12px rgba(18, 22, 96, 0.15));
+}
+
+.kiosk-user-avatar {
+  margin-right: 1.5rem;
+}
+
+.kiosk-user-avatar ion-avatar {
+  width: 4rem;
+  height: 4rem;
+  background: var(--kiosk-primary, #121660);
+}
+
+.kiosk-user-avatar ion-icon {
+  font-size: 4rem;
+  color: var(--kiosk-primary, #121660);
+}
+
+.kiosk-user-details {
+  flex: 1;
+}
+
+.kiosk-user-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--kiosk-primary-text, #121660);
+}
+
+.kiosk-user-status {
+  --background: transparent;
+  font-size: 1rem;
+}
+
+/* Messages container */
+.kiosk-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem; /* Changed from -2.5rem to provide proper spacing */
+  background: var(--kiosk-surface, #f8f8f8);
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
+  box-shadow: var(--kiosk-shadow-md, 0 4px 12px rgba(18, 22, 96, 0.15));
+  min-height: 300px; /* Ensure minimum height for messages */
+}
+
+/* Message bubbles */
+.kiosk-message-bubble {
+  max-width: 80%;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.kiosk-user-message {
+  align-self: flex-end;
+}
+
+.kiosk-bot-message {
+  align-self: flex-start;
+}
+
+.kiosk-message-content {
+  display: flex;
+  gap: 1rem;
+}
+
+.kiosk-message-avatar {
+  flex-shrink: 0;
+}
+
+.kiosk-message-avatar ion-avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--kiosk-primary, #121660);
+}
+
+.kiosk-message-text {
+  background: var(--kiosk-background, #ffffff);
+  border-radius: var(--kiosk-radius-md, 1rem);
+  padding: 1.2rem 1.5rem;
+  position: relative;
+  font-size: 1.2rem;
+  color: var(--kiosk-primary-text, #121660);
+  box-shadow: var(--kiosk-shadow-sm, 0 2px 6px rgba(18, 22, 96, 0.1));
+}
+
+.kiosk-message-text-content {
+  margin-bottom: 0.5rem;
+}
+
+.kiosk-message-paragraph {
+  margin: 0 0 0.8rem 0;
+  line-height: 1.6;
+  word-wrap: break-word;
+  white-space: pre-line;
+  color: var(--kiosk-primary-text, #121660);
+}
+
+.kiosk-message-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.kiosk-user-message .kiosk-message-text {
+  background: linear-gradient(to right, var(--kiosk-primary, #121660), var(--kiosk-primary-light, #4749ce));
+  color: #ffffff;
+  border-top-right-radius: 0.5rem;
+}
+
+.kiosk-user-message .kiosk-message-paragraph {
+  color: #ffffff;
+}
+
+.kiosk-bot-message .kiosk-message-text {
+  border-top-left-radius: 0.5rem;
+}
+
+.kiosk-message-time {
+  font-size: 0.9rem;
+  color: var(--kiosk-text-muted, rgba(18, 22, 96, 0.7));
+  display: block;
+  text-align: right;
+  margin-top: 0.3rem;
+}
+
+.kiosk-user-message .kiosk-message-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Typing indicator */
+.kiosk-typing-indicator {
+  display: flex;
+  align-items: center;
+  height: 2rem;
+  padding: 1rem 1.5rem;
+}
+
+.kiosk-typing-indicator span {
+  height: 0.8rem;
+  width: 0.8rem;
+  background: var(--kiosk-primary-light, #4749ce);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.5rem;
+  animation: bounce 1.3s linear infinite;
+}
+
+.kiosk-typing-indicator span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.kiosk-typing-indicator span:nth-child(3) {
+  animation-delay: 0.3s;
+  margin-right: 0;
+}
+
+@keyframes bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Suggestions */
+.kiosk-suggestions-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.kiosk-suggestion-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--kiosk-surface, #f8f8f8);
+  border-radius: var(--kiosk-radius-md, 1rem);
+  padding: 1.5rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 100%;
+  color: var(--kiosk-primary-text, #121660);
+  box-shadow: var(--kiosk-shadow-md, 0 4px 12px rgba(18, 22, 96, 0.15));
+}
+
+.kiosk-suggestion-chip:hover,
+.kiosk-suggestion-chip:active {
+  background: var(--kiosk-background, #ffffff);
+  transform: translateY(-2px);
+  box-shadow: var(--kiosk-shadow-lg, 0 8px 24px rgba(18, 22, 96, 0.2));
+}
+
+.kiosk-suggestion-chip ion-icon {
+  color: var(--kiosk-primary, #121660);
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Input area */
+.kiosk-chat-input-area {
+  padding: 1.5rem;
+  background: var(--kiosk-surface, #f8f8f8);
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
+  box-shadow: var(--kiosk-shadow-md, 0 4px 12px rgba(18, 22, 96, 0.15));
+}
+
+.kiosk-message-input-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  background: var(--kiosk-background, #ffffff);
+  border-radius: var(--kiosk-radius-md, 1rem);
+  padding: 0.8rem 0.8rem 0.8rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--kiosk-shadow-sm, 0 2px 6px rgba(18, 22, 96, 0.1));
+}
+
+.kiosk-message-input {
+  --background: transparent;
+  --color: var(--kiosk-primary-text, #121660);
+  --placeholder-color: var(--kiosk-text-muted, rgba(18, 22, 96, 0.7));
+  --placeholder-opacity: 0.8;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0.8rem;
+  --padding-bottom: 0.8rem;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.kiosk-send-button {
+  --background: linear-gradient(to right, var(--kiosk-primary, #121660), var(--kiosk-primary-light, #4749ce));
+  --background-hover: var(--kiosk-primary-light, #4749ce);
+  --background-activated: var(--kiosk-primary-light, #4749ce);
+  --border-radius: 50%;
+  --padding-start: 0;
+  --padding-end: 0;
+  margin: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  box-shadow: var(--kiosk-shadow-md, 0 4px 12px rgba(18, 22, 96, 0.15));
+}
+
+.kiosk-send-button ion-icon {
+  font-size: 1.5rem;
+}
+
+.kiosk-chat-footer-info {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1rem;
+  color: var(--kiosk-text-muted, rgba(18, 22, 96, 0.7));
+  padding: 0 1rem;
+}
+
+.kiosk-chat-footer-info ion-icon {
+  font-size: 1.2rem;
+}
+
+.kiosk-chat-footer-info.authenticated ion-icon {
+  color: var(--kiosk-success, #2fdf75);
+}
+
+.kiosk-chat-footer-info.guest ion-icon {
+  color: var(--kiosk-text-muted, rgba(18, 22, 96, 0.7));
+}
+
+/* Loading screen */
+.kiosk-loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--kiosk-background, #ffffff);
+  color: var(--kiosk-primary-text, #121660);
+}
+
+.kiosk-loading-container ion-spinner {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1.5rem;
+  color: var(--kiosk-primary, #121660);
+}
+
+.kiosk-loading-container p {
+  font-size: 1.5rem;
+  color: var(--kiosk-primary-text, #121660);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar styling */
+.kiosk-messages-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.kiosk-messages-container::-webkit-scrollbar-track {
+  background: var(--kiosk-surface, #f8f8f8);
+  border-radius: 10px;
+}
+
+.kiosk-messages-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--kiosk-primary, #121660), var(--kiosk-primary-light, #4749ce));
+  border-radius: 10px;
+}
+
+.kiosk-messages-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, var(--kiosk-primary-dark, #0a0d3b), var(--kiosk-primary, #121660));
+}
+
+/* Virtual Keyboard Styles */
+/* Keyboard overlay and floating input */
+.keyboard-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+}
+
+.floating-input-container {
+  padding: 10px 15px;
+  background-color: #f0f0f5;
+  border-top: 1px solid rgba(18, 22, 96, 0.1);
+}
+
+.floating-input-container .kiosk-message-input-container {
+  margin-bottom: 0;
+}
+
+.virtual-keyboard-container {
+  position: relative;
+  background-color: #f0f0f5;
+  padding: 10px 10px 20px 10px; /* Increased bottom padding */
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.3s ease-out;
+}
+
+.keyboard-wrapper {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-bottom: 30px; /* Extra padding to ensure visibility above navigation */
+}
+
+/* Ensure the keyboard is visible on devices with home indicators or notches */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .keyboard-wrapper {
+    padding-bottom: calc(30px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Hide the original input area when keyboard is visible */
+.keyboard-visible .kiosk-chat-input-area {
+  visibility: hidden;
+}
+
+.virtual-keyboard-container .simple-keyboard {
+  width: 100%;
+}
+
+.virtual-keyboard-container .hg-button {
+  height: 50px; /* Slightly smaller buttons */
+  font-size: 1.2rem;
+  background: white;
+  color: var(--kiosk-primary-text, #121660);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.virtual-keyboard-container .hg-button:active {
+  background: var(--kiosk-primary-light, #4749ce);
+  color: white;
+}
+
+.virtual-keyboard-container .hg-button.hg-functionBtn {
+  background: var(--kiosk-surface, #f8f8f8);
+}
+
+.virtual-keyboard-container .hg-button[data-skbtn="{enter}"] {
+  background: linear-gradient(to right, var(--kiosk-primary, #121660), var(--kiosk-primary-light, #4749ce));
+  color: white;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (min-width: 768px) {
+  .kiosk-suggestions-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .kiosk-message-bubble {
+    max-width: 70%;
+  }
+}
+
+@media (max-width: 768px) {
+  .kiosk-chat-header {
+    padding: 1.5rem;
+  }
+
+  .kiosk-logo {
+    width: 250px;
+  }
+
+  .kiosk-title {
+    font-size: 2rem;
+  }
+
+  .kiosk-subtitle {
+    font-size: 1.25rem;
+  }
+
+  .kiosk-chat-main {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .kiosk-chat-header {
+    padding: 1rem;
+  }
+
+  .kiosk-logo {
+    width: 180px;
+  }
+
+  .kiosk-title {
+    font-size: 1.75rem;
+  }
+
+  .kiosk-subtitle {
+    font-size: 1rem;
+  }
+
+  .kiosk-user-avatar ion-avatar,
+  .kiosk-user-avatar ion-icon {
+    width: 3rem;
+    height: 3rem;
+    font-size: 3rem;
+  }
+
+  .kiosk-user-name {
+    font-size: 1.2rem;
+  }
+
+  .kiosk-message-avatar ion-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .kiosk-message-text {
+    font-size: 1rem;
+    padding: 1rem 1.2rem;
+  }
+
+  .kiosk-suggestions-container {
+    grid-template-columns: 1fr;
+  }
+
+  .kiosk-suggestion-chip {
+    font-size: 1rem;
+    padding: 1.2rem;
+  }
+
+  .kiosk-suggestion-chip ion-icon {
+    font-size: 1.2rem;
+  }
+
+  .kiosk-message-input {
+    font-size: 1rem;
+  }
+
+  .kiosk-send-button {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* Touch-friendly improvements */
+.kiosk-suggestion-chip,
+.kiosk-send-button,
+.kiosk-back-btn {
+  touch-action: manipulation;
+}
+
+/* Add extra padding for touch targets */
+.kiosk-suggestion-chip {
+  min-height: 4rem;
+}
+
+.kiosk-message-input-container {
+  min-height: 4rem;
+}
+
+/* Adjust the main container when keyboard is visible */
+.kiosk-chat-container.keyboard-visible .kiosk-chat-main {
+  padding-bottom: 260px; /* Add padding to accommodate keyboard */
+}
+
+/* Ensure content is visible when keyboard is shown */
+.keyboard-visible .kiosk-messages-container {
+  max-height: calc(100vh - 400px); /* Adjust based on keyboard height */
+  overflow-y: auto;
+}
+
+/* Adjust the chat input area when keyboard is visible */
+.keyboard-visible .kiosk-chat-input-area {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1001; /* Ensure it's above the keyboard */
+}
+
+/* Fix for bottom navigation overlap */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .virtual-keyboard-container {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+

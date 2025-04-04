@@ -30,6 +30,7 @@ import "./theme/variables.css"
 import { OrientationProvider } from "./context/OrientationContext"
 import { ThemeProvider } from "../../ThemeContext"
 import ThemeLoader from "./context/ThemeLoader";
+import ChatBotKiosk from "./pages/chatBot/chat-bot-kiosk";
 // Lazy loaded components for public pages
 const Accueil = lazy(() => import("./pages/accueil/AccueilKiosk"))
 const Compte = lazy(() => import("./pages/Compte/CompteKiosk"))
@@ -113,6 +114,7 @@ const PrivatePages: React.FC = () => (
     <PrivateRoute exact path="/accueil" component={Accueil} />
     <PrivateRoute exact path="/compte" component={Compte} />
     <PrivateRoute exact path="/carte" component={Carte} />
+    <PrivateRoute exact path="/chatbot" component={ChatBotKiosk} />
   </AuthProvider>
 );
 
