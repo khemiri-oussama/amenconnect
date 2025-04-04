@@ -21,8 +21,10 @@ const Historique: React.FC = () => {
   const { profile } = useAuth()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
 
   // Filter states
   const [searchTerm, setSearchTerm] = useState("")
@@ -32,50 +34,56 @@ const Historique: React.FC = () => {
   const [typeFilter, setTypeFilter] = useState("all")
   const [showFilters, setShowFilters] = useState(false)
 
+  // Setup default date range
   useEffect(() => {
-    // Set default date range (last 3 months)
     const today = new Date()
     const threeMonthsAgo = new Date()
     threeMonthsAgo.setMonth(today.getMonth() - 3)
-
     setDateTo(today.toISOString().split("T")[0])
     setDateFrom(threeMonthsAgo.toISOString().split("T")[0])
+  }, [])
 
-    // Fetch transactions
-    const fetchTransactions = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch("/api/historique", {
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        })
-        if (!response.ok) {
-          throw new Error("Failed to fetch transactions")
-        }
-
-        const data = await response.json()
-        console.log("Transaction data:", data) // Log the data to see its format
-        setTransactions(data)
-        setFilteredTransactions(data)
-      } catch (err: any) {
-        console.error("Error fetching transactions:", err)
-        setError(err.message || "Une erreur est survenue lors de la récupération des transactions")
-      } finally {
-        setLoading(false)
+  // Fetch transactions by page
+  const fetchTransactions = async (pageNumber: number) => {
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/historique?page=${pageNumber}&limit=10`, {
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      })
+      if (!response.ok) {
+        throw new Error("Failed to fetch transactions")
       }
+      const data = await response.json()
+      // Extract transactions from the returned object
+      const txs: Transaction[] = data.transactions || []
+      // If fewer transactions are returned than the limit, there are no more pages
+      if (txs.length < 10) {
+        setHasMore(false)
+      }
+      // Append new transactions to the current list
+      setTransactions(prev => [...prev, ...txs])
+      setFilteredTransactions(prev => [...prev, ...txs])
+    } catch (err: any) {
+      console.error("Error fetching transactions:", err)
+      setError(err.message || "Une erreur est survenue lors de la récupération des transactions")
+    } finally {
+      setLoading(false)
     }
+  }
 
-    // Only call if user is logged in or has a profile
+  // Initial fetch when profile is available
+  useEffect(() => {
     if (profile) {
-      fetchTransactions()
+      fetchTransactions(1)
     } else {
       setLoading(false)
       setError("Veuillez vous connecter pour voir l'historique.")
     }
   }, [profile])
 
+  // Update filters when transactions or filter criteria change
   useEffect(() => {
-    // Apply filters
     let filtered = [...transactions]
 
     // Search term
@@ -100,7 +108,6 @@ const Historique: React.FC = () => {
 
     // Status
     if (statusFilter !== "all") {
-      // Handle case-insensitive status filtering
       filtered = filtered.filter((tx) => tx.status.toLowerCase() === statusFilter.toLowerCase())
     }
 
@@ -113,12 +120,10 @@ const Historique: React.FC = () => {
   }, [transactions, searchTerm, dateFrom, dateTo, statusFilter, typeFilter])
 
   const formatCurrency = (amount: number) => {
-    // Format with comma as decimal separator and no currency symbol
     return Math.abs(amount).toFixed(3).replace(".", ",") + " DT"
   }
 
   const getStatusLabel = (status: string) => {
-    // Handle case-insensitive status matching
     const statusLower = status.toLowerCase()
     switch (statusLower) {
       case "completed":
@@ -134,7 +139,6 @@ const Historique: React.FC = () => {
   }
 
   const getStatusClass = (status: string) => {
-    // Handle case-insensitive status matching
     const statusLower = status.toLowerCase()
     switch (statusLower) {
       case "completed":
@@ -150,7 +154,6 @@ const Historique: React.FC = () => {
   }
 
   const handleExportCSV = () => {
-    // Create CSV content
     const headers = ["Date", "Description", "Bénéficiaire", "Montant", "Statut", "Référence"]
     const rows = filteredTransactions.map((tx) => [
       new Date(tx.date).toLocaleDateString(),
@@ -162,8 +165,6 @@ const Historique: React.FC = () => {
     ])
 
     const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n")
-
-    // Create and download file
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
@@ -175,6 +176,12 @@ const Historique: React.FC = () => {
     document.body.removeChild(link)
   }
 
+  const loadMoreTransactions = () => {
+    const nextPage = page + 1
+    setPage(nextPage)
+    fetchTransactions(nextPage)
+  }
+
   return (
     <div className="historique">
       <div className="virement-card">
@@ -183,7 +190,6 @@ const Historique: React.FC = () => {
             <IonIcon icon={timeOutline} />
             Historique des virements
           </h3>
-
           <div className="virement-card__actions">
             <button
               className="virement-form__button virement-form__button--icon"
@@ -192,7 +198,6 @@ const Historique: React.FC = () => {
               <IonIcon icon={filterOutline} />
               Filtres
             </button>
-
             <button
               className="virement-form__button virement-form__button--icon virement-form__button--secondary"
               onClick={handleExportCSV}
@@ -228,7 +233,6 @@ const Historique: React.FC = () => {
                   onChange={(e) => setDateFrom(e.target.value)}
                 />
               </div>
-
               <div className="virement-filters__group">
                 <label className="virement-filters__label">Date de fin</label>
                 <input
@@ -238,7 +242,6 @@ const Historique: React.FC = () => {
                   onChange={(e) => setDateTo(e.target.value)}
                 />
               </div>
-
               <div className="virement-filters__group">
                 <label className="virement-filters__label">Statut</label>
                 <select
@@ -252,7 +255,6 @@ const Historique: React.FC = () => {
                   <option value="failed">Échoué</option>
                 </select>
               </div>
-
               <div className="virement-filters__group">
                 <label className="virement-filters__label">Type</label>
                 <select
@@ -269,47 +271,55 @@ const Historique: React.FC = () => {
           </div>
         )}
 
-        {loading ? (
+        {loading && page === 1 ? (
           <div className="virement-loading">Chargement des transactions...</div>
         ) : error ? (
           <div className="virement-error">{error}</div>
         ) : filteredTransactions.length === 0 ? (
           <div className="virement-empty">Aucune transaction trouvée</div>
         ) : (
-          <div className="virement-table-container">
-            <table className="virement-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Description</th>
-                  <th>Bénéficiaire</th>
-                  <th>Montant</th>
-                  <th>Statut</th>
-                  <th>Référence</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTransactions.map((tx) => (
-                  <tr key={tx._id}>
-                    <td>{new Date(tx.date).toLocaleDateString()}</td>
-                    <td>{tx.description}</td>
-                    <td>{tx.beneficiary || "N/A"}</td>
-                    <td className={tx.type === "credit" ? "text-positive" : "text-negative"}>
-  {tx.type === "credit" ? "+ " : "- "}
-  {formatCurrency(tx.amount)}
-</td>
-
-                    <td>
-                      <span className={`virement-table__status ${getStatusClass(tx.status)}`}>
-                        {getStatusLabel(tx.status)}
-                      </span>
-                    </td>
-                    <td>{tx.reference || ""}</td>
+          <>
+            <div className="virement-table-container">
+              <table className="virement-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Bénéficiaire</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th>Référence</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {filteredTransactions.map((tx) => (
+                    <tr key={tx._id}>
+                      <td>{new Date(tx.date).toLocaleDateString()}</td>
+                      <td>{tx.description}</td>
+                      <td>{tx.beneficiary || "N/A"}</td>
+                      <td className={tx.type === "credit" ? "text-positive" : "text-negative"}>
+                        {tx.type === "credit" ? "+ " : "- "}
+                        {formatCurrency(tx.amount)}
+                      </td>
+                      <td>
+                        <span className={`virement-table__status ${getStatusClass(tx.status)}`}>
+                          {getStatusLabel(tx.status)}
+                        </span>
+                      </td>
+                      <td>{tx.reference || ""}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {hasMore && (
+              <div className="load-more">
+                <button className="virement-form__button" onClick={loadMoreTransactions} disabled={loading}>
+                  {loading ? "Chargement..." : "Charger plus"}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -317,4 +327,3 @@ const Historique: React.FC = () => {
 }
 
 export default Historique
-

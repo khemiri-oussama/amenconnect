@@ -202,18 +202,21 @@ exports.approveAccountCreation = async (req, res) => {
     const newCompte = new Compte(compteData);
     await newCompte.save();
 
+    newUser.compteIds.push(newCompte._id);
+    await newUser.save();
+
     // Optionally create a credit card if indicated.
     let newCard;
     if (demande.wantCreditCard) {
       newCard = new Carte({
-        CardNumber: crypto.randomBytes(8).toString('hex').toUpperCase(),
-        CardHolder: `${newUser.prenom} ${newUser.nom}`,
-        comptesId: newCompte._id,
-        TypeCarte: demande.creditCardType,
-        CreatedAt: new Date().toISOString(),
-        UpdatedAt: new Date().toISOString(),
-      });
-      await newCard.save();
+      CardNumber: crypto.randomBytes(8).toString('hex').toUpperCase(),
+      CardHolder: `${newUser.prenom} ${newUser.nom}`,
+      comptesId: newCompte._id,
+      TypeCarte: demande.creditCardType,
+      CreatedAt: new Date().toISOString(),
+      UpdatedAt: new Date().toISOString(),
+    });
+    await newCard.save();
     
       // Optionally add the card to the user's record
       newUser.carteIds.push(newCard._id);

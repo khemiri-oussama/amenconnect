@@ -71,7 +71,9 @@ const TableauDeBord: React.FC = () => {
           throw new Error("Failed to fetch transactions")
         }
         const data = await response.json()
-        setTransactions(data.slice(0, 5)) // Get only the 5 most recent transactions
+        // Extract the transactions array from the response and get only the 5 most recent ones.
+        const txs: Transaction[] = data.transactions ? data.transactions.slice(0, 5) : []
+        setTransactions(txs)
       } catch (error) {
         console.error("Error fetching transactions:", error)
       } finally {
@@ -249,4 +251,3 @@ const TableauDeBord: React.FC = () => {
 }
 
 export default TableauDeBord
-

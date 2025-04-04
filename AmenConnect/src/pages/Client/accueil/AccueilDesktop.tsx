@@ -122,8 +122,9 @@ const AccueilDesktop: React.FC = () => {
         if (!response.ok) {
           throw new Error("Failed to fetch transactions")
         }
-        const data: Transaction[] = await response.json()
-        setTransactions(data)
+        // Updated to extract transactions from the API response object.
+        const data = await response.json()
+        setTransactions(data.transactions || [])
       } catch (error) {
         console.error("Erreur lors de la récupération des transactions:", error)
         setErrorTransactions("Erreur lors de la récupération des transactions.")
@@ -172,20 +173,26 @@ const AccueilDesktop: React.FC = () => {
   // Group transactions by month for the chart.
   const chartData = useMemo(() => {
     const groupedData = transactions.reduce((acc, transaction) => {
-      const date = new Date(transaction.date)
-      const month = date.toLocaleString("default", { month: "short" })
+      const date = new Date(transaction.date);
+      // Skip transaction if date is invalid.
+      if (isNaN(date.getTime())) {
+        console.error("Invalid date for transaction:", transaction.date);
+        return acc;
+      }
+      const month = date.toLocaleString("default", { month: "short" });
       if (!acc[month]) {
-        acc[month] = { name: month, income: 0, expenses: 0 }
+        acc[month] = { name: month, income: 0, expenses: 0 };
       }
       if (transaction.type === "credit") {
-        acc[month].income += transaction.amount
+        acc[month].income += transaction.amount;
       } else if (transaction.type === "debit") {
-        acc[month].expenses += transaction.amount
+        acc[month].expenses += transaction.amount;
       }
-      return acc
-    }, {} as { [month: string]: { name: string; income: number; expenses: number } })
-    return Object.values(groupedData)
-  }, [transactions])
+      return acc;
+    }, {} as { [month: string]: { name: string; income: number; expenses: number } });
+    return Object.values(groupedData);
+  }, [transactions]);
+  
 
   // Calculate last month's income, expenses, and savings from transactions.
   const lastMonthStats = useMemo(() => {

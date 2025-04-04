@@ -1,4 +1,5 @@
-const Virement = require("../models/Virement");
+// controllers/historiqueController.js
+const Virement = require("../models/virement");
 const VirementGroupe = require("../models/VirementGroupe");
 const VirementProgramme = require("../models/VirementProgramme");
 
@@ -13,19 +14,49 @@ exports.getHistorique = async (req, res) => {
     const userCompteIds = req.user?.compteIds?.map((id) => id.toString()) || [];
     console.log("User account IDs:", userCompteIds);
 
-    const virements = await Virement.find({ /* match user somehow */ })
+    // Filter for single virements: match if sender or receiver is one of the user's accounts.
+    const virementFilter = {
+      $or: [
+        { fromAccount: { $in: userCompteIds } },
+        { toAccount: { $in: userCompteIds } }
+      ]
+    };
+
+    // Pagination parameters
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const virements = await Virement.find(virementFilter)
+      .sort({ createdAt: -1 })
+      .skip(Number(skip))
+      .limit(Number(limit))
+      .lean();
+
+    // For grouped virements: match if either the group’s fromAccount or toAccount is one of the user's accounts.
+    const groupeFilter = {
+      $or: [
+        { fromAccount: { $in: userCompteIds } },
+        { toAccount: { $in: userCompteIds } }
+      ]
+    };
+    const groupes = await VirementGroupe.find(groupeFilter)
       .sort({ createdAt: -1 })
       .lean();
 
-    const groupes = await VirementGroupe.find({ /* match user somehow */ })
+    // For programmed virements: match if either fromAccount or toAccount is one of the user's accounts.
+    const programmeFilter = {
+      $or: [
+        { fromAccount: { $in: userCompteIds } },
+        { toAccount: { $in: userCompteIds } }
+      ]
+    };
+    const programmes = await VirementProgramme.find(programmeFilter)
       .sort({ createdAt: -1 })
       .lean();
 
-    const programmes = await VirementProgramme.find({ /* match user somehow */ })
-      .sort({ createdAt: -1 })
-      .lean();
-
+    // Map single virements
     const mappedVirements = virements.map((v) => {
+      // Determine type: debit if sender is the user's account, else credit.
       const isSender = userCompteIds.includes(v.fromAccount?.toString());
       return {
         _id: v._id.toString(),
@@ -39,9 +70,12 @@ exports.getHistorique = async (req, res) => {
       };
     });
     
+    // Map grouped virements
     let mappedGroupes = [];
     groupes.forEach((group) => {
       group.virements.forEach((entry) => {
+        // Determine type: if the user's account is the sender or not.
+        // For groups, you can decide based on group.fromAccount (if that's where the funds come from)
         const isSender = userCompteIds.includes(group.fromAccount?.toString());
         mappedGroupes.push({
           _id: `${group._id.toString()}-${entry._id.toString()}`,
@@ -56,7 +90,9 @@ exports.getHistorique = async (req, res) => {
       });
     });
 
+    // Map programmed virements
     const mappedProgrammes = programmes.map((p) => {
+      // Determine type: if the user's account is the sender.
       const isSender = userCompteIds.includes(p.fromAccount?.toString());
       return {
         _id: p._id.toString(),
@@ -76,9 +112,14 @@ exports.getHistorique = async (req, res) => {
       ...mappedProgrammes,
     ].sort((a, b) => new Date(b.date) - new Date(a.date)); // sort descending by date
 
-    res.json(allTransactions);
+    res.json({
+      page: Number(page),
+      limit: Number(limit),
+      total: allTransactions.length,
+      transactions: allTransactions,
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching historique:", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };

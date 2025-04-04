@@ -26,7 +26,7 @@ import Profile from "../accueil/MenuDesktop/ProfileMenu"
 import { useAuth } from "../../../AuthContext"
 
 interface Operation {
-  id: number
+  _id: string
   type: "credit" | "debit"
   amount: number
   description: string
@@ -71,8 +71,10 @@ const CompteDesktop: React.FC = () => {
         if (!response.ok) {
           throw new Error("Failed to fetch operations")
         }
-        const data: Operation[] = await response.json()
-        setOperations(data)
+        const data = await response.json()
+        // Expecting the API to return an object with a 'transactions' array.
+        const ops: Operation[] = data.transactions || []
+        setOperations(ops)
       } catch (error) {
         console.error("Error fetching operations:", error)
         setErrorOperations("Erreur lors de la récupération des opérations.")
@@ -143,7 +145,7 @@ const CompteDesktop: React.FC = () => {
 
           <div className="compte-grid">
             {/* Display each account coming from the profile */}
-            {accounts.map((account) => (
+            {accounts.map((account: any) => (
               <IonCard
                 key={account._id}
                 className="compte-card"
@@ -251,7 +253,7 @@ const CompteDesktop: React.FC = () => {
                     <div className="error-message">{errorOperations}</div>
                   ) : operations.length > 0 ? (
                     operations.map((op) => (
-                      <div key={op.id} className="operation-item">
+                      <div key={op._id} className="operation-item">
                         <div className="operation-icon">
                           <IonIcon icon={op.type === "credit" ? trendingUpOutline : trendingDownOutline} />
                         </div>
