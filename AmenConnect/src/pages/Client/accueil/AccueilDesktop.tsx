@@ -464,7 +464,8 @@ const AccueilDesktop: React.FC = () => {
                 ) : errorTransactions ? (
                   <div className="error-message">{errorTransactions}</div>
                 ) : transactions.length > 0 ? (
-                  transactions.map((transaction, index) => (
+                  // Only display the first 3 transactions
+                  transactions.slice(0, 3).map((transaction, index) => (
                     <div key={index} className="transaction-item">
                       <IonRippleEffect />
                       <div className="transaction-icon">

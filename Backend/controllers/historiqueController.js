@@ -12,7 +12,6 @@ exports.getHistorique = async (req, res) => {
   try {
     // Convert user's compteIds into an array of strings
     const userCompteIds = req.user?.compteIds?.map((id) => id.toString()) || [];
-    console.log("User account IDs:", userCompteIds);
 
     // Filter for single virements: match if sender or receiver is one of the user's accounts.
     const virementFilter = {

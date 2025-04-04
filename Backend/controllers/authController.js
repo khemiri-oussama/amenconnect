@@ -138,9 +138,7 @@ exports.register = async (req, res) => {
     // Create and save the new user
     user = new User({ cin, nom, prenom, email, telephone, employeur, adresseEmployeur, password });
     await user.save();
-    console.log("User saved:", user);
 
-    // Create the comptes based on user selection
     const compteDocuments = comptes.map(type => {
       const accountNumber = generateAccountNumber(); // Should be 11 characters
       const rib = generateRIB(accountNumber); // Full RIB string
@@ -157,7 +155,6 @@ exports.register = async (req, res) => {
     });
 
     await Compte.insertMany(compteDocuments);
-    console.log("Comptes created:", compteDocuments);
 
     res.status(201).json({ message: "User registered and comptes created successfully." });
   } catch (err) {
@@ -323,11 +320,9 @@ exports.logout = async (req, res) => {
     
     // Decode the token to retrieve the sessionId
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded token:", decoded); // Log decoded token for debugging
     
     // Delete the session using the sessionId from the token payload
     const deleteResult = await Session.deleteOne({ sessionId: decoded.sessionId });
-    console.log("Delete result:", deleteResult); // Log deletion result
     
     // Clear the token cookie from the client
     res.clearCookie("token", {
