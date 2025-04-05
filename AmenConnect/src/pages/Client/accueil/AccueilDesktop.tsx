@@ -172,16 +172,22 @@ const AccueilDesktop: React.FC = () => {
 
   // Group transactions by month for the chart.
   const chartData = useMemo(() => {
+    // Group transactions only for Feb (1), Mar (2), and Apr (3)
     const groupedData = transactions.reduce((acc, transaction) => {
       const date = new Date(transaction.date);
-      // Skip transaction if date is invalid.
       if (isNaN(date.getTime())) {
         console.error("Invalid date for transaction:", transaction.date);
         return acc;
       }
+      const monthNumber = date.getMonth(); // January is 0, February is 1, etc.
+      // Only process transactions from February (1) to April (3)
+      if (monthNumber < 1 || monthNumber > 3) {
+        return acc;
+      }
+      // Use toLocaleString to get short month name, e.g. "Fév", "Mar", "Avr"
       const month = date.toLocaleString("default", { month: "short" });
       if (!acc[month]) {
-        acc[month] = { name: month, income: 0, expenses: 0 };
+        acc[month] = { name: month, income: 0, expenses: 0, monthNumber };
       }
       if (transaction.type === "credit") {
         acc[month].income += transaction.amount;
@@ -189,9 +195,20 @@ const AccueilDesktop: React.FC = () => {
         acc[month].expenses += transaction.amount;
       }
       return acc;
-    }, {} as { [month: string]: { name: string; income: number; expenses: number } });
-    return Object.values(groupedData);
+    }, {} as { [month: string]: { name: string; income: number; expenses: number; monthNumber: number } });
+  
+    // Convert object to array and sort by the month number (Feb to Apr).
+    // Then compute "savings" = "income" - "expenses".
+    const sortedData = Object.values(groupedData)
+      .sort((a, b) => a.monthNumber - b.monthNumber)
+      .map((data) => ({
+        ...data,
+        savings: data.income - data.expenses,
+      }));
+  
+    return sortedData;
   }, [transactions]);
+  
   
 
   // Calculate last month's income, expenses, and savings from transactions.
