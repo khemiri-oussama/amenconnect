@@ -261,7 +261,7 @@ exports.verifyOTP = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, email: user.email, sessionId },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "7d" }
     );
 
     // Set the token as an HTTP-only cookie

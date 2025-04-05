@@ -1,7 +1,14 @@
-"use client"
-import type React from "react"
-import { useMemo, useState, useEffect } from "react"
-import { IonContent, IonHeader, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
+"use client";
+import type React from "react";
+import { useMemo, useState, useEffect } from "react";
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonIcon,
+  IonRippleEffect,
+  IonButton,
+} from "@ionic/react";
 import {
   walletOutline,
   cardOutline,
@@ -13,77 +20,107 @@ import {
   timeOutline,
   peopleOutline,
   globeOutline,
-} from "ionicons/icons"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import Navbar from "../../../components/Navbar"
-import "./AccueilDesktop.css"
-import { useHistory } from "react-router-dom"
-import Profile from "./MenuDesktop/ProfileMenu"
-import { useAuth } from "../../../AuthContext"
-import NotificationDesktop from "./NotificationMenu/NotificationDesktop"
-import BudgetCategoryManager from "../../../components/BudgetCategory/BudgetCategoryManager"
+} from "ionicons/icons";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import Navbar from "../../../components/Navbar";
+import "./AccueilDesktop.css";
+import { useHistory } from "react-router-dom";
+import Profile from "./MenuDesktop/ProfileMenu";
+import { useAuth } from "../../../AuthContext";
+import NotificationDesktop from "./NotificationMenu/NotificationDesktop";
+import BudgetCategoryManager from "../../../components/BudgetCategory/BudgetCategoryManager";
 
 interface Account {
-  _id: string
-  numéroCompte: string
-  solde: number
-  type: string
-  lastMonthExpenses: number
+  _id: string;
+  numéroCompte: string;
+  solde: number;
+  type: string;
+  lastMonthExpenses: number;
+  IBAN?: string;
+  RIB?: string;
+  domiciliation?: string;
+  avecChéquier?: boolean;
+  avecCarteBancaire?: boolean;
+  modalitésRetrait?: string;
+  conditionsGel?: string;
+  monthlyExpenses?: number;
 }
 
 interface Card {
-  _id: string
-  CardNumber: string
-  ExpiryDate: string
-  CardHolder: string
+  _id: string;
+  CardNumber: string;
+  ExpiryDate: string;
+  CardHolder: string;
+  TypeCarte?: string;
+  monthlyExpenses?: {
+    current: number;
+    limit: number;
+  };
+  atmWithdrawal?: {
+    current: number;
+    limit: number;
+  };
+  pendingTransactions?: {
+    amount: number;
+    count: number;
+  };
+  cardStatus?: string;
 }
 
 // Updated Transaction interface to match API response structure
 interface Transaction {
-  amount: number
-  type: "credit" | "debit"
-  category: string
-  description: string
-  date: string
+  amount: number;
+  type: "credit" | "debit";
+  category: string;
+  description: string;
+  date: string;
 }
 
 interface BudgetCategory {
-  userId: string
-  id: string
-  name: string
-  limit: number
-  color: string
-  current: number
-  _id: string
-  __v: number
-  createdAt: Date
-  updatedAt: Date
+  userId: string;
+  id: string;
+  name: string;
+  limit: number;
+  color: string;
+  current: number;
+  _id: string;
+  __v: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const AccueilDesktop: React.FC = () => {
-  const history = useHistory()
-  const { profile, authLoading } = useAuth()
+  const history = useHistory();
+  const { profile, authLoading } = useAuth();
 
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true)
-  const [errorTransactions, setErrorTransactions] = useState<string | null>(null)
-  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState<boolean>(false)
-  const [budgetCategories, setBudgetCategories] = useState<BudgetCategory[]>([])
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
+  const [errorTransactions, setErrorTransactions] = useState<string | null>(null);
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState<boolean>(false);
+  const [budgetCategories, setBudgetCategories] = useState<BudgetCategory[]>([]);
 
-  const [prenom, setPrenom] = useState<string>("Utilisateur")
-  const [nom, setNom] = useState<string>("Foulen")
-  const [email, setEmail] = useState<string>("foulen@gmail.com")
-  const [tel, setTel] = useState<string>("06 12 34 56 78")
-  const [accounts, setAccounts] = useState<Account[]>([])
-  const [cards, setCards] = useState<Card[]>([])
+  const [prenom, setPrenom] = useState<string>("Utilisateur");
+  const [nom, setNom] = useState<string>("Foulen");
+  const [email, setEmail] = useState<string>("foulen@gmail.com");
+  const [tel, setTel] = useState<string>("06 12 34 56 78");
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
 
   // When profile is available, derive user details and set accounts/cards.
   useEffect(() => {
     if (profile) {
-      setPrenom(profile.user?.prenom || "Utilisateur")
-      setNom(profile.user?.nom || "Foulen")
-      setEmail(profile.user?.email || "foulen@gmail.com")
-      setTel(profile.user?.telephone || "06 12 34 56 78")
+      setPrenom(profile.user?.prenom || "Utilisateur");
+      setNom(profile.user?.nom || "Foulen");
+      setEmail(profile.user?.email || "foulen@gmail.com");
+      setTel(profile.user?.telephone || "06 12 34 56 78");
 
       setAccounts(
         (profile.comptes || []).map((compte: any) => ({
@@ -91,10 +128,17 @@ const AccueilDesktop: React.FC = () => {
           numéroCompte: compte.numéroCompte,
           solde: compte.solde,
           type: compte.type,
-          // Map lastMonthExpenses from compte data, defaulting to 0 if missing.
           lastMonthExpenses: compte.lastMonthExpenses || 0,
+          IBAN: compte.IBAN,
+          RIB: compte.RIB,
+          domiciliation: compte.domiciliation,
+          avecChéquier: compte.avecChéquier,
+          avecCarteBancaire: compte.avecCarteBancaire,
+          modalitésRetrait: compte.modalitésRetrait,
+          conditionsGel: compte.conditionsGel,
+          monthlyExpenses: compte.monthlyExpenses,
         }))
-      )
+      );
 
       setCards(
         (profile.cartes || []).map((card: any) => ({
@@ -102,13 +146,18 @@ const AccueilDesktop: React.FC = () => {
           CardNumber: card.CardNumber,
           ExpiryDate: card.ExpiryDate,
           CardHolder: card.CardHolder,
+          TypeCarte: card.TypeCarte,
+          monthlyExpenses: card.monthlyExpenses,
+          atmWithdrawal: card.atmWithdrawal,
+          pendingTransactions: card.pendingTransactions,
+          cardStatus: card.cardStatus,
         }))
-      )
+      );
     }
-  }, [profile])
+  }, [profile]);
 
   if (authLoading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   // Fetch transactions from the API.
@@ -118,61 +167,58 @@ const AccueilDesktop: React.FC = () => {
         const response = await fetch("/api/historique", {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-        })
+        });
         if (!response.ok) {
-          throw new Error("Failed to fetch transactions")
+          throw new Error("Failed to fetch transactions");
         }
-        // Updated to extract transactions from the API response object.
-        const data = await response.json()
-        setTransactions(data.transactions || [])
+        const data = await response.json();
+        setTransactions(data.transactions || []);
       } catch (error) {
-        console.error("Erreur lors de la récupération des transactions:", error)
-        setErrorTransactions("Erreur lors de la récupération des transactions.")
+        console.error("Erreur lors de la récupération des transactions:", error);
+        setErrorTransactions("Erreur lors de la récupération des transactions.");
       } finally {
-        setLoadingTransactions(false)
+        setLoadingTransactions(false);
       }
-    }
-    fetchTransactions()
-  }, [])
+    };
+    fetchTransactions();
+  }, []);
 
   // Fetch budget categories from the API once the user profile is available.
   useEffect(() => {
     const fetchBudgetCategories = async () => {
       try {
-        const response = await fetch(`/api/categories?userId=${profile?.user._id}`)
+        const response = await fetch(`/api/categories?userId=${profile?.user._id}`);
         if (!response.ok) {
-          throw new Error("Error fetching budget categories")
+          throw new Error("Error fetching budget categories");
         }
-        const data = await response.json()
-        // Map _id to id for client-side usage.
+        const data = await response.json();
         const mappedCategories: BudgetCategory[] = data.map((cat: any) => ({
           ...cat,
           id: cat._id,
-        }))
-        setBudgetCategories(mappedCategories)
+        }));
+        setBudgetCategories(mappedCategories);
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    }
+    };
     if (profile?.user._id) {
-      fetchBudgetCategories()
+      fetchBudgetCategories();
     }
-  }, [profile])
+  }, [profile]);
 
   // Calculate total balance across all accounts.
   const totalBalance = useMemo(
     () => accounts.reduce((sum, account) => sum + account.solde, 0),
     [accounts]
-  )
+  );
 
   // Calculate total expenses of the last month from accounts.
   const totalLastMonthExpenses = useMemo(() => {
-    return accounts.reduce((sum, account) => sum + account.lastMonthExpenses, 0)
-  }, [accounts])
+    return accounts.reduce((sum, account) => sum + account.lastMonthExpenses, 0);
+  }, [accounts]);
 
   // Group transactions by month for the chart.
   const chartData = useMemo(() => {
-    // Group transactions only for Feb (1), Mar (2), and Apr (3)
     const groupedData = transactions.reduce((acc, transaction) => {
       const date = new Date(transaction.date);
       if (isNaN(date.getTime())) {
@@ -180,11 +226,9 @@ const AccueilDesktop: React.FC = () => {
         return acc;
       }
       const monthNumber = date.getMonth(); // January is 0, February is 1, etc.
-      // Only process transactions from February (1) to April (3)
       if (monthNumber < 1 || monthNumber > 3) {
         return acc;
       }
-      // Use toLocaleString to get short month name, e.g. "Fév", "Mar", "Avr"
       const month = date.toLocaleString("default", { month: "short" });
       if (!acc[month]) {
         acc[month] = { name: month, income: 0, expenses: 0, monthNumber };
@@ -196,51 +240,47 @@ const AccueilDesktop: React.FC = () => {
       }
       return acc;
     }, {} as { [month: string]: { name: string; income: number; expenses: number; monthNumber: number } });
-  
-    // Convert object to array and sort by the month number (Feb to Apr).
-    // Then compute "savings" = "income" - "expenses".
+
     const sortedData = Object.values(groupedData)
       .sort((a, b) => a.monthNumber - b.monthNumber)
       .map((data) => ({
         ...data,
         savings: data.income - data.expenses,
       }));
-  
     return sortedData;
   }, [transactions]);
-  
-  
 
   // Calculate last month's income, expenses, and savings from transactions.
   const lastMonthStats = useMemo(() => {
-    const now = new Date()
-    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
-    let income = 0
-    let expense = 0
+    const now = new Date();
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    let income = 0;
+    let expense = 0;
     transactions.forEach((tx) => {
-      const txDate = new Date(tx.date)
+      const txDate = new Date(tx.date);
       if (
         txDate.getMonth() === lastMonth.getMonth() &&
         txDate.getFullYear() === lastMonth.getFullYear()
       ) {
         if (tx.type === "credit") {
-          income += tx.amount
+          income += tx.amount;
         } else if (tx.type === "debit") {
-          expense += tx.amount
+          expense += tx.amount;
         }
       }
-    })
-    return { income, expense, savings: income - expense }
-  }, [transactions])
+    });
+    return { income, expense, savings: income - expense };
+  }, [transactions]);
 
-  // Calculate savings percentage relative to last month's expense.
   const savingsPercentage =
-    lastMonthStats.expense > 0 ? (lastMonthStats.savings / lastMonthStats.expense) * 100 : 0
+    lastMonthStats.expense > 0
+      ? (lastMonthStats.savings / lastMonthStats.expense) * 100
+      : 0;
 
   const handleAccountClick = (accountId: string) => {
-    console.log(`Viewing account ${accountId}...`)
-    history.push(`/Compte/${accountId}`)
-  }
+    console.log(`Viewing account ${accountId}...`);
+    history.push(`/Compte/${accountId}`);
+  };
 
   const renderStatCard = (
     label: string,
@@ -262,13 +302,12 @@ const AccueilDesktop: React.FC = () => {
         </div>
       </div>
     </div>
-  )
+  );
 
   const handleSaveBudgetCategories = (updatedCategories: BudgetCategory[]) => {
-    setBudgetCategories(updatedCategories)
-    // Here you would typically save to your backend.
-    console.log("Saving updated budget categories:", updatedCategories)
-  }
+    setBudgetCategories(updatedCategories);
+    console.log("Saving updated budget categories:", updatedCategories);
+  };
 
   return (
     <IonPage>
@@ -283,6 +322,16 @@ const AccueilDesktop: React.FC = () => {
                 Bienvenu, {nom} {prenom}
               </h1>
               <p className="welcome-subtitle">Voici un aperçu de vos finances</p>
+              <div className="user-details">
+                <p>Email: {email}</p>
+                <p>Téléphone: {tel}</p>
+                {profile && (
+                  <>
+                    <p>Employeur: {profile.user.employeur}</p>
+                    <p>Adresse Employeur: {profile.user.adresseEmployeur}</p>
+                  </>
+                )}
+              </div>
             </div>
             <div className="welcome-actions">
               <NotificationDesktop />
@@ -315,7 +364,10 @@ const AccueilDesktop: React.FC = () => {
           </div>
 
           <div className="main-grid">
-            <div className="section-card accounts-section" onClick={() => history.push("/Compte")}>
+            <div
+              className="section-card accounts-section"
+              onClick={() => history.push("/Compte")}
+            >
               <div className="section-header">
                 <h2 className="section-title">
                   <IonIcon icon={walletOutline} />
@@ -328,15 +380,36 @@ const AccueilDesktop: React.FC = () => {
               </div>
               <div className="accounts-list">
                 {accounts.map((account) => (
-                  <div key={account._id} className="account-item" onClick={() => handleAccountClick(account._id)}>
+                  <div
+                    key={account._id}
+                    className="account-item"
+                    onClick={() => handleAccountClick(account._id)}
+                  >
                     <IonRippleEffect />
                     <div className="account-icon">
-                      <IonIcon icon={account.type === "Compte courant" ? walletOutline : trendingUpOutline} />
+                      <IonIcon
+                        icon={
+                          account.type === "Compte courant"
+                            ? walletOutline
+                            : trendingUpOutline
+                        }
+                      />
                     </div>
                     <div className="account-details">
                       <div className="account-name">{account.type}</div>
+                      <div className="account-number">
+                        N° {account.numéroCompte}
+                      </div>
+                      {account.IBAN && (
+                        <div className="account-iban">IBAN: {account.IBAN}</div>
+                      )}
+                      {account.RIB && (
+                        <div className="account-rib">RIB: {account.RIB}</div>
+                      )}
                     </div>
-                    <div className="account-balance">{account.solde.toFixed(2)} TND</div>
+                    <div className="account-balance">
+                      {account.solde.toFixed(2)} TND
+                    </div>
                   </div>
                 ))}
               </div>
@@ -355,13 +428,28 @@ const AccueilDesktop: React.FC = () => {
               </div>
               <div className="chart-container">
                 <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <AreaChart
+                    data={chartData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  >
                     <defs>
-                      <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient
+                        id="colorIncome"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
                         <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
                         <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
                       </linearGradient>
-                      <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient
+                        id="colorExpenses"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
                         <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
                         <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
                       </linearGradient>
@@ -369,9 +457,21 @@ const AccueilDesktop: React.FC = () => {
                     <XAxis dataKey="name" stroke="#888" />
                     <YAxis stroke="#888" />
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="income" stroke="#82ca9d" fillOpacity={1} fill="url(#colorIncome)" />
-                    <Area type="monotone" dataKey="expenses" stroke="#8884d8" fillOpacity={1} fill="url(#colorExpenses)" />
+                    <Tooltip contentStyle={{ backgroundColor: "#333", color: "#fff" }} />
+                    <Area
+                      type="monotone"
+                      dataKey="income"
+                      stroke="#82ca9d"
+                      fillOpacity={1}
+                      fill="url(#colorIncome)"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="expenses"
+                      stroke="#8884d8"
+                      fillOpacity={1}
+                      fill="url(#colorExpenses)"
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -383,12 +483,19 @@ const AccueilDesktop: React.FC = () => {
                   <IonIcon icon={cardOutline} />
                   Cartes
                 </h2>
-                <a href="#" className="section-link" onClick={() => history.push("/carte")}>
+                <a
+                  href="#"
+                  className="section-link"
+                  onClick={() => history.push("/carte")}
+                >
                   <IonIcon icon={settingsOutline} />
                   Gérer les cartes
                 </a>
               </div>
-              <div className="cards-list" onClick={() => history.push("/carte")}>
+              <div
+                className="cards-list"
+                onClick={() => history.push("/carte")}
+              >
                 {cards.map((card) => (
                   <div key={card._id} className="card-item">
                     <IonRippleEffect />
@@ -396,8 +503,21 @@ const AccueilDesktop: React.FC = () => {
                       <IonIcon icon={cardOutline} />
                     </div>
                     <div className="card-details">
-                      <div className="card-type">{card.CardNumber}</div>
+                      <div className="card-number">
+                        •••• {card.CardNumber.slice(-4)}
+                      </div>
+                      <div className="card-holder">{card.CardHolder}</div>
                       <div className="card-expiry">Expire: {card.ExpiryDate}</div>
+                      {card.TypeCarte && (
+                        <div className="card-type">
+                          Type: {card.TypeCarte}
+                        </div>
+                      )}
+                      {card.cardStatus && (
+                        <div className="card-status">
+                          Status: {card.cardStatus}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -414,8 +534,8 @@ const AccueilDesktop: React.FC = () => {
                   href="#"
                   className="section-link"
                   onClick={(e) => {
-                    e.preventDefault()
-                    setIsBudgetModalOpen(true)
+                    e.preventDefault();
+                    setIsBudgetModalOpen(true);
                   }}
                 >
                   <IonIcon icon={eyeOutline} />
@@ -424,14 +544,14 @@ const AccueilDesktop: React.FC = () => {
               </div>
               {budgetCategories.length > 0 ? (
                 budgetCategories.map((category) => {
-                  const percentage = (category.current / category.limit) * 100
+                  const percentage = (category.current / category.limit) * 100;
                   return (
                     <div
                       key={category.id}
                       className="budget-item"
                       onClick={(e) => {
-                        e.preventDefault()
-                        setIsBudgetModalOpen(true)
+                        e.preventDefault();
+                        setIsBudgetModalOpen(true);
                       }}
                     >
                       <IonRippleEffect />
@@ -457,7 +577,7 @@ const AccueilDesktop: React.FC = () => {
                         ></div>
                       </div>
                     </div>
-                  )
+                  );
                 })
               ) : (
                 <div>Aucune donnée de budget disponible</div>
@@ -481,21 +601,29 @@ const AccueilDesktop: React.FC = () => {
                 ) : errorTransactions ? (
                   <div className="error-message">{errorTransactions}</div>
                 ) : transactions.length > 0 ? (
-                  // Only display the first 3 transactions
                   transactions.slice(0, 3).map((transaction, index) => (
                     <div key={index} className="transaction-item">
                       <IonRippleEffect />
                       <div className="transaction-icon">
-                        <IonIcon icon={transaction.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+                        <IonIcon
+                          icon={
+                            transaction.type === "credit"
+                              ? trendingUpOutline
+                              : trendingDownOutline
+                          }
+                        />
                       </div>
                       <div className="transaction-details">
-                        <div className="transaction-description">{transaction.description}</div>
+                        <div className="transaction-description">
+                          {transaction.description}
+                        </div>
                         <div className="transaction-date">
                           {new Date(transaction.date).toLocaleString()}
                         </div>
                       </div>
                       <div className={`transaction-amount ${transaction.type}`}>
-                        {transaction.type === "credit" ? "+" : "-"} {transaction.amount.toFixed(2)} TND
+                        {transaction.type === "credit" ? "+" : "-"}{" "}
+                        {transaction.amount.toFixed(2)} TND
                       </div>
                     </div>
                   ))
@@ -509,15 +637,27 @@ const AccueilDesktop: React.FC = () => {
           <div className="quick-actions-section">
             <h2 className="section-title">Actions Rapides</h2>
             <div className="quick-actions-grid">
-              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/virement")}>
+              <IonButton
+                expand="block"
+                className="quick-action-button"
+                onClick={() => history.push("/virement")}
+              >
                 <IonIcon slot="start" icon={peopleOutline} />
                 Virement
               </IonButton>
-              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/virement")}>
+              <IonButton
+                expand="block"
+                className="quick-action-button"
+                onClick={() => history.push("/virement")}
+              >
                 <IonIcon slot="start" icon={cardOutline} />
                 Payer une Facture
               </IonButton>
-              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/virement")}>
+              <IonButton
+                expand="block"
+                className="quick-action-button"
+                onClick={() => history.push("/virement")}
+              >
                 <IonIcon slot="start" icon={globeOutline} />
                 Transfert International
               </IonButton>
@@ -525,8 +665,8 @@ const AccueilDesktop: React.FC = () => {
                 expand="block"
                 className="quick-action-button"
                 onClick={(e) => {
-                  e.preventDefault()
-                  setIsBudgetModalOpen(true)
+                  e.preventDefault();
+                  setIsBudgetModalOpen(true);
                 }}
               >
                 <IonIcon slot="start" icon={pieChartOutline} />
@@ -544,7 +684,7 @@ const AccueilDesktop: React.FC = () => {
         />
       </IonContent>
     </IonPage>
-  )
-}
+  );
+};
 
-export default AccueilDesktop
+export default AccueilDesktop;

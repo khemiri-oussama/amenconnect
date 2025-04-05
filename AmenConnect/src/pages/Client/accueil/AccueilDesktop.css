@@ -479,3 +479,42 @@ ion-ripple-effect {
   color: rgba(255, 255, 255, 0.1);
 }
 
+/* New styles for additional user and card/account details */
+
+/* Styling for additional user details in the welcome section */
+.user-details {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* Styling for account details */
+.account-number,
+.account-iban,
+.account-rib {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+/* Styling for card details */
+.card-number {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.card-holder {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.card-type,
+.card-status {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
