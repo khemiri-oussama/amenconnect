@@ -42,7 +42,6 @@ interface Account {
   numéroCompte: string;
   solde: number;
   type: string;
-  lastMonthExpenses: number;
   IBAN?: string;
   RIB?: string;
   domiciliation?: string;
@@ -50,7 +49,6 @@ interface Account {
   avecCarteBancaire?: boolean;
   modalitésRetrait?: string;
   conditionsGel?: string;
-  monthlyExpenses?: number;
 }
 
 interface Card {
@@ -74,7 +72,6 @@ interface Card {
   cardStatus?: string;
 }
 
-// Updated Transaction interface using historique data from profile.
 interface Transaction {
   _id: string;
   date: string;
@@ -101,21 +98,18 @@ interface BudgetCategory {
 const AccueilDesktop: React.FC = () => {
   const history = useHistory();
   const { profile, authLoading } = useAuth();
-
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
+  const [loadingTransactions, setLoadingTransactions] = useState(true);
   const [errorTransactions, setErrorTransactions] = useState<string | null>(null);
-  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState<boolean>(false);
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [budgetCategories, setBudgetCategories] = useState<BudgetCategory[]>([]);
-
-  const [prenom, setPrenom] = useState<string>("Utilisateur");
-  const [nom, setNom] = useState<string>("Foulen");
-  const [email, setEmail] = useState<string>("foulen@gmail.com");
-  const [tel, setTel] = useState<string>("06 12 34 56 78");
+  const [prenom, setPrenom] = useState("Utilisateur");
+  const [nom, setNom] = useState("Foulen");
+  const [email, setEmail] = useState("foulen@gmail.com");
+  const [tel, setTel] = useState("06 12 34 56 78");
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
 
-  // When profile is available, derive user details and set accounts/cards.
   useEffect(() => {
     if (profile) {
       setPrenom(profile.user?.prenom || "Utilisateur");
@@ -129,7 +123,6 @@ const AccueilDesktop: React.FC = () => {
           numéroCompte: compte.numéroCompte,
           solde: compte.solde,
           type: compte.type,
-          lastMonthExpenses: compte.lastMonthExpenses || 0,
           IBAN: compte.IBAN,
           RIB: compte.RIB,
           domiciliation: compte.domiciliation,
@@ -137,7 +130,6 @@ const AccueilDesktop: React.FC = () => {
           avecCarteBancaire: compte.avecCarteBancaire,
           modalitésRetrait: compte.modalitésRetrait,
           conditionsGel: compte.conditionsGel,
-          monthlyExpenses: compte.monthlyExpenses,
         }))
       );
 
@@ -157,7 +149,6 @@ const AccueilDesktop: React.FC = () => {
     }
   }, [profile]);
 
-  // Instead of fetching transactions from an API, aggregate historique data from each account.
   useEffect(() => {
     if (profile) {
       let allTransactions: Transaction[] = [];
@@ -171,113 +162,117 @@ const AccueilDesktop: React.FC = () => {
     }
   }, [profile]);
 
-  // Fetch budget categories from the API once the user profile is available.
   useEffect(() => {
     const fetchBudgetCategories = async () => {
       try {
         const response = await fetch(`/api/categories?userId=${profile?.user._id}`);
-        if (!response.ok) {
-          throw new Error("Error fetching budget categories");
-        }
+        if (!response.ok) throw new Error("Error fetching budget categories");
         const data = await response.json();
-        const mappedCategories: BudgetCategory[] = data.map((cat: any) => ({
-          ...cat,
-          id: cat._id,
-        }));
-        setBudgetCategories(mappedCategories);
+        setBudgetCategories(data.map((cat: any) => ({ ...cat, id: cat._id })));
       } catch (error) {
         console.error(error);
       }
     };
-    if (profile?.user._id) {
-      fetchBudgetCategories();
-    }
+    if (profile?.user._id) fetchBudgetCategories();
   }, [profile]);
 
-  // Calculate total balance across all accounts.
   const totalBalance = useMemo(
     () => accounts.reduce((sum, account) => sum + account.solde, 0),
     [accounts]
   );
 
-  // Calculate total expenses of the last month from transactions (aggregated historique).
-  const totalLastMonthExpenses = useMemo(() => {
+  const { currentMonthExpense, previousMonthExpense } = useMemo(() => {
+    const now = new Date();
+    const currentMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const previousMonth = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+    let current = 0;
+    let previous = 0;
+
+    transactions.forEach((tx) => {
+      const txDate = new Date(tx.rawDate || tx.date);
+      const txMonth = txDate.getMonth();
+      const txYear = txDate.getFullYear();
+
+      if (tx.type === "debit") {
+        if (txMonth === currentMonth.getMonth() && txYear === currentMonth.getFullYear()) {
+          current += tx.amount;
+        } else if (txMonth === previousMonth.getMonth() && txYear === previousMonth.getFullYear()) {
+          previous += tx.amount;
+        }
+      }
+    });
+
+    return { currentMonthExpense: current, previousMonthExpense: previous };
+  }, [transactions]);
+
+  const expensePercentageChange = useMemo(() => {
+    if (previousMonthExpense === 0) {
+      return currentMonthExpense !== 0 ? 100 : 0;
+    }
+    return ((currentMonthExpense - previousMonthExpense) / previousMonthExpense) * 100;
+  }, [currentMonthExpense, previousMonthExpense]);
+
+  const lastMonthStats = useMemo(() => {
     const now = new Date();
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    let expense = 0;
+    let income = 0;
+
     transactions.forEach((tx) => {
-      const txDate = new Date(tx.date);
+      const txDate = new Date(tx.rawDate || tx.date);
       if (
         txDate.getMonth() === lastMonth.getMonth() &&
         txDate.getFullYear() === lastMonth.getFullYear() &&
-        tx.type === "debit"
+        tx.type === "credit"
       ) {
-        expense += tx.amount;
+        income += tx.amount;
       }
     });
-    return expense;
-  }, [transactions]);
 
-  // Group transactions by month for the chart.
+    return {
+      income,
+      expense: currentMonthExpense,
+      savings: income - currentMonthExpense,
+    };
+  }, [transactions, currentMonthExpense]);
+
+  const savingsPercentage = useMemo(() => {
+    if (currentMonthExpense > 0) {
+      return (lastMonthStats.savings / currentMonthExpense) * 100;
+    }
+    return 0;
+  }, [lastMonthStats.savings, currentMonthExpense]);
+
   const chartData = useMemo(() => {
     const now = new Date();
     const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1);
     const groupedData = transactions.reduce((acc, transaction) => {
       const date = new Date(transaction.rawDate || transaction.date);
-      if (date < threeMonthsAgo) {
-        return acc;
-      }
+      if (date < threeMonthsAgo) return acc;
       const monthNumber = date.getMonth();
       const month = date.toLocaleString("default", { month: "short" });
+
       if (!acc[month]) {
         acc[month] = { name: month, income: 0, expenses: 0, monthNumber };
       }
+
       if (transaction.type === "credit") {
         acc[month].income += transaction.amount;
       } else if (transaction.type === "debit") {
         acc[month].expenses += transaction.amount;
       }
-      return acc;
-    }, {} as { [month: string]: { name: string; income: number; expenses: number; monthNumber: number } });
 
-    const sortedData = Object.values(groupedData)
+      return acc;
+    }, {} as Record<string, { name: string; income: number; expenses: number; monthNumber: number }>);
+
+    return Object.values(groupedData)
       .sort((a, b) => a.monthNumber - b.monthNumber)
       .map((data) => ({
         ...data,
         savings: data.income - data.expenses,
       }));
-    return sortedData;
   }, [transactions]);
-
-  // Calculate last month's income, expenses, and savings from transactions.
-  const lastMonthStats = useMemo(() => {
-    const now = new Date();
-    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    let income = 0;
-    let expense = 0;
-    transactions.forEach((tx) => {
-      const txDate = new Date(tx.date);
-      if (
-        txDate.getMonth() === lastMonth.getMonth() &&
-        txDate.getFullYear() === lastMonth.getFullYear()
-      ) {
-        if (tx.type === "credit") {
-          income += tx.amount;
-        } else if (tx.type === "debit") {
-          expense += tx.amount;
-        }
-      }
-    });
-    return { income, expense, savings: income - expense };
-  }, [transactions]);
-
-  const savingsPercentage =
-    lastMonthStats.expense > 0
-      ? (lastMonthStats.savings / lastMonthStats.expense) * 100
-      : 0;
 
   const handleAccountClick = (accountId: string) => {
-    console.log(`Viewing account ${accountId}...`);
     history.push(`/Compte/${accountId}`);
   };
 
@@ -305,12 +300,9 @@ const AccueilDesktop: React.FC = () => {
 
   const handleSaveBudgetCategories = (updatedCategories: BudgetCategory[]) => {
     setBudgetCategories(updatedCategories);
-    console.log("Saving updated budget categories:", updatedCategories);
   };
 
-  if (authLoading) {
-    return <div>Loading...</div>;
-  }
+  if (authLoading) return <div>Loading...</div>;
 
   return (
     <IonPage>
@@ -321,9 +313,7 @@ const AccueilDesktop: React.FC = () => {
         <div className="dashboard-container">
           <div className="welcome-section">
             <div className="welcome-text">
-              <h1 className="welcome-title">
-                Bienvenu, {nom} {prenom}
-              </h1>
+              <h1 className="welcome-title">Bienvenue, {nom} {prenom}</h1>
               <p className="welcome-subtitle">Voici un aperçu de vos finances</p>
               <div className="user-details">
                 <p>Email: {email}</p>
@@ -352,25 +342,22 @@ const AccueilDesktop: React.FC = () => {
             )}
             {renderStatCard(
               "Dépenses du mois",
-              `${totalLastMonthExpenses.toFixed(2)} TND`,
-              "-1.8% depuis le mois dernier",
+              `${currentMonthExpense.toFixed(2)} TND`,
+              `${expensePercentageChange >= 0 ? '+' : ''}${expensePercentageChange.toFixed(2)}% depuis le mois dernier`,
               pieChartOutline,
-              "negative"
+              expensePercentageChange > 0 ? "negative" : "positive"
             )}
             {renderStatCard(
               "Économies",
               `${lastMonthStats.savings.toFixed(2)} TND`,
               `${savingsPercentage >= 0 ? '+' : ''}${savingsPercentage.toFixed(2)}% depuis le mois dernier`,
               trendingUpOutline,
-              "positive"
+              savingsPercentage >= 0 ? "positive" : "negative"
             )}
           </div>
 
           <div className="main-grid">
-            <div
-              className="section-card accounts-section"
-              onClick={() => history.push("/Compte")}
-            >
+            <div className="section-card accounts-section" onClick={() => history.push("/Compte")}>
               <div className="section-header">
                 <h2 className="section-title">
                   <IonIcon icon={walletOutline} />
@@ -383,36 +370,18 @@ const AccueilDesktop: React.FC = () => {
               </div>
               <div className="accounts-list">
                 {accounts.map((account) => (
-                  <div
-                    key={account._id}
-                    className="account-item"
-                    onClick={() => handleAccountClick(account._id)}
-                  >
+                  <div key={account._id} className="account-item" onClick={() => handleAccountClick(account._id)}>
                     <IonRippleEffect />
                     <div className="account-icon">
-                      <IonIcon
-                        icon={
-                          account.type === "Compte courant"
-                            ? walletOutline
-                            : trendingUpOutline
-                        }
-                      />
+                      <IonIcon icon={account.type === "Compte courant" ? walletOutline : trendingUpOutline} />
                     </div>
                     <div className="account-details">
                       <div className="account-name">{account.type}</div>
-                      <div className="account-number">
-                        N° {account.numéroCompte}
-                      </div>
-                      {account.IBAN && (
-                        <div className="account-iban">IBAN: {account.IBAN}</div>
-                      )}
-                      {account.RIB && (
-                        <div className="account-rib">RIB: {account.RIB}</div>
-                      )}
+                      <div className="account-number">N° {account.numéroCompte}</div>
+                      {account.IBAN && <div className="account-iban">IBAN: {account.IBAN}</div>}
+                      {account.RIB && <div className="account-rib">RIB: {account.RIB}</div>}
                     </div>
-                    <div className="account-balance">
-                      {account.solde.toFixed(2)} TND
-                    </div>
+                    <div className="account-balance">{account.solde.toFixed(2)} TND</div>
                   </div>
                 ))}
               </div>
@@ -431,10 +400,7 @@ const AccueilDesktop: React.FC = () => {
               </div>
               <div className="chart-container">
                 <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart
-                    data={chartData}
-                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                  >
+                  <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
@@ -468,25 +434,18 @@ const AccueilDesktop: React.FC = () => {
               </div>
             </div>
 
-            <div className="section-card cards-section">
+            <div className="section-card cards-section" onClick={() => history.push("/carte")}>
               <div className="section-header">
                 <h2 className="section-title">
                   <IonIcon icon={cardOutline} />
                   Cartes
                 </h2>
-                <a
-                  href="#"
-                  className="section-link"
-                  onClick={() => history.push("/carte")}
-                >
+                <a href="#" className="section-link">
                   <IonIcon icon={settingsOutline} />
                   Gérer les cartes
                 </a>
               </div>
-              <div
-                className="cards-list"
-                onClick={() => history.push("/carte")}
-              >
+              <div className="cards-list">
                 {cards.map((card) => (
                   <div key={card._id} className="card-item">
                     <IonRippleEffect />
@@ -494,21 +453,11 @@ const AccueilDesktop: React.FC = () => {
                       <IonIcon icon={cardOutline} />
                     </div>
                     <div className="card-details">
-                      <div className="card-number">
-                        •••• {card.CardNumber.slice(-4)}
-                      </div>
+                      <div className="card-number">•••• {card.CardNumber.slice(-4)}</div>
                       <div className="card-holder">{card.CardHolder}</div>
                       <div className="card-expiry">Expire: {card.ExpiryDate}</div>
-                      {card.TypeCarte && (
-                        <div className="card-type">
-                          Type: {card.TypeCarte}
-                        </div>
-                      )}
-                      {card.cardStatus && (
-                        <div className="card-status">
-                          Status: {card.cardStatus}
-                        </div>
-                      )}
+                      {card.TypeCarte && <div className="card-type">Type: {card.TypeCarte}</div>}
+                      {card.cardStatus && <div className="card-status">Status: {card.cardStatus}</div>}
                     </div>
                   </div>
                 ))}
@@ -521,14 +470,7 @@ const AccueilDesktop: React.FC = () => {
                   <IonIcon icon={pieChartOutline} />
                   Budget
                 </h2>
-                <a
-                  href="#"
-                  className="section-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsBudgetModalOpen(true);
-                  }}
-                >
+                <a href="#" className="section-link" onClick={() => setIsBudgetModalOpen(true)}>
                   <IonIcon icon={eyeOutline} />
                   Voir les détails
                 </a>
@@ -537,21 +479,11 @@ const AccueilDesktop: React.FC = () => {
                 budgetCategories.map((category) => {
                   const percentage = (category.current / category.limit) * 100;
                   return (
-                    <div
-                      key={category.id}
-                      className="budget-item"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsBudgetModalOpen(true);
-                      }}
-                    >
+                    <div key={category.id} className="budget-item" onClick={() => setIsBudgetModalOpen(true)}>
                       <IonRippleEffect />
                       <div className="budget-item-header">
                         <div className="budget-item-label">
-                          <span
-                            className="budget-item-color"
-                            style={{ backgroundColor: category.color }}
-                          ></span>
+                          <span className="budget-item-color" style={{ backgroundColor: category.color }} />
                           <span>{category.name}</span>
                         </div>
                         <span className="budget-item-amount">
@@ -561,11 +493,8 @@ const AccueilDesktop: React.FC = () => {
                       <div className="budget-progress">
                         <div
                           className="budget-progress-bar"
-                          style={{
-                            width: `${percentage}%`,
-                            backgroundColor: category.color,
-                          }}
-                        ></div>
+                          style={{ width: `${percentage}%`, backgroundColor: category.color }}
+                        />
                       </div>
                     </div>
                   );
@@ -587,40 +516,23 @@ const AccueilDesktop: React.FC = () => {
                 </a>
               </div>
               <div className="transactions-list">
-                {loadingTransactions ? (
-                  <div>Loading transactions...</div>
-                ) : errorTransactions ? (
-                  <div className="error-message">{errorTransactions}</div>
-                ) : transactions.length > 0 ? (
-                  transactions.slice(0, 3).map((transaction) => (
-                    <div key={transaction._id} className="transaction-item">
-                      <IonRippleEffect />
-                      <div className="transaction-icon">
-                        <IonIcon
-                          icon={
-                            transaction.type === "credit"
-                              ? trendingUpOutline
-                              : trendingDownOutline
-                          }
-                        />
-                      </div>
-                      <div className="transaction-details">
-                        <div className="transaction-description">
-                          {transaction.description}
-                        </div>
-                        <div className="transaction-date">
-                          {new Date(transaction.date).toLocaleString()}
-                        </div>
-                      </div>
-                      <div className={`transaction-amount ${transaction.type}`}>
-                        {transaction.type === "credit" ? "+" : "-"}{" "}
-                        {transaction.amount.toFixed(2)} TND
+                {transactions.slice(0, 3).map((transaction) => (
+                  <div key={transaction._id} className="transaction-item">
+                    <IonRippleEffect />
+                    <div className="transaction-icon">
+                      <IonIcon icon={transaction.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+                    </div>
+                    <div className="transaction-details">
+                      <div className="transaction-description">{transaction.description}</div>
+                      <div className="transaction-date">
+                        {new Date(transaction.rawDate || transaction.date).toLocaleString()}
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div>Aucune transaction disponible</div>
-                )}
+                    <div className={`transaction-amount ${transaction.type}`}>
+                      {transaction.type === "credit" ? "+" : "-"} {transaction.amount.toFixed(2)} TND
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -628,44 +540,26 @@ const AccueilDesktop: React.FC = () => {
           <div className="quick-actions-section">
             <h2 className="section-title">Actions Rapides</h2>
             <div className="quick-actions-grid">
-              <IonButton
-                expand="block"
-                className="quick-action-button"
-                onClick={() => history.push("/virement")}
-              >
+              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/virement")}>
                 <IonIcon slot="start" icon={peopleOutline} />
                 Virement
               </IonButton>
-              <IonButton
-                expand="block"
-                className="quick-action-button"
-                onClick={() => history.push("/virement")}
-              >
+              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/facture")}>
                 <IonIcon slot="start" icon={cardOutline} />
                 Payer une Facture
               </IonButton>
-              <IonButton
-                expand="block"
-                className="quick-action-button"
-                onClick={() => history.push("/virement")}
-              >
+              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/transfert")}>
                 <IonIcon slot="start" icon={globeOutline} />
                 Transfert International
               </IonButton>
-              <IonButton
-                expand="block"
-                className="quick-action-button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsBudgetModalOpen(true);
-                }}
-              >
+              <IonButton expand="block" className="quick-action-button" onClick={() => setIsBudgetModalOpen(true)}>
                 <IonIcon slot="start" icon={pieChartOutline} />
                 Gérer le Budget
               </IonButton>
             </div>
           </div>
         </div>
+
         <BudgetCategoryManager
           isOpen={isBudgetModalOpen}
           onClose={() => setIsBudgetModalOpen(false)}
