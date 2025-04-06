@@ -1,4 +1,4 @@
-//models/virement.js
+// models/virement.js
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -11,4 +11,5 @@ const virementSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.models.Virement || mongoose.model("Virement", virementSchema);
+module.exports =
+  mongoose.models.Virement || mongoose.model("Virement", virementSchema);

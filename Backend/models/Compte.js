@@ -7,57 +7,57 @@ const CompteSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
     numéroCompte: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     solde: {
       type: Number,
-      default: 0
+      default: 0,
     },
     type: {
       type: String,
-      required: true
+      required: true,
     },
     avecChéquier: {
       type: Boolean,
-      default: false
+      default: false,
     },
     avecCarteBancaire: {
       type: Boolean,
-      default: false
+      default: false,
     },
     modalitésRetrait: {
-      type: String
+      type: String,
     },
     conditionsGel: {
-      type: String
+      type: String,
     },
     historique: {
       type: Array,
-      default: []
+      default: [],
     },
     RIB: {
-      type: String
+      type: String,
     },
     IBAN: {
-      type: String
+      type: String,
     },
     domiciliation: {
-      type: String
+      type: String,
     },
     // New fields for expenses tracking
     monthlyExpenses: {
       type: Number,
-      default: 0
+      default: 0,
     },
     lastMonthExpenses: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   { timestamps: true }
 );

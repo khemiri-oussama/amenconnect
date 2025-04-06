@@ -11,6 +11,8 @@ exports.createVirement = async (req, res) => {
 
     // Validate input
     if (!fromAccount || !toAccount || !amount) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(400).json({ message: "Les informations requises sont manquantes" });
     }
 
@@ -18,12 +20,14 @@ exports.createVirement = async (req, res) => {
     const sender = await Compte.findById(fromAccount).session(session);
     if (!sender) {
       await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: "Compte de l'expéditeur introuvable" });
     }
 
     // Check if sender has sufficient funds
     if (sender.solde < amount) {
       await session.abortTransaction();
+      session.endSession();
       return res.status(400).json({ message: "Fonds insuffisants dans le compte expéditeur" });
     }
 
@@ -31,7 +35,7 @@ exports.createVirement = async (req, res) => {
     let processingDelay = 0;
     if (amount > 10000) {
       processingDelay = 30 * 60 * 1000; // 30 minutes delay
-    } else if (toAccount.startsWith("07")) {
+    } else if (typeof toAccount === "string" && toAccount.startsWith("07")) {
       // Look for a receiver account by RIB
       const receiver = await Compte.findOne({ RIB: toAccount }).session(session);
       if (receiver) {
@@ -46,19 +50,31 @@ exports.createVirement = async (req, res) => {
     const initialStatus = processingDelay === 0 ? "Completed" : "Scheduled";
 
     // Create the virement record within the transaction
-    const virement = await Virement.create(
-      [{
-        fromAccount,
-        toAccount,
-        amount,
-        description,
-        status: initialStatus,
-      }],
+    const virementDocs = await Virement.create(
+      [
+        {
+          fromAccount,
+          toAccount,
+          amount,
+          description,
+          status: initialStatus,
+        },
+      ],
       { session }
     );
+    const virementRecord = virementDocs[0];
 
-    // Reserve funds from the sender account
+    // Reserve funds from the sender account and update sender's historique
     sender.solde -= amount;
+    const senderTransaction = {
+      _id: new mongoose.Types.ObjectId(),
+      date: new Date(),
+      amount,
+      description,
+      type: "debit",
+      reference: `VIR-${virementRecord._id.toString().slice(-6)}`,
+    };
+    sender.historique.push(senderTransaction);
     await sender.save({ session });
 
     // Commit transaction for immediate reservation of funds
@@ -70,36 +86,52 @@ exports.createVirement = async (req, res) => {
       const receiver = await Compte.findOne({ RIB: toAccount });
       if (receiver) {
         receiver.solde += amount;
+        const receiverTransaction = {
+          _id: new mongoose.Types.ObjectId(),
+          date: new Date(),
+          amount,
+          description,
+          type: "credit",
+          reference: `VIR-${virementRecord._id.toString().slice(-6)}`,
+        };
+        receiver.historique.push(receiverTransaction);
         await receiver.save();
       }
       return res.status(201).json({
         success: true,
         message: "Virement effectué avec succès",
-        data: virement[0],
+        data: virementRecord,
       });
     } else {
       // Scheduled processing: Use a delayed task.
-      // In a production environment, you might integrate a job queue (like Bull or Agenda)
-      // to handle delayed processing reliably.
       setTimeout(async () => {
         try {
           const receiver = await Compte.findOne({ RIB: toAccount });
           if (receiver) {
             receiver.solde += amount;
+            const receiverTransaction = {
+              _id: new mongoose.Types.ObjectId(),
+              date: new Date(),
+              amount,
+              description,
+              type: "credit",
+              reference: `VIR-${virementRecord._id.toString().slice(-6)}`,
+            };
+            receiver.historique.push(receiverTransaction);
             await receiver.save();
           }
           // Update the virement record status to "Completed"
-          await Virement.findByIdAndUpdate(virement[0]._id, { status: "Completed" });
+          await Virement.findByIdAndUpdate(virementRecord._id, { status: "Completed" });
         } catch (err) {
           console.error("Error processing scheduled virement:", err);
-          // Here you might also trigger alerts or a retry mechanism.
+          // Optionally, implement alerts or retry mechanisms here.
         }
       }, processingDelay);
 
       return res.status(201).json({
         success: true,
         message: `Virement programmé. Il sera traité dans ${processingDelay / 60000} minute(s).`,
-        data: virement[0],
+        data: virementRecord,
       });
     }
   } catch (error) {
