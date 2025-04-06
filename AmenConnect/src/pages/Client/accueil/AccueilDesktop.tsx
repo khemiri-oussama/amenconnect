@@ -1,6 +1,5 @@
 "use client";
-import type React from "react";
-import { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   IonContent,
   IonHeader,
@@ -201,10 +200,23 @@ const AccueilDesktop: React.FC = () => {
     [accounts]
   );
 
-  // Calculate total expenses of the last month from accounts.
+  // Calculate total expenses of the last month from transactions (aggregated historique).
   const totalLastMonthExpenses = useMemo(() => {
-    return accounts.reduce((sum, account) => sum + account.lastMonthExpenses, 0);
-  }, [accounts]);
+    const now = new Date();
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    let expense = 0;
+    transactions.forEach((tx) => {
+      const txDate = new Date(tx.date);
+      if (
+        txDate.getMonth() === lastMonth.getMonth() &&
+        txDate.getFullYear() === lastMonth.getFullYear() &&
+        tx.type === "debit"
+      ) {
+        expense += tx.amount;
+      }
+    });
+    return expense;
+  }, [transactions]);
 
   // Group transactions by month for the chart.
   const chartData = useMemo(() => {
