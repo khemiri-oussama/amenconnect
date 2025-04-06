@@ -55,19 +55,20 @@ exports.getHistorique = async (req, res) => {
 
     // Map single virements
     const mappedVirements = virements.map((v) => {
-      // Determine type: debit if sender is the user's account, else credit.
-      const isSender = userCompteIds.includes(v.fromAccount?.toString());
+      const rawDate = v.createdAt; // ISO string
       return {
         _id: v._id.toString(),
-        date: formatDate(v.createdAt),
+        date: formatDate(v.createdAt), // for display if needed
+        rawDate, // include this for chart calculations
         description: v.description,
         beneficiary: v.toAccount,
         amount: v.amount,
-        type: isSender ? "debit" : "credit",
+        type: userCompteIds.includes(v.fromAccount?.toString()) ? "debit" : "credit",
         status: v.status,
         reference: `VIR-${v._id.toString().slice(-6)}`,
       };
     });
+    
     
     // Map grouped virements
     let mappedGroupes = [];

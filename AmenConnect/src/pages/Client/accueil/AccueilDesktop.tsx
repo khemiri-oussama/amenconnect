@@ -77,6 +77,7 @@ interface Card {
 
 // Updated Transaction interface to match API response structure
 interface Transaction {
+  rawDate: string;
   amount: number;
   type: "credit" | "debit";
   category: string;
@@ -219,10 +220,11 @@ const AccueilDesktop: React.FC = () => {
 
   // Group transactions by month for the chart.
   const chartData = useMemo(() => {
+    const now = new Date();
+    const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1);
     const groupedData = transactions.reduce((acc, transaction) => {
-      const date = new Date(transaction.date);
-      if (isNaN(date.getTime())) {
-        console.error("Invalid date for transaction:", transaction.date);
+      const date = new Date(transaction.rawDate || transaction.date);
+      if (date < threeMonthsAgo) {
         return acc;
       }
       const monthNumber = date.getMonth(); // January is 0, February is 1, etc.
