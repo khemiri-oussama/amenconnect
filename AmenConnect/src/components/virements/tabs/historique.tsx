@@ -12,7 +12,7 @@ interface Transaction {
   amount: number
   description: string
   type: "credit" | "debit"
-  status: string // Changed to string to handle any status value
+  status?: string
   beneficiary?: string
   reference?: string
 }
@@ -23,8 +23,6 @@ const Historique: React.FC = () => {
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [page, setPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
 
   // Filter states
   const [searchTerm, setSearchTerm] = useState("")
@@ -43,41 +41,17 @@ const Historique: React.FC = () => {
     setDateFrom(threeMonthsAgo.toISOString().split("T")[0])
   }, [])
 
-  // Fetch transactions by page
-  const fetchTransactions = async (pageNumber: number) => {
-    try {
-      setLoading(true)
-      const response = await fetch(`/api/historique?page=${pageNumber}&limit=10`, {
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      })
-      if (!response.ok) {
-        throw new Error("Failed to fetch transactions")
-      }
-      const data = await response.json()
-      // Extract transactions from the returned object
-      const txs: Transaction[] = data.transactions || []
-      // If fewer transactions are returned than the limit, there are no more pages
-      if (txs.length < 10) {
-        setHasMore(false)
-      }
-      // Append new transactions to the current list
-      setTransactions(prev => [...prev, ...txs])
-      setFilteredTransactions(prev => [...prev, ...txs])
-    } catch (err: any) {
-      console.error("Error fetching transactions:", err)
-      setError(err.message || "Une erreur est survenue lors de la récupération des transactions")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Initial fetch when profile is available
+  // Load historique transactions from profile when available
   useEffect(() => {
     if (profile) {
-      fetchTransactions(1)
+      let allTransactions: Transaction[] = []
+      profile.comptes.forEach((compte) => {
+        if (compte.historique && Array.isArray(compte.historique)) {
+          allTransactions = [...allTransactions, ...compte.historique]
+        }
+      })
+      setTransactions(allTransactions)
     } else {
-      setLoading(false)
       setError("Veuillez vous connecter pour voir l'historique.")
     }
   }, [profile])
@@ -108,7 +82,7 @@ const Historique: React.FC = () => {
 
     // Status
     if (statusFilter !== "all") {
-      filtered = filtered.filter((tx) => tx.status.toLowerCase() === statusFilter.toLowerCase())
+      filtered = filtered.filter((tx) => (tx.status || "").toLowerCase() === statusFilter.toLowerCase())
     }
 
     // Type
@@ -123,7 +97,8 @@ const Historique: React.FC = () => {
     return Math.abs(amount).toFixed(3).replace(".", ",") + " DT"
   }
 
-  const getStatusLabel = (status: string) => {
+  const getStatusLabel = (status?: string) => {
+    if (!status) return ""
     const statusLower = status.toLowerCase()
     switch (statusLower) {
       case "completed":
@@ -138,7 +113,8 @@ const Historique: React.FC = () => {
     }
   }
 
-  const getStatusClass = (status: string) => {
+  const getStatusClass = (status?: string) => {
+    if (!status) return ""
     const statusLower = status.toLowerCase()
     switch (statusLower) {
       case "completed":
@@ -174,12 +150,6 @@ const Historique: React.FC = () => {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }
-
-  const loadMoreTransactions = () => {
-    const nextPage = page + 1
-    setPage(nextPage)
-    fetchTransactions(nextPage)
   }
 
   return (
@@ -271,55 +241,46 @@ const Historique: React.FC = () => {
           </div>
         )}
 
-        {loading && page === 1 ? (
+        {loading ? (
           <div className="virement-loading">Chargement des transactions...</div>
         ) : error ? (
           <div className="virement-error">{error}</div>
         ) : filteredTransactions.length === 0 ? (
           <div className="virement-empty">Aucune transaction trouvée</div>
         ) : (
-          <>
-            <div className="virement-table-container">
-              <table className="virement-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Bénéficiaire</th>
-                    <th>Montant</th>
-                    <th>Statut</th>
-                    <th>Référence</th>
+          <div className="virement-table-container">
+            <table className="virement-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Bénéficiaire</th>
+                  <th>Montant</th>
+                  <th>Statut</th>
+                  <th>Référence</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTransactions.map((tx) => (
+                  <tr key={tx._id}>
+                    <td>{new Date(tx.date).toLocaleDateString()}</td>
+                    <td>{tx.description}</td>
+                    <td>{tx.beneficiary || "N/A"}</td>
+                    <td className={tx.type === "credit" ? "text-positive" : "text-negative"}>
+                      {tx.type === "credit" ? "+ " : "- "}
+                      {formatCurrency(tx.amount)}
+                    </td>
+                    <td>
+                      <span className={`virement-table__status ${getStatusClass(tx.status)}`}>
+                        {getStatusLabel(tx.status)}
+                      </span>
+                    </td>
+                    <td>{tx.reference || ""}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {filteredTransactions.map((tx) => (
-                    <tr key={tx._id}>
-                      <td>{new Date(tx.date).toLocaleDateString()}</td>
-                      <td>{tx.description}</td>
-                      <td>{tx.beneficiary || "N/A"}</td>
-                      <td className={tx.type === "credit" ? "text-positive" : "text-negative"}>
-                        {tx.type === "credit" ? "+ " : "- "}
-                        {formatCurrency(tx.amount)}
-                      </td>
-                      <td>
-                        <span className={`virement-table__status ${getStatusClass(tx.status)}`}>
-                          {getStatusLabel(tx.status)}
-                        </span>
-                      </td>
-                      <td>{tx.reference || ""}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {hasMore && (
-              <div className="load-more">
-                <button className="virement-form__button" onClick={loadMoreTransactions} disabled={loading}>
-                  {loading ? "Chargement..." : "Charger plus"}
-                </button>
-              </div>
-            )}
-          </>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

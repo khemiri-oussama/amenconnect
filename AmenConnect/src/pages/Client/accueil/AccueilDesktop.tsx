@@ -75,14 +75,15 @@ interface Card {
   cardStatus?: string;
 }
 
-// Updated Transaction interface to match API response structure
+// Updated Transaction interface using historique data from profile.
 interface Transaction {
-  rawDate: string;
+  _id: string;
+  date: string;
   amount: number;
   type: "credit" | "debit";
-  category: string;
+  category?: string;
   description: string;
-  date: string;
+  rawDate?: string;
 }
 
 interface BudgetCategory {
@@ -157,32 +158,19 @@ const AccueilDesktop: React.FC = () => {
     }
   }, [profile]);
 
-  if (authLoading) {
-    return <div>Loading...</div>;
-  }
-
-  // Fetch transactions from the API.
+  // Instead of fetching transactions from an API, aggregate historique data from each account.
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await fetch("/api/historique", {
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch transactions");
+    if (profile) {
+      let allTransactions: Transaction[] = [];
+      profile.comptes.forEach((compte: any) => {
+        if (compte.historique && Array.isArray(compte.historique)) {
+          allTransactions = [...allTransactions, ...compte.historique];
         }
-        const data = await response.json();
-        setTransactions(data.transactions || []);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des transactions:", error);
-        setErrorTransactions("Erreur lors de la récupération des transactions.");
-      } finally {
-        setLoadingTransactions(false);
-      }
-    };
-    fetchTransactions();
-  }, []);
+      });
+      setTransactions(allTransactions);
+      setLoadingTransactions(false);
+    }
+  }, [profile]);
 
   // Fetch budget categories from the API once the user profile is available.
   useEffect(() => {
@@ -227,10 +215,7 @@ const AccueilDesktop: React.FC = () => {
       if (date < threeMonthsAgo) {
         return acc;
       }
-      const monthNumber = date.getMonth(); // January is 0, February is 1, etc.
-      if (monthNumber < 1 || monthNumber > 3) {
-        return acc;
-      }
+      const monthNumber = date.getMonth();
       const month = date.toLocaleString("default", { month: "short" });
       if (!acc[month]) {
         acc[month] = { name: month, income: 0, expenses: 0, monthNumber };
@@ -310,6 +295,10 @@ const AccueilDesktop: React.FC = () => {
     setBudgetCategories(updatedCategories);
     console.log("Saving updated budget categories:", updatedCategories);
   };
+
+  if (authLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <IonPage>
@@ -435,23 +424,11 @@ const AccueilDesktop: React.FC = () => {
                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                   >
                     <defs>
-                      <linearGradient
-                        id="colorIncome"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
+                      <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
                         <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
                       </linearGradient>
-                      <linearGradient
-                        id="colorExpenses"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
+                      <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
                         <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
                       </linearGradient>
@@ -603,8 +580,8 @@ const AccueilDesktop: React.FC = () => {
                 ) : errorTransactions ? (
                   <div className="error-message">{errorTransactions}</div>
                 ) : transactions.length > 0 ? (
-                  transactions.slice(0, 3).map((transaction, index) => (
-                    <div key={index} className="transaction-item">
+                  transactions.slice(0, 3).map((transaction) => (
+                    <div key={transaction._id} className="transaction-item">
                       <IonRippleEffect />
                       <div className="transaction-icon">
                         <IonIcon

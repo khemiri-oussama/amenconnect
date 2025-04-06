@@ -36,7 +36,7 @@ interface Operation {
 const CompteDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
 
-  // Move the today state inside the component
+  // Today state to display the last update date.
   const [today, setToday] = useState<string>("")
   useEffect(() => {
     const currentDate = new Date()
@@ -52,38 +52,29 @@ const CompteDesktop: React.FC = () => {
     return <div>Loading...</div>
   }
 
-  // Retrieve the accounts from the profile data
+  // Retrieve the accounts from the profile data.
   const accounts = profile?.comptes ?? []
 
-  // State for operations fetched from the API.
+  // Operations state, now populated by aggregating historique data from each account.
   const [operations, setOperations] = useState<Operation[]>([])
   const [loadingOperations, setLoadingOperations] = useState<boolean>(true)
   const [errorOperations, setErrorOperations] = useState<string | null>(null)
 
-  // Fetch operations from the API.
+  // Aggregate operations (historique) from all accounts in the profile.
   useEffect(() => {
-    const fetchOperations = async () => {
-      try {
-        const response = await fetch("/api/historique", {
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        })
-        if (!response.ok) {
-          throw new Error("Failed to fetch operations")
+    if (profile) {
+      let allOperations: Operation[] = []
+      profile.comptes.forEach((compte: any) => {
+        if (compte.historique && Array.isArray(compte.historique)) {
+          allOperations = [...allOperations, ...compte.historique]
         }
-        const data = await response.json()
-        // Expecting the API to return an object with a 'transactions' array.
-        const ops: Operation[] = data.transactions || []
-        setOperations(ops)
-      } catch (error) {
-        console.error("Error fetching operations:", error)
-        setErrorOperations("Erreur lors de la récupération des opérations.")
-      } finally {
-        setLoadingOperations(false)
-      }
+      })
+      setOperations(allOperations)
+      setLoadingOperations(false)
+    } else {
+      setLoadingOperations(false)
     }
-    fetchOperations()
-  }, [])
+  }, [profile])
 
   // Build chart data by grouping operations by month.
   const chartData = useMemo(() => {
@@ -102,7 +93,7 @@ const CompteDesktop: React.FC = () => {
     return Object.values(grouped)
   }, [operations])
 
-  // Navigate to account details
+  // Navigate to account details.
   const handleAccountClick = (accountId: string) => {
     console.log(`Viewing account ${accountId}...`)
     window.location.href = `/Compte/${accountId}`
