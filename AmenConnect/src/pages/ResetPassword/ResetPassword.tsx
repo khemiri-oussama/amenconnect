@@ -2,7 +2,6 @@ import type React from "react"
 import { isPlatform } from "@ionic/react"
 import ResetPasswordMobile from "./ResetPasswordMobile"
 import ResetPasswordDesktop from "./ResetPasswordDesktop"
-import ResetPasswordKiosk from "./ResetPasswordKiosk"
 import { useEffect, useState } from "react"
 
 const ResetPassword: React.FC = () => {
@@ -29,8 +28,6 @@ const ResetPassword: React.FC = () => {
     <>
       {isMobile ? (
         <ResetPasswordMobile />
-      ) : isBorneInteractive ? (
-        <ResetPasswordKiosk />
       ) : (
         <ResetPasswordDesktop />
       )}
