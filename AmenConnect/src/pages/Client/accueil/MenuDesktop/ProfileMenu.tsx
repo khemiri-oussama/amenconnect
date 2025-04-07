@@ -66,12 +66,6 @@ const ProfileMenu: React.FC = () => {
                 <IonIcon icon={personOutline} />
                 Voir le profil
               </li>
-              <li>
-                <a href="/settings">
-                  <IonIcon icon={settingsOutline} />
-                  Gérer les paramètres
-                </a>
-              </li>
               <li className="logout-item" onClick={handleLogout}>
                 <IonIcon icon={logOutOutline} />
                 Déconnexion

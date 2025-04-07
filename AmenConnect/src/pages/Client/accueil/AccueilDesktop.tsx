@@ -544,11 +544,11 @@ const AccueilDesktop: React.FC = () => {
                 <IonIcon slot="start" icon={peopleOutline} />
                 Virement
               </IonButton>
-              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/facture")}>
+              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/virement")}>
                 <IonIcon slot="start" icon={cardOutline} />
                 Payer une Facture
               </IonButton>
-              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/transfert")}>
+              <IonButton expand="block" className="quick-action-button" onClick={() => history.push("/virement")}>
                 <IonIcon slot="start" icon={globeOutline} />
                 Transfert International
               </IonButton>

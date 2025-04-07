@@ -725,7 +725,7 @@ const handleApproveRequest = async (requestId: string) => {
     <div className="admin-form-container">
       <form className="admin-reset-form" onSubmit={handleResetPassword}>
         <div className="admin-form-group">
-          <label className="admin-form-label">Email ou CIN</label>
+          <label className="admin-form-label">Email</label>
           <div className="admin-input-wrapper">
             <IonInput
               type="email"

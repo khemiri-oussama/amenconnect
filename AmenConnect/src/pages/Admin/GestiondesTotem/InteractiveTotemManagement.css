@@ -68,6 +68,9 @@
   gap: 0.5rem;
 }
 
+.alert-button-group .sc-ion-alert-md{
+  color: #2fff59;
+}
 .admin-action-buttons {
   display: flex;
   gap: 0.5rem;
@@ -128,9 +131,11 @@
 }
 
 .admin-tab.active {
-  color: #1e293b;
+  color: #ffffff;
 }
-
+p{
+  color: #000;
+}
 .admin-tab.active::after {
   content: "";
   position: absolute;

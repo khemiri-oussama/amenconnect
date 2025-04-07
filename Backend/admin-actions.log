@@ -306,3 +306,8 @@
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"768e7e97aa11df792081a59b9c33187d","timestamp":"2025-04-06T15:53:13.684Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-04-06T15:53:13.772Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"Admin logged out","timestamp":"2025-04-06T15:54:16.295Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-04-07T21:44:51.915Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-04-07T21:44:52.246Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-04-07T21:44:53.677Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"New admin session created","sessionId":"859c774f32a011e48d0dd5f9ba4a0482","timestamp":"2025-04-07T21:48:51.042Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-04-07T21:48:51.103Z"}

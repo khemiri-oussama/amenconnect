@@ -301,9 +301,7 @@ const ThemesPage = () => {
   }
 
   // Toggle preview mode between light and dark
-  const togglePreviewMode = () => {
-    setPreviewMode((prevMode) => (prevMode === "light" ? "dark" : "light"))
-  }
+
 
   // Save current theme as a new preset
   const saveAsNewPreset = async () => {
@@ -472,10 +470,7 @@ const ThemesPage = () => {
               Réinitialiser
             </button>
 
-            <button className={`admin-theme-action-button toggle-mode ${previewMode}`} onClick={togglePreviewMode}>
-              <IonIcon icon={contrastOutline} />
-              {previewMode === "light" ? "Aperçu Mode Sombre" : "Aperçu Mode Clair"}
-            </button>
+
           </div>
 
           {/* Logo Uploader Component */}
