@@ -56,14 +56,14 @@ interface AccountRequest {
   nom?: string
   prenom?: string
   email?: string
-  telephone?: string
-  adresse?: string
+  numeroGSM?: string
+  adresseDomicile?: string
   dateNaissance?: string
-  profession?: string
-  revenuMensuel?: number
-  situationFamiliale?: string
+  activite?: string
+  montantRevenusMensuels?: number
+  situationFamille?: string
   pieceIdentite?: string
-  numeroPieceIdentite?: string
+  numeroCIN?: string
   justificatifDomicile?: string
   justificatifRevenu?: string
   status?: string
@@ -809,7 +809,7 @@ const handleApproveRequest = async (requestId: string) => {
                   <tr key={request._id}>
                     <td>{`${request.prenom || ""} ${request.nom || ""}`}</td>
                     <td>{request.email || "N/A"}</td>
-                    <td>{request.telephone || "N/A"}</td>
+                    <td>{request.numeroGSM || "N/A"}</td>
                     <td>{request.createdAt ? new Date(request.createdAt).toLocaleDateString("fr-FR") : "N/A"}</td>
                     <td>
                       <span className={`admin-status-badge ${request.status || "pending"}`}>
@@ -927,12 +927,12 @@ const handleApproveRequest = async (requestId: string) => {
                 <IonItem>
                   <IonIcon icon={callOutline} slot="start" />
                   <IonLabel>Téléphone</IonLabel>
-                  <IonText slot="end">{selectedRequest.telephone || "N/A"}</IonText>
+                  <IonText slot="end">{selectedRequest.numeroGSM || "N/A"}</IonText>
                 </IonItem>
                 <IonItem>
                   <IonIcon icon={homeOutline} slot="start" />
                   <IonLabel>Adresse</IonLabel>
-                  <IonText slot="end">{selectedRequest.adresse || "N/A"}</IonText>
+                  <IonText slot="end">{selectedRequest.adresseDomicile || "N/A"}</IonText>
                 </IonItem>
                 <IonItem>
                   <IonIcon icon={calendarOutline} slot="start" />
@@ -949,19 +949,19 @@ const handleApproveRequest = async (requestId: string) => {
               <IonList lines="full">
                 <IonItem>
                   <IonLabel>Profession</IonLabel>
-                  <IonText slot="end">{selectedRequest.profession || "N/A"}</IonText>
+                  <IonText slot="end">{selectedRequest.activite || "N/A"}</IonText>
                 </IonItem>
                 <IonItem>
                   <IonLabel>Revenu mensuel</IonLabel>
                   <IonText slot="end">
-                    {selectedRequest.revenuMensuel
-                      ? `${selectedRequest.revenuMensuel.toLocaleString("fr-FR")} DT`
+                    {selectedRequest.montantRevenusMensuels
+                      ? `${selectedRequest.montantRevenusMensuels.toLocaleString("fr-FR")} DT`
                       : "N/A"}
                   </IonText>
                 </IonItem>
                 <IonItem>
                   <IonLabel>Situation familiale</IonLabel>
-                  <IonText slot="end">{selectedRequest.situationFamiliale || "N/A"}</IonText>
+                  <IonText slot="end">{selectedRequest.situationFamille || "N/A"}</IonText>
                 </IonItem>
               </IonList>
             </div>
@@ -971,11 +971,11 @@ const handleApproveRequest = async (requestId: string) => {
               <IonList lines="full">
                 <IonItem>
                   <IonLabel>Type de pièce d'identité</IonLabel>
-                  <IonText slot="end">{selectedRequest.pieceIdentite || "N/A"}</IonText>
+                  <IonText slot="end">{selectedRequest.pieceIdentite || "CIN"}</IonText>
                 </IonItem>
                 <IonItem>
                   <IonLabel>Numéro de pièce d'identité</IonLabel>
-                  <IonText slot="end">{selectedRequest.numeroPieceIdentite || "N/A"}</IonText>
+                  <IonText slot="end">{selectedRequest.numeroCIN || "N/A"}</IonText>
                 </IonItem>
                 <IonItem>
                   <IonLabel>Justificatif de domicile</IonLabel>

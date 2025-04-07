@@ -208,16 +208,19 @@ exports.approveAccountCreation = async (req, res) => {
     // Optionally create a credit card if indicated.
     let newCard;
     if (demande.wantCreditCard) {
+      // Generate a 16-digit credit card number containing only digits.
+      const cardNumber = Array.from({ length: 16 }, () => crypto.randomInt(0, 10)).join('');
       newCard = new Carte({
-      CardNumber: crypto.randomBytes(8).toString('hex').toUpperCase(),
-      CardHolder: `${newUser.prenom} ${newUser.nom}`,
-      comptesId: newCompte._id,
-      TypeCarte: demande.creditCardType,
-      CreatedAt: new Date().toISOString(),
-      UpdatedAt: new Date().toISOString(),
-    });
-    await newCard.save();
-    
+        CardNumber: cardNumber,
+        CardHolder: `${newUser.prenom} ${newUser.nom}`,
+        comptesId: newCompte._id,
+        TypeCarte: demande.creditCardType,
+        CreatedAt: new Date().toISOString(),
+        UpdatedAt: new Date().toISOString(),
+        ExpirationDate: new Date(new Date().setFullYear(new Date().getFullYear() + 3)).toISOString(),
+      });
+      await newCard.save();
+      
       // Optionally add the card to the user's record
       newUser.carteIds.push(newCard._id);
       await newUser.save();
