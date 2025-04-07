@@ -281,6 +281,7 @@ const GestionBeneficiaires: React.FC = () => {
                   value={formData.RIB}
                   onChange={handleInputChange}
                   placeholder="Ex: 10 006 0351835984788 31"
+                  maxLength={20}
                   required
                 />
                 <div className="virement-form__hint">
