@@ -2,7 +2,7 @@ from together import Together
 from datetime import datetime
 from config import TOGETHER_API_KEY, TOGETHER_MODEL
 
-# Initialisation du client Together
+# Initialize the Together client
 client = Together(api_key=TOGETHER_API_KEY)
 
 def generate_reply(message: str, user_context: str = "") -> str:
@@ -149,7 +149,7 @@ def generate_reply(message: str, user_context: str = "") -> str:
         messages=messages,
         model=TOGETHER_MODEL,
         temperature=0.3,
-        max_tokens=600  # Augmentation pour réponses plus détaillées
+        max_tokens=600  # Extended for more detailed responses
     )
 
     return response.choices[0].message.content

@@ -73,16 +73,23 @@ def webhook():
     print("Webhook received data:", data)
 
     if data.get('typeWebhook') != 'incomingMessageReceived':
-        return jsonify({"status": "ignored"}), 200  # Ignore les messages non entrants
+        return jsonify({"status": "ignored"}), 200
 
     try:
         sender = data.get('senderData', {}).get('chatId', '')
-        if sender:
-            phone = sender.split('@')[0]
-        else:
+        if not sender:
             return jsonify({"error": "No sender found in payload."}), 400
+        phone = sender.split('@')[0]
 
-        incoming_message = data.get('messageData', {}).get('textMessageData', {}).get('textMessage', '')
+        # Handle both text and extended text messages
+        message_data = data.get('messageData', {})
+        if message_data.get('typeMessage') == 'textMessage':
+            incoming_message = message_data.get('textMessageData', {}).get('textMessage', '')
+        elif message_data.get('typeMessage') == 'extendedTextMessage':
+            incoming_message = message_data.get('extendedTextMessageData', {}).get('text', '')
+        else:
+            return jsonify({"error": "Unsupported message type"}), 400
+
         if not incoming_message:
             return jsonify({"error": "No message found in payload."}), 400
 
@@ -94,7 +101,7 @@ def webhook():
             print("Failed to send reply via Green API:", response_api.text)
             return jsonify({"error": "Failed to send reply via Green API."}), 500
 
-        receipt_id = data.get('receiptId')
+        receipt_id = data.get('idMessage')  # Changed from 'receiptId' to 'idMessage' based on sample data
         if receipt_id:
             delete_notification(receipt_id)
 
@@ -103,44 +110,3 @@ def webhook():
     except Exception as e:
         print("Webhook processing error:", e)
         return jsonify({"error": "Error processing webhook."}), 500
-
-def poll_messages():
-    """
-    Fonction de polling pour récupérer les notifications via Green API.
-    """
-    import time
-    import requests
-    from config import GREEN_API_URL, GREEN_API_TOKEN
-
-    receive_url = f"{GREEN_API_URL}/receiveNotification/{GREEN_API_TOKEN}"
-    while True:
-        response = requests.get(receive_url)
-        if response.status_code == 200:
-            data = response.json()
-            if data:
-                sender = data.get('senderData', {}).get('chatId', '')
-                if sender:
-                    phone = sender.split('@')[0]
-                else:
-                    print("No sender found in notification.")
-                    time.sleep(5)
-                    continue
-
-                incoming_message = data.get('messageData', {}).get('textMessageData', {}).get('textMessage', '')
-                if not incoming_message:
-                    print("No message found in notification.")
-                    time.sleep(5)
-                    continue
-
-                user_context = f"Telephone: {phone}."
-                reply_message = generate_reply(incoming_message, user_context)
-                response_api = send_via_green_api(phone, reply_message)
-                if response_api.status_code != 200:
-                    print("Failed to send reply via Green API:", response_api.text)
-
-                receipt_id = data.get('receiptId')
-                if receipt_id:
-                    delete_notification(receipt_id)
-        else:
-            print("Polling error:", response.text)
-        time.sleep(5)
