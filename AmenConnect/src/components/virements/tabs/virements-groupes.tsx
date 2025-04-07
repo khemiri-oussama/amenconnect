@@ -277,10 +277,11 @@ const VirementsGroupes: React.FC = () => {
                         required
                       >
                         {beneficiaires.map((ben) => (
-                          <option key={ben._id} value={ben._id}>
-                            {ben.prenom} {ben.nom} - {ben.RIB}
-                          </option>
-                        ))}
+  <option key={ben._id} value={ben.RIB}>
+    {ben.prenom} {ben.nom} - {ben.RIB}
+  </option>
+))}
+
                       </select>
                     </div>
 
