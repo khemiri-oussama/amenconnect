@@ -157,10 +157,16 @@ const AccueilDesktop: React.FC = () => {
           allTransactions = [...allTransactions, ...compte.historique];
         }
       });
+      // Sort transactions from newest to oldest
+      allTransactions.sort(
+        (a, b) =>
+          new Date(b.rawDate || b.date).getTime() - new Date(a.rawDate || a.date).getTime()
+      );
       setTransactions(allTransactions);
       setLoadingTransactions(false);
     }
   }, [profile]);
+  
 
   useEffect(() => {
     const fetchBudgetCategories = async () => {
