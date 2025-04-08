@@ -1,8 +1,7 @@
-"use client"
-import { useState, useEffect } from "react"
-import type React from "react"
-
-import { IonIcon } from "@ionic/react"
+"use client";
+import { useState, useEffect } from "react";
+import type React from "react";
+import { IonIcon } from "@ionic/react";
 import {
   calendarOutline,
   walletOutline,
@@ -11,121 +10,84 @@ import {
   repeatOutline,
   timeOutline,
   checkmarkCircleOutline,
-} from "ionicons/icons"
-import { useAuth } from "../../../AuthContext"
-
-// Import the custom hook
-import useVirementProgramme from "../../../hooks/useVirementProgramme"
+} from "ionicons/icons";
+import { useAuth } from "../../../AuthContext";
+import useVirementProgramme from "../../../hooks/useVirementProgramme";
+import { useBeneficiaries } from "../../../hooks/useBeneficiaries";
 
 interface Compte {
-  _id: string
-  numéroCompte: string
-  solde: number
-  type: string
-}
-
-interface Beneficiaire {
-  _id: string
-  nom: string
-  prenom: string
-  numeroCompte: string
-  banque: string
+  _id: string;
+  numéroCompte: string;
+  solde: number;
+  type: string;
 }
 
 const VirementsProgrammes: React.FC = () => {
-  const { profile } = useAuth()
-  const [comptes, setComptes] = useState<Compte[]>([])
-  const [beneficiaires, setBeneficiaires] = useState<Beneficiaire[]>([])
-  const [compteSource, setCompteSource] = useState("")
-  const [beneficiaire, setBeneficiaire] = useState("")
-  const [montant, setMontant] = useState("")
-  const [motif, setMotif] = useState("")
-  const [frequence, setFrequence] = useState("mensuel")
-  const [dateDebut, setDateDebut] = useState("")
-  const [dateFin, setDateFin] = useState("")
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState("")
+  const { profile } = useAuth();
+  const [comptes, setComptes] = useState<Compte[]>([]);
+  const {
+    beneficiaires,
+    loading: beneficiariesLoading,
+    error: beneficiariesError,
+  } = useBeneficiaries();
+  const [compteSource, setCompteSource] = useState("");
+  const [beneficiaire, setBeneficiaire] = useState("");
+  const [montant, setMontant] = useState("");
+  const [motif, setMotif] = useState("");
+  const [frequence, setFrequence] = useState("mensuel");
+  const [dateDebut, setDateDebut] = useState("");
+  const [dateFin, setDateFin] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   // Use the virement programme hook
-  const { loading, error: hookError, response, makeVirementProgramme } = useVirementProgramme()
+  const { loading, error: hookError, response, makeVirementProgramme } = useVirementProgramme();
 
   useEffect(() => {
     // Set default dates
-    const today = new Date()
-    const nextYear = new Date()
-    nextYear.setFullYear(today.getFullYear() + 1)
-
-    setDateDebut(today.toISOString().split("T")[0])
-    setDateFin(nextYear.toISOString().split("T")[0])
+    const today = new Date();
+    const nextYear = new Date();
+    nextYear.setFullYear(today.getFullYear() + 1);
+    setDateDebut(today.toISOString().split("T")[0]);
+    setDateFin(nextYear.toISOString().split("T")[0]);
 
     // Fetch accounts from profile
     if (profile && profile.comptes) {
-      setComptes(profile.comptes)
+      setComptes(profile.comptes);
       if (profile.comptes.length > 0) {
-        setCompteSource(profile.comptes[0]._id)
+        setCompteSource(profile.comptes[0]._id);
       }
     }
+  }, [profile]);
 
-    // Fetch beneficiaries (mocked)
-    const fetchBeneficiaires = async () => {
-      try {
-        // Replace with your actual API call
-        const mockBeneficiaires = [
-          {
-            _id: "63b2f1c0a2e8f2a123456789",
-            nom: "Dupont",
-            prenom: "Jean",
-            numeroCompte: "TN5910000123456789",
-            banque: "Banque Nationale",
-          },
-          {
-            _id: "63b2f1c0a2e8f2a123456790",
-            nom: "Martin",
-            prenom: "Sophie",
-            numeroCompte: "TN5910000987654321",
-            banque: "Banque Centrale",
-          },
-          {
-            _id: "63b2f1c0a2e8f2a123456791",
-            nom: "Trabelsi",
-            prenom: "Ahmed",
-            numeroCompte: "TN5910000567891234",
-            banque: "Banque du Sud",
-          },
-        ]
-        setBeneficiaires(mockBeneficiaires)
-        if (mockBeneficiaires.length > 0) {
-          setBeneficiaire(mockBeneficiaires[0]._id)
-        }
-      } catch (error) {
-        console.error("Error fetching beneficiaries:", error)
-      }
+  // When beneficiaries load, select the first one by default
+  useEffect(() => {
+    if (beneficiaires.length > 0) {
+      setBeneficiaire(beneficiaires[0]._id);
     }
-
-    fetchBeneficiaires()
-  }, [profile])
+  }, [beneficiaires]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setSuccess(false)
+    e.preventDefault();
+    setError("");
+    setSuccess(false);
 
     // Basic validations
     if (!compteSource || !beneficiaire || !montant || !dateDebut || !dateFin || !frequence) {
-      setError("Veuillez remplir tous les champs obligatoires")
-      return
+      setError("Veuillez remplir tous les champs obligatoires");
+      return;
     }
 
     if (Number.parseFloat(montant) <= 0) {
-      setError("Le montant doit être supérieur à 0")
-      return
+      setError("Le montant doit être supérieur à 0");
+      return;
     }
 
-    const startDate = new Date(dateDebut)
-    const endDate = new Date(dateFin)
+    const startDate = new Date(dateDebut);
+    const endDate = new Date(dateFin);
     if (startDate >= endDate) {
-      setError("La date de fin doit être postérieure à la date de début")
-      return
+      setError("La date de fin doit être postérieure à la date de début");
+      return;
     }
 
     // Prepare payload for the scheduled virement
@@ -137,80 +99,80 @@ const VirementsProgrammes: React.FC = () => {
       frequency: frequence as "quotidien" | "hebdomadaire" | "mensuel" | "trimestriel" | "annuel",
       startDate: dateDebut,
       endDate: dateFin,
-    }
+    };
 
-    await makeVirementProgramme(payload)
+    await makeVirementProgramme(payload);
 
-    // If the hook has a response, handle success
-    if (response?.data) {
-      setMontant("")
-      setMotif("")
-      setSuccess(true)
+    if (response?.success) {
+      setMontant("");
+      setMotif("");
+      setSuccess(true);
     }
-  }
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("fr-TN", {
       style: "currency",
       currency: "TND",
-    }).format(amount)
-  }
+    }).format(amount);
+  };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return ""
-    const date = new Date(dateString)
+    if (!dateString) return "";
+    const date = new Date(dateString);
     return date.toLocaleDateString("fr-FR", {
       day: "numeric",
       month: "long",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   const getFrequenceLabel = (freq: string) => {
     switch (freq) {
       case "quotidien":
-        return "Quotidienne"
+        return "Quotidienne";
       case "hebdomadaire":
-        return "Hebdomadaire"
+        return "Hebdomadaire";
       case "mensuel":
-        return "Mensuelle"
+        return "Mensuelle";
       case "trimestriel":
-        return "Trimestrielle"
+        return "Trimestrielle";
       case "annuel":
-        return "Annuelle"
+        return "Annuelle";
       default:
-        return freq
+        return freq;
     }
-  }
+  };
 
   const calculateOccurrences = () => {
-    if (!dateDebut || !dateFin || !frequence) return 0
+    if (!dateDebut || !dateFin || !frequence) return 0;
 
-    const start = new Date(dateDebut)
-    const end = new Date(dateFin)
-    const diffTime = Math.abs(end.getTime() - start.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    const start = new Date(dateDebut);
+    const end = new Date(dateFin);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     switch (frequence) {
       case "quotidien":
-        return diffDays
+        return diffDays;
       case "hebdomadaire":
-        return Math.floor(diffDays / 7)
+        return Math.floor(diffDays / 7);
       case "mensuel":
-        return (end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth()
+        return (end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth();
       case "trimestriel":
-        return Math.floor(((end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth()) / 3)
+        return Math.floor(((end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth()) / 3);
       case "annuel":
-        return end.getFullYear() - start.getFullYear()
+        return end.getFullYear() - start.getFullYear();
       default:
-        return 0
+        return 0;
     }
-  }
+  };
 
-  const selectedCompte = comptes.find((compte) => compte._id === compteSource)
-  const selectedBeneficiaire = beneficiaires.find((ben) => ben._id === beneficiaire)
-  const occurrences = calculateOccurrences()
-  const totalAmount = occurrences * Number.parseFloat(montant || "0")
+  const selectedCompte = comptes.find((compte) => compte._id === compteSource);
+  // Note: Adjust the displayed beneficiary fields based on your beneficiary model.
+  const selectedBeneficiaire = beneficiaires.find((ben) => ben._id === beneficiaire);
+  const occurrences = calculateOccurrences();
+  const totalAmount = occurrences * Number.parseFloat(montant || "0");
 
   return (
     <div className="virements-programmes">
@@ -228,7 +190,7 @@ const VirementsProgrammes: React.FC = () => {
               </div>
               <h4 className="virement-success__title">Virement programmé avec succès</h4>
               <p className="virement-success__message">
-                Votre virement programmé a été enregistré avec succès. Un email de confirmation vous a été envoyé.
+                Votre virement programmé a été enregistré et les fonds ont été réservés. Vous recevrez un email de confirmation.
               </p>
               <button className="virement-form__button" onClick={() => setSuccess(false)}>
                 Programmer un autre virement
@@ -238,8 +200,7 @@ const VirementsProgrammes: React.FC = () => {
 
           {!success && (
             <form className="virement-form" onSubmit={handleSubmit}>
-              {error && <div className="virement-form__error">{error}</div>}
-              {hookError && <div className="virement-form__error">{hookError}</div>}
+              {(error || hookError) && <div className="virement-form__error">{error || hookError}</div>}
 
               <div className="virement-form__group">
                 <label className="virement-form__label" htmlFor="compteSource">
@@ -273,7 +234,7 @@ const VirementsProgrammes: React.FC = () => {
                 >
                   {beneficiaires.map((ben) => (
                     <option key={ben._id} value={ben._id}>
-                      {ben.prenom} {ben.nom} - {ben.numeroCompte}
+                      {ben.prenom} {ben.nom} - {ben.RIB}
                     </option>
                   ))}
                 </select>
@@ -413,7 +374,7 @@ const VirementsProgrammes: React.FC = () => {
                   </div>
                   <div className="virement-recap__item">
                     <span className="virement-recap__label">Compte:</span>
-                    <span className="virement-recap__value">{selectedBeneficiaire.numeroCompte}</span>
+                    <span className="virement-recap__value">{selectedBeneficiaire.RIB}</span>
                   </div>
                   <div className="virement-recap__item">
                     <span className="virement-recap__label">Banque:</span>
@@ -476,6 +437,7 @@ const VirementsProgrammes: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
-export default VirementsProgrammes
+  );
+};
+
+export default VirementsProgrammes;
