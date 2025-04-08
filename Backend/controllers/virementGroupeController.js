@@ -1,5 +1,5 @@
-// controllers/virementGroupeController.js
 const Compte = require("../models/Compte");
+const VirementGroupe = require("../models/virementGroupe");
 const mongoose = require("mongoose");
 
 exports.createVirementGroupe = async (req, res) => {
@@ -8,7 +8,7 @@ exports.createVirementGroupe = async (req, res) => {
   try {
     const { fromAccount, virements } = req.body;
 
-    // Validate the sender account exists
+    // Validate sender account exists
     const sender = await Compte.findById(fromAccount).session(session);
     if (!sender) {
       await session.abortTransaction();
@@ -34,7 +34,7 @@ exports.createVirementGroupe = async (req, res) => {
       return res.status(400).json({ message: "Fonds insuffisants dans le compte source" });
     }
 
-    // Deduct the total amount from the sender's account and record a debit entry
+    // Deduct total amount from sender's account and add a debit historique entry
     sender.solde -= totalAmount;
     const groupRef = `VG-${new mongoose.Types.ObjectId().toString().slice(-6)}`;
     sender.historique.push({
@@ -47,34 +47,52 @@ exports.createVirementGroupe = async (req, res) => {
     });
     await sender.save({ session });
 
-    // Process each transfer:
-    for (const v of virements) {
-      // Lookup the receiver by beneficiary RIB.
-      const receiver = await Compte.findOne({ RIB: v.beneficiary }).session(session);
-      if (receiver) {
-        // If an associated account exists, update its solde and historique.
-        receiver.solde += v.amount;
-        receiver.historique.push({
-          _id: new mongoose.Types.ObjectId(),
-          date: new Date(),
-          amount: v.amount,
-          description: "Virement groupé - Crédit",
-          type: "credit",
-          reference: groupRef,
-        });
-        await receiver.save({ session });
-      } 
-      // If no receiver account exists, the money is sent externally.
-      // No historique is added for the receiver.
-    }
+    // Create the group virement record
+    const groupeRecord = await VirementGroupe.create(
+      [
+        {
+          fromAccount,
+          virements: virements.map((v) => ({
+            beneficiary: v.beneficiary, // now a string (the RIB)
+            amount: v.amount,
+            motif: v.motif,
+          })),
+        },
+      ],
+      { session }
+    );
 
-    // Commit the transaction so that all updates are applied atomically.
+    // Commit the transaction so that the sender update is saved atomically
     await session.commitTransaction();
     session.endSession();
+
+    // Process each individual transfer for receivers
+    virements.forEach((v) => {
+      (async () => {
+        try {
+          const receiver = await Compte.findOne({ RIB: v.beneficiary });
+          if (receiver) {
+            receiver.solde += v.amount;
+            receiver.historique.push({
+              _id: new mongoose.Types.ObjectId(),
+              date: new Date(),
+              amount: v.amount,
+              description: "Virement groupé - Crédit",
+              type: "credit",
+              reference: groupRef,
+            });
+            await receiver.save();
+          }
+        } catch (err) {
+          console.error("Erreur lors du traitement du virement pour le bénéficiaire:", err);
+        }
+      })();
+    });
 
     return res.status(201).json({
       success: true,
       message: "Virements groupés effectués avec succès",
+      data: groupeRecord[0],
     });
   } catch (err) {
     await session.abortTransaction();

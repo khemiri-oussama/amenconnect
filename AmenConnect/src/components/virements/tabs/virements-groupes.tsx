@@ -16,7 +16,7 @@ interface Compte {
 }
 
 interface VirementGroupe {
-  beneficiaireId: string
+  beneficiaireId: string // Now holds the beneficiary RIB
   montant: string
   motif: string
 }
@@ -55,17 +55,17 @@ const VirementsGroupes: React.FC = () => {
     }
   }, [profile])
 
-  // When beneficiaries are loaded, pre-populate the first virement row if needed
+  // When beneficiaries are loaded, pre-populate the first virement row with the beneficiary's RIB
   useEffect(() => {
     if (beneficiaires.length > 0 && virements[0].beneficiaireId === "") {
-      setVirements([{ beneficiaireId: beneficiaires[0]._id, montant: "", motif: "" }])
+      setVirements([{ beneficiaireId: beneficiaires[0].RIB, montant: "", motif: "" }])
     }
   }, [beneficiaires])
 
   const handleAddVirement = () => {
     setVirements([
       ...virements,
-      { beneficiaireId: beneficiaires[0]?._id || "", montant: "", motif: "" },
+      { beneficiaireId: beneficiaires[0]?.RIB || "", montant: "", motif: "" },
     ])
   }
 
@@ -164,7 +164,7 @@ const VirementsGroupes: React.FC = () => {
       const data = {
         fromAccount: compteSource,
         virements: virements.map((v) => ({
-          beneficiary: v.beneficiaireId,
+          beneficiary: v.beneficiaireId, // sending the RIB
           amount: Number.parseFloat(v.montant),
           motif: v.motif,
         })),
@@ -194,7 +194,7 @@ const VirementsGroupes: React.FC = () => {
           fileInputRef.current.value = ""
         }
       } else {
-        setVirements([{ beneficiaireId: beneficiaires[0]?._id || "", montant: "", motif: "" }])
+        setVirements([{ beneficiaireId: beneficiaires[0]?.RIB || "", montant: "", motif: "" }])
       }
       setSuccess(true)
     }
@@ -277,11 +277,10 @@ const VirementsGroupes: React.FC = () => {
                         required
                       >
                         {beneficiaires.map((ben) => (
-  <option key={ben._id} value={ben.RIB}>
-    {ben.prenom} {ben.nom} - {ben.RIB}
-  </option>
-))}
-
+                          <option key={ben._id} value={ben.RIB}>
+                            {ben.prenom} {ben.nom} - {ben.RIB}
+                          </option>
+                        ))}
                       </select>
                     </div>
 
