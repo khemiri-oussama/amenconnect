@@ -17,6 +17,8 @@
   --border-radius-lg: 24px;
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
+  --safe-area-top: env(safe-area-inset-top, 0);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0);
 }
 
 /* Base styles */
@@ -24,10 +26,15 @@
   background: linear-gradient(160deg, var(--color-background) 0%, #0a0a0a 100%);
   color: var(--color-text);
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-content {
   background: transparent;
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
 }
 
 /* Header */
@@ -36,30 +43,51 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
+  padding-top: calc(var(--safe-area-top) * 0.6); /* Reduced padding for status bar */
+  min-height: 0;
 }
 
 .chat-toolbar {
   --background: transparent;
   --border-color: transparent;
   --color: var(--color-text);
-  --padding-top: 8px;
-  --padding-bottom: 8px;
+  --padding-top: 2px; /* Reduced from 4px */
+  --padding-bottom: 2px; /* Reduced from 4px */
+  --min-height: 40px; /* Reduced from 44px */
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  --color: var(--color-text);
+  --padding-start: 8px;
+  --padding-end: 8px;
+  margin: 0;
+  height: 28px; /* Reduced from 32px */
+}
+
+.back-button ion-icon {
+  font-size: 1.3rem; /* Reduced from 1.4rem */
 }
 
 .chat-title {
-  font-size: 1.1rem;
+  font-size: 1rem; /* Reduced from 1.1rem */
   font-weight: 600;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .chat-title-content {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 6px; /* Reduced from 8px */
 }
 
 .chat-title-content ion-icon {
   color: var(--color-primary);
-  font-size: 1.2rem;
+  font-size: 1.1rem; /* Reduced from 1.2rem */
 }
 
 /* Mobile layout */
@@ -67,18 +95,23 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow-y: visible;
 }
 
 /* Messages container */
 .messages-container-mobile {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: visible;
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 20px;
   margin-bottom: 8px;
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  width: 100%;
 }
 
 /* Message bubbles */
@@ -86,6 +119,7 @@
   max-width: 85%;
   animation: fadeIn 0.3s ease-out;
   transition: transform var(--transition-fast);
+  margin-bottom: 4px;
 }
 
 .message-bubble-mobile:active {
@@ -125,6 +159,8 @@
   position: relative;
   box-shadow: 0 2px 10px var(--color-shadow);
   transition: all var(--transition-fast);
+  min-width: 60px;
+  word-break: break-word;
 }
 
 .message-text-content-mobile {
@@ -248,7 +284,7 @@
   background: rgba(18, 18, 18, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  padding: 12px 16px;
+  padding: 12px 16px calc(12px + var(--safe-area-bottom));
   border-top: 1px solid var(--color-border);
   position: relative;
   z-index: 1000;
@@ -281,6 +317,12 @@ ion-footer {
   flex-shrink: 0;
   transition: all var(--transition-fast);
   overflow: hidden;
+  opacity: 0.8;
+}
+
+.send-button-mobile.active {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 .send-button-mobile ion-icon {
@@ -301,6 +343,12 @@ ion-footer {
   transition: border-color var(--transition-fast);
   position: relative;
   z-index: 1001;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.message-input-container-mobile:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 15px rgba(46, 184, 81, 0.2);
 }
 
 /* Add keyboard-specific adjustments */
@@ -327,17 +375,7 @@ ion-footer {
   font-size: 0.95rem;
   max-height: 120px;
   width: 100%;
-}
-
-/* Fix for iOS devices */
-@supports (-webkit-touch-callout: none) {
-  .chat-footer-mobile {
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
-  }
-
-  ion-content {
-    --keyboard-offset: 0px !important;
-  }
+  min-height: 24px;
 }
 
 .chat-footer-info-mobile {
@@ -413,7 +451,67 @@ ion-footer {
   margin-bottom: 16px;
 }
 
-/* Safe Area Handling */
+/* Media queries for different screen sizes */
+@media (max-width: 320px) {
+  .message-bubble-mobile {
+    max-width: 90%;
+  }
+
+  .message-paragraph {
+    font-size: 0.9rem;
+  }
+
+  .message-avatar-mobile ion-avatar {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (min-width: 375px) {
+  .message-text-mobile {
+    padding: 14px 18px;
+  }
+
+  .chat-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 414px) {
+  .messages-container-mobile {
+    padding: 24px;
+  }
+
+  .message-bubble-mobile {
+    max-width: 80%;
+  }
+}
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) {
+  .chat-mobile-layout {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  .message-bubble-mobile {
+    max-width: 70%;
+  }
+
+  .suggestions-container-mobile {
+    max-width: 70%;
+  }
+}
+
+/* Fix for iOS devices */
+@supports (-webkit-touch-callout: none) {
+  .chat-content {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Fix for notched devices */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .chat-footer-mobile {
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
@@ -423,7 +521,11 @@ ion-footer {
 /* Status Bar Color */
 @supports (padding-top: env(safe-area-inset-top)) {
   .chat-header-mobile {
-    padding-top: env(safe-area-inset-top);
+    padding-top: calc(env(safe-area-inset-top) * 0.01); /* Reduced multiplier */
   }
 }
 
+/* Ensure content is scrollable */
+ion-content::part(scroll) {
+  overflow-y: scroll;
+}

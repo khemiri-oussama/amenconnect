@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
+import { useHistory } from "react-router-dom"
 import {
   IonPage,
   IonHeader,
@@ -22,9 +23,9 @@ import {
   helpCircleOutline,
   documentTextOutline,
   chatbubbleEllipsesOutline,
+  arrowBackOutline,
 } from "ionicons/icons"
 import { useAuth } from "../../../AuthContext"
-import Navbar from "../../../components/NavMobile"
 import "./ChatBotMobile.css"
 
 interface Message {
@@ -36,6 +37,7 @@ interface Message {
 
 const ChatBotMobile: React.FC = () => {
   const { profile, authLoading } = useAuth()
+  const history = useHistory()
   const [message, setMessage] = useState<string>("")
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -50,6 +52,7 @@ const ChatBotMobile: React.FC = () => {
   const [keyboardOpen, setKeyboardOpen] = useState<boolean>(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLIonContentElement>(null)
+  const textareaRef = useRef<HTMLIonTextareaElement>(null)
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
@@ -89,6 +92,17 @@ const ChatBotMobile: React.FC = () => {
     }
   }, [])
 
+  // Auto-resize textarea based on content
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.addEventListener("ionInput", (e: Event) => {
+        const target = e.target as HTMLIonTextareaElement
+        target.style.height = "auto"
+        target.style.height = target.scrollHeight + "px"
+      })
+    }
+  }, [])
+
   if (authLoading) {
     return (
       <div className="loading-container">
@@ -107,9 +121,10 @@ const ChatBotMobile: React.FC = () => {
   const userCin = profile?.user?.cin || ""
   const userPhone = profile?.user?.telephone || ""
   const userAddress = profile?.user?.adresseEmployeur || ""
+
   const sendMessage = async (text = message) => {
     if (!text.trim()) return
-  
+
     // Add user message to chat
     const userMessage: Message = {
       id: messages.length + 1,
@@ -117,12 +132,12 @@ const ChatBotMobile: React.FC = () => {
       sender: "user",
       timestamp: new Date(),
     }
-  
+
     setMessages((prev) => [...prev, userMessage])
     setLoading(true)
     setMessage("") // Clear input field
     setShowSuggestions(false) // Hide suggestions after sending a message
-  
+
     try {
       // Prepare request payload based on authentication status
       const payload = isAuthenticated
@@ -138,15 +153,15 @@ const ChatBotMobile: React.FC = () => {
             },
           }
         : { message: text }
-  
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
-  
+
       const data = await response.json()
-  
+
       // Add bot response to chat
       const botMessage: Message = {
         id: messages.length + 2,
@@ -154,14 +169,11 @@ const ChatBotMobile: React.FC = () => {
         sender: "bot",
         timestamp: new Date(),
       }
-  
+
       setMessages((prev) => [...prev, botMessage])
-  
-      // Remove the line below so suggestions do not reappear:
-      // setShowSuggestions(true)
     } catch (error) {
       console.error("Erreur:", error)
-  
+
       // Add error message to chat
       const errorMessage: Message = {
         id: messages.length + 2,
@@ -169,13 +181,12 @@ const ChatBotMobile: React.FC = () => {
         sender: "bot",
         timestamp: new Date(),
       }
-  
+
       setMessages((prev) => [...prev, errorMessage])
     }
-  
+
     setLoading(false)
   }
-  
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -213,6 +224,9 @@ const ChatBotMobile: React.FC = () => {
     <IonPage className={`chat-page ${keyboardOpen ? "keyboard-open" : ""}`}>
       <IonHeader className="chat-header-mobile">
         <IonToolbar className="chat-toolbar">
+          <IonButton fill="clear" className="back-button" slot="start" onClick={() => history.goBack()}>
+            <IonIcon icon={arrowBackOutline} />
+          </IonButton>
           <IonTitle className="chat-title">
             <div className="chat-title-content">
               <IonIcon icon={chatbubbleEllipsesOutline} />
@@ -222,7 +236,7 @@ const ChatBotMobile: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent ref={contentRef} className="chat-content" scrollEvents={true}>
+      <IonContent ref={contentRef} className="chat-content" scrollEvents={true} scrollY={true} forceOverscroll={true}>
         <div className="chat-mobile-layout">
           {/* Messages container */}
           <div className="messages-container-mobile">
@@ -290,6 +304,7 @@ const ChatBotMobile: React.FC = () => {
       <IonFooter className="chat-footer-mobile">
         <div className="message-input-container-mobile">
           <IonTextarea
+            ref={textareaRef}
             value={message}
             placeholder="Tapez votre message ici..."
             onIonChange={(e) => setMessage(e.detail.value!)}
@@ -301,7 +316,7 @@ const ChatBotMobile: React.FC = () => {
           />
 
           <IonButton
-            className="send-button-mobile"
+            className={`send-button-mobile ${message.trim() ? "active" : ""}`}
             onClick={() => sendMessage()}
             disabled={!message.trim()}
             strong={true}
@@ -322,11 +337,8 @@ const ChatBotMobile: React.FC = () => {
           </div>
         )}
       </IonFooter>
-      {/* Only show Navbar when keyboard is not open */}
-      {!keyboardOpen && <Navbar currentPage="chat" />}
     </IonPage>
   )
 }
 
 export default ChatBotMobile
-
