@@ -41,7 +41,9 @@ interface Transaction {
   description: string
   amount: number
   date: string
+  rawDate?: string
   type: "credit" | "debit"
+  category?: string
 }
 
 const AccueilKiosk: React.FC = () => {
@@ -70,49 +72,102 @@ const AccueilKiosk: React.FC = () => {
   }))
 
   // Fetch transactions from the API.
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await fetch("/api/historique", {
+// Update the fetchTransactions effect
+// Update the fetchTransactions effect
+useEffect(() => {
+  const fetchAllTransactions = async () => {
+    try {
+      let allTransactions: Transaction[] = [];
+      let page = 1;
+      let totalPages = 1;
+
+      do {
+        const response = await fetch(`/api/historique?page=${page}`, {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-        })
-        if (!response.ok) {
-          throw new Error("Failed to fetch transactions")
-        }
-        const data: Transaction[] = await response.json()
-        setTransactions(data)
-      } catch (error) {
-        console.error("Erreur lors de la récupération des transactions:", error)
-        setErrorTransactions("Erreur lors de la récupération des transactions.")
-      } finally {
-        setLoadingTransactions(false)
-      }
-    }
-    fetchTransactions()
-  }, [])
+        });
 
+        if (!response.ok) throw new Error("Failed to fetch transactions");
+
+        const responseData = await response.json();
+        const data: Transaction[] = responseData.transactions || [];
+
+        allTransactions = [...allTransactions, ...data];
+        totalPages = Math.ceil(responseData.total / responseData.limit);
+        page++;
+      } while (page <= totalPages);
+
+      const sortedData = allTransactions.sort((a, b) => 
+        new Date(b.rawDate || b.date).getTime() - new Date(a.rawDate || a.date).getTime()
+      );
+
+      setTransactions(sortedData);
+    } catch (error) {
+      console.error("Fetch error:", error);
+      setErrorTransactions("Error loading transactions");
+    } finally {
+      setLoadingTransactions(false);
+    }
+  };
+
+  fetchAllTransactions();
+}, []);
   const totalBalance = useMemo(() => accounts.reduce((sum, account) => sum + account.solde, 0), [accounts])
 
-  const chartData = useMemo(() => {
-    const groupedData = transactions.reduce(
-      (acc, transaction) => {
-        const date = new Date(transaction.date)
-        const month = date.toLocaleString("default", { month: "short" })
-        if (!acc[month]) {
-          acc[month] = { name: month, income: 0, expenses: 0 }
-        }
-        if (transaction.type === "credit") {
-          acc[month].income += transaction.amount
-        } else if (transaction.type === "debit") {
-          acc[month].expenses += transaction.amount
-        }
-        return acc
-      },
-      {} as { [month: string]: { name: string; income: number; expenses: number } },
-    )
-    return Object.values(groupedData)
-  }, [transactions])
+// In the chartData calculation
+const chartData = useMemo(() => {
+  const groupedData = transactions.reduce((acc, transaction) => {
+    const date = new Date(transaction.rawDate || transaction.date);
+    const month = date.toLocaleString("default", { month: "short" });
+    const yearMonth = `${date.getFullYear()}-${date.getMonth()}`;
+
+    if (!acc[yearMonth]) {
+      acc[yearMonth] = {
+        name: month,
+        fullDate: date,
+        income: 0,
+        expenses: 0,
+        savings: 0
+      };
+    }
+
+    if (transaction.type === "credit") {
+      acc[yearMonth].income += transaction.amount;
+    } else {
+      acc[yearMonth].expenses += transaction.amount;
+    }
+
+    acc[yearMonth].savings = acc[yearMonth].income - acc[yearMonth].expenses;
+
+    return acc;
+  }, {} as Record<string, { name: string; fullDate: Date; income: number; expenses: number; savings: number }>);
+
+  return Object.values(groupedData)
+    .sort((a, b) => a.fullDate.getTime() - b.fullDate.getTime())
+    .map(data => ({
+      name: data.name,
+      income: data.income,
+      expenses: data.expenses,
+      savings: data.savings
+    }));
+}, [transactions]);
+
+// In the transactions list display
+<div className="accueil-kiosk-transactions-list">
+  {loadingTransactions ? (
+    <div>Loading transactions...</div>
+  ) : errorTransactions ? (
+    <div className="error-message">{errorTransactions}</div>
+  ) : transactions.length > 0 ? (
+    transactions.map((transaction, index) => (
+      <div key={index} className="transaction-item">
+        {/* Existing transaction item code */}
+      </div>
+    ))
+  ) : (
+    <div>Aucune transaction disponible</div>
+  )}
+</div>
 
   const handleAccountClick = (accountId: string) => {
     console.log(`Viewing account ${accountId}...`)
@@ -465,6 +520,7 @@ const AccueilKiosk: React.FC = () => {
                   <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                       <defs>
+                        
                         <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="var(--kiosk-success)" stopOpacity={0.8} />
                           <stop offset="95%" stopColor="var(--kiosk-success)" stopOpacity={0} />
@@ -505,30 +561,36 @@ const AccueilKiosk: React.FC = () => {
                   </h2>
                 </div>
                 <div className="accueil-kiosk-transactions-list">
-                  {loadingTransactions ? (
-                    <div>Loading transactions...</div>
-                  ) : errorTransactions ? (
-                    <div className="error-message">{errorTransactions}</div>
-                  ) : transactions.length > 0 ? (
-                    transactions.map((transaction, index) => (
-                      <div key={index} className="transaction-item">
-                        <IonRippleEffect />
-                        <div className="transaction-icon">
-                          <IonIcon icon={transaction.type === "credit" ? trendingUpOutline : trendingDownOutline} />
-                        </div>
-                        <div className="transaction-details">
-                          <div className="transaction-description">{transaction.description}</div>
-                          <div className="transaction-date">{new Date(transaction.date).toLocaleString()}</div>
-                        </div>
-                        <div className={`transaction-amount ${transaction.type}`}>
-                          {transaction.type === "credit" ? "+" : "-"} {transaction.amount.toFixed(2)} TND
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div>Aucune transaction disponible</div>
-                  )}
-                </div>
+  {loadingTransactions ? (
+    <div>Loading transactions...</div>
+  ) : errorTransactions ? (
+    <div className="error-message">{errorTransactions}</div>
+  ) : transactions.length > 0 ? (
+    transactions.slice(0, 3).map((transaction, index) => (
+      <div key={index} className="transaction-item">
+        <IonRippleEffect />
+        <div className="transaction-icon">
+          <IonIcon icon={transaction.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+        </div>
+        <div className="transaction-details">
+          <div className="transaction-description">{transaction.description}</div>
+          {transaction.category && (
+            <div className="transaction-category">{transaction.category}</div>
+          )}
+          <div className="transaction-date">
+            {new Date(transaction.rawDate || transaction.date).toLocaleString()}
+          </div>
+        </div>
+        <div className={`transaction-amount ${transaction.type}`}>
+          {transaction.type === "credit" ? "+" : "-"} 
+          {transaction.amount.toFixed(2)} TND
+        </div>
+      </div>
+    ))
+  ) : (
+    <div>Aucune transaction disponible</div>
+  )}
+</div>
               </div>
             </div>
 
