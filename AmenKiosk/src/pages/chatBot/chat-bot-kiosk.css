@@ -272,6 +272,27 @@
   margin-right: 0;
 }
 
+/* Cursor animation for typing effect */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: var(--kiosk-primary-text, #121660);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+
 @keyframes bounce {
   0%,
   60%,
@@ -323,6 +344,8 @@
 .kiosk-chat-input-area {
   padding: 1.5rem;
   background: var(--kiosk-surface, #f8f8f8);
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
+  box-shadow: var(--kiosk-shadow-m #f8f8f8);
   border-radius: var(--kiosk-radius-lg, 1.5rem);
   box-shadow: var(--kiosk-shadow-md, 0 4px 12px rgba(18, 22, 96, 0.15));
 }
@@ -665,4 +688,3 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
-

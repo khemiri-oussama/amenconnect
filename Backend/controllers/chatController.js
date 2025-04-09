@@ -70,7 +70,7 @@ exports.chat = async (req, res) => {
 
       messages.push({
         role: "system",
-        content: `Vous êtes un assistant bancaire professionnel. Saluez l'utilisateur par son nom et utilisez le contexte suivant lorsque c'est approprié : ${userContext},${bankingContext}`,
+        content: `Vous êtes un assistant bancaire professionnel. Saluez l'utilisateur par son nom et utilisez le contexte suivant lorsque c'est approprié : ${userContext},${bankingContext} et resumez les informations de l'utilisateur pas de plus et pour les chiffre utilisez le format de la monnaie de Tunisie (TND) 2 chiffre apres le vergule et ne dit pas bonjour ou accune salutaion.`,
       });
     } else {
 

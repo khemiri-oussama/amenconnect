@@ -20,7 +20,6 @@ import {
   helpCircleOutline,
   documentTextOutline,
   timeOutline,
-  arrowBackOutline,
   walletOutline,
 } from "ionicons/icons"
 import { useAuth } from "../../context/AuthContext"
@@ -28,12 +27,15 @@ import NavbarKiosk from "../../components/NavbarKiosk"
 import "./chat-bot-kiosk.css"
 import Keyboard from "react-simple-keyboard"
 import "react-simple-keyboard/build/css/index.css"
+import { TypingEffect } from "../../components/KioskComponents/typing-effect"
 
 interface Message {
   id: number
   text: string
   sender: "user" | "bot"
   timestamp: Date
+  isTyping?: boolean
+  isComplete?: boolean
 }
 
 const ChatBotKiosk: React.FC = () => {
@@ -45,6 +47,7 @@ const ChatBotKiosk: React.FC = () => {
       text: `Bonjour ${profile?.user?.prenom || ""} ! Je suis votre assistant bancaire. Comment puis-je vous aider aujourd'hui ?`,
       sender: "bot",
       timestamp: new Date(),
+      isComplete: true,
     },
   ])
   const [loading, setLoading] = useState<boolean>(false)
@@ -52,8 +55,8 @@ const ChatBotKiosk: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true)
   const textareaRef = useRef<HTMLIonTextareaElement>(null)
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
+  const [hasUserSentMessage, setHasUserSentMessage] = useState<boolean>(false)
 
-  // Défilement vers le bas des messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
@@ -71,9 +74,7 @@ const ChatBotKiosk: React.FC = () => {
     )
   }
 
-  // Déterminer si l'utilisateur est authentifié
   const isAuthenticated = Boolean(profile)
-
   const userName = profile?.user ? `${profile.user.prenom} ${profile.user.nom}` : ""
   const userEmail = profile?.user?.email || ""
   const userAccounts = profile?.comptes || []
@@ -84,22 +85,22 @@ const ChatBotKiosk: React.FC = () => {
   const sendMessage = async (text = message) => {
     if (!text.trim()) return
 
-    // Ajouter le message de l'utilisateur au chat
     const userMessage: Message = {
       id: messages.length + 1,
       text: text,
       sender: "user",
       timestamp: new Date(),
+      isComplete: true,
     }
 
     setMessages((prev) => [...prev, userMessage])
     setLoading(true)
-    setMessage("") // Effacer le champ de saisie
-    setShowSuggestions(false) // Masquer les suggestions après l'envoi d'un message
-    setShowKeyboard(false) // Masquer le clavier après l'envoi d'un message
+    setMessage("")
+    setShowSuggestions(false)
+    setShowKeyboard(false)
+    setHasUserSentMessage(true)
 
     try {
-      // Préparer la charge utile de la requête en fonction du statut d'authentification
       const payload = isAuthenticated
         ? {
             message: text,
@@ -122,32 +123,37 @@ const ChatBotKiosk: React.FC = () => {
 
       const data = await response.json()
 
-      // Ajouter la réponse du bot au chat
       const botMessage: Message = {
         id: messages.length + 2,
         text: data.response || "Je suis désolé, je n'ai pas pu traiter votre demande.",
         sender: "bot",
         timestamp: new Date(),
+        isTyping: true,
+        isComplete: false,
       }
 
       setMessages((prev) => [...prev, botMessage])
-
-      // Afficher à nouveau les suggestions après la réponse du bot
+      setLoading(false)
     } catch (error) {
       console.error("Erreur:", error)
-
-      // Ajouter un message d'erreur au chat
       const errorMessage: Message = {
         id: messages.length + 2,
         text: "Une erreur s'est produite lors de la communication avec l'API. Veuillez réessayer plus tard.",
         sender: "bot",
         timestamp: new Date(),
+        isComplete: true,
       }
 
       setMessages((prev) => [...prev, errorMessage])
+      setLoading(false)
     }
+  }
 
-    setLoading(false)
+  const handleTypingComplete = (messageId: number) => {
+    setMessages((prev) =>
+      prev.map((msg) => (msg.id === messageId ? { ...msg, isTyping: false, isComplete: true } : msg)),
+    )
+    setShowSuggestions(true)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -157,21 +163,18 @@ const ChatBotKiosk: React.FC = () => {
     }
   }
 
-  // Formater l'horodatage
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
-  // Formater le texte du message pour préserver les sauts de ligne
   const formatMessageText = (text: string) => {
     return text.split("\n").map((line, i) => (
-      <p key={i} className="message-paragraph">
+      <p key={i} className="kiosk-message-paragraph">
         {line || " "}
       </p>
     ))
   }
 
-  // Messages de suggestion rapide
   const suggestions = [
     { text: "Quel est le solde de mon compte ?", icon: walletOutline },
     { text: "Comment puis-je effectuer un virement ?", icon: helpCircleOutline },
@@ -186,32 +189,30 @@ const ChatBotKiosk: React.FC = () => {
   const focusTextarea = () => {
     if (!showKeyboard) {
       setShowKeyboard(true)
-      // When showing keyboard, scroll to bottom of messages after a short delay
       setTimeout(() => {
         scrollToBottom()
       }, 300)
     }
   }
 
-  // Gestionnaire pour le clavier virtuel
   const onKeyboardChange = (input: string) => {
     setMessage(input)
   }
 
-  // Gestionnaire pour les touches spéciales du clavier
   const onKeyboardKeyPress = (button: string) => {
     if (button === "{enter}") {
       sendMessage()
     }
   }
 
-  // Masquer le clavier lorsqu'on clique ailleurs
   const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement
     if (!target.closest(".kiosk-message-input-container") && !target.closest(".virtual-keyboard-container")) {
       setShowKeyboard(false)
     }
   }
+
+  const isBotTyping = messages.some((msg) => msg.sender === "bot" && msg.isTyping)
 
   return (
     <IonPage className="kiosk-chat-page">
@@ -220,7 +221,6 @@ const ChatBotKiosk: React.FC = () => {
       <IonContent className="kiosk-chat-content">
         <div className={`kiosk-chat-container ${showKeyboard ? "keyboard-visible" : ""}`} onClick={handleClickOutside}>
           <div className="kiosk-chat-header">
-            
             <IonImg className="kiosk-logo" src="amen_logo.png" alt="Amen Bank Logo" />
             <div className="kiosk-chat-title">
               <h1 className="kiosk-title">Assistant Bancaire</h1>
@@ -274,14 +274,19 @@ const ChatBotKiosk: React.FC = () => {
                       </div>
                     )}
                     <div className="kiosk-message-text">
-                      <div className="kiosk-message-text-content">{formatMessageText(msg.text)}</div>
+                      <div className="kiosk-message-text-content">
+                        {msg.sender === "bot" && msg.isTyping ? (
+                          <TypingEffect text={msg.text} onComplete={() => handleTypingComplete(msg.id)} />
+                        ) : (
+                          formatMessageText(msg.text)
+                        )}
+                      </div>
                       <span className="kiosk-message-time">{formatTime(msg.timestamp)}</span>
                     </div>
                   </div>
                 </div>
               ))}
 
-              {/* Indicateur de chargement */}
               {loading && (
                 <div className="kiosk-message-bubble kiosk-bot-message">
                   <div className="kiosk-message-content">
@@ -299,12 +304,10 @@ const ChatBotKiosk: React.FC = () => {
                 </div>
               )}
 
-              {/* Élément invisible pour défiler vers */}
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Suggestions rapides */}
-            {showSuggestions && !loading && (
+            {showSuggestions && !hasUserSentMessage && !loading && !isBotTyping && (
               <div className="kiosk-suggestions-container">
                 {suggestions.map((suggestion, index) => (
                   <div
@@ -349,7 +352,6 @@ const ChatBotKiosk: React.FC = () => {
             </div>
           </div>
 
-          {/* Clavier virtuel */}
           {showKeyboard && (
             <div className="keyboard-overlay">
               <div className="floating-input-container">
@@ -400,4 +402,3 @@ const ChatBotKiosk: React.FC = () => {
 }
 
 export default ChatBotKiosk
-
