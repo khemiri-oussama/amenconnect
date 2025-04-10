@@ -1,7 +1,4 @@
-"use client";
-
-import type React from "react";
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   IonContent,
   IonPage,
@@ -29,17 +26,8 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 import { useAuth } from "../../../AuthContext";
-
 import "./CompteMobile.css";
 import NavMobile from "../../../components/NavMobile";
-
-interface Operation {
-  id: number;
-  type: "credit" | "debit";
-  amount: number;
-  description: string;
-  date: string;
-}
 
 const CompteMobile: React.FC = () => {
   const [today, setToday] = useState<string>("");
@@ -58,88 +46,21 @@ const CompteMobile: React.FC = () => {
     setToday(formattedDate);
   }, []);
 
-  // Refresh function for pull-to-refresh
-  const handleRefreshC = async (event: CustomEvent) => {
-    try {
-      await refreshProfile();
-    } catch (error) {
-      console.error("Refresh failed:", error);
-    } finally {
-      event.detail.complete();
-    }
-  };
-
-  // Set a formatted date for display (example date)
-  const [Day, setDay] = useState<string>("");
-  useEffect(() => {
-    const isoString = "2025-02-25T02:20:26.487Z";
-    const date = new Date(isoString);
-    const options: Intl.DateTimeFormatOptions = {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    };
-    let formattedDate = date.toLocaleDateString("fr-FR", options);
-    // Capitalize month if needed
-    const parts = formattedDate.split(" ");
-    if (parts.length === 3) {
-      parts[1] = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-      formattedDate = parts.join(" ");
-    }
-    setDay(formattedDate);
-  }, []);
-
-  // Handle segment (tab) change
-  const handleSegmentChange = (e: CustomEvent) => {
-    setSelectedSegment(e.detail.value);
-  };
-
-  // Wait for profile data to load
-  if (authLoading) {
-    return (
-      <IonPage>
-        <IonContent fullscreen className="ion-padding">
-          <p>Chargement des données...</p>
-        </IonContent>
-      </IonPage>
-    );
-  }
-
-  // Use the first account from profile data (or fallback)
-  const account =
-    profile?.comptes && profile.comptes.length > 0 ? profile.comptes[0] : null;
-
-  // Fetch operations from the API
-  const [operations, setOperations] = useState<Operation[]>([]);
-  const [loadingOperations, setLoadingOperations] = useState<boolean>(true);
-  const [errorOperations, setErrorOperations] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchOperations = async () => {
-      try {
-        const response = await fetch("/api/historique", {
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch operations");
-        }
-        const data: Operation[] = await response.json();
-        setOperations(data);
-      } catch (error) {
-        console.error("Error fetching operations:", error);
-        setErrorOperations("Erreur lors de la récupération des opérations.");
-      } finally {
-        setLoadingOperations(false);
+  // Aggregate historique (operations) from profile.comptes
+  const operations = useMemo(() => {
+    if (!profile) return [];
+    let allOperations: typeof profile.comptes[0]["historique"] = [];
+    profile.comptes.forEach((compte) => {
+      if (compte.historique && Array.isArray(compte.historique)) {
+        allOperations = allOperations.concat(compte.historique);
       }
-    };
-    fetchOperations();
-  }, []);
+    });
+    return allOperations;
+  }, [profile]);
 
-  // Build chart data from fetched operations
+  // Build chart data from operations
   const chartData = useMemo(() => {
     const grouped = operations.reduce((acc, op) => {
-      // Get a short month string (e.g., "Jan", "Feb")
       const month = new Date(op.date).toLocaleString("default", { month: "short" });
       if (!acc[month]) {
         acc[month] = { month: month, income: 0, expenses: 0 };
@@ -154,11 +75,41 @@ const CompteMobile: React.FC = () => {
     return Object.values(grouped);
   }, [operations]);
 
+  // Handle segment (tab) change
+  const handleSegmentChange = (e: CustomEvent) => {
+    setSelectedSegment(e.detail.value);
+  };
+
+  if (authLoading) {
+    return (
+      <IonPage>
+        <IonContent fullscreen className="ion-padding">
+          <p>Chargement des données...</p>
+        </IonContent>
+      </IonPage>
+    );
+  }
+
+  // Use the first account from profile data (or fallback)
+  const account =
+    profile?.comptes && profile.comptes.length > 0 ? profile.comptes[0] : null;
+
   return (
     <IonPage>
       <IonContent fullscreen>
         {/* Pull-to-refresh */}
-        <IonRefresher slot="fixed" onIonRefresh={handleRefreshC}>
+        <IonRefresher
+          slot="fixed"
+          onIonRefresh={async (event) => {
+            try {
+              await refreshProfile();
+            } catch (error) {
+              console.error("Refresh failed:", error);
+            } finally {
+              event.detail.complete();
+            }
+          }}
+        >
           <IonRefresherContent
             pullingIcon={chevronDownCircleOutline}
             pullingText="Tirer pour rafraîchir"
@@ -196,7 +147,7 @@ const CompteMobile: React.FC = () => {
                   {account ? account.numéroCompte : "12345678987"}
                 </p>
               </div>
-              <span className="expiry-date">{Day}</span>
+              <span className="expiry-date">{today}</span>
             </div>
           </motion.div>
 
@@ -208,10 +159,8 @@ const CompteMobile: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              {loadingOperations ? (
-                <p>Loading chart data...</p>
-              ) : errorOperations ? (
-                <p>{errorOperations}</p>
+              {chartData.length === 0 ? (
+                <p>Aucune donnée pour le graphique</p>
               ) : (
                 <ResponsiveContainer width="100%" height={200}>
                   <AreaChart
@@ -292,18 +241,12 @@ const CompteMobile: React.FC = () => {
             >
               <h3>Opérations</h3>
               <p className="last-update">Dernière mise à jour: {today}</p>
-              {loadingOperations ? (
-                <p>Loading operations...</p>
-              ) : errorOperations ? (
-                <p>{errorOperations}</p>
-              ) : operations.length > 0 ? (
+              {operations.length > 0 ? (
                 operations.map((op) => (
-                  <div key={op.id} className="operation-item">
+                  <div key={op._id} className="operation-item">
                     <div className="operation-icon">
                       <IonIcon
-                        icon={
-                          op.type === "credit" ? trendingUpOutline : trendingDownOutline
-                        }
+                        icon={op.type === "credit" ? trendingUpOutline : trendingDownOutline}
                       />
                     </div>
                     <div className="operation-details">
@@ -329,84 +272,41 @@ const CompteMobile: React.FC = () => {
             </motion.div>
           )}
 
-      
           {/* Account Information Section */}
-          {selectedSegment === "infos" && (
+          {selectedSegment === "infos" && account && (
             <motion.div
               className="account-info-section"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <h2>Information du compte</h2>
-              <motion.div
-                className="info-item"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
-                <span className="info-label">RIB</span>
+              <h2>Informations du compte</h2>
+              <div className="info-item">
+                <span className="info-label">Type de compte:</span>
+                <span className="info-value">{account.type}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Numéro de compte:</span>
+                <span className="info-value">{account.numéroCompte}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Solde:</span>
+                <span className="info-value">{account.solde} TND</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">IBAN:</span>
+                <span className="info-value">{account.IBAN}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">RIB:</span>
+                <span className="info-value">{account.RIB}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Date de création:</span>
                 <span className="info-value">
-                  {account ? account.RIB : "07098050012167474684"}
+                  {new Date(account.createdAt).toLocaleDateString("fr-FR")}
                 </span>
-              </motion.div>
-              <motion.div
-                className="info-item"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <span className="info-label">Numéro du compte</span>
-                <span className="info-value">
-                  {account ? account.numéroCompte : "99999999"}
-                </span>
-              </motion.div>
-              <motion.div
-                className="info-item"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <span className="info-label">IBAN</span>
-                <span className="info-value">
-                  {account ? `TN${account.RIB}` : ""}
-                </span>
-              </motion.div>
-              <motion.div
-                className="info-item"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                <span className="info-label">Référence agence</span>
-                <span className="info-value">
-                  {account ? account.numéroCompte : "Réf. Agence"}
-                </span>
-              </motion.div>
-              <motion.div
-                className="info-item"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-              >
-                <span className="info-label">Solde du compte</span>
-                <span className="info-value">
-                  {account ? `${account.solde} TND` : "40.0 TND"}
-                </span>
-              </motion.div>
-              <motion.div
-                className="info-item"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-              >
-                <span className="info-label">Date de création</span>
-                <span className="info-value">
-                  {account
-                    ? new Date(account.createdAt).toLocaleDateString("fr-FR")
-                    : "00/00/0000"}
-                </span>
-              </motion.div>
+              </div>
             </motion.div>
           )}
         </div>

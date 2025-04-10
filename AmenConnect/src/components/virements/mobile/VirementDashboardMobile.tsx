@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import type React from "react"
 import { IonIcon } from "@ionic/react"
 import {
@@ -22,33 +22,25 @@ interface Transaction {
 
 const VirementDashboardMobile: React.FC = () => {
   const { profile } = useAuth()
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch("/api/historique", {
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        })
-        if (!response.ok) {
-          throw new Error("Failed to fetch transactions")
-        }
-        const data = await response.json()
-        setTransactions(data.slice(0, 5)) // Get only the 5 most recent transactions
-      } catch (error) {
-        console.error("Error fetching transactions:", error)
-        setError("Erreur lors de la récupération des transactions")
-      } finally {
-        setLoading(false)
+  // Aggregate transactions from all comptes in profile
+  const transactions = useMemo(() => {
+    if (!profile) return []
+    let allTransactions: Transaction[] = []
+    profile.comptes.forEach(compte => {
+      if (compte.historique && Array.isArray(compte.historique)) {
+        allTransactions = allTransactions.concat(compte.historique)
       }
-    }
+    })
+    // Sort transactions by date descending (most recent first)
+    return allTransactions.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
+  }, [profile])
 
-    fetchTransactions()
-  }, [])
+  // Show only the 5 most recent transactions
+  const recentTransactions = transactions.slice(0, 5)
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("fr-TN", {
@@ -57,7 +49,10 @@ const VirementDashboardMobile: React.FC = () => {
     }).format(amount)
   }
 
-  const account = profile && profile.comptes && profile.comptes.length > 0 ? profile.comptes[0] : null
+  const account =
+    profile && profile.comptes && profile.comptes.length > 0
+      ? profile.comptes[0]
+      : null
 
   return (
     <div className="virement-dashboard-mobile">
@@ -116,16 +111,14 @@ const VirementDashboardMobile: React.FC = () => {
           <h3 className="section-title">Transactions récentes</h3>
         </div>
 
-        {loading ? (
-          <div className="loading-state">Chargement des transactions...</div>
-        ) : error ? (
+        {error ? (
           <div className="error-state">
             <IonIcon icon={alertCircleOutline} className="error-icon" />
             <p>{error}</p>
           </div>
-        ) : transactions.length > 0 ? (
+        ) : recentTransactions.length > 0 ? (
           <div className="transactions-list">
-            {transactions.map((transaction, index) => (
+            {recentTransactions.map((transaction, index) => (
               <motion.div
                 key={transaction._id}
                 className="transaction-item"
@@ -192,4 +185,3 @@ const VirementDashboardMobile: React.FC = () => {
 }
 
 export default VirementDashboardMobile
-
