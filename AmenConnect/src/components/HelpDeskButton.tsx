@@ -1,7 +1,7 @@
 "use client"
 import { v4 as uuidv4 } from "uuid";
 import { useIonRouter } from "@ionic/react";
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import {
   IonButton,
   IonIcon,
@@ -18,115 +18,127 @@ import {
   IonSpinner,
   IonInput,
   IonText,
-} from "@ionic/react"
+} from "@ionic/react";
 import {
   chatbubbleEllipsesOutline,
   closeOutline,
   videocamOutline,
   sendOutline,
   arrowBackOutline,
-} from "ionicons/icons"
-import "./HelpDeskButton.css"
+} from "ionicons/icons";
+import "./HelpDeskButton.css";
 
 interface Message {
-  content: string
-  sender: "user" | "bot"
+  content: string;
+  sender: "user" | "bot";
 }
 
 const HelpDeskButton: React.FC = () => {
-  const [desktop, setDesktop] = useState(false)
-  const [showModal, setShowModal] = useState(false)
+  const [desktop, setDesktop] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [activeOption, setActiveOption] = useState<
     "main" | "chat" | "video" | "video-form" | "waiting-approval"
-  >("main")
+  >("main");
   const [messages, setMessages] = useState<Message[]>([
     { content: "Bonjour ! Comment puis-je vous aider aujourd'hui ?", sender: "bot" },
-  ])
-  const [inputValue, setInputValue] = useState("")
-  const [connecting, setConnecting] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     phone: "",
-  })
-
-  // Optionally, you can store the generated roomId from the API
-  const [roomId, setRoomId] = useState<string | null>(null)
+  });
+  const [roomId, setRoomId] = useState<string | null>(null);
 
   // Keep the button visible on scroll
   useEffect(() => {
     const handleScroll = () => {
-      setIsVisible(true)
-    }
+      setIsVisible(true);
+    };
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleOpenModal = () => {
-    setShowModal(true)
-    setActiveOption("main")
-  }
+    setShowModal(true);
+    setActiveOption("main");
+  };
 
   const handleCloseModal = () => {
-    setShowModal(false)
+    setShowModal(false);
     setTimeout(() => {
-      setActiveOption("main")
-    }, 300)
-  }
+      setActiveOption("main");
+    }, 300);
+  };
 
-  const handleSendMessage = () => {
-    if (!inputValue.trim()) return
+  // Updated send message handler with API call
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
 
-    // Add user message
-    setMessages((prev) => [...prev, { content: inputValue, sender: "user" }])
+    // Add the user's message to the chat
+    const userMessage: Message = { content: inputValue, sender: "user" };
+    setMessages((prev) => [...prev, userMessage]);
+    setLoading(true);
+    const payload = { message: inputValue };
 
-    // Simulate bot response
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          content:
-            "Merci pour votre message. Un de nos conseillers va vous répondre dans les plus brefs délais.",
-          sender: "bot",
+    // Clear the input right away to show the message has been sent
+    setInputValue("");
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ])
-    }, 1000)
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
 
-    setInputValue("")
-  }
+      // Add the bot's response
+      const botMessage: Message = {
+        content: data.response || "Je suis désolé, je n'ai pas pu traiter votre demande.",
+        sender: "bot",
+      };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Erreur lors de la communication avec l'API:", error);
+      const errorMessage: Message = {
+        content: "Une erreur s'est produite lors de la communication avec l'API. Veuillez réessayer plus tard.",
+        sender: "bot",
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    }
+    setLoading(false);
+  };
 
   const startVideoCall = () => {
-    setActiveOption("video-form")
-  }
+    setActiveOption("video-form");
+  };
 
   const handleFormChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
-
-
-
-  
-  // ...inside your HelpDeskButton component
-  
   const router = useIonRouter();
 
   const handleFormSubmit = async () => {
     const newRoomId = uuidv4();
     const payload = { ...formData, roomId: newRoomId };
-  
+
     setRoomId(null);
     try {
       setActiveOption("waiting-approval");
-  
+
       const response = await fetch("/api/video-requests", {
         method: "POST",
         headers: {
@@ -134,34 +146,32 @@ const HelpDeskButton: React.FC = () => {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (!response.ok) {
         throw new Error("Erreur lors de la soumission de la demande.");
       }
-  
+
       const data = await response.json();
       console.log("Demande de vidéoconférence créée:", data);
-  
+
       if (data.request && data.request.roomId) {
         setRoomId(data.request.roomId);
       }
-  
+
       setTimeout(() => {
         setConnecting(true);
         setActiveOption("video");
-  
+
         setTimeout(() => {
           setConnecting(false);
-          // Use Ionic navigation method
-          window.location.href=`/video/${newRoomId}`;
+          // Use Ionic navigation method or a simple redirect
+          window.location.href = `/video/${newRoomId}`;
         }, 3000);
       }, 5000);
     } catch (error) {
       console.error("Erreur lors de la soumission de la demande:", error);
     }
   };
-  
-  
 
   const renderContent = () => {
     switch (activeOption) {
@@ -189,12 +199,19 @@ const HelpDeskButton: React.FC = () => {
                   <div
                     key={index}
                     className={`help-desk-message ${
-                      message.sender === "user" ? "help-desk-message-user" : "help-desk-message-bot"
+                      message.sender === "user"
+                        ? "help-desk-message-user"
+                        : "help-desk-message-bot"
                     }`}
                   >
                     {message.content}
                   </div>
                 ))}
+                {loading && (
+                  <div className="help-desk-message help-desk-message-bot">
+                    <IonSpinner name="crescent" />
+                  </div>
+                )}
               </div>
               <div className="help-desk-input-container">
                 <IonInput
@@ -203,21 +220,21 @@ const HelpDeskButton: React.FC = () => {
                   placeholder="Tapez votre message..."
                   className="help-desk-input"
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") handleSendMessage()
+                    if (e.key === "Enter") handleSendMessage();
                   }}
                 />
                 <IonButton
                   fill="clear"
                   className="help-desk-send-button"
                   onClick={handleSendMessage}
-                  disabled={!inputValue.trim()}
+                  disabled={!inputValue.trim() || loading}
                 >
                   <IonIcon icon={sendOutline} />
                 </IonButton>
               </div>
             </IonContent>
           </>
-        )
+        );
 
       case "video":
         return (
@@ -241,7 +258,9 @@ const HelpDeskButton: React.FC = () => {
               {connecting ? (
                 <div className="help-desk-connecting">
                   <IonSpinner name="crescent" className="help-desk-spinner" />
-                  <IonText color="primary">Connexion en cours avec un conseiller...</IonText>
+                  <IonText color="primary">
+                    Connexion en cours avec un conseiller...
+                  </IonText>
                 </div>
               ) : (
                 <div className="help-desk-video-ready">
@@ -254,20 +273,22 @@ const HelpDeskButton: React.FC = () => {
                   <IonText color="medium" className="help-desk-video-subtitle">
                     Cliquez sur le bouton ci-dessous pour démarrer la vidéoconférence
                   </IonText>
-                  {/* Optionally, you can pass the roomId to your video conferencing component */}
                   {roomId && (
                     <IonText color="medium" className="help-desk-video-room">
                       Salle: {roomId}
                     </IonText>
                   )}
-                  <IonButton className="help-desk-start-video-button" onClick={startVideoCall}>
+                  <IonButton
+                    className="help-desk-start-video-button"
+                    onClick={startVideoCall}
+                  >
                     Démarrer la vidéoconférence
                   </IonButton>
                 </div>
               )}
             </IonContent>
           </>
-        )
+        );
 
       case "video-form":
         return (
@@ -342,7 +363,12 @@ const HelpDeskButton: React.FC = () => {
                   <IonButton
                     className="help-desk-submit-button"
                     onClick={handleFormSubmit}
-                    disabled={!formData.name || !formData.email || !formData.subject || !formData.phone}
+                    disabled={
+                      !formData.name ||
+                      !formData.email ||
+                      !formData.subject ||
+                      !formData.phone
+                    }
                   >
                     Soumettre la demande
                   </IonButton>
@@ -350,7 +376,7 @@ const HelpDeskButton: React.FC = () => {
               </div>
             </IonContent>
           </>
-        )
+        );
 
       case "waiting-approval":
         return (
@@ -377,7 +403,7 @@ const HelpDeskButton: React.FC = () => {
               </div>
             </IonContent>
           </>
-        )
+        );
 
       default:
         return (
@@ -414,11 +440,11 @@ const HelpDeskButton: React.FC = () => {
               </IonCard>
             </IonContent>
           </>
-        )
+        );
     }
-  }
+  };
 
-  if (!isVisible) return null
+  if (!isVisible) return null;
 
   return (
     <>
@@ -430,7 +456,7 @@ const HelpDeskButton: React.FC = () => {
         {renderContent()}
       </IonModal>
     </>
-  )
-}
+  );
+};
 
-export default HelpDeskButton
+export default HelpDeskButton;
