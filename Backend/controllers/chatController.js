@@ -17,6 +17,10 @@ exports.chat = async (req, res) => {
     // Build an array of messages to send to the chatbot.
     // If user info is provided, include a system prompt with context.
     const messages = [];
+    const bankingContext = "Email : amenbank@amenbank.com.tn. " +
+    "Téléphone : +216 71 100 100. " +
+    "Site web : www.amenbank.com.tn. " +
+    "Adresse : Avenue Habib Bourguiba, Tunis, Tunisie.";
     if (user) {
       // Construct user context details.
       let userContext = "";
@@ -63,10 +67,7 @@ exports.chat = async (req, res) => {
         userContext += accountDetails;
       }
       
-      const bankingContext = "Email : amenbank@amenbank.com.tn. " +
-        "Téléphone : +216 71 100 100. " +
-        "Site web : www.amenbank.com.tn. " +
-        "Adresse : Avenue Habib Bourguiba, Tunis, Tunisie.";
+
 
       messages.push({
         role: "system",
@@ -77,7 +78,7 @@ exports.chat = async (req, res) => {
 
       messages.push({
         role: "system",
-        content: `Vous êtes un assistant bancaire professionnel. Utilisez le contexte suivant lorsque c'est approprié : ${bankingContext}`,
+        content: `Vous êtes un assistant bancaire professionnel. Utilisez le contexte suivant lorsque c'est approprié :${bankingContext}`,
       });
     }
     // Append the user's message.
