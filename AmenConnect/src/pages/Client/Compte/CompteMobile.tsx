@@ -29,6 +29,15 @@ import { useAuth } from "../../../AuthContext";
 import "./CompteMobile.css";
 import NavMobile from "../../../components/NavMobile";
 
+// Define the Transaction interface used for historique data
+interface Transaction {
+  _id: string;
+  date: string;
+  amount: number;
+  description: string;
+  type: "credit" | "debit";
+}
+
 const CompteMobile: React.FC = () => {
   const [today, setToday] = useState<string>("");
   const [selectedSegment, setSelectedSegment] = useState<string>("operations");
@@ -49,7 +58,7 @@ const CompteMobile: React.FC = () => {
   // Aggregate historique (operations) from profile.comptes
   const operations = useMemo(() => {
     if (!profile) return [];
-    let allOperations: typeof profile.comptes[0]["historique"] = [];
+    let allOperations: Transaction[] = []; // Explicitly typed as Transaction[]
     profile.comptes.forEach((compte) => {
       if (compte.historique && Array.isArray(compte.historique)) {
         allOperations = allOperations.concat(compte.historique);
