@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import type React from "react"
 import { IonIcon, IonSearchbar } from "@ionic/react"
 import { motion } from "framer-motion"
@@ -19,66 +19,48 @@ interface Transaction {
   amount: number
   description: string
   type: "credit" | "debit"
-  status: string
+  status?: string
   beneficiary?: string
   reference?: string
 }
 
 const VirementHistoriqueMobile: React.FC = () => {
   const { profile } = useAuth()
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [showFilters, setShowFilters] = useState(false)
   const [dateFrom, setDateFrom] = useState("")
   const [dateTo, setDateTo] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
+  const [error, setError] = useState<string | null>(null)
 
+  // Aggregate transactions from all comptes in profile
+  const transactions = useMemo(() => {
+    if (!profile) return []
+    let allTransactions: Transaction[] = []
+    profile.comptes.forEach(compte => {
+      if (compte.historique && Array.isArray(compte.historique)) {
+        allTransactions = allTransactions.concat(compte.historique)
+      }
+    })
+    // Sort transactions by date descending (most recent first)
+    return allTransactions.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
+  }, [profile])
+
+  // Set default date range (last 3 months)
   useEffect(() => {
-    // Set default date range (last 3 months)
     const today = new Date()
     const threeMonthsAgo = new Date()
     threeMonthsAgo.setMonth(today.getMonth() - 3)
 
     setDateTo(today.toISOString().split("T")[0])
     setDateFrom(threeMonthsAgo.toISOString().split("T")[0])
+  }, [])
 
-    // Fetch transactions
-    const fetchTransactions = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch("/api/historique", {
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        })
-        if (!response.ok) {
-          throw new Error("Failed to fetch transactions")
-        }
-
-        const data = await response.json()
-        setTransactions(data)
-        setFilteredTransactions(data)
-      } catch (err: any) {
-        console.error("Error fetching transactions:", err)
-        setError(err.message || "Une erreur est survenue lors de la récupération des transactions")
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (profile) {
-      fetchTransactions()
-    } else {
-      setLoading(false)
-      setError("Veuillez vous connecter pour voir l'historique.")
-    }
-  }, [profile])
-
-  useEffect(() => {
-    // Apply filters
+  // Apply filters
+  const filteredTransactions = useMemo(() => {
     let filtered = [...transactions]
 
     // Search term
@@ -87,7 +69,7 @@ const VirementHistoriqueMobile: React.FC = () => {
         (tx) =>
           tx.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (tx.beneficiary && tx.beneficiary.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (tx.reference && tx.reference.toLowerCase().includes(searchQuery.toLowerCase())),
+          (tx.reference && tx.reference.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     }
 
@@ -103,7 +85,9 @@ const VirementHistoriqueMobile: React.FC = () => {
 
     // Status
     if (statusFilter !== "all") {
-      filtered = filtered.filter((tx) => tx.status.toLowerCase() === statusFilter.toLowerCase())
+      filtered = filtered.filter(
+        (tx) => (tx.status || "").toLowerCase() === statusFilter.toLowerCase()
+      )
     }
 
     // Type
@@ -111,7 +95,7 @@ const VirementHistoriqueMobile: React.FC = () => {
       filtered = filtered.filter((tx) => tx.type === typeFilter)
     }
 
-    setFilteredTransactions(filtered)
+    return filtered
   }, [transactions, searchQuery, dateFrom, dateTo, statusFilter, typeFilter])
 
   const formatCurrency = (amount: number) => {
@@ -121,7 +105,8 @@ const VirementHistoriqueMobile: React.FC = () => {
     }).format(amount)
   }
 
-  const getStatusLabel = (status: string) => {
+  const getStatusLabel = (status?: string) => {
+    if (!status) return ""
     const statusLower = status.toLowerCase()
     switch (statusLower) {
       case "completed":
@@ -136,7 +121,8 @@ const VirementHistoriqueMobile: React.FC = () => {
     }
   }
 
-  const getStatusClass = (status: string) => {
+  const getStatusClass = (status?: string) => {
+    if (!status) return ""
     const statusLower = status.toLowerCase()
     switch (statusLower) {
       case "completed":
@@ -186,7 +172,12 @@ const VirementHistoriqueMobile: React.FC = () => {
 
           <div className="filter-group">
             <label className="filter-label">Date de fin</label>
-            <input type="date" className="filter-input" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+            <input
+              type="date"
+              className="filter-input"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+            />
           </div>
 
           <div className="filter-group">
@@ -210,12 +201,10 @@ const VirementHistoriqueMobile: React.FC = () => {
         </motion.div>
       )}
 
-      {loading ? (
-        <div className="loading-state">Chargement des transactions...</div>
-      ) : error ? (
+      {profile === null ? (
         <div className="error-state">
           <IonIcon icon={alertCircleOutline} className="error-icon" />
-          <p>{error}</p>
+          <p>Veuillez vous connecter pour voir l'historique.</p>
         </div>
       ) : filteredTransactions.length === 0 ? (
         <div className="empty-state">
@@ -266,4 +255,3 @@ const VirementHistoriqueMobile: React.FC = () => {
 }
 
 export default VirementHistoriqueMobile
-
