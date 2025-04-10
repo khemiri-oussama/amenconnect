@@ -17,10 +17,22 @@ exports.chat = async (req, res) => {
     // Build an array of messages to send to the chatbot.
     // If user info is provided, include a system prompt with context.
     const messages = [];
-    const bankingContext = "Email : amenbank@amenbank.com.tn. " +
-    "Téléphone : +216 71 100 100. " +
-    "Site web : www.amenbank.com.tn. " +
-    "Adresse : Avenue Habib Bourguiba, Tunis, Tunisie.";
+    const bankingContext = `Banking Contact Information:
+    Email     : amenbank@amenbank.com.tn
+    Téléphone : +216 71 100 100
+    Site web  : www.amenbank.com.tn
+    Adresse   : Avenue Habib Bourguiba, Tunis, Tunisie
+    
+    Products & Offers:
+    • Credit Cards: Offering a range of Visa, MasterCard, and specialized cards tailored to various needs.
+    • Debit Cards: Secure and convenient solutions for daily transactions.
+    • Personal Loans: Competitive options for personal financing requirements.
+    • Mortgage Loans: Flexible home financing with attractive rates.
+    • Business Solutions: Lending and account services designed for SMEs and corporate clients.
+    • Special Offers: Periodic promotions, reward programs, and exclusive deals for new and existing customers.
+    • Digital Banking: Comprehensive online and mobile banking tools for an enhanced customer experience.
+    • Investment Products: Savings accounts, term deposits, and investment packages to help grow your finances.`;
+    
     if (user) {
       // Construct user context details.
       let userContext = "";
