@@ -31,7 +31,7 @@ exports.createVirement = async (req, res) => {
 
     let processingDelay = 0;
     if (amount > 10000) {
-      processingDelay = 30 * 60 * 1000; // 30 minutes delay
+      processingDelay = 5 * 60 * 1000; // 30 minutes delay
     } else if (typeof toAccount === "string" && toAccount.startsWith("07")) {
       const receiver = await Compte.findOne({ RIB: toAccount }).session(session);
       if (receiver) {
