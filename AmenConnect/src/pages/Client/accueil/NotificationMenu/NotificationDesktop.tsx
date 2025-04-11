@@ -5,6 +5,7 @@ import { IonButton, IonIcon } from "@ionic/react"
 import { notificationsOutline } from "ionicons/icons"
 import { io, Socket } from "socket.io-client"
 import "./NotificationDesktop.css"
+import { useAuth } from "../../../../AuthContext" // adjust the path to your AuthContext
 
 interface Notification {
   id: number;
@@ -18,6 +19,11 @@ const NotificationDesktop: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const [notifications, setNotifications] = useState<Notification[]>([])
+  
+  // Get the user profile from AuthContext
+  const { profile } = useAuth();
+  // Ensure that profile and profile.user exist before proceeding
+  const userId = profile?.user?._id;
 
   // Socket instance ref so that we don't reconnect on every render
   const socketRef = useRef<Socket | null>(null)
@@ -37,32 +43,31 @@ const NotificationDesktop: React.FC = () => {
     }
   }, [handleClickOutside])
 
-  // Connect to Socket.IO server and listen for notifications
+  // Connect to Socket.IO server and join the room using the user ID from AuthContext
   useEffect(() => {
-    // Replace with your actual server URL
+    // Only connect if userId is available
+    if (!userId) {
+      return;
+    }
+    
     socketRef.current = io("http://localhost:3000", {
       transports: ["websocket"],
     });
-  
-    // When the socket connects, join the room with the user id
+    
+    // Emit a register event to join the room associated with the user's ID
+    socketRef.current.emit("register", { room: userId });
+    
+    // Listen for notifications from the server
     socketRef.current.on("virementReceived", (data: Notification) => {
       console.log("Notification received:", data);
       setNotifications((prevNotifications) => [...prevNotifications, data]);
     });
     
-  
-    // Listen for the "virementReceived" event
-    socketRef.current.on("virementReceived", (data: Notification) => {
-      setNotifications((prevNotifications) => [...prevNotifications, data]);
-    });
-  
     return () => {
       socketRef.current?.disconnect();
     };
-  }, []);
+  }, [userId]);  // Only run when userId changes (e.g., after profile load)
   
-  
-
   const markAsRead = (id: number) => {
     setNotifications((prevNotifications) =>
       prevNotifications.map((notif) =>
