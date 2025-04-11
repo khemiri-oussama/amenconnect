@@ -5,7 +5,6 @@ require('dotenv').config();
 
 const http = require('http');
 const { Server } = require('socket.io');
-
 const PORT = process.env.PORT || 3000;
 
 // Create an HTTP server with the Express app
@@ -27,16 +26,18 @@ const io = new Server(server, {
   },
 });
 
+// Attach the io instance to app locals for global access
+app.locals.io = io;
+
 // Initialize your socket handler with the single Socket.IO instance
 const socketHandler = require('./server/socket-handler')(io);
 app.locals.socketHandler = socketHandler;
-app.locals.io = io;
 
 // Global connection logging and event listeners
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
   
-  // Optional: Listen for a registration event if needed
+  // Listen for a registration event if needed
   socket.on('register', (data) => {
     const { totemId } = data;
     if (totemId) {
@@ -49,9 +50,12 @@ io.on('connection', (socket) => {
     console.log('Client disconnected:', socket.id);
   });
 });
+
 require('./monitorTotems');
+
 connectDB()
   .then(() => {
+    // Start the server only once after DB connection
     server.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
@@ -59,6 +63,3 @@ connectDB()
   .catch((err) => {
     console.error('Failed to connect to DB', err);
   });
-  // At the bottom of server.js
-
-

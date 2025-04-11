@@ -1,9 +1,9 @@
 "use client"
 
-import type React from "react"
-import { useState, useRef, useEffect, useCallback } from "react"
+import React, { useState, useRef, useEffect, useCallback } from "react"
 import { IonButton, IonIcon } from "@ionic/react"
-import { notificationsOutline, closeOutline } from "ionicons/icons"
+import { notificationsOutline } from "ionicons/icons"
+import { io, Socket } from "socket.io-client"
 import "./NotificationDesktop.css"
 
 interface Notification {
@@ -17,30 +17,10 @@ interface Notification {
 const NotificationDesktop: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const [notifications, setNotifications] = useState<Notification[]>([])
 
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      title: "Nouveau paiement reçu",
-      message: "Vous avez reçu un virement de 500 TND",
-      time: "Il y a 5 minutes",
-      read: false,
-    },
-    {
-      id: 2,
-      title: "Rappel de facture",
-      message: "Votre facture d'électricité est due dans 3 jours",
-      time: "Il y a 2 heures",
-      read: false,
-    },
-    {
-      id: 3,
-      title: "Mise à jour de sécurité",
-      message: "Veuillez mettre à jour votre mot de passe",
-      time: "Hier",
-      read: true,
-    },
-  ])
+  // Socket instance ref so that we don't reconnect on every render
+  const socketRef = useRef<Socket | null>(null)
 
   const toggleMenu = () => setIsOpen(!isOpen)
 
@@ -57,8 +37,30 @@ const NotificationDesktop: React.FC = () => {
     }
   }, [handleClickOutside])
 
+  // Connect to Socket.IO server and listen for notifications
+  useEffect(() => {
+    // Replace with your actual server URL
+    socketRef.current = io("http://localhost:3000", {
+      transports: ["websocket"],
+    })
+
+    // Listen for the "notification" event
+    socketRef.current.on("notification", (data: Notification) => {
+      // You can also implement logic here to avoid duplicates or format data as needed
+      setNotifications((prevNotifications) => [...prevNotifications, data])
+    })
+
+    return () => {
+      socketRef.current?.disconnect()
+    }
+  }, [])
+
   const markAsRead = (id: number) => {
-    setNotifications(notifications.map((notif) => (notif.id === id ? { ...notif, read: true } : notif)))
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notif) =>
+        notif.id === id ? { ...notif, read: true } : notif
+      )
+    )
   }
 
   const unreadCount = notifications.filter((n) => !n.read).length
@@ -76,21 +78,25 @@ const NotificationDesktop: React.FC = () => {
             <h3>Notifications</h3>
           </div>
           <div className="NotificationD-menu-list-container">
-            <ul className="NotificationD-menu-list">
-              {notifications.map((notif) => (
-                <li
-                  key={notif.id}
-                  className={`notification-item ${notif.read ? "read" : "unread"}`}
-                  onClick={() => markAsRead(notif.id)}
-                >
-                  <div className="notification-content">
-                    <h4>{notif.title}</h4>
-                    <p>{notif.message}</p>
-                    <span className="notification-time">{notif.time}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            {notifications.length === 0 ? (
+              <div className="no-notifications">Il n'y a aucune notification</div>
+            ) : (
+              <ul className="NotificationD-menu-list">
+                {notifications.map((notif) => (
+                  <li
+                    key={notif.id}
+                    className={`notification-item ${notif.read ? "read" : "unread"}`}
+                    onClick={() => markAsRead(notif.id)}
+                  >
+                    <div className="notification-content">
+                      <h4>{notif.title}</h4>
+                      <p>{notif.message}</p>
+                      <span className="notification-time">{notif.time}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       )}
@@ -99,4 +105,3 @@ const NotificationDesktop: React.FC = () => {
 }
 
 export default NotificationDesktop
-

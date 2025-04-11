@@ -2,6 +2,8 @@
 const Virement = require("../models/virement");
 const Compte = require("../models/Compte");
 const mongoose = require("mongoose");
+// Import the getIO function without immediately calling it
+const { getIO } = require("../server/socket");
 
 exports.createVirement = async (req, res) => {
   const session = await mongoose.startSession();
@@ -81,6 +83,13 @@ exports.createVirement = async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
+    // Function to send a notification via Socket.IO
+    const sendNotification = (receiverId, notificationData) => {
+      // Call getIO() here so that it fetches the initialized instance
+      const io = getIO();
+      io.to(receiverId).emit("virementReceived", notificationData);
+    };
+
     // Immediate processing: if no delay, update the receiver's account right away
     if (processingDelay === 0) {
       const receiver = await Compte.findOne({ RIB: toAccount });
@@ -96,6 +105,14 @@ exports.createVirement = async (req, res) => {
         };
         receiver.historique.push(receiverTransaction);
         await receiver.save();
+        
+        // Send notification to the receiver
+        // Here, we assume receiver.userId maps to the Socket.IO room or socket id
+        sendNotification(receiver.userId.toString(), {
+          title: "Nouveau virement reçu",
+          message: `Vous avez reçu ${amount} sur votre compte.`,
+          virementId: virementRecord._id,
+        });
       }
       return res.status(201).json({
         success: true,
@@ -119,6 +136,13 @@ exports.createVirement = async (req, res) => {
             };
             receiver.historique.push(receiverTransaction);
             await receiver.save();
+
+            // Send notification to the receiver after scheduled processing
+            sendNotification(receiver.userId.toString(), {
+              title: "Nouveau virement reçu",
+              message: `Vous avez reçu ${amount} sur votre compte.`,
+              virementId: virementRecord._id,
+            });
           }
           // Update the virement record status to "Completed"
           await Virement.findByIdAndUpdate(virementRecord._id, { status: "Completed" });
