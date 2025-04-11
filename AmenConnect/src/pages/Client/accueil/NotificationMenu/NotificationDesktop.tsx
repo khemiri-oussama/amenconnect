@@ -43,17 +43,17 @@ const NotificationDesktop: React.FC = () => {
     socketRef.current = io("http://localhost:3000", {
       transports: ["websocket"],
     })
-
-    // Listen for the "notification" event
-    socketRef.current.on("notification", (data: Notification) => {
-      // You can also implement logic here to avoid duplicates or format data as needed
+  
+    // Listen for the "virementReceived" event
+    socketRef.current.on("virementReceived", (data: Notification) => {
       setNotifications((prevNotifications) => [...prevNotifications, data])
     })
-
+  
     return () => {
       socketRef.current?.disconnect()
     }
   }, [])
+  
 
   const markAsRead = (id: number) => {
     setNotifications((prevNotifications) =>
