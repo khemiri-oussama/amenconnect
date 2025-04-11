@@ -16,12 +16,11 @@ const initSocket = (server) => {
 
     // Optionally, listen for custom events from the client
     socket.on("register", (data) => {
-      // Example: Join a room based on provided data (e.g., userId or totemId)
-      if (data && data.room) {
-        socket.join(data.room);
-        console.log(`Socket ${socket.id} joined room ${data.room}`);
-      }
-    });
+        if (data && data.room) {
+          socket.join(data.room);
+          console.log(`Socket ${socket.id} joined room ${data.room}`);
+        }
+      });      
 
     socket.on("disconnect", () => {
       console.log("Client disconnected:", socket.id);

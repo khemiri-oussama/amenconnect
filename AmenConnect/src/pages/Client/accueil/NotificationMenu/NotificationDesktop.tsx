@@ -7,11 +7,11 @@ import { io, Socket } from "socket.io-client"
 import "./NotificationDesktop.css"
 
 interface Notification {
-  id: number
-  title: string
-  message: string
-  time: string
-  read: boolean
+  id: number;
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
 }
 
 const NotificationDesktop: React.FC = () => {
@@ -42,17 +42,25 @@ const NotificationDesktop: React.FC = () => {
     // Replace with your actual server URL
     socketRef.current = io("http://localhost:3000", {
       transports: ["websocket"],
-    })
+    });
+  
+    // When the socket connects, join the room with the user id
+    socketRef.current.on("virementReceived", (data: Notification) => {
+      console.log("Notification received:", data);
+      setNotifications((prevNotifications) => [...prevNotifications, data]);
+    });
+    
   
     // Listen for the "virementReceived" event
     socketRef.current.on("virementReceived", (data: Notification) => {
-      setNotifications((prevNotifications) => [...prevNotifications, data])
-    })
+      setNotifications((prevNotifications) => [...prevNotifications, data]);
+    });
   
     return () => {
-      socketRef.current?.disconnect()
-    }
-  }, [])
+      socketRef.current?.disconnect();
+    };
+  }, []);
+  
   
 
   const markAsRead = (id: number) => {

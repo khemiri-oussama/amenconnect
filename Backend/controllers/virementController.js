@@ -93,10 +93,13 @@ exports.createVirement = async (req, res) => {
         receiver.historique.push(receiverTransaction);
         await receiver.save();
         sendNotification(receiver.userId.toString(), {
+          id: Date.now(), // or a proper unique id
           title: "Nouveau virement reçu",
           message: `Vous avez reçu ${amount} sur votre compte.`,
+          time: new Date().toLocaleTimeString(),  // formatted time
+          read: false,
           virementId: virementRecord._id,
-        });
+        });        
       }
       return res.status(201).json({
         success: true,
