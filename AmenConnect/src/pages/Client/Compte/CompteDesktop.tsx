@@ -721,7 +721,7 @@ const ComptePageDesktop: React.FC = () => {
                     <div className="user-details">
                       <div className="user-avatar">
                         <IonAvatar>
-                          <img src="/placeholder.svg?height=80&width=80" alt="Avatar" />
+                          <img src="./avatar.png?height=80&width=80" alt="Avatar" />
                         </IonAvatar>
                       </div>
                       <div className="user-info">
