@@ -43,12 +43,13 @@ const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({ paymentData, onClose }) =
 
   const updateQRCode = () => {
     try {
-      // Create a copy of paymentData with the current amount
+      // Build a valid JSON object for the QR code payload
       const updatedPaymentData = {
-        ...paymentData,
-        amount: amount ? Number.parseFloat(amount) : undefined,
+        transactionId: paymentData.transactionId,
+        amount: amount ? Number.parseFloat(amount) : 0,
+        cardId: paymentData.cardId,
+        merchant: paymentData.merchant,
       }
-
       const qrData = JSON.stringify(updatedPaymentData)
       setQrValue(qrData)
       setIsLoading(false)

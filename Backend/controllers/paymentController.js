@@ -10,27 +10,69 @@ exports.processQRPayment = async (req, res) => {
   }
 
   try {
-    // Find the card by its ID
+    // Retrieve receiver's card and associated account
     const card = await Carte.findById(cardId);
     if (!card) {
       return res.status(404).json({ message: 'Carte non trouvée.' });
     }
-
-    // Check if the card has sufficient funds (for debit cards)
-    if (card.balance < amount) {
-      return res.status(400).json({ message: 'Fonds insuffisants.' });
+    const receiverCompte = await Compte.findById(card.comptesId);
+    if (!receiverCompte) {
+      return res.status(404).json({ message: 'Compte destinataire non trouvé.' });
     }
 
-    // Process the payment:
-    // - Deduct the amount from the card balance.
-    // - Optionally, create a new transaction record.
-    card.balance -= amount;
-    card.UpdatedAt = new Date().toISOString();
+    // Retrieve payer's account using the authenticated user's id.
+    // Use either req.user._id or req.user.id depending on the token structure.
+    const userId = req.user?._id || req.user?.id;
+    if (!userId) {
+      console.error("User information missing in request:", req.user);
+      return res.status(401).json({ message: 'Authentification requise.' });
+    }
+    console.log("Authenticated user:", req.user);
 
-    // Save the updated card information
-    await card.save();
+    const payerCompte = await Compte.findOne({ userId: userId });
+    if (!payerCompte) {
+      console.error("No payer account found for user:", userId);
+      return res.status(404).json({ message: 'Compte payeur non trouvé.' });
+    }
 
-    // Optionally, record the transaction in a separate collection/model.
+    // Check if payer has sufficient funds
+    if (payerCompte.solde < amount) {
+      return res.status(400).json({ message: 'Fonds insuffisants dans le compte payeur.' });
+    }
+
+    // Deduct the amount from the payer's account and record the debit transaction
+    payerCompte.solde -= amount;
+    const payerTransaction = {
+      date: new Date().toISOString(),
+      amount: amount,
+      description: `Paiement via QR vers compte ${receiverCompte._id}`,
+      type: "debit",
+      reference: `QR-PAY-${new Date().getTime()}`,
+    };
+    if (!payerCompte.historique) payerCompte.historique = [];
+    payerCompte.historique.push(payerTransaction);
+
+    // Credit the amount to the receiver's account and record the credit transaction
+    receiverCompte.solde += amount;
+    const receiverTransaction = {
+      date: new Date().toISOString(),
+      amount: amount,
+      description: `Réception de paiement QR de compte ${payerCompte._id}`,
+      type: "credit",
+      reference: `QR-REC-${new Date().getTime()}`,
+    };
+    if (!receiverCompte.historique) receiverCompte.historique = [];
+    receiverCompte.historique.push(receiverTransaction);
+
+    // Save both accounts
+    await payerCompte.save();
+    await receiverCompte.save();
+
+    // Optionally update the card's monthly expenses for the receiver
+    if (card.monthlyExpenses && typeof card.monthlyExpenses.current === "number") {
+      card.monthlyExpenses.current += amount;
+      await card.save();
+    }
 
     return res.status(200).json({ message: 'Paiement traité avec succès.' });
   } catch (err) {
