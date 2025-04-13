@@ -1,22 +1,21 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useRef, useState, useCallback } from "react"
-import { Html5QrcodeScanner, Html5QrcodeScanType, Html5QrcodeSupportedFormats } from "html5-qrcode"
+import { useState, useEffect } from "react"
 import {
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
   IonButton,
-  IonContent,
-  IonHeader,
   IonIcon,
-  IonModal,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
   IonSpinner,
   IonToast,
 } from "@ionic/react"
-import { closeOutline, scanOutline, cameraReverseOutline } from "ionicons/icons"
+import { closeOutline, flashlightOutline, cameraReverseOutline } from "ionicons/icons"
 import { motion } from "framer-motion"
+import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode"
+import "./QRPaymentScanner.css"
 
 interface QRPaymentScannerProps {
   onScan: (decodedText: string) => void
@@ -25,178 +24,140 @@ interface QRPaymentScannerProps {
 }
 
 const QRPaymentScanner: React.FC<QRPaymentScannerProps> = ({ onScan, onError, onClose }) => {
-  const [isScanning, setIsScanning] = useState(false)
-  const [scannerInitialized, setScannerInitialized] = useState(false)
-  const [showToast, setShowToast] = useState(false)
-  const [toastMessage, setToastMessage] = useState("")
-  const [cameraId, setCameraId] = useState<string>("")
-  const [availableCameras, setAvailableCameras] = useState<{ id: string; label: string }[]>([])
-
-  const scannerRef = useRef<Html5QrcodeScanner | null>(null)
-  const scannerContainerId = "qr-reader"
-
-  // Initialize scanner with improved configuration
-  const initializeScanner = useCallback(async () => {
-    if (!scannerInitialized) {
-      try {
-        scannerRef.current = new Html5QrcodeScanner(
-          scannerContainerId,
-          {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
-            rememberLastUsedCamera: true,
-            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-            formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
-            aspectRatio: 1.0,
-            showTorchButtonIfSupported: true,
-            showZoomSliderIfSupported: true,
-            defaultZoomValueIfSupported: 2,
-            videoConstraints: {
-              facingMode: "environment", // Use back camera by default
-            },
-          },
-          false,
-        )
-        setScannerInitialized(true)
-
-        // Get available cameras
-        try {
-          const devices = await navigator.mediaDevices.enumerateDevices()
-          const cameras = devices
-            .filter((device) => device.kind === "videoinput")
-            .map((camera) => ({
-              id: camera.deviceId,
-              label: camera.label || `Camera ${camera.deviceId.slice(0, 4)}`,
-            }))
-          setAvailableCameras(cameras)
-          if (cameras.length > 0) {
-            setCameraId(cameras[0].id)
-          }
-        } catch (error) {
-          console.error("Error getting cameras:", error)
-        }
-      } catch (error) {
-        console.error("Error initializing scanner:", error)
-        showErrorToast("Erreur d'initialisation du scanner")
-        onError(error)
-      }
-    }
-  }, [scannerInitialized, onError])
+  const [scanner, setScanner] = useState<Html5Qrcode | null>(null)
+  const [isScanning, setIsScanning] = useState<boolean>(false)
+  const [isTorchOn, setIsTorchOn] = useState<boolean>(false)
+  const [isCameraReady, setIsCameraReady] = useState<boolean>(false)
+  const [showToast, setShowToast] = useState<boolean>(false)
+  const [toastMessage, setToastMessage] = useState<string>("")
+  const [currentCamera, setCurrentCamera] = useState<string>("")
+  const [availableCameras, setAvailableCameras] = useState<Array<{ id: string; label: string }>>([])
 
   useEffect(() => {
-    initializeScanner()
-    return () => {
-      if (scannerRef.current) {
-        try {
-          scannerRef.current.clear()
-        } catch (error) {
-          console.error("Error clearing scanner:", error)
+    // Initialize scanner
+    const html5QrCode = new Html5Qrcode("qr-reader")
+    setScanner(html5QrCode)
+
+    // Get available cameras
+    Html5Qrcode.getCameras()
+      .then((devices) => {
+        if (devices && devices.length) {
+          setAvailableCameras(devices)
+          setCurrentCamera(devices[0].id)
+        } else {
+          setToastMessage("Aucune caméra détectée")
+          setShowToast(true)
         }
-      }
-    }
-  }, [initializeScanner])
-
-  const showErrorToast = (message: string) => {
-    setToastMessage(message)
-    setShowToast(true)
-  }
-
-  const startScanner = useCallback(async () => {
-    if (scannerRef.current && !isScanning) {
-      setIsScanning(true)
-
-      try {
-        await requestCameraPermission()
-
-        scannerRef.current.render(
-          (decodedText: string) => {
-            handleScanSuccess(decodedText)
-          },
-          (errorMessage: string) => {
-            console.warn(`QR scan error: ${errorMessage}`)
-            if (errorMessage.includes("permission") || errorMessage.includes("denied")) {
-              showErrorToast("Veuillez autoriser l'accès à la caméra")
-            }
-          },
-        )
-
-        // Add timeout to check if camera starts
-        setTimeout(() => {
-          const videoElement = document.querySelector(`#${scannerContainerId} video`) as HTMLVideoElement
-          if (!videoElement || videoElement.readyState === 0) {
-            showErrorToast("La caméra n'a pas pu démarrer")
-            setIsScanning(false)
-          }
-        }, 3000)
-      } catch (error) {
-        console.error("Error starting scanner:", error)
-        showErrorToast("Erreur lors du démarrage du scanner")
-        setIsScanning(false)
-      }
-    }
-  }, [isScanning, showErrorToast])
-
-  const requestCameraPermission = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: "environment",
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-        },
       })
-    } catch (error) {
-      console.error("Camera permission error:", error)
-      showErrorToast("Veuillez autoriser l'accès à la caméra")
-      throw error
+      .catch((err) => {
+        console.error("Error getting cameras", err)
+        setToastMessage("Erreur d'accès à la caméra")
+        setShowToast(true)
+      })
+
+    // Cleanup on unmount
+    return () => {
+      if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
+        html5QrCode.stop().catch((err) => console.error("Error stopping scanner:", err))
+      }
     }
+  }, [])
+
+  useEffect(() => {
+    // Start scanning when camera is selected
+    if (scanner && currentCamera && !isScanning) {
+      startScanner()
+    }
+  }, [scanner, currentCamera])
+
+  const startScanner = () => {
+    if (!scanner || !currentCamera) return
+
+    setIsScanning(true)
+    setIsCameraReady(false)
+
+    const config = {
+      fps: 10,
+      qrbox: { width: 250, height: 250 },
+      aspectRatio: 1.0,
+    }
+
+    scanner
+      .start(
+        currentCamera,
+        config,
+        (decodedText) => {
+          // On successful scan
+          scanner
+            .stop()
+            .then(() => {
+              setIsScanning(false)
+              onScan(decodedText)
+            })
+            .catch((err) => console.error("Error stopping scanner:", err))
+        },
+        (errorMessage) => {
+          // Ignore errors during scanning as they're usually just frames without QR codes
+          console.log(errorMessage)
+        },
+      )
+      .then(() => {
+        setIsCameraReady(true)
+      })
+      .catch((err) => {
+        console.error("Error starting scanner:", err)
+        setIsScanning(false)
+        setToastMessage("Erreur lors de l'initialisation de la caméra")
+        setShowToast(true)
+        onError(err)
+      })
   }
 
-  const handleScanSuccess = (decodedText: string) => {
-    if (scannerRef.current) {
-      try {
-        scannerRef.current.clear()
-        // Validate QR code format
-        const data = JSON.parse(decodedText)
-        if (!data.amount || !data.merchant) {
-          throw new Error("Invalid QR code format")
-        }
-        onScan(decodedText)
-      } catch (error) {
-        console.error("Error processing QR code:", error)
-        showErrorToast("Format de QR code invalide")
-        startScanner() // Restart scanning
-      }
+  const toggleTorch = () => {
+    if (scanner && isCameraReady) {
+      // Html5Qrcode doesn't expose a direct way to toggle torch in TypeScript
+      // Show a message to the user
+      setToastMessage("La fonctionnalité torche n'est pas disponible dans cette version")
+      setShowToast(true)
+
+      // For debugging purposes only - this would work in JavaScript but causes TypeScript errors
+      // const html5QrcodeScanner = scanner as any;
+      // if (html5QrcodeScanner.getRunningTrackCapabilities) {
+      //   const capabilities = html5QrcodeScanner.getRunningTrackCapabilities();
+      //   if (capabilities && capabilities.torch) {
+      //     html5QrcodeScanner.applyVideoConstraints({
+      //       advanced: [{ torch: !isTorchOn }]
+      //     });
+      //     setIsTorchOn(!isTorchOn);
+      //   }
+      // }
     }
   }
 
   const switchCamera = async () => {
-    if (availableCameras.length < 2) return
-
-    const currentIndex = availableCameras.findIndex((camera) => camera.id === cameraId)
-    const nextIndex = (currentIndex + 1) % availableCameras.length
-    const nextCameraId = availableCameras[nextIndex].id
-
-    if (scannerRef.current) {
-      try {
-        await scannerRef.current.clear()
-        setCameraId(nextCameraId)
-        // Reinitialize scanner with new camera
-        await initializeScanner()
-        startScanner()
-      } catch (error) {
-        console.error("Error switching camera:", error)
-        showErrorToast("Erreur lors du changement de caméra")
+    if (scanner && availableCameras.length > 1) {
+      // Stop current scanner
+      if (isScanning) {
+        await scanner.stop()
+        setIsScanning(false)
       }
+
+      // Find next camera in the list
+      const currentIndex = availableCameras.findIndex((camera) => camera.id === currentCamera)
+      const nextIndex = (currentIndex + 1) % availableCameras.length
+      setCurrentCamera(availableCameras[nextIndex].id)
+    } else {
+      setToastMessage("Aucune caméra supplémentaire disponible")
+      setShowToast(true)
     }
   }
 
-  const handleClose = () => {
-    if (scannerRef.current) {
+  const handleClose = async () => {
+    if (scanner && isScanning) {
       try {
-        scannerRef.current.clear()
-      } catch (error) {
-        console.error("Error clearing scanner:", error)
+        await scanner.stop()
+      } catch (err) {
+        console.error("Error stopping scanner:", err)
       }
     }
     onClose()
@@ -204,63 +165,48 @@ const QRPaymentScanner: React.FC<QRPaymentScannerProps> = ({ onScan, onError, on
 
   return (
     <motion.div
-      className="qr-scanner-overlay"
+      className="qr-scanner-container"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
     >
-      <IonModal isOpen={true} onDidDismiss={handleClose} className="qr-scanner-modal">
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <IonButton onClick={handleClose}>
-                <IonIcon icon={closeOutline} />
-              </IonButton>
-            </IonButtons>
-            <IonTitle>Scanner un code de paiement</IonTitle>
-            {availableCameras.length > 1 && (
-              <IonButtons slot="end">
-                <IonButton onClick={switchCamera}>
-                  <IonIcon icon={cameraReverseOutline} />
-                </IonButton>
-              </IonButtons>
-            )}
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <div className="scanner-container">
-            <div className="scanner-instructions">
-              <IonIcon icon={scanOutline} className="scan-icon" />
-              <p>Placez le code QR dans le cadre pour scanner</p>
+      <IonCard className="scanner-card">
+        <IonCardHeader>
+          <div className="scanner-header">
+            <IonCardTitle>Scanner un code de paiement</IonCardTitle>
+            <IonButton fill="clear" onClick={handleClose}>
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </div>
+        </IonCardHeader>
+        <IonCardContent>
+          <div className="scanner-viewport">
+            <div id="qr-reader" className="qr-reader"></div>
+            <div className="scanner-overlay">
+              <div className="scanner-target"></div>
             </div>
-
-            {!scannerInitialized && (
+            {!isCameraReady && (
               <div className="scanner-loading">
                 <IonSpinner name="circular" />
                 <p>Initialisation de la caméra...</p>
               </div>
             )}
-
-            <div id={scannerContainerId} className="qr-scanner"></div>
-
-            <div className="scanner-footer">
-              <IonButton
-                expand="block"
-                color="primary"
-                onClick={startScanner}
-                className="retry-button"
-                disabled={isScanning}
-              >
-                {isScanning ? "Scanner en cours..." : "Autoriser la caméra"}
-              </IonButton>
-              <IonButton expand="block" onClick={handleClose} color="medium">
-                Annuler
-              </IonButton>
-            </div>
           </div>
-        </IonContent>
-      </IonModal>
+
+          <div className="scanner-controls">
+            <IonButton fill="outline" onClick={toggleTorch} disabled={!isCameraReady}>
+              <IonIcon icon={flashlightOutline} />
+            </IonButton>
+            <IonButton fill="outline" onClick={switchCamera} disabled={availableCameras.length <= 1}>
+              <IonIcon icon={cameraReverseOutline} />
+            </IonButton>
+          </div>
+
+          <div className="scanner-instructions">
+            <p>Placez le code QR dans le cadre pour le scanner</p>
+          </div>
+        </IonCardContent>
+      </IonCard>
 
       <IonToast
         isOpen={showToast}
@@ -268,11 +214,9 @@ const QRPaymentScanner: React.FC<QRPaymentScannerProps> = ({ onScan, onError, on
         message={toastMessage}
         duration={3000}
         position="bottom"
-        color="danger"
       />
     </motion.div>
   )
 }
 
 export default QRPaymentScanner
-
