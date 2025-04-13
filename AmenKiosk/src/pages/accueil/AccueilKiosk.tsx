@@ -171,7 +171,7 @@ const chartData = useMemo(() => {
 
   const handleAccountClick = (accountId: string) => {
     console.log(`Viewing account ${accountId}...`)
-    history.push(`/Compte/${accountId}`)
+    history.push(`/Compte`)
   }
 
   // Function to generate and print the PDF statement

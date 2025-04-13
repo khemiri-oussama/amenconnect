@@ -1,26 +1,25 @@
 // controllers/budgetCategoryController.js
-const BudgetCategory = require("../models/BudgetCategory");
+const BudgetCategory = require("../models/BudgetCategory")
 
-// Get all categories for a given user
+// Get all categories for a given user. Expects userId to be provided as a query parameter.
 exports.getCategories = async (req, res) => {
-  // Expect userId in the query string: /api/categories?userId=...
-  const { userId } = req.query;
+  const { userId } = req.query
   if (!userId) {
-    return res.status(400).json({ error: "Missing user id" });
+    return res.status(400).json({ error: "Missing user id" })
   }
   try {
-    const categories = await BudgetCategory.find({ userId });
-    res.status(200).json(categories);
+    const categories = await BudgetCategory.find({ userId })
+    res.status(200).json(categories)
   } catch (error) {
-    res.status(500).json({ error: "Error fetching categories" });
+    res.status(500).json({ error: "Error fetching categories" })
   }
-};
+}
 
-// Create a new category
+// Create a new budget category.
 exports.createCategory = async (req, res) => {
-  const { userId, name, limit, color } = req.body;
+  const { userId, name, limit, color } = req.body
   if (!userId || !name || !limit || !color) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({ error: "Missing required fields" })
   }
   try {
     const newCategory = new BudgetCategory({
@@ -29,43 +28,61 @@ exports.createCategory = async (req, res) => {
       limit,
       color,
       current: 0, // default value
-    });
-    await newCategory.save();
-    res.status(201).json(newCategory);
+    })
+    await newCategory.save()
+    res.status(201).json(newCategory)
   } catch (error) {
-    res.status(500).json({ error: "Error creating category" });
+    res.status(500).json({ error: "Error creating category" })
   }
-};
+}
 
-// Update a category by ID (optional: verify the category belongs to the user)
+// Update a category by its ID.
 exports.updateCategory = async (req, res) => {
-  const { id } = req.params;
-  // Optionally, you can compare req.body.userId or req.user.id with the document's userId
+  const { id } = req.params
   try {
     const updatedCategory = await BudgetCategory.findByIdAndUpdate(
       id,
       req.body,
       { new: true, runValidators: true }
-    );
+    )
     if (!updatedCategory) {
-      return res.status(404).json({ error: "Category not found" });
+      return res.status(404).json({ error: "Category not found" })
     }
-    res.status(200).json(updatedCategory);
+    res.status(200).json(updatedCategory)
   } catch (error) {
-    res.status(500).json({ error: "Error updating category" });
+    res.status(500).json({ error: "Error updating category" })
   }
-};
+}
 
-// Delete a category by ID (optional: verify the category belongs to the user)
+// Delete a category by its ID.
 exports.deleteCategory = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params
   try {
-    const deletedCategory = await BudgetCategory.findByIdAndDelete(id);
+    const deletedCategory = await BudgetCategory.findByIdAndDelete(id)
     if (!deletedCategory) {
-      return res.status(404).json({ error: "Category not found" });
+      return res.status(404).json({ error: "Category not found" })
     }
-    res.status(204).end();
+    res.status(204).end()
   } catch (error) {
-    res.status(500).json({ error: "Error deleting category" });
+    res.status(500).json({ error: "Error deleting category" })
   }
-};
+}
+
+// Update a user's budget category after a payment.
+// Only the category belonging to the specified user and matching merchantType will be updated.
+exports.updateBudget = async (req, res) => {
+  const { userId, merchantType, amount } = req.body
+  try {
+    const category = await BudgetCategory.findOne({ userId, name: merchantType })
+    if (!category) {
+      return res.status(404).json({ message: "Category not found for this user" })
+    }
+    // Update the budget "current" value. Depending on your logic, this could track expenses.
+    // For example, adding the paid amount to the current expense total:
+    category.current += amount
+    await category.save()
+    res.status(200).json({ message: "Budget updated", category })
+  } catch (error) {
+    res.status(500).json({ error: "Error updating budget category" })
+  }
+}

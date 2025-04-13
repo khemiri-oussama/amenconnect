@@ -39,6 +39,7 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword/ResetPassword'));
 const AccountCreationForm = lazy(() => import('./pages/AccountCreationForm'));
 const QRScanner = lazy(() => import('./pages/Client/accueil/qrscanner'));
 const Otp = lazy(() => import('./pages/otp/otp'));
+const TestPay = lazy(() => import("./pages/payment-form"))
 
 // Lazy load protected client pages
 const Accueil = lazy(() => import('./pages/Client/accueil/accueil'));
@@ -78,6 +79,7 @@ const AppContent: React.FC = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <IonRouterOutlet>
           {/* Public Routes */}
+          <Route exact path="/testpay" component={TestPay} />
           <Route exact path="/admin/reset-password" component={ResetPasswordAdmin} />
           <Route exact path="/admin/forgot-password" component={AdminForgetPassword} />
           <Route exact path="/home" component={Home} />

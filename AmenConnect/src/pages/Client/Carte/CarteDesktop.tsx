@@ -33,9 +33,10 @@ import { motion, AnimatePresence } from "framer-motion"
 import "./CarteDesktop.css"
 import Navbar from "../../../components/Navbar"
 import { useAuth, type Carte, type Compte } from "../../../AuthContext"
-import { generateBankStatement, type CardDetails, type Transaction } from "../../../../services/pdf-generator"
 // Import the useCarte hook from your CarteContext
 import { useCarte } from "../../../CarteContext"
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
 
 // Add this interface definition at the top of the file, after the imports
 interface CreditCardTransaction {
@@ -156,49 +157,160 @@ const CarteDesktop: React.FC = () => {
     }).format(amount)
   }
 
-  const handleDownloadStatement = async () => {
-    try {
-      if (!cardDetails || !transactions.length || !accountDetails) {
-        throw new Error("Les données ne sont pas disponibles")
-      }
+// Add these imports at the top with other imports
 
-      const pdfCardDetails: CardDetails = {
-        cardNumber: cardDetails.CardNumber,
-        cardHolder: cardDetails.CardHolder,
-        expiryDate: cardDetails.ExpiryDate,
-        cardType: cardDetails.TypeCarte,
-        balance: accountDetails.solde,
-        pendingTransactions: cardDetails.pendingTransactions?.amount || 0,
-        monthlySpendingLimit: cardDetails.monthlyExpenses?.limit || 0,
-        monthlySpending: cardDetails.monthlyExpenses?.current || 0,
-        withdrawalLimit: cardDetails.atmWithdrawal?.limit || 0,
-        withdrawalAmount: cardDetails.atmWithdrawal?.current || 0,
-      }
 
-      const pdfTransactions: Transaction[] = transactions.map((t) => ({
-        id: t._id,
-        date: new Date(t.transactionDate).toLocaleDateString(),
-        merchant: t.merchant,
-        amount: t.amount,
-        type: t.amount < 0 ? "debit" : "credit",
-        category: "Non catégorisé",
-        icon: "💳",
-        status: t.status,
-        description: t.description,
-      }))
-
-      await generateBankStatement({
-        cardDetails: pdfCardDetails,
-        transactions: pdfTransactions,
-        branding: {
-          logo: "/amen_logo.png",
-        },
-      })
-    } catch (error) {
-      console.error("Erreur lors de la génération du relevé:", error)
-      // Optionally add a toast or alert to notify the user.
+// Replace the existing handleDownloadStatement function with this:
+const handleDownloadStatement = async () => {
+  try {
+    if (!cardDetails || !transactions.length || !accountDetails) {
+      throw new Error("Les données ne sont pas disponibles")
     }
+
+    // PDF configuration
+    const defaultBankBranding = {
+      name: "Amen Bank",
+      logo: "/amen_logo.png",
+      primaryColor: [0, 51, 102] as [number, number, number],
+      secondaryColor: [0, 85, 165] as [number, number, number],
+      address: ["Avenue Mohamed V", "Tunis 1002", "Tunisie"],
+      website: "www.amenbank.com.tn",
+      phone: "(+216) 71 148 000",
+    }
+
+    const formatCurrency = (amount: number) => {
+      return new Intl.NumberFormat("tn-TN", {
+        style: "currency",
+        currency: "TND",
+      }).format(amount)
+    }
+
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    })
+
+    // Header
+    const headerHeight = 30
+    doc.setFillColor(...defaultBankBranding.primaryColor)
+    doc.rect(0, 0, doc.internal.pageSize.getWidth(), headerHeight, "F")
+    
+    try {
+      const img = new Image()
+      img.src = defaultBankBranding.logo
+      doc.addImage(img, "PNG", 10, 5, 40, 20)
+    } catch (error) {
+      console.error("Error loading logo:", error)
+    }
+
+    doc.setFont("helvetica", "bold")
+    doc.setFontSize(16)
+    doc.setTextColor(255, 255, 255)
+    doc.text("Relevé de Carte", doc.internal.pageSize.getWidth() / 2, 20, {
+      align: "center",
+    })
+
+    // Card information
+    doc.setFontSize(10)
+    doc.setTextColor(255, 255, 255)
+    doc.text(`Généré le: ${new Date().toLocaleDateString()}`, doc.internal.pageSize.getWidth() - 20, 15, {
+      align: "right",
+    })
+
+    // Main content
+    doc.setFont("helvetica")
+    doc.setTextColor(0, 0, 0)
+
+    // Card Details
+    autoTable(doc, {
+      startY: headerHeight + 10,
+      head: [["Détails de la Carte", "Valeur"]],
+      body: [
+        ["Titulaire", cardDetails.CardHolder],
+        ["Numéro de Carte", `**** **** **** ${cardDetails.CardNumber.slice(-4)}`],
+        ["Date d'expiration", cardDetails.ExpiryDate],
+        ["Type de Carte", cardDetails.TypeCarte],
+        ["Statut", cardDetails.cardStatus?"Active" : "Bloquée"],
+      ],
+      theme: "grid",
+      headStyles: {
+        fillColor: defaultBankBranding.primaryColor,
+        textColor: 255,
+        fontStyle: "bold",
+      },
+    })
+
+    // Limits
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 10,
+      head: [["Limites", "Utilisé", "Disponible"]],
+      body: [
+        [
+          "Dépenses mensuelles",
+          formatCurrency(cardDetails.monthlyExpenses?.current || 0),
+          formatCurrency((cardDetails.monthlyExpenses?.limit || 0) - (cardDetails.monthlyExpenses?.current || 0)),
+        ],
+        [
+          "Retraits DAB",
+          formatCurrency(cardDetails.atmWithdrawal?.current || 0),
+          formatCurrency((cardDetails.atmWithdrawal?.limit || 0) - (cardDetails.atmWithdrawal?.current || 0)),
+        ],
+      ],
+      theme: "grid",
+      headStyles: {
+        fillColor: defaultBankBranding.primaryColor,
+        textColor: 255,
+        fontStyle: "bold",
+      },
+    })
+
+    // Transactions
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 10,
+      head: [["Date", "Marchand", "Montant", "Statut"]],
+      body: transactions.map((t) => [
+        new Date(t.transactionDate).toLocaleDateString(),
+        t.merchant,
+        formatCurrency(t.amount),
+        t.status,
+      ]),
+      theme: "grid",
+      headStyles: {
+        fillColor: defaultBankBranding.primaryColor,
+        textColor: 255,
+        fontStyle: "bold",
+      },
+      columnStyles: {
+        2: { halign: "right" },
+        3: { halign: "center" },
+      },
+      bodyStyles: {
+        fontSize: 10,
+      },
+      styles: {
+        cellPadding: 3,
+      },
+    })
+
+    // Footer
+    const footerY = doc.internal.pageSize.getHeight() - 10
+    doc.setFontSize(8)
+    doc.setTextColor(100, 100, 100)
+    doc.text(defaultBankBranding.address.join(", "), 10, footerY)
+    doc.text(
+      `Contact: ${defaultBankBranding.phone} | ${defaultBankBranding.website}`,
+      doc.internal.pageSize.getWidth() / 2,
+      footerY,
+      { align: "center" }
+    )
+
+    // Save PDF
+    doc.save(`releve-carte-${cardDetails.CardNumber.slice(-4)}-${new Date().getTime()}.pdf`)
+  } catch (error) {
+    console.error("Erreur lors de la génération du relevé:", error)
   }
+}
 
   if (authLoading || isLoading) {
     return (
@@ -408,13 +520,7 @@ const CarteDesktop: React.FC = () => {
               >
                 Détails
               </IonButton>
-              <IonButton
-                fill={activeTab === "analytics" ? "solid" : "clear"}
-                color="success"
-                onClick={() => setActiveTab("analytics")}
-              >
-                Analyses
-              </IonButton>
+              
             </div>
 
             <div className="carte-desktop__tab-content">
@@ -467,13 +573,6 @@ const CarteDesktop: React.FC = () => {
                       </IonList>
                     </IonCardContent>
                   </IonCard>
-                </div>
-              )}
-
-              {activeTab === "analytics" && (
-                <div className="carte-desktop__analytics-tab">
-                  <h3 className="carte-desktop-card_title">Analyse des dépenses</h3>
-                  <p>Les données d'analyse ne sont pas disponibles pour le moment.</p>
                 </div>
               )}
 

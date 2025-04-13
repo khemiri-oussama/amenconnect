@@ -1,0 +1,80 @@
+/* Component-specific styles for payment form */
+
+.payment-card {
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.payment-card ion-card-header {
+  padding-bottom: 8px;
+}
+
+.payment-card ion-card-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  text-align: center;
+}
+
+.payment-card ion-card-subtitle {
+  text-align: center;
+  margin-top: 4px;
+  font-size: 16px;
+}
+
+.payment-item {
+  --border-color: rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+  --background: rgba(var(--ion-color-primary-rgb), 0.05);
+  margin-bottom: 12px;
+}
+
+.payment-item ion-icon {
+  color: var(--ion-color-primary);
+  margin-right: 8px;
+}
+
+.payment-item ion-label {
+  color: var(--ion-color-medium);
+  font-weight: 500;
+}
+
+.payment-button {
+  --border-radius: 8px;
+  --background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-primary-shade));
+  --background-hover: linear-gradient(135deg, var(--ion-color-primary-shade), var(--ion-color-primary-tint));
+  margin-top: 16px;
+  font-weight: 600;
+  height: 48px;
+  box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+  transition: all 0.3s ease;
+}
+
+.payment-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(var(--ion-color-primary-rgb), 0.4);
+}
+
+.spinner-margin {
+  margin-right: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .payment-card {
+    margin: 0;
+    width: 100%;
+    box-shadow: none;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .payment-card ion-card-title {
+    font-size: 20px;
+  }
+
+  .payment-card ion-card-subtitle {
+    font-size: 14px;
+  }
+}

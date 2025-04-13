@@ -1,8 +1,8 @@
 // routes/carteRoutes.js
-const express = require("express");
-const router = express.Router();
-const carteConttroler = require("../controllers/carteConttroller");
-const verifyToken = require("../middleware/auth");  // Import your token verification middleware
+const express = require("express")
+const router = express.Router()
+const carteController = require("../controllers/carteConttroller")
+const verifyToken = require("../middleware/auth")  // Token verification middleware
 
 /**
  * @swagger
@@ -50,9 +50,9 @@ const verifyToken = require("../middleware/auth");  // Import your token verific
  *       500:
  *         description: Server error.
  */
-router.patch("/updateStatus", verifyToken, carteConttroler.updateCarteStatus);
+router.patch("/updateStatus", verifyToken, carteController.updateCarteStatus)
 
+// Endpoint to add a new carte
+router.post("/addCarte", carteController.addCarte)
 
-router.post("/addCarte", carteConttroler.addCarte);
-
-module.exports = router;
+module.exports = router
