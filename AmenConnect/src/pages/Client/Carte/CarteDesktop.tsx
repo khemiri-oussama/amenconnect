@@ -149,14 +149,15 @@ const CarteDesktop: React.FC = () => {
       // Optionally, display an error notification to the user here.
     }
   }
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("tn-TN", {
       style: "currency",
       currency: "TND",
-    }).format(amount)
-  }
-
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      // Use compact notation for larger numbers if needed
+    }).format(amount).replace(/٫/g, ",");
+  };
 // Add these imports at the top with other imports
 
 
@@ -178,12 +179,7 @@ const handleDownloadStatement = async () => {
       phone: "(+216) 71 148 000",
     }
 
-    const formatCurrency = (amount: number) => {
-      return new Intl.NumberFormat("tn-TN", {
-        style: "currency",
-        currency: "TND",
-      }).format(amount)
-    }
+
 
     const doc = new jsPDF({
       orientation: "portrait",
