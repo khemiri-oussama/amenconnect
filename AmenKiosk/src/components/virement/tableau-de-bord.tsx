@@ -17,7 +17,7 @@ import {
   calendarOutline,
 } from "ionicons/icons"
 import { useAuth } from "../../context/AuthContext"
-import "./components.css"
+import './components.css'
 interface Compte {
   _id: string
   numéroCompte: string
@@ -41,8 +41,13 @@ interface Limite {
   mensuelle: number
 }
 
-const TableauDeBord: React.FC = () => {
-  const { profile } = useAuth()
+// Update the component interface to accept profile prop
+interface TableauDeBordProps {
+  profile: any // Replace 'any' with your actual Profile type if available
+}
+
+const TableauDeBord: React.FC<TableauDeBordProps> = ({ profile }) => {
+  const { profile: authProfile } = useAuth()
   const [comptes, setComptes] = useState<Compte[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [limites, setLimites] = useState<Limite>({ quotidienne: 5000, mensuelle: 20000 })

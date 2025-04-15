@@ -12,8 +12,13 @@ import {
   searchOutline,
 } from "ionicons/icons"
 import { useBeneficiaries, type Beneficiaire } from "../../hooks/useBeneficiaries" // adjust the path as needed
-import "./components.css"
-const GestionBeneficiaires: React.FC = () => {
+import './components.css'
+// Update the component interface to accept profile prop
+interface GestionBeneficiairesProps {
+  profile: any // Replace 'any' with your actual Profile type if available
+}
+
+const GestionBeneficiaires: React.FC<GestionBeneficiairesProps> = ({ profile }) => {
   const { beneficiaires, loading, error, addBeneficiaire, updateBeneficiaire, deleteBeneficiaire, fetchBeneficiaires } =
     useBeneficiaries()
 

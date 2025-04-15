@@ -4,8 +4,7 @@ import type React from "react"
 
 import { IonIcon } from "@ionic/react"
 import { timeOutline, searchOutline, filterOutline, downloadOutline } from "ionicons/icons"
-import { useAuth } from "../../context/AuthContext"
-import "./components.css"
+import './components.css'
 interface Transaction {
   _id: string
   date: string
@@ -17,8 +16,12 @@ interface Transaction {
   reference?: string
 }
 
-const Historique: React.FC = () => {
-  const { profile } = useAuth()
+// Update the component interface to accept profile prop
+interface HistoriqueProps {
+  profile: any // Replace 'any' with your actual Profile type if available
+}
+
+const Historique: React.FC<HistoriqueProps> = ({ profile }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(false)
@@ -45,7 +48,7 @@ const Historique: React.FC = () => {
   useEffect(() => {
     if (profile) {
       let allTransactions: Transaction[] = []
-      profile.comptes.forEach((compte) => {
+      profile.comptes.forEach((compte: any) => {
         if (compte.historique && Array.isArray(compte.historique)) {
           allTransactions = [...allTransactions, ...compte.historique]
         }

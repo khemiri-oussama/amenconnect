@@ -3,11 +3,10 @@ import { useState, useEffect, useRef } from "react"
 import type React from "react"
 import { IonIcon } from "@ionic/react"
 import { documentOutline, addCircleOutline, trashOutline, cloudUploadOutline } from "ionicons/icons"
-import { useAuth } from "../../context/AuthContext"
 // Import the custom hooks
 import useVirementGroupe from "../../hooks/useVirementGroupe"
 import { useBeneficiaries } from "../../hooks/useBeneficiaries"
-import "./components.css"
+import './components.css'
 interface Compte {
   _id: string
   numéroCompte: string
@@ -21,8 +20,15 @@ interface VirementGroupe {
   motif: string
 }
 
-const VirementsGroupes: React.FC = () => {
-  const { profile } = useAuth()
+// Update the component interface to accept profile prop
+interface VirementsGroupesProps {
+  profile: any // Replace 'any' with your actual Profile type if available
+}
+
+const VirementsGroupes: React.FC<VirementsGroupesProps> = ({ profile }) => {
+  // Rest of the component remains the same
+
+  //const { profile } = useAuth()
 
   const [comptes, setComptes] = useState<Compte[]>([])
   const [compteSource, setCompteSource] = useState("")

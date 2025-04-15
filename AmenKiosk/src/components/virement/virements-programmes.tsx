@@ -11,10 +11,9 @@ import {
   timeOutline,
   checkmarkCircleOutline,
 } from "ionicons/icons"
-import { useAuth } from "../../context/AuthContext"
 import useVirementProgramme from "../../hooks/useVirementProgramme"
 import { useBeneficiaries } from "../../hooks/useBeneficiaries"
-import "./components.css"
+import './components.css'
 interface Compte {
   _id: string
   numéroCompte: string
@@ -22,8 +21,12 @@ interface Compte {
   type: string
 }
 
-const VirementsProgrammes: React.FC = () => {
-  const { profile } = useAuth()
+// Update the component interface to accept profile prop
+interface VirementsProgrammesProps {
+  profile: any // Replace 'any' with your actual Profile type if available
+}
+
+const VirementsProgrammes: React.FC<VirementsProgrammesProps> = ({ profile }) => {
   const [comptes, setComptes] = useState<Compte[]>([])
   const { beneficiaires, loading: beneficiariesLoading, error: beneficiariesError } = useBeneficiaries()
   const [compteSource, setCompteSource] = useState("")
