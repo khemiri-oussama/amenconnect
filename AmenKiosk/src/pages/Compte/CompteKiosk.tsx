@@ -1,11 +1,8 @@
 "use client"
-import React, { useMemo, useState, useEffect } from "react"
+import React, { useMemo } from "react"
 import { IonContent, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
 import {
   walletOutline,
-  repeatOutline,
-  analyticsOutline,
-  cardOutline,
   trendingUpOutline,
   trendingDownOutline,
   printOutline,
@@ -18,6 +15,7 @@ import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 import "./CompteKiosk.css"
 
+// Local interface for our operations – note that reference is required
 interface Operation {
   _id: string
   date: string
@@ -27,61 +25,62 @@ interface Operation {
   reference: string
 }
 
+// Local interface for the Account displayed in this component
 interface Account {
   _id: string
   numéroCompte: string
   solde: number
   type: string
+  // historique is an array of operations
+  historique: Operation[]
 }
+
+/*
+Assume that the AuthContext provides accounts of type Compte with the following shape:
+interface Compte {
+  _id: string;
+  numéroCompte: string;
+  solde: number;
+  type: string;
+  historique?: Transaction[]; // where Transaction.reference is string | undefined
+}
+interface Transaction {
+  _id: string;
+  date: string;
+  amount: number;
+  description: string;
+  type: "credit" | "debit";
+  reference?: string;
+}
+*/
 
 const CompteKiosk: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const history = useHistory()
-  const accounts = profile?.comptes ?? []
-  const [operations, setOperations] = useState<Operation[]>([])
-  const [loadingOperations, setLoadingOperations] = useState(true)
-  const [errorOperations, setErrorOperations] = useState<string | null>(null)
 
-  // Fetch all paginated operations
-  useEffect(() => {
-    const fetchAllOperations = async () => {
-      try {
-        let allOperations: Operation[] = []
-        let page = 1
-        let totalPages = 1
+  // Convert profile.comptes (of type Compte[]) into our local Account[] type
+  const accounts: Account[] = (profile?.comptes ?? []).map((compte) => ({
+    _id: compte._id,
+    numéroCompte: compte.numéroCompte,
+    solde: compte.solde,
+    type: compte.type,
+    // Convert historique to ensure each operation has a defined 'reference'
+    historique: (compte.historique ?? []).map((tx) => ({
+      ...tx,
+      reference: tx.reference ?? ""
+    }))
+  }))
 
-        do {
-          const response = await fetch(`/api/historique?page=${page}`, {
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-          })
-
-          if (!response.ok) throw new Error("Failed to fetch operations")
-
-          const responseData = await response.json()
-          const operations = responseData.transactions || []
-          
-          allOperations = [...allOperations, ...operations]
-          totalPages = Math.ceil(responseData.total / responseData.limit)
-          page++
-        } while (page <= totalPages)
-
-        // Sort by date descending
-        const sortedOperations = allOperations.sort((a, b) => 
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
-        
-        setOperations(sortedOperations)
-      } catch (error) {
-        console.error("Error fetching operations:", error)
-        setErrorOperations("Erreur lors de la récupération des opérations.")
-      } finally {
-        setLoadingOperations(false)
-      }
-    }
-
-    fetchAllOperations()
-  }, [])
+  // Derive all operations by merging historique arrays from all accounts and sort them descending by date
+  const operations: Operation[] = useMemo(() => {
+    const allOps = accounts.reduce(
+      (acc: Operation[], account: Account) => [...acc, ...account.historique],
+      [] as Operation[]
+    )
+    return allOps.sort((a: Operation, b: Operation) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    })
+  }, [accounts])
 
   // Chart data grouped by month-year
   const chartData = useMemo(() => {
@@ -120,11 +119,13 @@ const CompteKiosk: React.FC = () => {
   }
 
   const generateBankStatement = async () => {
+    // Use the first account as the basis for the statement
     const account = accounts[0] || {
       _id: "N/A",
       numéroCompte: "N/A",
       solde: 0,
-      type: "Compte courant"
+      type: "Compte courant",
+      historique: []
     }
 
     const doc = new jsPDF({
@@ -165,7 +166,7 @@ const CompteKiosk: React.FC = () => {
       styles: { fontSize: 10 }
     })
 
-    // Footer
+    // Footer with page numbers
     const pageCount = doc.getNumberOfPages()
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i)
@@ -192,7 +193,7 @@ const CompteKiosk: React.FC = () => {
         <div className="compte-kiosk-container">
           <div className="background-white"></div>
           <svg className="background-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 983 1920" fill="none">
-            {/* SVG path remains same */}
+            {/* SVG content goes here */}
           </svg>
 
           <div className="compte-kiosk-content">
@@ -274,11 +275,7 @@ const CompteKiosk: React.FC = () => {
                 </div>
               </div>
               <div className="compte-kiosk-operations-list">
-                {loadingOperations ? (
-                  <div className="loading-message">Chargement des opérations...</div>
-                ) : errorOperations ? (
-                  <div className="error-message">{errorOperations}</div>
-                ) : operations.length > 0 ? (
+                {operations.length > 0 ? (
                   operations.map((op) => (
                     <div key={op._id} className="compte-kiosk-operation-item">
                       <IonRippleEffect />

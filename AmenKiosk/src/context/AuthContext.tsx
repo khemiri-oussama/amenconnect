@@ -1,4 +1,4 @@
-// AuthContext.tsx
+//context/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 
@@ -14,9 +14,21 @@ export interface Compte {
   conditionsGel: string;
   createdAt: string;
   updatedAt: string;
-  IBAN : string;
-  RIB : string;
+  IBAN: string;
+  RIB: string;
+  historique?: Transaction[]; // Add this line
 }
+export interface Transaction {
+  _id: string;
+  date: string;
+  amount: number;
+  description: string;
+  type: "credit" | "debit";
+  status: string;
+  beneficiary?: string;
+  reference?: string;
+}
+
 
 export interface Carte {
   _id: string;
