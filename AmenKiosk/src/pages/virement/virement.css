@@ -1,0 +1,197 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
+
+.virement-kiosk-container {
+  font-family: "Outfit", sans-serif;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--kiosk-background, #ffffff);
+}
+
+.background-white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--kiosk-surface, #ffffff);
+  z-index: -2;
+}
+
+.background-svg {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1080px;
+  height: 1920px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.virement-kiosk-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  overflow-y: auto;
+  padding-top: 5rem;
+}
+
+.virement-kiosk-back-btn {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--kiosk-primary, #121660);
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.virement-kiosk-back-btn ion-icon {
+  font-size: 1.5rem;
+}
+
+.virement-kiosk-header {
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.virement-kiosk-title {
+  color: var(--kiosk-primary, #121660);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+.virement-kiosk-subtitle {
+  color: var(--kiosk-primary, #121660);
+  font-size: 1.5rem;
+  opacity: 0.8;
+}
+
+.virement-kiosk-tabs {
+  margin-bottom: 2rem;
+}
+
+.virement-kiosk-tabs ion-segment {
+  --background: var(--kiosk-surface, #f8f8f8);
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
+  box-shadow: var(--kiosk-shadow-sm, 0 4px 15px rgba(0, 0, 0, 0.08));
+  padding: 0.5rem;
+}
+
+.virement-kiosk-tabs ion-segment-button {
+  --background: transparent;
+  --background-checked: var(--kiosk-primary, #121660);
+  --color: var(--kiosk-primary, #121660);
+  --color-checked: white;
+  --indicator-color: transparent;
+  border-radius: var(--kiosk-radius-md, 1rem);
+  font-family: "Outfit", sans-serif;
+  font-weight: 600;
+  text-transform: none;
+  transition: all 0.3s ease;
+  margin: 0 0.25rem;
+}
+
+.virement-kiosk-tabs ion-segment-button ion-icon {
+  margin-bottom: 0.25rem;
+  font-size: 1.5rem;
+}
+
+.virement-kiosk-tab-content {
+  flex: 1;
+  background: var(--kiosk-surface, #ffffff);
+  border-radius: var(--kiosk-radius-lg, 1.5rem);
+  padding: 2rem;
+  box-shadow: var(--kiosk-shadow-md, 0 4px 15px rgba(0, 0, 0, 0.08));
+  overflow-y: auto;
+}
+
+.virement-kiosk-loading,
+.virement-kiosk-loading-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 1rem;
+}
+
+.virement-kiosk-loading p,
+.virement-kiosk-loading-content p {
+  color: var(--kiosk-primary, #121660);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .virement-kiosk-tabs ion-segment-button ion-label {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .virement-kiosk-tabs ion-segment {
+    flex-wrap: wrap;
+  }
+
+  .virement-kiosk-tabs ion-segment-button {
+    --width: calc(33.33% - 0.5rem);
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .virement-kiosk-title {
+    font-size: 2.5rem;
+  }
+
+  .virement-kiosk-subtitle {
+    font-size: 1.25rem;
+  }
+
+  .virement-kiosk-tabs ion-segment-button {
+    --width: calc(50% - 0.5rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .virement-kiosk-back-btn {
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .virement-kiosk-content {
+    padding: 1rem;
+    padding-top: 4rem;
+  }
+
+  .virement-kiosk-title {
+    font-size: 2rem;
+  }
+
+  .virement-kiosk-subtitle {
+    font-size: 1rem;
+  }
+
+  .virement-kiosk-tabs ion-segment-button {
+    --width: 100%;
+  }
+
+  .virement-kiosk-tab-content {
+    padding: 1rem;
+  }
+}

@@ -107,6 +107,7 @@ setupIonicReact({
 import PrivateRoute from "./context/PrivateRoute"
 import { AuthProvider } from "./context/AuthContext"
 import { CarteProvider } from "./context/CarteContext"
+import Virement from "./pages/virement/virement"
 
 const PrivatePages: React.FC = () => (
   <AuthProvider>
@@ -115,6 +116,7 @@ const PrivatePages: React.FC = () => (
     <PrivateRoute exact path="/compte" component={Compte} />
     <PrivateRoute exact path="/carte" component={Carte} />
     <PrivateRoute exact path="/chatbot" component={ChatBotKiosk} />
+    <PrivateRoute exact path="/virement" component={Virement} />
   </AuthProvider>
 );
 
