@@ -380,6 +380,26 @@ const options = {
             resetPasswordToken: { type: 'string' },
             resetPasswordExpires: { type: 'string', format: 'date-time' }
           }
+        },
+        ThemePreset: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string', example: 'Dark Mode' },
+            theme: {
+              type: 'object',
+              description: 'CSS variable key-value pairs',
+              example: { '--bg-color': '#000', '--text-color': '#fff' }
+            },
+            isDefault: { type: 'boolean', example: false }
+          }
+        },
+        ThemeSetting: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            css: { type: 'string', example: ':root { --primary-color: #123456; }' }
+          }
         }
       }
     },
@@ -399,7 +419,8 @@ const options = {
       { name: 'Kiosk', description: 'Endpoints for kiosk management' },
       { name: 'Historique', description: 'Endpoints for transaction history' },
       { name: 'Demandes', description: 'Endpoints for account creation requests' },
-      { name: 'Admin', description: 'Endpoints for admin authentication and management' }
+      { name: 'Admin', description: 'Endpoints for admin authentication and management' },
+      { name: 'Theme', description: 'Endpoints for theme presets and settings' }
     ],
     paths: {
       // ========================= Existing Endpoints (Auth, User, etc.) =========================
@@ -1400,7 +1421,101 @@ const options = {
             '500': { description: 'Server error.' }
           }
         }
-      }
+      },
+      // Theme Preset Endpoints
+      '/api/themes/presets': {
+        get: {
+          tags: ['Theme'],
+          summary: 'Get all theme presets',
+          responses: {
+            '200': { description: 'List of theme presets returned successfully' },
+            '500': { description: 'Server error' }
+          }
+        },
+        post: {
+          tags: ['Theme'],
+          summary: 'Add a new custom theme preset',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    name: { type: 'string' },
+                    theme: { type: 'object', description: 'CSS variables object' }
+                  },
+                  required: ['name', 'theme']
+                }
+              }
+            }
+          },
+          responses: {
+            '201': { description: 'Theme preset created successfully' },
+            '400': { description: 'Invalid input' },
+            '500': { description: 'Server error' }
+          }
+        }
+      },
+      '/api/themes/presets/{id}': {
+        put: {
+          tags: ['Theme'],
+          summary: 'Update a theme preset name',
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: { type: 'object', properties: { name: { type: 'string' } }, required: ['name'] }
+              }
+            }
+          },
+          responses: {
+            '200': { description: 'Theme preset updated successfully' },
+            '404': { description: 'Preset not found' },
+            '500': { description: 'Server error' }
+          }
+        },
+        delete: {
+          tags: ['Theme'],
+          summary: 'Delete a custom theme preset',
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+          responses: {
+            '200': { description: 'Preset deleted successfully' },
+            '404': { description: 'Preset not found' },
+            '500': { description: 'Server error' }
+          }
+        }
+      },
+      // Theme Variable Endpoints
+      '/api/themes/variables': {
+        get: {
+          tags: ['Theme'],
+          summary: 'Get current theme CSS variables',
+          responses: {
+            '200': { description: 'Theme variables retrieved successfully' },
+            '404': { description: 'No theme settings found' },
+            '500': { description: 'Server error' }
+          }
+        },
+        put: {
+          tags: ['Theme'],
+          summary: 'Update theme CSS variables',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: { type: 'object', properties: { css: { type: 'string' } }, required: ['css'] }
+              }
+            }
+          },
+          responses: {
+            '200': { description: 'Theme settings updated successfully' },
+            '400': { description: 'CSS content is required' },
+            '500': { description: 'Server error' }
+          }
+        }
+      },
     }
   },
   apis: ['./routes/*.js']
