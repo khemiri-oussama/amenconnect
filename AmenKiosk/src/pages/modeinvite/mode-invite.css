@@ -310,24 +310,69 @@
 }
 
 /* Back button */
-.kiosk-back-button {
-  position: fixed;
-  bottom: 2rem;
-  left: 2rem;
-  --color: var(--kiosk-primary);
-  --background: rgba(255, 255, 255, 0.8);
-  --border-radius: 25px;
-  --padding-start: 1.5rem;
-  --padding-end: 1.5rem;
-  font-weight: 600;
-  box-shadow: var(--kiosk-shadow-md);
-  z-index: 100;
-  transition: transform var(--kiosk-transition-fast), box-shadow var(--kiosk-transition-fast);
+.mode-invite-kiosk .kiosk-back-button,
+.kiosk-back-button,
+ion-button.kiosk-back-button {
+  position: fixed !important;
+  bottom: 2rem !important;
+  left: 2rem !important;
+  --color: #121660 !important;
+  --background: rgba(255, 255, 255, 0.8) !important;
+  --border-radius: 25px !important;
+  --padding-start: 1.5rem !important;
+  --padding-end: 1.5rem !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
-.kiosk-back-button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--kiosk-shadow-lg);
+.mode-invite-kiosk .kiosk-back-button ion-icon,
+.kiosk-back-button ion-icon,
+ion-button.kiosk-back-button ion-icon {
+  margin-right: 0.5rem !important;
+  font-size: 1.2rem !important;
+}
+
+.mode-invite-kiosk .kiosk-back-button:hover,
+.kiosk-back-button:hover,
+ion-button.kiosk-back-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--kiosk-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)) !important;
+}
+
+/* Add a custom class for the back button that matches the screenshot */
+.custom-back-button {
+  display: flex !important;
+  align-items: center !important;
+  color: #121660 !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  text-decoration: none !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 25px !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  position: fixed !important;
+  bottom: 2rem !important;
+  left: 2rem !important;
+  z-index: 9999 !important;
+}
+
+.custom-back-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.custom-back-button ion-icon,
+.custom-back-button svg {
+  margin-right: 0.5rem !important;
 }
 
 /* Modal */
@@ -633,10 +678,27 @@
     --padding-end: 1rem;
     font-size: 0.9rem;
   }
-
+  .kiosk-back-button {
+    bottom: 1rem;
+    left: 1rem;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    font-size: 0.9rem;
+  }
   .kiosk-modal {
     --width: 95%;
     --height: 90%;
+  }
+}
+
+/* Make sure the back button is visible on all screen sizes */
+@media (max-width: 768px) {
+  .kiosk-back-button {
+    bottom: 1rem;
+    left: 1rem;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -686,3 +748,7 @@
   display: none; /* Chrome, Safari, Opera */
 }
 
+/* Ensure the back button is above all other elements */
+.mode-invite-kiosk .kiosk-back-button {
+  z-index: 1000;
+}

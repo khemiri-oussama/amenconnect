@@ -18,7 +18,6 @@ import {
   IonToolbar,
   IonTitle,
   IonButtons,
-  IonText,
   IonGrid,
   IonRow,
   IonCol,
@@ -225,10 +224,10 @@ const ModeInviteKiosk: React.FC = () => {
               </main>
             </div>
             <HelpDeskButton />
-            <IonButton fill="clear" className="kiosk-back-button" onClick={handleBackToHome}>
-              <IonIcon icon={arrowBackOutline} slot="start" />
-              Retour à l'accueil
-            </IonButton>
+            <div className="custom-back-button" onClick={handleBackToHome}>
+              <IonIcon icon={arrowBackOutline} />
+              <span>RETOUR À L'ACCUEIL</span>
+            </div>
 
             <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} className="kiosk-modal">
               <IonHeader>
@@ -286,4 +285,3 @@ const ModeInviteKiosk: React.FC = () => {
 }
 
 export default ModeInviteKiosk
-

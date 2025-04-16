@@ -11,7 +11,12 @@
   --ion-text-color: #ffffff;
   --ion-text-color-rgb: 255, 255, 255;
 }
-
+h2{
+  color: black ;
+}
+li , h6{
+  color: black !important;
+}
 /* Base styles */
 .mode-invite-desktop {
   font-family: "Poppins", sans-serif;
