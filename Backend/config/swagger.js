@@ -1996,7 +1996,59 @@ const options = {
       }
     }
   },
-
+  '/api/sessions': {
+    get: {
+      tags: ['Sessions'],
+      summary: 'Get user sessions',
+      security: [{ bearerAuth: [] }],
+      responses: {
+        '200': {
+          description: 'List of sessions',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/Session' }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  '/api/theme/presets': {
+    post: {
+      tags: ['Theme'],
+      summary: 'Create theme preset',
+      requestBody: {
+        content: {
+          'application/json': {
+            schema: { $ref: '#/components/schemas/ThemePreset' }
+          }
+        }
+      },
+      responses: {
+        '201': { description: 'Theme preset created' }
+      }
+    }
+  },
+  '/api/qr-login': {
+    post: {
+      tags: ['Auth'],
+      summary: 'Initiate QR login session',
+      responses: {
+        '201': {
+          description: 'QR session created',
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/QRSession' }
+            }
+          }
+        }
+      }
+    }
+  },
+  
     }
   },
   apis: ['./routes/*.js']
