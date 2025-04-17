@@ -42,27 +42,35 @@ const options = {
       },
       schemas: {
         // Core Schemas
-        User: {
+        // Updated User Schema
+    User: {
+      type: 'object',
+      properties: {
+        _id: { type: 'string' },
+        cin: { type: 'string', example: '12345678' },
+        nom: { type: 'string', example: 'Doe' },
+        prenom: { type: 'string', example: 'John' },
+        email: { type: 'string', format: 'email', example: 'john.doe@example.com' },
+        compteIds: {
+          type: 'array',
+          items: { type: 'string' }
+        },
+        otp: {
           type: 'object',
           properties: {
-            _id: { type: 'string' },
-            cin: { type: 'string', example: '12345678' },
-            nom: { type: 'string', example: 'Doe' },
-            prenom: { type: 'string', example: 'John' },
-            email: { type: 'string', format: 'email', example: 'john.doe@example.com' },
-            telephone: { type: 'string', example: '0123456789' },
-            employeur: { type: 'string', example: 'Company Inc' },
-            adresseEmployeur: { type: 'string', example: '123 Main Street' },
-            compteIds: {
-              type: 'array',
-              items: { type: 'string' }
-            },
-            carteIds: {
-              type: 'array',
-              items: { type: 'string' }
-            }
+            hash: { type: 'string' },
+            expires: { type: 'string', format: 'date-time' }
           }
         },
+        resetPasswordToken: {
+          type: 'object',
+          properties: {
+            hash: { type: 'string' },
+            expires: { type: 'string', format: 'date-time' }
+          }
+        }
+      }
+    },
         Compte: {
           type: 'object',
           properties: {
@@ -187,10 +195,14 @@ const options = {
             _id: { type: 'string' },
             name: { type: 'string', example: 'Alice Dupont' },
             email: { type: 'string', format: 'email', example: 'alice@example.com' },
-            subject: { type: 'string', example: 'Support technique' },
-            phone: { type: 'string', example: '0123456789' },
-            roomId: { type: 'string', example: 'ROOM123' },
-            status: { type: 'string', example: 'pending' },
+            subject: { type: 'string', example: 'Account Support' },
+            phone: { type: 'string', example: '+21620123456' },
+            roomId: { type: 'string', example: 'ROOM-123' },
+            status: {
+              type: 'string',
+              enum: ['pending', 'approved', 'rejected'],
+              example: 'pending'
+            },
             createdAt: { type: 'string', format: 'date-time' }
           }
         },
@@ -222,9 +234,12 @@ const options = {
             _id: { type: 'string' },
             SN: { type: 'string', example: 'SN123456' },
             status: { type: 'string', example: 'online' },
-            enabled: { type: 'boolean', example: false },
-            tote: { type: 'string', example: 'TM1' },
+            version: { type: 'string', example: '1.2.3' },
             temperature: { type: 'number', example: 35 },
+            location: { type: 'string', example: 'Agence Centrale' },
+            agencyName: { type: 'string', example: 'Main Branch' },
+            enabled: { type: 'boolean', example: false },
+            last_heartbeat: { type: 'number', example: 1717027200 },
             createdAt: { type: 'string', format: 'date-time' }
           }
         },
@@ -381,26 +396,188 @@ const options = {
             resetPasswordExpires: { type: 'string', format: 'date-time' }
           }
         },
-        ThemePreset: {
+        // Theme Preset Schema
+    ThemePreset: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', example: 'Corporate Blue' },
+        theme: {
           type: 'object',
           properties: {
-            _id: { type: 'string' },
-            name: { type: 'string', example: 'Dark Mode' },
-            theme: {
-              type: 'object',
-              description: 'CSS variable key-value pairs',
-              example: { '--bg-color': '#000', '--text-color': '#fff' }
-            },
-            isDefault: { type: 'boolean', example: false }
+            kioskPrimary: { type: 'string', example: '#123456' },
+            kioskPrimaryDark: { type: 'string', example: '#0a2b3c' },
+            kioskAccent: { type: 'string', example: '#ff5722' },
+            // Include all theme properties from the model
           }
         },
+        isDefault: { type: 'boolean', example: false }
+      }
+    },
         ThemeSetting: {
           type: 'object',
           properties: {
             _id: { type: 'string' },
             css: { type: 'string', example: ':root { --primary-color: #123456; }' }
           }
-        }
+        },
+        Incident: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            totemId: { type: 'string', example: 'TOTEM123' },
+            type: { 
+              type: 'string',
+              enum: ['Hardware Failure', 'Software Error', 'Other'],
+              example: 'Hardware Failure'
+            },
+            description: { type: 'string', example: 'Screen not responding' },
+            createdAt: { type: 'string', format: 'date-time' }
+          }
+        },
+    
+        // Admin Schema (updated)
+        Admin: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string', example: 'Admin User' },
+            cin: { type: 'string', example: '11223344' },
+            email: { type: 'string', format: 'email', example: 'admin@example.com' },
+            role: { 
+              type: 'string',
+              enum: ['admin', 'superadmin', 'manager'],
+              example: 'admin'
+            },
+            department: { type: 'string', example: 'Technical Support' },
+            permissions: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['user_management', 'system_config']
+            },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+    
+        // Admin Alert Schema
+        AdminAlert: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            type: { type: 'string', example: 'Security' },
+            message: { type: 'string', example: 'Suspicious login attempt detected' },
+            createdAt: { type: 'string', format: 'date-time' }
+          }
+        },
+    
+        // Beneficiaire Schema
+        Beneficiaire: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            userId: { type: 'string' },
+            nom: { type: 'string', example: 'Dupont' },
+            prenom: { type: 'string', example: 'Marie' },
+            RIB: { type: 'string', example: 'TN5901234567890123456789' },
+            banque: { type: 'string', example: 'Amen Bank' },
+            email: { type: 'string', format: 'email', example: 'marie.dupont@example.com' },
+            telephone: { type: 'string', example: '+21620123456' },
+            dateAjout: { type: 'string', format: 'date-time' }
+          }
+        },
+    
+        // Budget Category Schema
+        BudgetCategory: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            userId: { type: 'string' },
+            name: { type: 'string', example: 'Groceries' },
+            limit: { type: 'number', example: 1000 },
+            color: { type: 'string', example: '#FF5733' },
+            current: { type: 'number', example: 450 },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+    
+        // Credit Card Transaction Schema
+        CreditCardTransaction: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            amount: { type: 'number', example: 150.5 },
+            transactionDate: { type: 'string', format: 'date-time' },
+            description: { type: 'string', example: 'Supermarket purchase' },
+            currency: { type: 'string', example: 'TND' },
+            merchant: { type: 'string', example: 'Carrefour' },
+            status: { type: 'string', example: 'completed' },
+            carteId: { type: 'string' }
+          }
+        },
+    
+        // DemandeCreationCompte Schema (expanded)
+        DemandeCreationCompte: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            nom: { type: 'string', example: 'Ben Ali' },
+            prenom: { type: 'string', example: 'Mohamed' },
+            numeroCIN: { type: 'string', example: '98765432' },
+            email: { type: 'string', format: 'email', example: 'mohamed.benali@example.com' },
+            status: { type: 'string', example: 'pending' },
+            createdAt: { type: 'string', format: 'date-time' },
+            // Include other fields as needed following the model structure
+          }
+        },
+        LoginAttempt: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            email: { type: 'string', example: 'user@example.com' },
+            ipAddress: { type: 'string', example: '192.168.1.1' },
+            userAgent: { type: 'string', example: 'Chrome/120.0.0.0' },
+            success: { type: 'boolean', example: false },
+            timestamp: { type: 'string', format: 'date-time' }
+          }
+        },
+        // QR Session Schema
+    QRSession: {
+      type: 'object',
+      properties: {
+        sessionId: { type: 'string', example: 'qr-session-123' },
+        status: { 
+          type: 'string',
+          enum: ['pending', 'authenticated'],
+          example: 'pending'
+        },
+        user: { $ref: '#/components/schemas/User' },
+        createdAt: { type: 'string', format: 'date-time' }
+      }
+    },
+    // User Session Schema
+    Session: {
+      type: 'object',
+      properties: {
+        _id: { type: 'string' },
+        userId: { type: 'string' },
+        sessionId: { type: 'string', example: 'session-123' },
+        device: { type: 'string', example: 'iPhone 15' },
+        ipAddress: { type: 'string', example: '192.168.1.100' },
+        lastActive: { type: 'string', format: 'date-time' }
+      }
+    },
+    TwoFactorConfig: {
+      type: 'object',
+      properties: {
+        is2FAEnabled: { type: 'boolean', example: true },
+        smsEnabled: { type: 'boolean', example: false },
+        emailEnabled: { type: 'boolean', example: true },
+        googleAuthEnabled: { type: 'boolean', example: false },
+        googleAuthSecret: { type: 'string' },
+        updatedAt: { type: 'string', format: 'date-time' }
+      }
+    },
       }
     },
     security: [{ bearerAuth: [] }],
@@ -420,7 +597,14 @@ const options = {
       { name: 'Historique', description: 'Endpoints for transaction history' },
       { name: 'Demandes', description: 'Endpoints for account creation requests' },
       { name: 'Admin', description: 'Endpoints for admin authentication and management' },
-      { name: 'Theme', description: 'Endpoints for theme presets and settings' }
+      { name: 'Theme', description: 'Endpoints for theme presets and settings' },
+      { name: 'Budget', description: 'Endpoints for budget management' },
+      { name: '2FA', description: 'Two-factor authentication management' },
+      { name: 'Admin Notifications', description: 'Endpoints for admin notifications' },
+      { name: 'Alerts', description: 'System alert monitoring' },
+      { name: 'Incidents', description: 'System incident tracking' },
+      { name: 'Admin Management', description: 'Admin user management' },
+      { name: 'Beneficiaries', description: 'Beneficiary management' }
     ],
     paths: {
       // ========================= Existing Endpoints (Auth, User, etc.) =========================
@@ -542,7 +726,7 @@ const options = {
         get: {
           tags: ['User'],
           summary: 'Get full user profile along with comptes and cartes',
-          security: [{ bearerAuth: [] }],
+          security: [{ bearerAuth: [] }, { cookieAuth: [] }],
           responses: {
             '200': { description: 'User profile retrieved successfully' },
             '404': { description: 'User not found' },
@@ -735,7 +919,7 @@ const options = {
           }
         }
       },
-      '/api/payment/qr': {
+      '/api/payments/qr': {
         post: {
           tags: ['Payment'],
           summary: 'Process QR payment',
@@ -1101,7 +1285,7 @@ const options = {
       },
 
       // ========================= New Payment Endpoint (Non-QR) =========================
-      '/api/payment': {
+      '/api/payments': {
         post: {
           tags: ['Payment'],
           summary: 'Process a payment',
@@ -1110,7 +1294,7 @@ const options = {
             required: true,
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/Payment' }
+                schema: { $ref: '#/components/schemas/Payments' }
               }
             }
           },
@@ -1516,6 +1700,303 @@ const options = {
           }
         }
       },
+      '/api/categories': {
+  get: {
+    tags: ['Budget'],
+    summary: 'Get budget categories',
+    parameters: [{
+      name: 'userId',
+      in: 'query',
+      required: true,
+      schema: { type: 'string' }
+    }],
+    responses: {
+      '200': { description: 'List of categories' },
+      '500': { description: 'Server error' }
+    }
+  },
+  post: {
+    tags: ['Budget'],
+    summary: 'Create budget category',
+    requestBody: {
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              budgetLimit: { type: 'number' }
+            }
+          }
+        }
+      }
+    },
+    responses: {
+      '201': { description: 'Category created' },
+      '400': { description: 'Invalid input' }
+    }
+  }
+},
+'/api/categories/updateBudget': {
+  put: {
+    tags: ['Budget'],
+    summary: 'Update category budget',
+    requestBody: {
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              categoryId: { type: 'string' },
+              newBudget: { type: 'number' }
+            }
+          }
+        }
+      }
+    },
+    responses: {
+      '200': { description: 'Budget updated' },
+      '404': { description: 'Category not found' }
+    }
+  }
+},
+'/api/2fa': {
+  get: {
+    tags: ['2FA'],
+    summary: 'Get 2FA configuration',
+    security: [{ bearerAuth: [] }],
+    responses: {
+      '200': { description: '2FA config retrieved' },
+      '500': { description: 'Server error' }
+    }
+  },
+  put: {
+    tags: ['2FA'],
+    summary: 'Update 2FA settings',
+    security: [{ bearerAuth: [] }],
+    requestBody: {
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              is2FAEnabled: { type: 'boolean' },
+              smsEnabled: { type: 'boolean' },
+              emailEnabled: { type: 'boolean' },
+              googleAuthEnabled: { type: 'boolean' }
+            }
+          }
+        }
+      }
+    },
+    responses: {
+      '200': { description: '2FA settings updated' },
+      '400': { description: 'Invalid input' }
+    }
+  }
+},
+'/api/demandes': {
+  post: {
+    tags: ['Demandes'],
+    summary: 'Create account creation request',
+    requestBody: {
+      content: {
+        'application/json': {
+          schema: { $ref: '#/components/schemas/DemandeCreationCompte' }
+        }
+      }
+    },
+    responses: {
+      '201': { description: 'Request created' },
+      '500': { description: 'Server error' }
+    }
+  },
+  get: {
+    tags: ['Demandes'],
+    summary: 'Get all account requests',
+    security: [{ bearerAuth: [] }],
+    responses: {
+      '200': { description: 'List of requests' },
+      '403': { description: 'Unauthorized' }
+    }
+  }
+},
+'/api/demandes/{id}/approve': {
+  post: {
+    tags: ['Demandes'],
+    summary: 'Approve account request',
+    security: [{ bearerAuth: [] }],
+    parameters: [{
+      name: 'id',
+      in: 'path',
+      required: true,
+      schema: { type: 'string' }
+    }],
+    responses: {
+      '200': { description: 'Request approved' },
+      '404': { description: 'Request not found' }
+    }
+  }
+},
+'/api/demandes/{id}/reject': {
+  post: {
+    tags: ['Demandes'],
+    summary: 'Reject account request',
+    security: [{ bearerAuth: [] }],
+    parameters: [{
+      name: 'id',
+      in: 'path',
+      required: true,
+      schema: { type: 'string' }
+    }],
+    responses: {
+      '200': { description: 'Request rejected' },
+      '404': { description: 'Request not found' }
+    }
+  }
+},
+'/api/admin/list': {
+  get: {
+    tags: ['Admin'],
+    summary: 'List all admins',
+    security: [{ bearerAuth: [] }],
+    responses: {
+      '200': { description: 'Admin list retrieved' },
+      '403': { description: 'Unauthorized' }
+    }
+  },
+  delete: {
+    tags: ['Admin'],
+    summary: 'Delete admin',
+    security: [{ bearerAuth: [] }],
+    parameters: [{
+      name: 'id',
+      in: 'path',
+      required: true,
+      schema: { type: 'string' }
+    }],
+    responses: {
+      '200': { description: 'Admin deleted' },
+      '400': { description: 'Cannot delete self' }
+    }
+  }
+},
+'/api/admin/notifications': {
+  get: {
+    tags: ['Admin Notifications'],
+    summary: 'Get notifications',
+    responses: {
+      '200': { description: 'Notifications list' },
+      '500': { description: 'Server error' }
+    }
+  },
+  post: {
+    tags: ['Admin Notifications'],
+    summary: 'Create notification',
+    requestBody: {
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              title: { type: 'string' },
+              message: { type: 'string' }
+            }
+          }
+        }
+      }
+    },
+    responses: {
+      '201': { description: 'Notification created' }
+    }
+  }
+},
+'/api/alerts': {
+  get: {
+    tags: ['Alerts'],
+    summary: 'Get system alerts',
+    responses: {
+      '200': { description: 'Recent alerts' },
+      '500': { description: 'Server error' }
+    }
+  }
+},
+'/api/incidents': {
+    get: {
+      tags: ['Incidents'],
+      summary: 'Get system incidents',
+      responses: {
+        '200': {
+          description: 'List of incidents',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/Incident' }
+              }
+            }
+          }
+        }
+      }
+    },
+    post: {
+      tags: ['Incidents'],
+      summary: 'Report new incident',
+      requestBody: {
+        content: {
+          'application/json': {
+            schema: { $ref: '#/components/schemas/Incident' }
+          }
+        }
+      },
+      responses: {
+        '201': { description: 'Incident reported successfully' }
+      }
+    }
+  },
+
+  '/api/admin/list': {
+    get: {
+      tags: ['Admin Management'],
+      summary: 'List all admins',
+      security: [{ bearerAuth: [] }],
+      responses: {
+        '200': {
+          description: 'Admin list',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/Admin' }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  '/api/beneficiaires': {
+    get: {
+      tags: ['Beneficiaries'],
+      summary: 'Get user beneficiaries',
+      security: [{ bearerAuth: [] }],
+      responses: {
+        '200': {
+          description: 'Beneficiary list',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/Beneficiaire' }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
     }
   },
   apis: ['./routes/*.js']
