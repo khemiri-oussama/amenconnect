@@ -578,6 +578,14 @@ const options = {
         updatedAt: { type: 'string', format: 'date-time' }
       }
     },
+    ChatRequest: {
+      type: 'object',
+      properties: {
+        message: { type: 'string', example: "Quel est mon solde actuel?" },
+        user: { $ref: '#/components/schemas/User' }
+      },
+      required: ['message']
+    },
       }
     },
     security: [{ bearerAuth: [] }],
@@ -604,7 +612,8 @@ const options = {
       { name: 'Alerts', description: 'System alert monitoring' },
       { name: 'Incidents', description: 'System incident tracking' },
       { name: 'Admin Management', description: 'Admin user management' },
-      { name: 'Beneficiaries', description: 'Beneficiary management' }
+      { name: 'Beneficiaries', description: 'Beneficiary management' },
+      { name: 'Chat', description: 'AI banking assistant chat' },
     ],
     paths: {
       // ========================= Existing Endpoints (Auth, User, etc.) =========================
@@ -2048,7 +2057,35 @@ const options = {
       }
     }
   },
-  
+  '/api/chat': {
+    post: {
+      tags: ['Chat'],
+      summary: 'Chat with banking assistant',
+      security: [{ bearerAuth: [] }],
+      requestBody: {
+        content: {
+          'application/json': {
+            schema: { $ref: '#/components/schemas/ChatRequest' }
+          }
+        }
+      },
+      responses: {
+        '200': { 
+          description: 'Chat response',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  response: { type: 'string' }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
     }
   },
   apis: ['./routes/*.js']
