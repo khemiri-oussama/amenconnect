@@ -2,7 +2,6 @@ import type React from "react"
 import { isPlatform } from "@ionic/react"
 import LoginMobile from "./LoginMobile"
 import LoginDesktop from "./LoginDesktop"
-import LoginKiosk from "./LoginKiosk"
 import { useEffect, useState } from "react"
 
 const Login: React.FC = () => {
@@ -22,15 +21,11 @@ const Login: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // Detect if it's a borne interactive (not mobile, portrait, and touch screen)
-  const isBorneInteractive = !isMobile && isPortrait && isTouchable
 
   return (
     <>
       {isMobile ? (
         <LoginMobile />
-      ) : isBorneInteractive ? (
-        <LoginKiosk />
       ) : (
         <LoginDesktop />
       )}

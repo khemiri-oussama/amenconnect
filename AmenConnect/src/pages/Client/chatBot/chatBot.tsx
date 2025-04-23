@@ -2,7 +2,6 @@ import type React from "react"
 import { isPlatform } from "@ionic/react"
 import ChatBotMobile from "./chatBotMobile"
 import ChatBotDesktop from "./chatBotDesktop"
-import ChatBotKiosk from "./chatBotKiosk"
 
 import { useEffect, useState } from "react"
 
@@ -23,16 +22,12 @@ const ChatBot: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // Detect if it's a borne interactive (not mobile, portrait, and touch screen)
-  const isBorneInteractive = !isMobile && isPortrait && isTouchable
 
 
   return (
     <>
       {isMobile ? (
         <ChatBotMobile />
-      ) : isBorneInteractive ? (
-        <ChatBotKiosk />
       ) : (
         <ChatBotDesktop />
       )}

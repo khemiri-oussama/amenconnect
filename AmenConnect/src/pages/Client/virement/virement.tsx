@@ -2,7 +2,6 @@ import type React from "react"
 import { isPlatform } from "@ionic/react"
 import VirementMobile from "./virementMobile"
 import VirementDesktop from "./VirementDesktop"
-import VirementKiosk from "./VirementKiosk"
 
 import { useEffect, useState } from "react"
 
@@ -22,15 +21,12 @@ const Virement: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  const isBorneInteractive = !isMobile && isPortrait && isTouchable
 
 
   return (
     <>
       {isMobile ? (
         <VirementMobile />
-      ) : isBorneInteractive ? (
-        <VirementKiosk />
       ) : (
         <VirementDesktop />
       )}

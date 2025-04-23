@@ -38,7 +38,6 @@ import HomeKiosk from "./pages/HomeKiosk"
 import KioskSetup from "./components/KioskComponents/kiosk-setup"
 import Login from "./pages/Login/Login"
 import ModeInvite from "./pages/ModeInvite/ModeInvite"
-import LoginKiosk from "./pages/Login/LoginKiosk"
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword/ForgotPassword"))
 const ResetPassword = lazy(() => import("./pages/ResetPassword/ResetPassword"))
 const AccountCreationForm = lazy(() => import("./pages/AccountCreationForm"))
@@ -94,7 +93,6 @@ const AppContent: React.FC = () => {
             <Route exact path="/home" component={Home} />
             <Route exact path="/setup" component={KioskSetup} />
             <Route exact path="/login" component={Login} />
-            <Route exact path="/kiosk/login" component={LoginKiosk} />
             <Route exact path="/admin/otp" component={AdminOtp} />
             <Route exact path="/admin/login" component={AdminLogin} />
             <Route exact path="/totem/kiosk" component={HomeKiosk} />
