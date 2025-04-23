@@ -47,7 +47,7 @@ const VirementDesktop: React.FC = () => {
     <IonPage className="virement-desktop">
       <IonHeader>
         <IonToolbar>
-          <Navbar currentPage="virement" />
+          <Navbar currentPage="virements" />
         </IonToolbar>
       </IonHeader>
       <IonContent className="virement-desktop__content">
