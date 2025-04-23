@@ -2,7 +2,7 @@
 import React from "react";
 import { Route, Redirect, RouteProps } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-
+import LoadingProgressBar from "./components/LoadingProgressBar";
 interface PrivateRouteProps extends RouteProps {
   component: React.ComponentType<any>;
   isAuthenticated: boolean;
@@ -12,7 +12,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, ...re
   const { isAuthenticated, profile, authLoading } = useAuth();
 
   if (authLoading) {
-    return <div>Loading...</div>;
+    return <LoadingProgressBar />;
   }
 
   return (

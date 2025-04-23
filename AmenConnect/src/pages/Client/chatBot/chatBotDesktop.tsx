@@ -29,7 +29,7 @@ import {
 import { useAuth } from "../../../AuthContext"
 import Navbar from "../../../components/Navbar"
 import "./ChatBotDesktop.css"
-
+import LoadingProgressBar from "../../../components/LoadingProgressBar"
 interface Message {
   id: number
   text: string
@@ -108,10 +108,9 @@ const ChatBotDesktop: React.FC = () => {
 
   if (authLoading) {
     return (
-      <div className="loading-container">
-        <IonSpinner name="crescent" />
-        <p>Chargement de votre profil...</p>
-      </div>
+      <IonPage>
+        <LoadingProgressBar />
+      </IonPage>
     )
   }
 

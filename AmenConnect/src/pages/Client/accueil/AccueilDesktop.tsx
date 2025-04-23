@@ -36,7 +36,7 @@ import Profile from "./MenuDesktop/ProfileMenu";
 import { useAuth } from "../../../AuthContext";
 import NotificationDesktop from "./NotificationMenu/NotificationDesktop";
 import BudgetCategoryManager from "../../../components/BudgetCategory/BudgetCategoryManager";
-
+import LoadingProgressBar from "../../../components/LoadingProgressBar"
 interface Account {
   _id: string;
   numéroCompte: string;
@@ -308,7 +308,13 @@ const AccueilDesktop: React.FC = () => {
     setBudgetCategories(updatedCategories);
   };
 
-  if (authLoading) return <div>Loading...</div>;
+  if (authLoading) {
+    return (
+      <IonPage>
+        <LoadingProgressBar />
+      </IonPage>
+    )
+  }
 
   return (
     <IonPage>

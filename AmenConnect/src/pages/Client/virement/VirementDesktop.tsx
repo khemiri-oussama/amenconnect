@@ -12,10 +12,18 @@ import VirementsProgrammes from "../../../components/virements/tabs/virements-pr
 import Historique from "../../../components/virements/tabs/historique"
 import GestionBeneficiaires from "../../../components/virements/tabs/gestion-beneficiaires"
 import "./tableau-de-bord.css"
-
+import LoadingProgressBar from "../../../components/LoadingProgressBar"
 const VirementDesktop: React.FC = () => {
   const [activeTab, setActiveTab] = useState("tableau-de-bord")
+  const [authLoading, setAuthLoading] = useState(false)
 
+  if (authLoading) {
+    return (
+      <IonPage>
+        <LoadingProgressBar />
+      </IonPage>
+    )
+  }
   const renderTabContent = () => {
     switch (activeTab) {
       case "tableau-de-bord":

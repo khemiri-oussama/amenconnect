@@ -37,7 +37,7 @@ import { useAuth, type Carte, type Compte } from "../../../AuthContext"
 import { useCarte } from "../../../CarteContext"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
-
+import LoadingProgressBar from "../../../components/LoadingProgressBar"
 // Add this interface definition at the top of the file, after the imports
 interface CreditCardTransaction {
   _id: string
@@ -308,18 +308,13 @@ const handleDownloadStatement = async () => {
   }
 }
 
-  if (authLoading || isLoading) {
-    return (
-      <IonPage className="carte-desktop">
-        <IonContent className="carte-desktop__content">
-          <div className="carte-desktop__loading">
-            <IonSpinner name="crescent" />
-            <p>Chargement des données...</p>
-          </div>
-        </IonContent>
-      </IonPage>
-    )
-  }
+if (authLoading || isLoading) {
+  return (
+    <IonPage>
+      <LoadingProgressBar />
+    </IonPage>
+  )
+}
 
   if (error) {
     return (

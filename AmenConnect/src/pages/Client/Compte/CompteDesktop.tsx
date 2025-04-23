@@ -53,7 +53,7 @@ import {
 import Navbar from "../../../components/Navbar"
 import "./CompteDesktop.css"
 import { useAuth, type Transaction } from "../../../AuthContext"
-
+import LoadingProgressBar from "../../../components/LoadingProgressBar"
 const ComptePageDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const [activeTab, setActiveTab] = useState<string>("overview")
@@ -266,15 +266,7 @@ const ComptePageDesktop: React.FC = () => {
   if (authLoading || isLoading) {
     return (
       <IonPage>
-        <IonHeader>
-          <Navbar currentPage="compte" />
-        </IonHeader>
-        <IonContent className="ion-padding compte-page-custom-content">
-          <div className="loading-container">
-            <IonSpinner name="crescent" />
-            <p>Chargement de vos informations...</p>
-          </div>
-        </IonContent>
+        <LoadingProgressBar />
       </IonPage>
     )
   }

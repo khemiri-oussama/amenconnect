@@ -1,0 +1,20 @@
+.loading-progress-bar {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+  }
+  
+  .loading-progress-bar.top {
+    top: 0;
+  }
+  
+  .loading-progress-bar.bottom {
+    bottom: 0;
+  }
+  
+  .loading-progress-bar ion-progress-bar {
+    --progress-background: var(--color-positive, #47ce65);
+    height: 4px;
+  }
+  
