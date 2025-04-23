@@ -327,16 +327,6 @@ const AccueilDesktop: React.FC = () => {
             <div className="welcome-text">
               <h1 className="welcome-title">Bienvenue, {nom} {prenom}</h1>
               <p className="welcome-subtitle">Voici un aperçu de vos finances</p>
-              <div className="user-details">
-                <p>Email: {email}</p>
-                <p>Téléphone: {tel}</p>
-                {profile && (
-                  <>
-                    <p>Employeur: {profile.user.employeur}</p>
-                    <p>Adresse Employeur: {profile.user.adresseEmployeur}</p>
-                  </>
-                )}
-              </div>
             </div>
             <div className="welcome-actions">
               <NotificationDesktop />
