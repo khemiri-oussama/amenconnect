@@ -1,31 +1,103 @@
-// File: controllers/creditController.js
 const Credit = require('../models/Credit');
+const Compte = require('../models/Compte');
 
-/**
- * Enregistre une nouvelle demande de crédit en base MongoDB
- */
-exports.demandeCredit = async (req, res) => {
+exports.getUserCredits = async (req, res) => {
   try {
-    const { type, montant, duree, user } = req.body;
-    if (!type || !montant || !duree || !user || !user.id) {
-      return res.status(400).json({ error: "Type, montant, durée et user.id sont requis." });
+    const { userId } = req.query;
+    
+    if (!userId) {
+      return res.status(400).json({ error: "User ID est requis." });
     }
 
-    // Création et sauvegarde de la demande
+    const credits = await Credit.find({ userId })
+      .sort({ createdAt: -1 })
+      .populate('compteId', 'numéroCompte type');
+
+    res.status(200).json(credits);
+  } catch (error) {
+    console.error("Erreur dans getUserCredits :", error);
+    res.status(500).json({ error: "Erreur lors de la récupération des crédits." });
+  }
+};
+
+exports.getCreditById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const credit = await Credit.findById(id)
+      .populate('userId', 'prenom nom email')
+      .populate('compteId', 'numéroCompte type');
+
+    if (!credit) {
+      return res.status(404).json({ error: "Crédit non trouvé." });
+    }
+
+    res.status(200).json(credit);
+  } catch (error) {
+    console.error("Erreur dans getCreditById :", error);
+    res.status(500).json({ error: "Erreur lors de la récupération du crédit." });
+  }
+};
+
+exports.demandeCredit = async (req, res) => {
+  try {
+    const { type, montant, duree, user, compteId,RevenuMensuel } = req.body;
+    // Destructure as 'typeCredit' but alias it to 'type'    
+    if (!type || !montant || !duree || !user?.id || !compteId|| !RevenuMensuel) {
+      return res.status(400).json({ 
+        error: "Type, montant, durée,RevenuMensuel, user ID et compte ID sont requis." 
+      });
+    }
+
+    // Verify compte exists
+    const compteExists = await Compte.findById(compteId);
+    if (!compteExists) {
+      return res.status(404).json({ error: "Compte bancaire introuvable." });
+    }
+
+    // Calculate interest rate
+    let tauxInteret;
+    switch (type) {
+      case 'Auto': tauxInteret = 5.0; break;
+      case 'Immobilier': tauxInteret = 3.5; break;
+      case 'Études': tauxInteret = 4.0; break;
+      case 'Liquidité': tauxInteret = 6.0; break;
+      default: tauxInteret = 5.0;
+    }
+
+    // Calculate dates
+    const dateDebut = new Date();
+    const dateFin = new Date(dateDebut);
+    dateFin.setMonth(dateFin.getMonth() + parseInt(duree));
+
+    // Calculate monthly payment
+    const principal = parseFloat(montant);
+    const n = parseInt(duree);
+    const monthlyRate = tauxInteret / 100 / 12;
+    const mensualite = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -n));
+
+    // Create credit request
     const creditRequest = await Credit.create({
       userId: user.id,
+      compteId,
       type,
-      montant: parseFloat(montant),
-      duree: parseInt(duree, 10)
+      montant: principal,
+      duree: n,
+      tauxInteret,
+      mensualite: Number(mensualite.toFixed(2)),
+      dateDebut,
+      dateFin,
+      RevenuMensuel
     });
 
     res.status(201).json({
-      message: `Demande de crédit enregistrée (ID: ${creditRequest._id}). Retour sous 5 jours ouvrés.`,
-      status: creditRequest.status,
-      creditId: creditRequest._id
+      message: `Demande de crédit enregistrée (ID: ${creditRequest._id})`,
+      credit: creditRequest
     });
   } catch (error) {
     console.error("Erreur dans demandeCredit :", error);
-    res.status(500).json({ error: "Erreur lors de l'enregistrement de la demande de crédit." });
+    res.status(500).json({ 
+      error: error.message || "Erreur lors de la demande de crédit." 
+    });
   }
 };

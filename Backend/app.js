@@ -40,7 +40,7 @@ const themeRoutes = require("./routes/theme")
 const themesPresetRoutes = require("./routes/themeRoutes")
 const logoRoutes = require('./routes/logoRoutes')
 const chatRoutes = require("./routes/chatRoutes")
-
+const creditRoutes = require("./routes/creditRoutes")
 const app = express()
 
 // Middlewares
@@ -64,7 +64,7 @@ app.use("/api", accountCreationRoutes)
 app.use("/api/compte", transactionRoutes)
 app.use("/api/categories", budgetCategoryRoutes)
 app.use("/api/budget", require("./routes/budgetCategoryRoutes"));
-
+app.use("/api/credit", creditRoutes)
 app.use("/api/historique", passport.authenticate("jwt", { session: false }), historiqueRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api/password", forgotPasswordRoutes)

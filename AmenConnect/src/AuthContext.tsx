@@ -63,7 +63,18 @@ export interface CreditCardTransaction {
   status: string;
   carteId: string;
 }
-
+export interface Credit {
+  _id: string;
+  montant: number;
+  dateDebut: string;
+  dateFin: string;
+  tauxInteret: number;
+  mensualite: number;
+  statut: string;
+  typeCredit: string;
+  compteId: string;
+  createdAt: string;
+}
 export interface Profile {
   user: {
     _id: string;
@@ -79,6 +90,7 @@ export interface Profile {
   };
   comptes: Compte[];
   cartes: Carte[];
+  credits: Credit[];
   
 }
 

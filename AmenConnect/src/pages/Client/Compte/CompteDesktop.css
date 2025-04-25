@@ -728,6 +728,163 @@
   }
 }
 
+/* Credit Tab */
+.compte-page-container .credit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  animation: cp-fadeInUp 0.5s ease-out;
+}
+
+.compte-page-container .credit-status-card {
+  grid-column: span 2;
+}
+
+.compte-page-container .new-credit-card,
+.compte-page-container .credit-simulator-card {
+  grid-column: span 1;
+}
+
+.compte-page-container .credit-applications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.compte-page-container .credit-application-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.compte-page-container .credit-application-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.compte-page-container .credit-application-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.compte-page-container .credit-application-details {
+  flex: 1;
+}
+
+.compte-page-container .credit-application-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.compte-page-container .credit-application-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 14px;
+  color: #878787;
+}
+
+.compte-page-container .credit-application-status {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.compte-page-container .credit-application-status.status-approved {
+  background: rgba(71, 206, 101, 0.1);
+  color: #47ce65;
+}
+
+.compte-page-container .credit-application-status.status-rejected {
+  background: rgba(255, 43, 43, 0.1);
+  color: #ff2b2b;
+}
+
+.compte-page-container .credit-application-status.status-review,
+.compte-page-container .credit-application-status.status-pending {
+  background: rgba(255, 204, 0, 0.1);
+  color: #ffcc00;
+}
+
+.compte-page-container .credit-application-form,
+.compte-page-container .simulator-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.compte-page-container .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compte-page-container .form-group label {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.compte-page-container .form-group ion-input,
+.compte-page-container .form-group ion-select,
+.compte-page-container .form-group ion-textarea {
+  --background: rgba(255, 255, 255, 0.05);
+  --color: #ffffff;
+  --placeholder-color: #878787;
+  --border-radius: 8px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+.compte-page-container .form-actions {
+  margin-top: 16px;
+}
+
+.compte-page-container .submit-button,
+.compte-page-container .calculate-button {
+  --background: #2eb851;
+  --background-hover: #47ce65;
+  --color: #ffffff;
+  margin-top: 8px;
+}
+
+.compte-page-container .simulator-results {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.compte-page-container .result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.compte-page-container .result-label {
+  font-size: 14px;
+  color: #878787;
+}
+
+.compte-page-container .result-value {
+  font-size: 18px;
+  font-weight: 600;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .compte-page-container .compte-page-grid,
@@ -791,6 +948,16 @@
   .compte-page-container .user-meta {
     align-items: center;
   }
+
+  .compte-page-container .credit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compte-page-container .credit-status-card,
+  .compte-page-container .new-credit-card,
+  .compte-page-container .credit-simulator-card {
+    grid-column: span 1;
+  }
 }
 
 @media (max-width: 480px) {
@@ -801,4 +968,61 @@
   .compte-page-container .filter-actions {
     grid-template-columns: 1fr;
   }
+}
+.credit-application-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+}
+
+.credit-application-icon {
+  margin-right: 1rem;
+}
+
+.credit-application-details {
+  flex-grow: 1;
+}
+
+.credit-application-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.credit-application-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--ion-color-medium);
+}
+
+.credit-application-info {
+  color: white;
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9em;
+}
+
+.credit-application-status {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.status-pending {
+  background-color: #ffd700;
+  color: #000;
+}
+
+.status-approved {
+  background-color: #47ce65;
+  color: #fff;
+}
+
+.status-rejected {
+  background-color: #ff2b2b;
+  color: #fff;
 }
