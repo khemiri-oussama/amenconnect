@@ -12,19 +12,42 @@ def generate_reply(message: str, user_context: str = "") -> str:
     
     # Enhanced non-banking filter with additional keywords
     NON_BANKING_KEYWORDS = {
-        'python', 'code', 'programming', 'algorithm', 'development',
-        'math', 'physics', 'engineering', 'gaming', 'entertainment'
+        # English
+        'python', 'code', 'programming', 'algorithm', 'development', 'math', 'physics',
+        'engineering', 'gaming', 'game', 'games', 'play', 'movie', 'movies', 'film', 'series',
+        'tv', 'music', 'song', 'sports', 'travel', 'trip', 'recipe', 'recipes', 'cooking',
+        'joke', 'jokes', 'poetry', 'literature', 'art', 'history', 'news', 'politics', 'health',
+        'fitness', 'education', 'fashion', 'shopping', 'weather', 'science', 'horoscope',
+        'technology', 'tech', 'social media', 'stock', 'stocks', 'investment', 'investments',
+        'finance', 'financial', 'crypto', 'cryptocurrency', 'blockchain', 'bitcoin', 'ethereum',
+        'stock market', 'real estate', 'jobs', 'career', 'startup', 'entrepreneur', 'business',
+        'marketing', 'advertising', 'ads', 'memes', 'meme', 'podcast', 'podcasts', 'diy',
+        'pets', 'animals', 'dog', 'dogs', 'cat', 'cats', 'photography', 'photo', 'nutrition',
+        'diet', 'family', 'relationships', 'love', 'memories', 'hobbies', 'gardening',
+        'home', 'garden', 'crafts', 'bricolage',
+        # French
+        'jeu', 'jeux', 'jouer', 'films', 'film', 'musique', 'sport', 'voyage', 'recette',
+        'recettes', 'blague', 'blagues', 'poésie', 'littérature', 'histoire', 'actualité',
+        'politique', 'santé', 'fitness', 'éducation', 'mode', 'shopping', 'météo', 'science',
+        'horoscope', 'technologie', 'serie', 'series', 'jeu vidéo', 'jeux vidéo', 'cuisine',
+        'cuisiner', 'politique', 'bourse', 'cryptomonnaie', 'blockchain', 'bitcoin', 'immobilier',
+        'emploi', 'carrière', 'startup', 'entrepreneur', 'business', 'marketing', 'publicité',
+        'réseaux sociaux', 'instagram', 'facebook', 'twitter', 'tiktok', 'animaux', 'chiens',
+        'chats', 'photographie', 'photo', 'nutrition', 'régime', 'famille', 'relations',
+        'amour', 'loisirs', 'jardinage', 'bricolage'
     }
 
     # Comprehensive bank profile with dynamic elements
     BANKING_PROFILE = (
-        "🏦 **Amen Bank Tunisia - Financial Profile 2024** 🏦\n"
-        "📊 Actifs totaux : 15.2 milliards TND\n"
-        "🌍 Réseau : 210 agences | 450 ATM | 35 kiosques automatiques\n"
-        "👥 Clients : 1.8 million | Entreprises : 45,000\n"
-        "⭐ Rating : Moody's A3 | Fitch BBB+\n"
-        "🛡️ Dépôts garantis jusqu'à 50,000 TND\n"
-        "🏆 Prix : Meilleure banque digitale Tunisie 2023\n"
+        "🏦 **AMEN BANK** 🏦\n"
+        "• Objet social : Activités bancaires\n"
+        "• Forme juridique : Société anonyme de droit commun\n"
+        "• Nationalité : Tunisienne\n"
+        "• Siège social : Avenue Mohamed V - 1002 Tunis\n"
+        "• Date de constitution : 1967 | Durée : 99 ans (sauf dissolution anticipée ou prorogation)\n"
+        "• Capital social : 151 320 000 TND – 30 264 000 actions (valeur nominale : 5 TND)\n"
+        "• Registre de commerce : 176041996 | Matricule fiscale : 000 M A 00221/M\n"
+        "• Swift : CFCTTNTXXX\n"
     )
 
     # Expanded account types with conditions
