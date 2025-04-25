@@ -234,6 +234,7 @@ const renderCreditStatus = (status: string) => {
       setTypeCreditValue('')
       setMontantValue(0)
       setDureeValue("")
+      setRevenuMensuel(0)
     } catch (err) {
       console.error(err)
       alert('Impossible d’enregistrer la demande')
