@@ -48,7 +48,7 @@ interface CreditCardTransaction {
 }
 
 const PaymentForm: React.FC = () => {
-  const { profile } = useAuth();
+  const { profile,refreshProfile } = useAuth();
 
   // UI & functional states for payment form, card details and navigation.
   const [activeTab, setActiveTab] = useState("operations");
@@ -68,9 +68,11 @@ const PaymentForm: React.FC = () => {
   // UI states for form submission.
   const [showToast, setShowToast] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  if(!profile) {
+    refreshProfile();
+}
   // Derive default user ID from the profile.
-  const defaultUserId = profile ? profile.user._id : "";
+  const defaultUserId = profile?.user._id ;
 
   // Get the default card ID from the profile's cartes array.
   const defaultCardId =
@@ -187,7 +189,7 @@ const PaymentForm: React.FC = () => {
       // Process the payment.
       const paymentPayload = {
         cardId: formData.cardId,
-        userId: formData.userId,
+        user: formData.userId,
         cardNumber: formData.cardNumber,
         cardName: formData.cardName,
         expMonth: formData.expMonth,
@@ -315,10 +317,9 @@ const PaymentForm: React.FC = () => {
                       <IonLabel position="floating">Mois</IonLabel>
                       <IonSelect
                         placeholder="MM"
-                        value={formData.expMonth}
                         onIonChange={(e) => handleChange("expMonth", e.detail.value)}
                         required
-                      >
+                        >
                         {monthOptions}
                       </IonSelect>
                     </IonItem>
@@ -329,9 +330,7 @@ const PaymentForm: React.FC = () => {
                       <IonLabel position="floating">Année</IonLabel>
                       <IonSelect
                         placeholder="AA"
-                        value={formData.expYear}
                         onIonChange={(e) => handleChange("expYear", e.detail.value)}
-                        required
                       >
                         {yearOptions}
                       </IonSelect>
@@ -362,8 +361,8 @@ const PaymentForm: React.FC = () => {
                       <IonInput
                         type="number"
                         placeholder="0.00"
-                        min="0.01"
-                        step="0.01"
+                        min="1"
+                        step="0.50"
                         value={formData.amount}
                         onIonChange={(e) => handleChange("amount", e.detail.value!)}
                         required
@@ -382,7 +381,6 @@ const PaymentForm: React.FC = () => {
                         placeholder="Sélectionnez un type"
                         value={formData.merchantType}
                         onIonChange={(e) => handleChange("merchantType", e.detail.value)}
-                        required
                       >
                         <IonSelectOption value="shopping">Shopping</IonSelectOption>
                         <IonSelectOption value="food">Alimentation</IonSelectOption>

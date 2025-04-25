@@ -82,9 +82,9 @@ exports.processQRPayment = async (req, res) => {
 };
 
 exports.processPayment = async (req, res) => {
-  const { cardId, userId, amount,merchantType } = req.body;
+  const { cardId, user, amount,merchantType } = req.body;
 
-  if (!cardId || !userId || !amount) {
+  if (!cardId || !user || !amount) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 

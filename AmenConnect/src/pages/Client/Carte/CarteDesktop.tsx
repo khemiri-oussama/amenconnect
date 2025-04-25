@@ -28,6 +28,7 @@ import {
   downloadOutline,
   chevronForwardOutline,
   chevronBackOutline,
+  cardOutline,
 } from "ionicons/icons"
 import { motion, AnimatePresence } from "framer-motion"
 import "./CarteDesktop.css"
@@ -51,7 +52,7 @@ interface CreditCardTransaction {
 
 const CarteDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
-  const { updateCarteStatus } = useCarte() // Destructure the update function from CarteContext
+  const { updateCarteStatus } = useCarte() 
 
   const [activeTab, setActiveTab] = useState("operations")
   const [isCardLocked, setIsCardLocked] = useState(false)
@@ -443,8 +444,8 @@ if (authLoading || isLoading) {
                 {isCardLocked ? "Débloquer la carte" : "Bloquer la carte"}
               </IonButton>
               <IonButton expand="block" color="success">
-                <IonIcon slot="start" icon={shieldOutline} />
-                Paramètres de sécurité
+                <IonIcon slot="start" icon={cardOutline} />
+                Demande Carte
               </IonButton>
               <IonButton expand="block" color="success" onClick={handleDownloadStatement}>
                 <IonIcon slot="start" icon={downloadOutline} />
