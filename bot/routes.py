@@ -29,11 +29,19 @@ def chat():
             account_details = []
             for acc in user['accounts']:
                 historique_details = []
+                # Safely handle missing or malformed transaction entries
                 if isinstance(acc.get('historique'), list) and acc['historique']:
                     for h in acc['historique']:
-                        date_str = datetime.fromisoformat(h['date']).strftime('%Y-%m-%d')
+                        date_str = None
+                        try:
+                            date_str = datetime.fromisoformat(h.get('date', '')).strftime('%Y-%m-%d')
+                        except Exception:
+                            date_str = 'Unknown Date'
+                        type_str = h.get('type', 'N/A')
+                        amount_str = h.get('amount', 'N/A')
+                        category_str = h.get('category', h.get('categorie', 'N/A'))
                         historique_details.append(
-                            f"({h['type']}: {h['amount']} TND for {h['category']} on {date_str})"
+                            f"({type_str}: {amount_str} TND for {category_str} on {date_str})"
                         )
                 historique_str = ", ".join(historique_details) if historique_details else "No transactions"
                 account_details.append(
@@ -55,12 +63,14 @@ def chat():
     try:
         reply_message = generate_reply(message, user_context)
 
-        # Si le numéro de téléphone est fourni, on envoie la réponse via Green API
+        # Si le numéro de téléphone est fourni, on tente d'envoyer la réponse via Green API
         if user.get('phone'):
-            response_api = send_via_green_api(user['phone'], reply_message)
-            if response_api.status_code != 200:
-                print("Green API response:", response_api.text)
-                return jsonify({"error": "Failed to send message via Green API."}), 500
+            try:
+                response_api = send_via_green_api(user['phone'], reply_message)
+                if response_api.status_code != 200:
+                    print("Green API response (non-fatal):", response_api.text)
+            except Exception as send_err:
+                print("Green API send error (non-fatal):", send_err)
 
         return jsonify({"response": reply_message})
     except Exception as e:
@@ -96,12 +106,15 @@ def webhook():
         user_context = f"Telephone: {phone}."
         reply_message = generate_reply(incoming_message, user_context)
 
-        response_api = send_via_green_api(phone, reply_message)
-        if response_api.status_code != 200:
-            print("Failed to send reply via Green API:", response_api.text)
-            return jsonify({"error": "Failed to send reply via Green API."}), 500
+        # Tentative d'envoi via Green API (non bloquant)
+        try:
+            response_api = send_via_green_api(phone, reply_message)
+            if response_api.status_code != 200:
+                print("Green API webhook response (non-fatal):", response_api.text)
+        except Exception as send_err:
+            print("Green API webhook send error (non-fatal):", send_err)
 
-        receipt_id = data.get('idMessage')  # Changed from 'receiptId' to 'idMessage' based on sample data
+        receipt_id = data.get('idMessage')  # Changed from 'receiptId' to 'idMessage'
         if receipt_id:
             delete_notification(receipt_id)
 
