@@ -1,11 +1,28 @@
 "use client"
-import React, { useMemo } from "react"
-import { IonContent, IonPage, IonIcon, IonRippleEffect, IonButton } from "@ionic/react"
+import type React from "react"
+import { useMemo, useState, useEffect } from "react"
+import {
+  IonContent,
+  IonPage,
+  IonIcon,
+  IonRippleEffect,
+  IonButton,
+  IonSelect,
+  IonSelectOption,
+  IonInput,
+  IonTextarea,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
+} from "@ionic/react"
 import {
   walletOutline,
   trendingUpOutline,
   trendingDownOutline,
   printOutline,
+  analyticsOutline,
+  timeOutline,
+  cardOutline,
 } from "ionicons/icons"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts"
 import { useHistory } from "react-router-dom"
@@ -57,6 +74,28 @@ interface Transaction {
 const CompteKiosk: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const history = useHistory()
+  const [activeTab, setActiveTab] = useState<string>("overview")
+
+  // Credit state variables
+  const [typeCreditValue, setTypeCreditValue] = useState<string>("")
+  const [montantValue, setMontantValue] = useState<number>()
+  const [RevenuMensuel, setRevenuMensuel] = useState<number>(0)
+  const [dureeValue, setDureeValue] = useState<string>("")
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [userCredits, setUserCredits] = useState<any[]>([])
+  const [creditDetails, setCreditDetails] = useState<any>(null)
+  const [loadingCredits, setLoadingCredits] = useState(true)
+  const [showCreditSection, setShowCreditSection] = useState<boolean>(false)
+  const [showSimulatorSection, setShowSimulatorSection] = useState<boolean>(false)
+  const [simulatorAmount, setSimulatorAmount] = useState<number>(10000)
+  const [simulatorRate, setSimulatorRate] = useState<number>(7.5)
+  const [simulatorDuration, setSimulatorDuration] = useState<number>(36)
+  const [simulatorResults, setSimulatorResults] = useState<{
+    monthly: number
+    totalCost: number
+    totalAmount: number
+  }>({ monthly: 310.76, totalCost: 1187.36, totalAmount: 11187.36 })
+  const [selectedAccount, setSelectedAccount] = useState<string | null>(null)
 
   // Convert profile.comptes (of type Compte[]) into our local Account[] type
   const accounts: Account[] = (profile?.comptes ?? []).map((compte) => ({
@@ -67,15 +106,21 @@ const CompteKiosk: React.FC = () => {
     // Convert historique to ensure each operation has a defined 'reference'
     historique: (compte.historique ?? []).map((tx) => ({
       ...tx,
-      reference: tx.reference ?? ""
-    }))
+      reference: tx.reference ?? "",
+    })),
   }))
+
+  useEffect(() => {
+    if (accounts.length > 0) {
+      setSelectedAccount(accounts[0]._id)
+    }
+  }, [accounts])
 
   // Derive all operations by merging historique arrays from all accounts and sort them descending by date
   const operations: Operation[] = useMemo(() => {
     const allOps = accounts.reduce(
       (acc: Operation[], account: Account) => [...acc, ...account.historique],
-      [] as Operation[]
+      [] as Operation[],
     )
     return allOps.sort((a: Operation, b: Operation) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -84,28 +129,31 @@ const CompteKiosk: React.FC = () => {
 
   // Chart data grouped by month-year
   const chartData = useMemo(() => {
-    const grouped = operations.reduce((acc, op) => {
-      const date = new Date(op.date)
-      const month = date.toLocaleString("default", { month: "short" })
-      const year = date.getFullYear()
-      const key = `${month}-${year}`
+    const grouped = operations.reduce(
+      (acc, op) => {
+        const date = new Date(op.date)
+        const month = date.toLocaleString("default", { month: "short" })
+        const year = date.getFullYear()
+        const key = `${month}-${year}`
 
-      if (!acc[key]) {
-        acc[key] = { 
-          name: `${month} ${year}`,
-          revenus: 0,
-          depenses: 0 
+        if (!acc[key]) {
+          acc[key] = {
+            name: `${month} ${year}`,
+            revenus: 0,
+            depenses: 0,
+          }
         }
-      }
 
-      if (op.type === "credit") {
-        acc[key].revenus += op.amount
-      } else {
-        acc[key].depenses += op.amount
-      }
+        if (op.type === "credit") {
+          acc[key].revenus += op.amount
+        } else {
+          acc[key].depenses += op.amount
+        }
 
-      return acc
-    }, {} as Record<string, { name: string; revenus: number; depenses: number }>)
+        return acc
+      },
+      {} as Record<string, { name: string; revenus: number; depenses: number }>,
+    )
 
     return Object.values(grouped).sort((a, b) => {
       const [aMonth, aYear] = a.name.split(" ")
@@ -125,13 +173,13 @@ const CompteKiosk: React.FC = () => {
       numéroCompte: "N/A",
       solde: 0,
       type: "Compte courant",
-      historique: []
+      historique: [],
     }
 
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
-      format: "a4"
+      format: "a4",
     })
 
     // Header
@@ -149,21 +197,21 @@ const CompteKiosk: React.FC = () => {
     // Transactions Table
     autoTable(doc, {
       head: [["Date", "Description", "Type", "Montant", "Référence"]],
-      body: operations.map(op => [
+      body: operations.map((op) => [
         new Date(op.date).toLocaleDateString(),
         op.description,
         op.type === "credit" ? "Crédit" : "Débit",
         `${op.amount.toFixed(2)} TND`,
-        op.reference
+        op.reference,
       ]),
       startY: 65,
       theme: "grid",
       headStyles: {
         fillColor: [41, 128, 185],
         textColor: 255,
-        fontSize: 12
+        fontSize: 12,
       },
-      styles: { fontSize: 10 }
+      styles: { fontSize: 10 },
     })
 
     // Footer with page numbers
@@ -171,15 +219,107 @@ const CompteKiosk: React.FC = () => {
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i)
       doc.setFontSize(10)
-      doc.text(
-        `Page ${i}/${pageCount}`,
-        190,
-        doc.internal.pageSize.getHeight() - 10,
-        { align: "right" }
-      )
+      doc.text(`Page ${i}/${pageCount}`, 190, doc.internal.pageSize.getHeight() - 10, { align: "right" })
     }
 
     doc.save(`releve_${account.numéroCompte}.pdf`)
+  }
+
+  // Credit functionality
+  const fetchUserCredits = async () => {
+    if (!profile?.user?._id) return
+    setLoadingCredits(true)
+    try {
+      const response = await fetch(`/api/credit?userId=${profile.user._id}`)
+      if (!response.ok) throw new Error("Failed to fetch credits")
+      const data = await response.json()
+      setUserCredits(data)
+    } catch (error) {
+      console.error("Error fetching credits:", error)
+      alert("Erreur lors du chargement des crédits")
+    } finally {
+      setLoadingCredits(false)
+    }
+  }
+
+  useEffect(() => {
+    if (profile?.user?._id) {
+      fetchUserCredits()
+    }
+  }, [profile?.user?._id])
+
+  const renderCreditStatus = (status: string) => {
+    switch (status) {
+      case "approved":
+        return "Approuvé"
+      case "rejected":
+        return "Refusé"
+      default:
+        return "En attente"
+    }
+  }
+
+  const handleSubmitCredit = async () => {
+    if (!typeCreditValue || !montantValue || !dureeValue || !RevenuMensuel) {
+      return alert("Tous les champs sont obligatoires")
+    }
+    setIsSubmitting(true)
+    try {
+      const resp = await fetch("/api/credit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: typeCreditValue,
+          montant: montantValue,
+          duree: dureeValue,
+          user: { id: profile?.user._id },
+          compteId: selectedAccount,
+          RevenuMensuel: RevenuMensuel,
+        }),
+      })
+
+      if (!resp.ok) throw new Error("Erreur serveur")
+      await fetchUserCredits()
+
+      setTypeCreditValue("")
+      setMontantValue(0)
+      setDureeValue("")
+      setRevenuMensuel(0)
+      setShowCreditSection(false)
+      alert("Demande de crédit soumise avec succès")
+    } catch (err) {
+      console.error(err)
+      alert("Impossible d'enregistrer la demande")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const calculateLoan = () => {
+    // Monthly interest rate
+    const monthlyRate = simulatorRate / 100 / 12
+    // Calculate monthly payment
+    const x = Math.pow(1 + monthlyRate, simulatorDuration)
+    const monthly = (simulatorAmount * x * monthlyRate) / (x - 1)
+    // Total amount to pay
+    const totalAmount = monthly * simulatorDuration
+    // Total cost of credit
+    const totalCost = totalAmount - simulatorAmount
+
+    setSimulatorResults({
+      monthly,
+      totalCost,
+      totalAmount,
+    })
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric" })
+  }
+
+  const formatCurrency = (number: number) => {
+    return number.toLocaleString("fr-FR", { style: "currency", currency: "TND" })
   }
 
   if (authLoading) {
@@ -222,85 +362,296 @@ const CompteKiosk: React.FC = () => {
               ))}
             </div>
 
-            <div className="compte-kiosk-section compte-kiosk-statement-section">
-              <IonButton onClick={generateBankStatement}>
-                <IonIcon icon={printOutline} slot="start" />
-                Générer le relevé
-              </IonButton>
+            <div className="compte-kiosk-tabs">
+              <IonSegment value={activeTab} onIonChange={(e) => setActiveTab(e.detail.value!)}>
+                <IonSegmentButton value="overview">
+                  <IonIcon icon={walletOutline} />
+                  <IonLabel>Aperçu</IonLabel>
+                </IonSegmentButton>
+                <IonSegmentButton value="operations">
+                  <IonIcon icon={timeOutline} />
+                  <IonLabel>Opérations</IonLabel>
+                </IonSegmentButton>
+                <IonSegmentButton value="credit">
+                  <IonIcon icon={cardOutline} />
+                  <IonLabel>Crédit</IonLabel>
+                </IonSegmentButton>
+              </IonSegment>
             </div>
 
-            <div className="compte-kiosk-section compte-kiosk-chart-section">
-              <div className="compte-kiosk-section-header">
-                <h2 className="compte-kiosk-section-title">Activité Financière</h2>
-              </div>
-              <div className="compte-kiosk-chart-container">
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={chartData}>
-                    <defs>
-                      <linearGradient id="colorRevenus" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#4CAF50" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="colorDepenses" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#F44336" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#F44336" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area
-                      type="monotone"
-                      dataKey="revenus"
-                      stroke="#4CAF50"
-                      fill="url(#colorRevenus)"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="depenses"
-                      stroke="#F44336"
-                      fill="url(#colorDepenses)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+            {activeTab === "overview" && (
+              <>
+                <div className="compte-kiosk-section compte-kiosk-statement-section">
+                  <IonButton onClick={generateBankStatement}>
+                    <IonIcon icon={printOutline} slot="start" />
+                    Générer le relevé
+                  </IonButton>
+                </div>
 
-            <div className="compte-kiosk-section compte-kiosk-operations-section">
-              <div className="compte-kiosk-section-header">
-                <h2 className="compte-kiosk-section-title">Historique des Opérations</h2>
-                <div className="compte-kiosk-update-date">
-                  Dernière mise à jour: {new Date().toLocaleDateString()}
+                <div className="compte-kiosk-section compte-kiosk-chart-section">
+                  <div className="compte-kiosk-section-header">
+                    <h2 className="compte-kiosk-section-title">Activité Financière</h2>
+                  </div>
+                  <div className="compte-kiosk-chart-container">
+                    <ResponsiveContainer width="100%" height={300}>
+                      <AreaChart data={chartData}>
+                        <defs>
+                          <linearGradient id="colorRevenus" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.8} />
+                            <stop offset="95%" stopColor="#4CAF50" stopOpacity={0} />
+                          </linearGradient>
+                          <linearGradient id="colorDepenses" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#F44336" stopOpacity={0.8} />
+                            <stop offset="95%" stopColor="#F44336" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Area type="monotone" dataKey="revenus" stroke="#4CAF50" fill="url(#colorRevenus)" />
+                        <Area type="monotone" dataKey="depenses" stroke="#F44336" fill="url(#colorDepenses)" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {activeTab === "operations" && (
+              <div className="compte-kiosk-section compte-kiosk-operations-section">
+                <div className="compte-kiosk-section-header">
+                  <h2 className="compte-kiosk-section-title">Historique des Opérations</h2>
+                  <div className="compte-kiosk-update-date">
+                    Dernière mise à jour: {new Date().toLocaleDateString()}
+                  </div>
+                </div>
+                <div className="compte-kiosk-operations-list">
+                  {operations.length > 0 ? (
+                    operations.map((op) => (
+                      <div key={op._id} className="compte-kiosk-operation-item">
+                        <IonRippleEffect />
+                        <div className="compte-kiosk-operation-icon">
+                          <IonIcon icon={op.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+                        </div>
+                        <div className="compte-kiosk-operation-details">
+                          <div className="compte-kiosk-operation-description">{op.description}</div>
+                          <div className="compte-kiosk-operation-date">{new Date(op.date).toLocaleDateString()}</div>
+                          <div className="compte-kiosk-operation-reference">Référence: {op.reference}</div>
+                        </div>
+                        <div className={`compte-kiosk-operation-amount ${op.type}`}>
+                          {op.type === "credit" ? "+" : "-"} {op.amount.toFixed(2)} TND
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="no-operations">Aucune opération disponible</div>
+                  )}
                 </div>
               </div>
-              <div className="compte-kiosk-operations-list">
-                {operations.length > 0 ? (
-                  operations.map((op) => (
-                    <div key={op._id} className="compte-kiosk-operation-item">
-                      <IonRippleEffect />
-                      <div className="compte-kiosk-operation-icon">
-                        <IonIcon icon={op.type === "credit" ? trendingUpOutline : trendingDownOutline} />
+            )}
+
+            {activeTab === "credit" && (
+              <>
+                <div className="compte-kiosk-section compte-kiosk-actions-section">
+                  <div className="compte-kiosk-section-header">
+                    <h2 className="compte-kiosk-section-title">Services de Crédit</h2>
+                  </div>
+                  <div className="compte-kiosk-actions-grid">
+                    <IonButton
+                      className="compte-kiosk-action-button"
+                      onClick={() => setShowCreditSection(!showCreditSection)}
+                    >
+                      <div className="compte-kiosk-action-content">
+                        <IonIcon icon={walletOutline} />
+                        <span>Demande de Crédit</span>
                       </div>
-                      <div className="compte-kiosk-operation-details">
-                        <div className="compte-kiosk-operation-description">{op.description}</div>
-                        <div className="compte-kiosk-operation-date">
-                          {new Date(op.date).toLocaleDateString()}
-                        </div>
-                        <div className="compte-kiosk-operation-reference">
-                          Référence: {op.reference}
-                        </div>
+                    </IonButton>
+                    <IonButton
+                      className="compte-kiosk-action-button"
+                      onClick={() => setShowSimulatorSection(!showSimulatorSection)}
+                    >
+                      <div className="compte-kiosk-action-content">
+                        <IonIcon icon={analyticsOutline} />
+                        <span>Simulateur</span>
                       </div>
-                      <div className={`compte-kiosk-operation-amount ${op.type}`}>
-                        {op.type === "credit" ? "+" : "-"} {op.amount.toFixed(2)} TND
+                    </IonButton>
+                  </div>
+                </div>
+
+                {showCreditSection && (
+                  <div className="compte-kiosk-section compte-kiosk-credit-section">
+                    <div className="compte-kiosk-section-header">
+                      <h2 className="compte-kiosk-section-title">Demande de Crédit</h2>
+                    </div>
+                    <div className="compte-kiosk-credit-form">
+                      <div className="form-group">
+                        <label>Type de crédit</label>
+                        <IonSelect
+                          interface="popover"
+                          placeholder="Sélectionner un type"
+                          value={typeCreditValue}
+                          onIonChange={(e) => setTypeCreditValue(e.detail.value)}
+                        >
+                          <IonSelectOption value="Auto">Crédit Auto</IonSelectOption>
+                          <IonSelectOption value="Immobilier">Crédit Immobilier</IonSelectOption>
+                          <IonSelectOption value="Études">Crédit Études</IonSelectOption>
+                          <IonSelectOption value="Liquidité">Crédit Liquidité</IonSelectOption>
+                        </IonSelect>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Montant</label>
+                        <IonInput
+                          type="number"
+                          placeholder="Montant en TND"
+                          min="1000"
+                          value={montantValue}
+                          onIonChange={(e) => setMontantValue(Number(e.detail.value!))}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Durée</label>
+                        <IonSelect
+                          interface="popover"
+                          placeholder="Sélectionner une durée"
+                          value={dureeValue}
+                          onIonChange={(e) => setDureeValue(String(e.detail.value))}
+                        >
+                          <IonSelectOption value="12">12 mois</IonSelectOption>
+                          <IonSelectOption value="24">24 mois</IonSelectOption>
+                          <IonSelectOption value="36">36 mois</IonSelectOption>
+                          <IonSelectOption value="48">48 mois</IonSelectOption>
+                          <IonSelectOption value="60">60 mois</IonSelectOption>
+                        </IonSelect>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Revenus mensuels</label>
+                        <IonInput
+                          type="number"
+                          placeholder="Revenus en TND"
+                          value={RevenuMensuel}
+                          onIonChange={(e) => setRevenuMensuel(Number(e.detail.value!))}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Objet du crédit</label>
+                        <IonTextarea placeholder="Décrivez l'objet de votre demande de crédit" rows={4} />
+                      </div>
+
+                      <div className="form-actions">
+                        <IonButton
+                          expand="block"
+                          className="submit-button"
+                          onClick={handleSubmitCredit}
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? "Traitement..." : "Soumettre ma demande"}
+                        </IonButton>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="no-operations">Aucune opération disponible</div>
+                  </div>
                 )}
-              </div>
-            </div>
+
+                {showSimulatorSection && (
+                  <div className="compte-kiosk-section compte-kiosk-simulator-section">
+                    <div className="compte-kiosk-section-header">
+                      <h2 className="compte-kiosk-section-title">Simulateur de Crédit</h2>
+                    </div>
+                    <div className="compte-kiosk-simulator-form">
+                      <div className="form-group">
+                        <label>Montant du crédit</label>
+                        <IonInput
+                          type="number"
+                          placeholder="Montant en TND"
+                          value={simulatorAmount}
+                          onIonChange={(e) => setSimulatorAmount(Number(e.detail.value!))}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Taux d'intérêt annuel (%)</label>
+                        <IonInput
+                          type="number"
+                          placeholder="Taux en %"
+                          value={simulatorRate}
+                          onIonChange={(e) => setSimulatorRate(Number(e.detail.value!))}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Durée (en mois)</label>
+                        <IonInput
+                          type="number"
+                          placeholder="Durée en mois"
+                          value={simulatorDuration}
+                          onIonChange={(e) => setSimulatorDuration(Number(e.detail.value!))}
+                        />
+                      </div>
+
+                      <IonButton expand="block" className="calculate-button" onClick={calculateLoan}>
+                        Calculer
+                      </IonButton>
+                    </div>
+
+                    <div className="compte-kiosk-simulator-results">
+                      <div className="result-item">
+                        <div className="result-label">Mensualité estimée</div>
+                        <div className="result-value">{formatCurrency(simulatorResults.monthly)}</div>
+                      </div>
+
+                      <div className="result-item">
+                        <div className="result-label">Coût total du crédit</div>
+                        <div className="result-value">{formatCurrency(simulatorResults.totalCost)}</div>
+                      </div>
+
+                      <div className="result-item">
+                        <div className="result-label">Montant total à rembourser</div>
+                        <div className="result-value">{formatCurrency(simulatorResults.totalAmount)}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="compte-kiosk-section compte-kiosk-credit-status-section">
+                  <div className="compte-kiosk-section-header">
+                    <h2 className="compte-kiosk-section-title">Mes demandes de crédit</h2>
+                  </div>
+                  {loadingCredits ? (
+                    <div className="loading-message">Chargement des crédits...</div>
+                  ) : userCredits.length > 0 ? (
+                    <div className="compte-kiosk-credit-list">
+                      {userCredits.map((credit) => (
+                        <div key={credit._id} className="compte-kiosk-credit-item">
+                          <IonRippleEffect />
+                          <div className="compte-kiosk-credit-icon">
+                            <IonIcon icon={walletOutline} />
+                          </div>
+                          <div className="compte-kiosk-credit-details">
+                            <div className="compte-kiosk-credit-title">{credit.typeCredit}</div>
+                            <div className="compte-kiosk-credit-meta">
+                              <span className="compte-kiosk-credit-date">
+                                Demande du {formatDate(credit.createdAt)}
+                              </span>
+                              <span className="compte-kiosk-credit-amount">{formatCurrency(credit.montant)}</span>
+                              <span className="compte-kiosk-credit-duree">Durée: {credit.duree} mois</span>
+                            </div>
+                          </div>
+                          <div className={`compte-kiosk-credit-status status-${credit.status}`}>
+                            {renderCreditStatus(credit.status)}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="no-data-message">Aucune demande de crédit en cours</div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </IonContent>

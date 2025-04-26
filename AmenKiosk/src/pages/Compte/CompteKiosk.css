@@ -281,6 +281,206 @@
   color: var(--kiosk-primary, #121660);
 }
 
+/* Tab styles */
+.compte-kiosk-tabs {
+  margin-bottom: 1.5rem;
+}
+
+.compte-kiosk-tabs ion-segment {
+  --background: var(--kiosk-surface, #ffffff);
+  border-radius: 1rem;
+  box-shadow: var(--kiosk-shadow-sm, 0 4px 15px rgba(0, 0, 0, 0.08));
+}
+
+.compte-kiosk-tabs ion-segment-button {
+  --indicator-color: var(--kiosk-primary, #121660);
+  --color: var(--kiosk-text-muted, #666);
+  --color-checked: var(--kiosk-primary, #121660);
+  --border-radius: 0.5rem;
+  font-family: "Outfit", sans-serif;
+}
+
+.compte-kiosk-tabs ion-segment-button ion-icon {
+  margin-bottom: 0.25rem;
+}
+
+/* Credit section styles */
+.compte-kiosk-credit-section,
+.compte-kiosk-simulator-section,
+.compte-kiosk-credit-status-section {
+  background: var(--kiosk-surface, #ffffff);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--kiosk-shadow-sm, 0 4px 15px rgba(0, 0, 0, 0.08));
+}
+
+.compte-kiosk-credit-form,
+.compte-kiosk-simulator-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--kiosk-primary, #121660);
+}
+
+.form-actions {
+  margin-top: 1rem;
+}
+
+.submit-button,
+.calculate-button {
+  --background: linear-gradient(to right, var(--kiosk-primary, #121660), var(--kiosk-secondary, #181e92));
+  --color: white;
+  --border-radius: 1rem;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  height: auto;
+  margin: 0;
+}
+
+.compte-kiosk-simulator-results {
+  background-color: rgba(18, 22, 96, 0.05);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-label {
+  font-size: 1rem;
+  color: var(--kiosk-primary, #121660);
+}
+
+.result-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--kiosk-primary, #121660);
+}
+
+.compte-kiosk-credit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.compte-kiosk-credit-item {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background-color: var(--kiosk-surface, #f8f8f8);
+  position: relative;
+  overflow: hidden;
+}
+
+.compte-kiosk-credit-icon {
+  background-color: rgba(18, 22, 96, 0.1);
+  border-radius: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.compte-kiosk-credit-icon ion-icon {
+  font-size: 1.75rem;
+  color: var(--kiosk-primary, #121660);
+}
+
+.compte-kiosk-credit-details {
+  flex: 1;
+}
+
+.compte-kiosk-credit-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--kiosk-primary, #121660);
+  margin-bottom: 0.25rem;
+}
+
+.compte-kiosk-credit-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--kiosk-text-muted, #666);
+}
+
+.compte-kiosk-credit-status {
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.status-approved {
+  background-color: rgba(71, 206, 101, 0.1);
+  color: var(--kiosk-success, #47ce65);
+}
+
+.status-rejected {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--kiosk-danger, #e74c3c);
+}
+
+.status-pending {
+  background-color: rgba(255, 204, 0, 0.1);
+  color: var(--kiosk-warning, #ffcc00);
+}
+
+.loading-message,
+.no-data-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--kiosk-text-muted, #666);
+  font-size: 1rem;
+}
+
+/* Responsive styles for credit sections */
+@media (max-width: 480px) {
+  .compte-kiosk-credit-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .compte-kiosk-credit-icon ion-icon {
+    font-size: 1.25rem;
+  }
+
+  .compte-kiosk-credit-title {
+    font-size: 1rem;
+  }
+
+  .result-label {
+    font-size: 0.875rem;
+  }
+
+  .result-value {
+    font-size: 1rem;
+  }
+}
+
 /* Responsive rules */
 @media (min-width: 768px) {
   .compte-kiosk-actions-grid {
