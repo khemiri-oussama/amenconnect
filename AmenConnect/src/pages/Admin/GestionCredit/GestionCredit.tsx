@@ -149,6 +149,25 @@ const GestionCredit = () => {
     }
   }
 
+
+  const confirmStatusAction = async () => {
+    if (!selectedCredit) return
+    const status = actionType === 'approve' ? 'approved' : 'rejected'
+    const payload: any = { status }
+    if (status === 'rejected') payload.rejectionReason = rejectionReason
+    try {
+      const { data } = await axios.patch(`/api/credit/${selectedCredit._id}/status`, payload)
+      const updated = data.credit || data
+      setCredits(cs => cs.map(c => c._id === updated._id ? updated : c))
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setShowConfirmModal(false)
+      setShowModal(false)
+    }
+  }
+
+
   const viewCreditDetails = (credit: Credit) => {
     setSelectedCredit(credit)
     setShowModal(true)
@@ -161,34 +180,7 @@ const GestionCredit = () => {
     setShowConfirmModal(true)
   }
 
-  const confirmStatusAction = async () => {
-    if (!selectedCredit) return
 
-    try {
-      // In a real implementation, this would be a call to your API
-      // await axios.put(`/api/admin/credits/${selectedCredit._id}/status`, {
-      //   status: actionType === "approve" ? "approved" : "rejected",
-      //   rejectionReason: actionType === "reject" ? rejectionReason : undefined
-      // });
-
-      // For demo purposes, update the local state
-      const updatedCredits = credits.map((credit) => {
-        if (credit._id === selectedCredit._id) {
-          return {
-            ...credit,
-            status: actionType === "approve" ? "approved" : "rejected",
-          }
-        }
-        return credit
-      })
-
-      setCredits(updatedCredits)
-      setShowConfirmModal(false)
-      setShowModal(false)
-    } catch (error) {
-      console.error("Error updating credit status:", error)
-    }
-  }
 
   const getStatusBadge = (status: string) => {
     switch (status) {

@@ -108,3 +108,32 @@ exports.demandeCredit = async (req, res) => {
     res.status(500).json({ error: error.message || "Erreur lors de la demande de crédit." });
   }
 };
+
+exports.updateCreditStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // Only allow these statuses
+    const allowed = ['approved', 'rejected'];
+    if (!allowed.includes(status)) {
+      return res.status(400).json({ error: "Status invalide. Doit être 'approved' ou 'rejected'." });
+    }
+
+    const credit = await Credit.findById(id);
+    if (!credit) {
+      return res.status(404).json({ error: "Crédit non trouvé." });
+    }
+
+    credit.status = status;
+    await credit.save();
+
+    res.status(200).json({
+      message: `Statut du crédit mis à jour en '${status}'.`,
+      credit
+    });
+  } catch (error) {
+    console.error("Erreur dans updateCreditStatus :", error);
+    res.status(500).json({ error: "Erreur lors de la mise à jour du statut." });
+  }
+};

@@ -14,4 +14,6 @@ router.get('/:id', creditController.getCreditById);
 // Create a new credit request
 router.post('/', creditController.demandeCredit);
 
+router.patch('/:id/status', creditController.updateCreditStatus);
+
 module.exports = router;
