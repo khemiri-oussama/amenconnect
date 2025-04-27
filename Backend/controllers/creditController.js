@@ -79,10 +79,10 @@ exports.demandeCredit = async (req, res) => {
 
     const dateDebut = new Date();
     const dateFin = new Date(dateDebut);
-    dateFin.setMonth(dateFin.getMonth() + parseInt(duree));
+    dateFin.setMonth(dateFin.getMonth() + parseInt(duree, 10));
 
     const principal = parseFloat(montant);
-    const n = parseInt(duree);
+    const n = parseInt(duree, 10);
     const monthlyRate = tauxInteret / 100 / 12;
     const mensualite = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -n));
 
@@ -109,12 +109,52 @@ exports.demandeCredit = async (req, res) => {
   }
 };
 
+// Record a monthly payment
+exports.recordPayment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { amount } = req.body;
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: "Montant de paiement invalide." });
+    }
+    const credit = await Credit.findById(id);
+    if (!credit) {
+      return res.status(404).json({ error: "Crédit non trouvé." });
+    }
+    
+    // Append new payment
+    credit.payments.push({ amount });
+    // Recalculate total paid
+    credit.montantPaye = credit.payments.reduce((sum, p) => sum + p.amount, 0);
+    await credit.save();
+
+    res.status(200).json({ message: `Paiement enregistré: ${amount}`, credit });
+  } catch (error) {
+    console.error("Erreur dans recordPayment :", error);
+    res.status(500).json({ error: "Erreur lors de l'enregistrement du paiement." });
+  }
+};
+
+// Get payment history for a credit
+exports.getPayments = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const credit = await Credit.findById(id).select('payments montantPaye mensualite');
+    if (!credit) {
+      return res.status(404).json({ error: "Crédit non trouvé." });
+    }
+    res.status(200).json({ payments: credit.payments, totalPaid: credit.montantPaye, mensualite: credit.mensualite });
+  } catch (error) {
+    console.error("Erreur dans getPayments :", error);
+    res.status(500).json({ error: "Erreur lors de la récupération des paiements." });
+  }
+};
+
+// Update credit status (and initialize montantPaye when approved)
 exports.updateCreditStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-
-    // Only allow these statuses
     const allowed = ['approved', 'rejected'];
     if (!allowed.includes(status)) {
       return res.status(400).json({ error: "Status invalide. Doit être 'approved' ou 'rejected'." });
@@ -126,12 +166,19 @@ exports.updateCreditStatus = async (req, res) => {
     }
 
     credit.status = status;
+    if (status === 'approved') {
+      // Reset payments on approval
+      credit.montantPaye = 0;
+      credit.payments = [];
+    } else {
+      // Clear if rejected
+      credit.montantPaye = 0;
+      credit.payments = [];
+    }
+
     await credit.save();
 
-    res.status(200).json({
-      message: `Statut du crédit mis à jour en '${status}'.`,
-      credit
-    });
+    res.status(200).json({ message: `Statut mis à jour en '${status}'.`, credit });
   } catch (error) {
     console.error("Erreur dans updateCreditStatus :", error);
     res.status(500).json({ error: "Erreur lors de la mise à jour du statut." });

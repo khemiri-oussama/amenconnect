@@ -6,10 +6,12 @@ from services.green_api import send_via_green_api, delete_notification
 bp = Blueprint('main', __name__)
 
 @bp.route('/chat', methods=['POST'])
+
 def chat():
     data = request.get_json()
     message = data.get('message')
     user = data.get('user', {})
+    credits = data.get('user', {}).get('credits', [])
 
     if not message:
         return jsonify({"error": "Message is required in the request body."}), 400
@@ -29,7 +31,6 @@ def chat():
             account_details = []
             for acc in user['accounts']:
                 historique_details = []
-                # Safely handle missing or malformed transaction entries
                 if isinstance(acc.get('historique'), list) and acc['historique']:
                     for h in acc['historique']:
                         date_str = None
@@ -58,8 +59,20 @@ def chat():
                     f"Last Month Expenses: {acc.get('lastMonthExpenses', 'N/A')}, "
                     f"Historique: [{historique_str}]"
                 )
-            user_context += " | ".join(account_details)
+            user_context += " | ".join(account_details) + ". "
 
+
+    if credits and isinstance(credits, list):
+        
+        credit_details = []
+        for c in credits:
+            credit_details.append(
+                f"Credit ID : {c.get('_id')}: type de credit : {c.get('type')}, montant : {c.get('montant')} TND, "
+                f"durée : {c.get('duree')} mois, mensualité : {c.get('mensualite')} TND, "
+                f"payé jusqu'à présent : {c.get('montantPaye')} TND, statut : {c.get('status')}"
+            )
+        user_context += "Credits data: " + "; ".join(credit_details) + ". "
+    
     try:
         reply_message = generate_reply(message, user_context)
 
@@ -76,6 +89,7 @@ def chat():
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": "An error occurred while processing your request."}), 500
+
 
 @bp.route('/webhook', methods=['POST'])
 def webhook():

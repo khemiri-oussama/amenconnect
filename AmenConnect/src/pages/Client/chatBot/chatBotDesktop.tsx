@@ -48,6 +48,7 @@ const ChatBotDesktop: React.FC = () => {
       timestamp: new Date(),
     },
   ])
+  const [credits, setCredits] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [showToast, setShowToast] = useState<boolean>(false)
   const [toastMessage, setToastMessage] = useState<string>("")
@@ -124,6 +125,14 @@ const ChatBotDesktop: React.FC = () => {
   const userPhone = profile?.user?.telephone || ""
   const userAddress = profile?.user?.adresseEmployeur || ""
 
+  useEffect(() => {
+    if (profile?.user?._id) {
+      fetch(`/api/credit?userId=${profile.user._id}`)
+        .then(res => res.json())
+        .then(data => setCredits(Array.isArray(data) ? data : []))
+        .catch(err => console.error("Erreur fetch credits:", err))
+    }
+  }, [profile])
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible)
   }
@@ -156,9 +165,11 @@ const ChatBotDesktop: React.FC = () => {
               cin: userCin,
               phone: userPhone,
               address: userAddress,
+              credits: credits,
             },
           }
         : { message: text }
+        console.log("About to send payload:", { message});
 
       const response = await fetch("/api/chat", {
         method: "POST",

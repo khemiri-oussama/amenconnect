@@ -5,11 +5,7 @@ from config import TOGETHER_API_KEY, TOGETHER_MODEL
 client = Together(api_key=TOGETHER_API_KEY)
 
 def generate_reply(message: str, user_context: str = "") -> str:
-    """
-    Generate intelligent banking responses with expanded financial knowledge base
-    and contextual understanding for Amen Bank Tunisia.
-    """
-    
+
     # Enhanced non-banking filter with additional keywords
     NON_BANKING_KEYWORDS = {
         # English
@@ -30,7 +26,7 @@ def generate_reply(message: str, user_context: str = "") -> str:
         'recettes', 'blague', 'blagues', 'poésie', 'littérature', 'histoire', 'actualité',
         'politique', 'santé', 'fitness', 'éducation', 'mode', 'shopping', 'météo', 'science',
         'horoscope', 'technologie', 'serie', 'series', 'jeu vidéo', 'jeux vidéo', 'cuisine',
-        'cuisiner', 'politique', 'bourse', 'cryptomonnaie', 'blockchain', 'bitcoin', 'immobilier',
+        'cuisiner', 'politique', 'bourse', 'cryptomonnaie', 'blockchain', 'bitcoin',
         'emploi', 'carrière', 'startup', 'entrepreneur', 'business', 'marketing', 'publicité',
         'réseaux sociaux', 'instagram', 'facebook', 'twitter', 'tiktok', 'animaux', 'chiens',
         'chats', 'photographie', 'photo', 'nutrition', 'régime', 'famille', 'relations',
@@ -148,7 +144,7 @@ def generate_reply(message: str, user_context: str = "") -> str:
 
     # Dynamic system prompt
     system_content = f"""
-        🤖 **Assistant Expert Amen Bank** 🤖
+         Assistant Expert Amen Bank 
         {BANKING_PROFILE}
         {ACCOUNT_TYPES}
         {LOAN_MATRIX}
@@ -165,6 +161,9 @@ def generate_reply(message: str, user_context: str = "") -> str:
         4. Inclure des références vérifiables
         5. Anticiper les besoins connexes
         6. Maintenir un ton professionnel et rassurant
+        7. Utilsé simple format de reponse pas de text en gras est ect..
+        8. Simple et clair pas de jargon technique
+        9. Répondre simple et pas de long mot
         
         👤 Historique Client : {user_context if user_context else "Nouvel Utilisateur"}
         📅 Contexte Temporel : {datetime.now().strftime('%A %d %B %Y %H:%M')}

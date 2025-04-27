@@ -1027,3 +1027,45 @@
   color: #fff;
 }
 
+/* Add these styles for the payment progress bar */
+.compte-page-container .payment-progress-container {
+  margin-top: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+}
+
+.compte-page-container .payment-progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.compte-page-container .payment-progress-bar {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.compte-page-container .payment-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2eb851, #47ce65);
+  border-radius: 5px;
+  transition: width 0.5s ease-out;
+}
+
+.compte-page-container .payment-progress-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #878787;
+}
+
+.compte-page-container .payment-progress-details span:first-child {
+  color: #47ce65;
+}

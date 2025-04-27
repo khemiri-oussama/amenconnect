@@ -67,48 +67,52 @@ const ComptePageDesktop: React.FC = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false)
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true)
   const [isLoading, setIsLoading] = useState<boolean>(true)
-// en haut de votre composant
-const [typeCreditValue, setTypeCreditValue] = useState<string>('');
-const [montantValue, setMontantValue] = useState<number>();
-const [RevenuMensuel, setRevenuMensuel] = useState<number>(0);
-const [dureeValue, setDureeValue] = useState<string>("");
-const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-const [userCredits, setUserCredits] = useState<any[]>([]);
-const [creditDetails, setCreditDetails] = useState<any>(null);
-const [loadingCredits, setLoadingCredits] = useState(true);
+  // en haut de votre composant
+  const [typeCreditValue, setTypeCreditValue] = useState<string>("")
+  const [montantValue, setMontantValue] = useState<number>()
+  const [RevenuMensuel, setRevenuMensuel] = useState<number>(0)
+  const [dureeValue, setDureeValue] = useState<string>("")
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [userCredits, setUserCredits] = useState<any[]>([])
+  const [creditDetails, setCreditDetails] = useState<any>(null)
+  const [loadingCredits, setLoadingCredits] = useState(true)
 
-// Add this useEffect hook to fetch user credits
+  // Add this useEffect hook to fetch user credits
 
-const fetchUserCredits = async () => {
-  if (!profile?.user?._id) return
-  setLoadingCredits(true)
-  try {
-    const response = await fetch(`/api/credit?userId=${profile.user._id}`)
-    if (!response.ok) throw new Error('Failed to fetch credits')
-    const data = await response.json()
-    setUserCredits(data)
-  } catch (error) {
-    console.error('Error fetching credits:', error)
-    alert('Erreur lors du chargement des crédits')
-  } finally {
-    setLoadingCredits(false)
+  const fetchUserCredits = async () => {
+    if (!profile?.user?._id) return
+    setLoadingCredits(true)
+    try {
+      const response = await fetch(`/api/credit?userId=${profile.user._id}`)
+      if (!response.ok) throw new Error("Failed to fetch credits")
+      const data = await response.json()
+      setUserCredits(data)
+    } catch (error) {
+      console.error("Error fetching credits:", error)
+      alert("Erreur lors du chargement des crédits")
+    } finally {
+      setLoadingCredits(false)
+    }
   }
-}
-useEffect(() => {
-  if (profile?.user?._id) {
-    fetchUserCredits()
-  }
-}, [profile?.user?._id])
+  useEffect(() => {
+    if (profile?.user?._id) {
+      fetchUserCredits()
+    }
+  }, [profile?.user?._id])
 
-// Update the credit status display logic
-const renderCreditStatus = (status: string) => {
-  switch (status) {
-    case 'approved': return 'Approuvé';
-    case 'rejected': return 'Refusé';
-    default: return 'En attente';
+  // Update the credit status display logic
+  const renderCreditStatus = (status: string) => {
+    switch (status) {
+      case "approved":
+        return "Approuvé"
+      case "rejected":
+        return "Refusé"
+      case "pending":
+        return "En attente"
+      default:
+        return "En attente"
+    }
   }
-};
-
 
   // Format date for display
   const formatDate = (dateString: string) => {
@@ -210,14 +214,14 @@ const renderCreditStatus = (status: string) => {
     return profile.cartes.find((carte) => carte.comptesId === selectedAccount)
   }
   const handleSubmitCredit = async () => {
-    if (!typeCreditValue || !montantValue || !dureeValue ||!RevenuMensuel) {
-      return alert('Tous les champs sont obligatoires')
+    if (!typeCreditValue || !montantValue || !dureeValue || !RevenuMensuel) {
+      return alert("Tous les champs sont obligatoires")
     }
     setIsSubmitting(true)
     try {
-      const resp = await fetch('/api/credit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const resp = await fetch("/api/credit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: typeCreditValue,
           montant: montantValue,
@@ -227,17 +231,17 @@ const renderCreditStatus = (status: string) => {
           RevenuMensuel: RevenuMensuel,
         }),
       })
-      
-      if (!resp.ok) throw new Error('Erreur serveur')
+
+      if (!resp.ok) throw new Error("Erreur serveur")
       await fetchUserCredits()
-      
-      setTypeCreditValue('')
+
+      setTypeCreditValue("")
       setMontantValue(0)
       setDureeValue("")
       setRevenuMensuel(0)
     } catch (err) {
       console.error(err)
-      alert('Impossible d’enregistrer la demande')
+      alert("Impossible d’enregistrer la demande")
     } finally {
       setIsSubmitting(false)
     }
@@ -250,7 +254,7 @@ const renderCreditStatus = (status: string) => {
       </IonPage>
     )
   }
-  
+
   // Calculate income, expenses, and balance for the selected account
   const getAccountStats = () => {
     if (!transactions.length) return { income: 0, expenses: 0, balance: getSelectedAccount()?.solde || 0 }
@@ -914,55 +918,69 @@ const renderCreditStatus = (status: string) => {
           {activeTab === "credit" && (
             <div className="compte-page-credit">
               <div className="credit-grid">
-<IonCard className="credit-status-card">
-  <IonCardHeader>Mes demandes de crédit</IonCardHeader>
-  <IonCardContent>
-    {loadingCredits ? (
-      <div className="loading-message">Chargement des crédits...</div>
-    ) : userCredits.length > 0 ? (
-      <div className="credit-applications-list">
-        {userCredits.map((credit) => (
-          <div key={credit._id} className="credit-application-item">
-            <div className="credit-application-icon">
-              <IonIcon icon={walletOutline} />
-            </div>
-            <div className="credit-application-details">
-              <div className="credit-application-title">
-                {credit.typeCredit}
-              </div>
-              <div className="credit-application-meta">
-                <span className="credit-application-date">
-                  Demande du {formatDate(credit.createdAt)}
-                </span>
-                <span className="credit-application-amount">
-                  {formatCurrency(credit.montant)}
-                </span>
-                <span className="credit-application-duree">
-                  Durée: {credit.duree} mois
-                </span>
-              </div>
-              <div className="credit-application-info">
-                <div>
-                  <IonIcon icon={personOutline} />
-                  {credit.userId.prenom} {credit.userId.nom}
-                </div>
-                <div>
-                  <IonIcon icon={documentTextOutline} />
-                  Compte: {credit.compteId.numéroCompte}
-                </div>
-              </div>
-            </div>
-            <div className={`credit-application-status status-${credit.status}`}>
-              {renderCreditStatus(credit.status)}
-            </div>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div className="no-data-message">Aucune demande de crédit en cours</div>
-    )}
-  </IonCardContent>
-</IonCard>
+                <IonCard className="credit-status-card">
+                  <IonCardHeader>Mes demandes de crédit</IonCardHeader>
+                  <IonCardContent>
+                    {loadingCredits ? (
+                      <div className="loading-message">Chargement des crédits...</div>
+                    ) : userCredits.length > 0 ? (
+                      <div className="credit-applications-list">
+                        {userCredits.map((credit) => (
+                          <div key={credit._id} className="credit-application-item">
+                            <div className="credit-application-icon">
+                              <IonIcon icon={walletOutline} />
+                            </div>
+                            <div className="credit-application-details">
+                              <div className="credit-application-title">{credit.type}</div>
+                              <div className="credit-application-meta">
+                                <span className="credit-application-date">
+                                  Demande du {formatDate(credit.createdAt)}
+                                </span>
+                                <span className="credit-application-amount">{formatCurrency(credit.montant)}</span>
+                                <span className="credit-application-duree">Durée: {credit.duree} mois</span>
+                              </div>
+                              <div className="credit-application-info">
+                                <div>
+                                  <IonIcon icon={personOutline} />
+                                  {credit.userId.prenom} {credit.userId.nom}
+                                </div>
+                                <div>
+                                  <IonIcon icon={documentTextOutline} />
+                                  Compte: {credit.compteId.numéroCompte}
+                                </div>
+                              </div>
+
+                              {/* Payment Progress Bar for Approved Credits */}
+                              {credit.status === "approved" && (
+                                <div className="payment-progress-container">
+                                  <div className="payment-progress-header">
+                                    <span>Progression des paiements</span>
+                                    <span>{Math.round((credit.montantPaye / credit.montant) * 100)}%</span>
+                                  </div>
+                                  <div className="payment-progress-bar">
+                                    <div
+                                      className="payment-progress-fill"
+                                      style={{ width: `${(credit.montantPaye / credit.montant) * 100}%` }}
+                                    ></div>
+                                  </div>
+                                  <div className="payment-progress-details">
+                                    <span>Payé: {formatCurrency(credit.montantPaye)}</span>
+                                    <span>Restant: {formatCurrency(credit.montant - credit.montantPaye)}</span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            <div className={`credit-application-status status-${credit.status}`}>
+                              {renderCreditStatus(credit.status)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="no-data-message">Aucune demande de crédit en cours</div>
+                    )}
+                  </IonCardContent>
+                </IonCard>
 
                 <IonCard className="new-credit-card">
                   <IonCardHeader>Nouvelle demande de crédit</IonCardHeader>
@@ -970,43 +988,45 @@ const renderCreditStatus = (status: string) => {
                     <form className="credit-application-form">
                       <div className="form-group">
                         <label>Type de crédit</label>
-<IonSelect 
-  interface="popover" 
-  placeholder="Sélectionner un type"
-  value={typeCreditValue}
-  onIonChange={(e) => setTypeCreditValue(e.detail.value)}
->
-  <IonSelectOption value="Auto">Crédit Auto</IonSelectOption>
-  <IonSelectOption value="Immobilier">Crédit Immobilier</IonSelectOption>
-  <IonSelectOption value="Études">Crédit Études</IonSelectOption>
-  <IonSelectOption value="Liquidité">Crédit Liquidité</IonSelectOption>
-</IonSelect>
+                        <IonSelect
+                          interface="popover"
+                          placeholder="Sélectionner un type"
+                          value={typeCreditValue}
+                          onIonChange={(e) => setTypeCreditValue(e.detail.value)}
+                        >
+                          <IonSelectOption value="Auto">Crédit Auto</IonSelectOption>
+                          <IonSelectOption value="Immobilier">Crédit Immobilier</IonSelectOption>
+                          <IonSelectOption value="Études">Crédit Études</IonSelectOption>
+                          <IonSelectOption value="Liquidité">Crédit Liquidité</IonSelectOption>
+                        </IonSelect>
 
-<IonInput 
-  type="number" 
-  placeholder="Montant en TND" 
-  min="1000"
-  value={montantValue}
-  onIonChange={(e) => setMontantValue(Number(e.detail.value!))}
-/>
+                        <IonInput
+                          type="number"
+                          placeholder="Montant en TND"
+                          min="1000"
+                          value={montantValue}
+                          onIonChange={(e) => setMontantValue(Number(e.detail.value!))}
+                        />
 
-<IonSelect 
-  interface="popover" 
-  placeholder="Sélectionner une durée"
-  value={dureeValue}
-  onIonChange={(e) => setDureeValue(String(e.detail.value))}
->
-  <IonSelectOption value="12">12 mois</IonSelectOption>
-  <IonSelectOption value="24">24 mois</IonSelectOption>
-  <IonSelectOption value="36">36 mois</IonSelectOption>
-  <IonSelectOption value="48">48 mois</IonSelectOption>
-  <IonSelectOption value="60">60 mois</IonSelectOption>
-</IonSelect>
+                        <IonSelect
+                          interface="popover"
+                          placeholder="Sélectionner une durée"
+                          value={dureeValue}
+                          onIonChange={(e) => setDureeValue(String(e.detail.value))}
+                        >
+                          <IonSelectOption value="12">12 mois</IonSelectOption>
+                          <IonSelectOption value="24">24 mois</IonSelectOption>
+                          <IonSelectOption value="36">36 mois</IonSelectOption>
+                          <IonSelectOption value="48">48 mois</IonSelectOption>
+                          <IonSelectOption value="60">60 mois</IonSelectOption>
+                        </IonSelect>
                       </div>
 
                       <div className="form-group">
                         <label>Revenus mensuels</label>
-                        <IonInput type="number" placeholder="Revenus en TND" 
+                        <IonInput
+                          type="number"
+                          placeholder="Revenus en TND"
                           onIonChange={(e) => setRevenuMensuel(Number(e.detail.value!))}
                         />
                       </div>
