@@ -18,7 +18,7 @@ def generate_reply(message: str, user_context: str = "") -> str:
         'finance', 'financial', 'crypto', 'cryptocurrency', 'blockchain', 'bitcoin', 'ethereum',
         'stock market', 'real estate', 'jobs', 'career', 'startup', 'entrepreneur', 'business',
         'marketing', 'advertising', 'ads', 'memes', 'meme', 'podcast', 'podcasts', 'diy',
-        'pets', 'animals', 'dog', 'dogs', 'cat', 'cats', 'photography', 'photo', 'nutrition',
+        'pets', 'animals', 'dog', 'dogs','cats', 'photography', 'photo', 'nutrition',
         'diet', 'family', 'relationships', 'love', 'memories', 'hobbies', 'gardening',
         'home', 'garden', 'crafts', 'bricolage',
         # French
