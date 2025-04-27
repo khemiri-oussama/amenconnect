@@ -12,7 +12,8 @@ import {
   shieldOutline,
   desktopOutline,
   videocamOutline,
-  colorPaletteOutline, // Added for Themes icon
+  colorPaletteOutline,
+  cashOutline, // Added for Credit Management icon
 } from "ionicons/icons"
 import "./SidebarAdmin.css"
 
@@ -31,7 +32,8 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ currentPage }) => {
     { title: "Sécurité", icon: shieldOutline, path: "/admin/AuthenticationSecurity" },
     { title: "Totems", icon: desktopOutline, path: "/admin/InteractiveTotemManagement" },
     { title: "Visioconférence", icon: videocamOutline, path: "/admin/VideoConferenceManagement" },
-    { title: "Thèmes", icon: colorPaletteOutline, path: "/admin/Themes" }, // Added Themes option
+    { title: "Thèmes", icon: colorPaletteOutline, path: "/admin/Themes" },
+    { title: "Gestion Crédit", icon: cashOutline, path: "/admin/GestionCredit" }, // Added Credit Management option
   ]
 
   const handleLogout = async () => {
@@ -74,4 +76,3 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ currentPage }) => {
 }
 
 export default SidebarAdmin
-

@@ -343,3 +343,13 @@
 {"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-04-24T09:51:22.743Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"fd7bff250b73dc3d392237373135fbaa","timestamp":"2025-04-24T09:51:45.051Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-04-24T09:51:45.148Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-04-26T16:02:05.730Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-04-26T16:02:06.029Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-04-26T16:02:07.394Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"New admin session created","sessionId":"5d40b97449dca47dcb3bd4e980cbfab4","timestamp":"2025-04-26T16:02:25.044Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-04-26T16:02:25.159Z"}
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-04-27T15:10:19.326Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-04-27T15:10:19.609Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-04-27T15:10:21.137Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"New admin session created","sessionId":"098ac2a69bb46f2870d5e3cd0b7a52c9","timestamp":"2025-04-27T15:10:55.369Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-04-27T15:10:55.424Z"}

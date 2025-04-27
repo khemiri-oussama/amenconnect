@@ -1,0 +1,431 @@
+/* Credit Management Styles */
+@import "../Dashboard/Dashboard.css";
+@import "../AuthenticationSecurity/AuthenticationSecurity.css";
+@import "../GestiondesTotem/InteractiveTotemManagement.css";
+@import "../SurveillanceMonitoring/SurveillanceMonitoring.css";
+@import "../Permissions/permissionsManagement.css";
+@import "../videoconfmanage/videoconfmanage.css";
+@import "../GestionUtilisateur/UserManagement.css";
+.credit-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: white;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.credit-search {
+  flex: 1;
+  min-width: 300px;
+}
+
+.credit-searchbar {
+  --background: #f8fafc;
+  --border-radius: 8px;
+  --color: #0f172a;
+  --placeholder-color: #94a3b8;
+  padding: 0;
+}
+
+.credit-filter-options {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-icon {
+  color: #64748b;
+  font-size: 1.25rem;
+}
+
+.credit-select {
+  --background: #f8fafc;
+  --border-radius: 8px;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  min-width: 150px;
+}
+
+/* Table Styles */
+.credit-table-container {
+  background-color: white;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  max-height: 70vh; /* Limit height and enable vertical scrolling */
+  overflow-y: auto;
+}
+
+.credit-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.credit-table th {
+  text-align: left;
+  padding: 1rem;
+  color: #64748b;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  top: 0;
+  z-index: 10;
+  white-space: nowrap;
+  height: 3.5rem; /* Ensure consistent height */
+  vertical-align: middle; /* Center content vertically */
+}
+
+/* Add specific styles for the table header row */
+.credit-table thead tr {
+  height: 3.5rem; /* Set a fixed height for the header row */
+}
+
+.credit-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.credit-row {
+  transition: background-color 0.2s;
+}
+
+.credit-row:hover {
+  background-color: #f8fafc;
+}
+
+.credit-row.status-pending {
+  border-left: 4px solid #f59e0b;
+}
+
+.credit-row.status-approved {
+  border-left: 4px solid #10b981;
+}
+
+.credit-row.status-rejected {
+  border-left: 4px solid #ef4444;
+}
+
+.credit-row.status-received {
+  border-left: 4px solid #3b82f6;
+}
+
+.sortable-header {
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  display: inline-flex; /* Change to inline-flex to prevent wrapping */
+  align-items: center;
+  gap: 0.25rem; /* Reduce gap between text and icon */
+}
+
+/* Ensure icons in sortable headers don't cause layout issues */
+.sortable-header ion-icon {
+  min-width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  flex-shrink: 0; /* Prevent icon from shrinking */
+}
+
+/* Remove the pseudo-element that might be causing spacing issues */
+.sortable-header::after {
+  display: none;
+}
+
+.sortable-header:hover {
+  color: #0f172a; /* Darken text on hover */
+}
+
+/* Add a subtle indicator for sortable columns */
+
+.credit-id {
+  font-family: monospace;
+  color: #64748b;
+}
+
+.client-name {
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.client-email {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.credit-amount,
+.credit-monthly {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.credit-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-button {
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+  height: 2rem;
+}
+
+.action-button.view ion-icon {
+  color: #3b82f6;
+}
+
+.action-button.approve ion-icon {
+  color: #10b981;
+}
+
+.action-button.reject ion-icon {
+  color: #ef4444;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.status-badge.approved {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.status-badge.rejected {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.status-badge.pending {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.status-badge.received {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+/* Loading and Empty States */
+.credit-loading,
+.credit-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+}
+
+/* Modal Styles */
+.credit-modal,
+.confirm-modal {
+  --width: 90%;
+  --max-width: 800px;
+  --height: auto;
+  --max-height: 90vh; /* Add max-height to prevent modals from exceeding viewport */
+  --border-radius: 16px;
+  --box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.credit-modal-content,
+.confirm-modal-content {
+  padding: 1.5rem;
+  max-height: calc(90vh - 3rem); /* Account for padding */
+  overflow-y: auto; /* Enable scrolling for content */
+}
+
+.credit-modal-header,
+.confirm-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.credit-modal-header h2,
+.confirm-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.close-button {
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+  --color: #64748b;
+}
+
+.credit-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.credit-detail-section h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.detail-label ion-icon {
+  font-size: 1.25rem;
+}
+
+.detail-value {
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.credit-actions-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  padding-top: 1rem;
+  z-index: 10;
+}
+
+.action-button-large {
+  --border-radius: 8px;
+}
+
+.confirm-modal-body {
+  margin-bottom: 1.5rem;
+}
+
+.rejection-reason {
+  margin-top: 1rem;
+  --background: #f8fafc;
+  --border-radius: 8px;
+}
+
+.confirm-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  padding-top: 1rem;
+  z-index: 10;
+}
+
+.cancel-button {
+  --border-radius: 8px;
+}
+
+.confirm-button {
+  --border-radius: 8px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .credit-filters {
+    flex-direction: column;
+  }
+
+  .credit-filter-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .credit-actions-container {
+    flex-direction: column;
+  }
+}
+
+/* Add these column-specific styles to ensure proper width distribution */
+.id-column {
+  width: 8%;
+}
+
+.client-column {
+  width: 18%;
+}
+
+.type-column {
+  width: 10%;
+}
+
+.amount-column,
+.monthly-column {
+  width: 12%;
+}
+
+.duration-column {
+  width: 10%;
+}
+
+.date-column {
+  width: 12%;
+}
+
+.status-column {
+  width: 10%;
+}
+
+.actions-column {
+  width: 10%;
+  text-align: center;
+}
+
+/* Fix for Ionic specific styling issues */
+ion-content {
+  --background: transparent;
+}
+
+/* Ensure the table is properly visible in the Ionic environment */
+.admin-dashboard-content {
+  --ion-background-color: transparent;
+}
+
+/* Fix for potential Ionic shadow DOM issues */
+:host {
+  display: block;
+  width: 100%;
+}

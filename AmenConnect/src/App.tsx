@@ -44,6 +44,7 @@ const AccountCreationForm = lazy(() => import("./pages/AccountCreationForm"))
 const QRScanner = lazy(() => import("./pages/Client/accueil/qrscanner"))
 const Otp = lazy(() => import("./pages/otp/otp"))
 const TestPay = lazy(() => import("./pages/payment-form"))
+const GestionCredit = lazy(() => import("./pages/Admin/GestionCredit/GestionCredit"))
 
 // Lazy load protected client pages
 const Accueil = lazy(() => import("./pages/Client/accueil/accueil"))
@@ -132,6 +133,7 @@ const AppContent: React.FC = () => {
             <AdminPrivateRoute path="/admin/authenticationSecurity" component={AuthenticationSecurity} />
             <AdminPrivateRoute path="/admin/interactiveTotemManagement" component={InteractiveTotemManagement} />
             <AdminPrivateRoute path="/admin/VideoConferenceManagement" component={VideoConferenceManagement} />
+            <AdminPrivateRoute path="/admin/GestionCredit" component={GestionCredit} />
 
             {/* Protected Kiosk Route */}
             <KioskPrivateRoute exact path="/totem/login" component={KioskComponent} />
