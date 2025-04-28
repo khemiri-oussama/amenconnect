@@ -303,6 +303,239 @@ ion-segment-button {
   font-weight: 600;
 }
 
+/* Credits Section */
+.credits-section {
+  margin-top: 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.credits-section h3 {
+  color: white;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 32px 0 16px;
+}
+
+.credits-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Credit Application Item */
+.credit-application-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)) !important;
+  border-radius: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.5s ease-out;
+  position: relative;
+}
+
+.credit-application-item:active {
+  transform: scale(0.98);
+}
+
+.credit-application-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.credit-application-icon ion-icon {
+  font-size: 20px;
+  color: white;
+}
+
+.credit-application-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.credit-application-title {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.credit-application-meta {
+  display: flex;
+  flex-direction: column;
+  color: var(--text-gray);
+  font-size: 12px;
+  gap: 4px;
+}
+
+.credit-application-info {
+  color: white;
+  font-size: 14px;
+}
+
+.credit-application-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.status-pending {
+  background-color: rgba(255, 204, 0, 0.2);
+  color: #ffcc00;
+}
+
+.status-approved {
+  background-color: rgba(71, 206, 101, 0.2);
+  color: var(--primary-green);
+}
+
+.status-rejected {
+  background-color: rgba(255, 43, 43, 0.2);
+  color: var(--primary-red);
+}
+
+/* Payment Progress Bar */
+.payment-progress-container {
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+}
+
+.payment-progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: white;
+}
+
+.payment-progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.payment-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2eb851, #47ce65);
+  border-radius: 4px;
+  transition: width 0.5s ease-out;
+}
+
+.payment-progress-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-gray);
+}
+
+.payment-progress-details span:first-child {
+  color: var(--primary-green);
+}
+
+/* Credit Form */
+.credit-form-container {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.credit-select,
+.credit-input,
+.credit-textarea,
+.simulator-input {
+  --background: rgba(255, 255, 255, 0.05);
+  --color: white;
+  --placeholder-color: var(--text-gray);
+  --border-radius: 12px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  margin-bottom: 8px;
+}
+
+.submit-credit-button,
+.calculate-button {
+  --background: var(--primary-green);
+  --background-activated: var(--primary-green);
+  --background-hover: var(--primary-green);
+  --color: white;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* Simulator */
+.simulator-container {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.simulator-results {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-label {
+  color: var(--text-gray);
+  font-size: 14px;
+}
+
+.result-value {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 /* Floating Action Button */
 .custom-fab {
   --background: var(--primary-green);
