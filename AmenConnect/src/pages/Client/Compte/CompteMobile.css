@@ -11,7 +11,7 @@
 }
 
 /* Content Styles */
-ion-content{
+ion-content {
   --background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   --padding-bottom: 70px;
 }
@@ -165,6 +165,93 @@ ion-segment-button {
   margin: 8px 0 16px;
 }
 
+/* Operation Item */
+.operation-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  border-radius: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.operation-item:active {
+  transform: scale(0.98);
+}
+
+.operation-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.operation-icon ion-icon {
+  font-size: 20px;
+}
+
+.operation-icon ion-icon[name="trending-up-outline"] {
+  color: var(--primary-green);
+}
+
+.operation-icon ion-icon[name="trending-down-outline"] {
+  color: var(--primary-red);
+}
+
+.operation-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.operation-description {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.operation-date {
+  color: var(--text-gray);
+  font-size: 12px;
+}
+
+.operation-amount {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.amount {
+  font-weight: 700;
+}
+
+.amount.credit {
+  color: var(--primary-green);
+}
+
+.amount.debit {
+  color: var(--primary-red);
+}
+
+/* Empty state for operations */
+.operations-section p {
+  color: var(--text-gray);
+  text-align: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  margin-top: 16px;
+}
+
 /* Custom Searchbar */
 .custom-searchbar {
   --background: rgba(255, 255, 255, 0.05);
@@ -259,7 +346,6 @@ ion-content {
   transition: color 0.3s ease;
 }
 
-
 .tab-button ion-icon {
   font-size: 24px;
   margin-bottom: 2px;
@@ -323,4 +409,3 @@ h3,
 .ion-page {
   background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
 }
-
