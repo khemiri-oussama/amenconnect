@@ -50,13 +50,21 @@ const ChatBotKiosk: React.FC = () => {
       isComplete: true,
     },
   ])
+  const [credits, setCredits] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true)
   const textareaRef = useRef<HTMLIonTextareaElement>(null)
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
   const [hasUserSentMessage, setHasUserSentMessage] = useState<boolean>(false)
-
+  useEffect(() => {
+    if (profile?.user?._id) {
+      fetch(`/api/credit?userId=${profile.user._id}`)
+        .then(res => res.json())
+        .then(data => setCredits(Array.isArray(data) ? data : []))
+        .catch(err => console.error("Erreur fetch credits:", err))
+    }
+  }, [profile])
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
@@ -111,6 +119,7 @@ const ChatBotKiosk: React.FC = () => {
               cin: userCin,
               phone: userPhone,
               address: userAddress,
+              credits: credits,
             },
           }
         : { message: text }
