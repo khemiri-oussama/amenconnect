@@ -1,10 +1,9 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useRef, useState } from "react"
 import { IonButton, IonContent, IonPage, IonLoading, IonToast, IonIcon } from "@ionic/react"
-import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode"
+import { Html5QrcodeScanner, Html5QrcodeScanType, Html5Qrcode } from "html5-qrcode"
 import { useHistory } from "react-router-dom"
 import { arrowBack, scanOutline } from "ionicons/icons"
 import "./qrscanner.css"
@@ -17,12 +16,24 @@ const QRScanner: React.FC = () => {
   const [scanning, setScanning] = useState(true)
   const [scanSuccess, setScanSuccess] = useState(false)
   const scannerRef = useRef<Html5QrcodeScanner | null>(null)
-  const viewportRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (scanning) {
-      // Add a small delay to ensure DOM is ready
-      const timer = setTimeout(() => {
+    if (!scanning) return
+
+    const timer = setTimeout(() => {
+      (async () => {
+        let videoConstraints: any = { facingMode: { ideal: "environment" } }
+
+        try {
+          const devices = await Html5Qrcode.getCameras()
+          const back = devices.find(d => /back|rear|environment/i.test(d.label))
+          if (back) {
+            videoConstraints = { deviceId: { exact: back.id } }
+          }
+        } catch (e) {
+          console.warn("Échec de l'énumération des caméras, utilisation de facingMode idéal :", e)
+        }
+
         scannerRef.current = new Html5QrcodeScanner(
           "qr-reader",
           {
@@ -30,32 +41,27 @@ const QRScanner: React.FC = () => {
             qrbox: { width: 250, height: 250 },
             aspectRatio: 1,
             supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-            videoConstraints: { facingMode: { exact: "environment" } },
+            videoConstraints,
           },
-          false,
+          false
         )
 
         scannerRef.current.render(
-          async (decodedText) => {
-            handleScan(decodedText)
-          },
-          (errorMessage) => {
-            console.warn("QR Scanner Error:", errorMessage)
-          },
+          decodedText => handleScan(decodedText),
+          err => console.warn("Erreur du scanner QR :", err)
         )
-      }, 100)
+      })()
+    }, 100)
 
-      return () => {
-        clearTimeout(timer)
-        scannerRef.current?.clear().catch(console.error)
-      }
+    return () => {
+      clearTimeout(timer)
+      scannerRef.current?.clear().catch(console.error)
     }
   }, [scanning])
 
   const handleScan = async (data: string) => {
     if (!data) return
 
-    // Visual feedback for successful scan
     setScanSuccess(true)
     setScanning(false)
     setLoading(true)
@@ -63,9 +69,8 @@ const QRScanner: React.FC = () => {
     try {
       const url = new URL(data)
       const sessionId = url.searchParams.get("session")
-
       if (!sessionId) {
-        setMessage("Invalid QR code. Session ID not found.")
+        setMessage("Code QR invalide : ID de session introuvable.")
         setMessageType("error")
         setLoading(false)
         return
@@ -77,20 +82,19 @@ const QRScanner: React.FC = () => {
         credentials: "include",
         body: JSON.stringify({ sessionId }),
       })
-
       const result = await response.json()
       setLoading(false)
 
       if (response.ok) {
-        setMessage("Authentication successful! Please return to the kiosk.")
+        setMessage("Authentification réussie ! Veuillez retourner au terminal.")
         setMessageType("success")
       } else {
-        setMessage(result.message || "Authentication failed. Please try again.")
+        setMessage(result.message || "Échec de l’authentification. Veuillez réessayer.")
         setMessageType("error")
       }
     } catch (err) {
       console.error(err)
-      setMessage("Invalid QR code format. Please scan a valid code.")
+      setMessage("Format de code QR invalide. Veuillez scanner un code valide.")
       setMessageType("error")
       setLoading(false)
     }
@@ -106,12 +110,12 @@ const QRScanner: React.FC = () => {
     <IonPage className="qr-scanner-page">
       <IonContent className="ion-padding qr-scanner-container">
         <div className="qr-scanner-header">
-          <h1>QR Scanner</h1>
-          <p>Position the QR code within the frame to login</p>
+          <h1>Scanner QR</h1>
+          <p>Positionnez le code QR dans le cadre pour vous connecter</p>
         </div>
 
         {scanning && (
-          <div ref={viewportRef} className="qr-scanner-viewport">
+          <div className="qr-scanner-viewport">
             <div id="qr-reader"></div>
             <div className="scanner-overlay"></div>
             <div className="scanner-laser"></div>
@@ -136,20 +140,20 @@ const QRScanner: React.FC = () => {
         {loading && (
           <div className="loading-indicator">
             <div className="loading-spinner"></div>
-            <span>Authenticating...</span>
+            <span>Authentification en cours…</span>
           </div>
         )}
 
         <div className="button-container">
           <IonButton className="qr-scanner-button back-button" onClick={() => history.goBack()} fill="outline">
             <IonIcon icon={arrowBack} slot="start" />
-            Back
+            Retour
           </IonButton>
 
           {!scanning && (
             <IonButton className="qr-scanner-button scan-again-button" onClick={resetScanner}>
               <IonIcon icon={scanOutline} slot="start" />
-              Scan Again
+              Scanner à nouveau
             </IonButton>
           )}
         </div>
@@ -157,19 +161,19 @@ const QRScanner: React.FC = () => {
         <div className="scanner-instructions">
           <div className="instruction-item">
             <div className="instruction-icon">1</div>
-            <div className="instruction-text">Open the QR code from your kiosk</div>
+            <div className="instruction-text">Ouvrez le code QR sur votre terminal</div>
           </div>
           <div className="instruction-item">
             <div className="instruction-icon">2</div>
-            <div className="instruction-text">Position it within the frame</div>
+            <div className="instruction-text">Positionnez-le dans le cadre</div>
           </div>
           <div className="instruction-item">
             <div className="instruction-icon">3</div>
-            <div className="instruction-text">Hold steady until scan completes</div>
+            <div className="instruction-text">Maintenez stable jusqu’à la fin du scan</div>
           </div>
         </div>
 
-        <IonLoading isOpen={loading} message="Authenticating..." cssClass="custom-loading" />
+        <IonLoading isOpen={loading} message="Authentification en cours…" cssClass="custom-loading" />
 
         <IonToast
           isOpen={!!message}
@@ -185,4 +189,3 @@ const QRScanner: React.FC = () => {
 }
 
 export default QRScanner
-

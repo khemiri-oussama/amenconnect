@@ -232,11 +232,10 @@ const AccueilMobile: React.FC = () => {
                   <IonRippleEffect />
                 </IonButton>
                 <IonButton
+                  id="user-menu-trigger"
                   fill="clear"
                   className="profile-button-mobile ion-activatable"
-                  onClick={() => setIsMenuOpen(!isMenuOpen) 
-                    
-                  }
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <IonIcon icon={personOutline} />
                   <IonRippleEffect />
@@ -380,8 +379,9 @@ const AccueilMobile: React.FC = () => {
                       <div className="card-preview-content">
                         <div className="card-preview-top">
                           <div className="card-chip-container">
-                            <div className="card-chip"><img src="./puce.png" alt="" className="contactless-icon"  /></div>
-                            
+                            <div className="card-chip">
+                              <img src="./puce.png" alt="" className="contactless-icon" />
+                            </div>
                           </div>
                           <div className="card-brand">
                             <span className="brand-text">{selectedCard.cardType}</span>
@@ -444,4 +444,3 @@ const AccueilMobile: React.FC = () => {
 }
 
 export default AccueilMobile
-
