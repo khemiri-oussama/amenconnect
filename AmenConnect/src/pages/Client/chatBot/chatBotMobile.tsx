@@ -47,6 +47,7 @@ const ChatBotMobile: React.FC = () => {
       timestamp: new Date(),
     },
   ])
+  const [credits, setCredits] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true)
   const [keyboardOpen, setKeyboardOpen] = useState<boolean>(false)
@@ -54,6 +55,14 @@ const ChatBotMobile: React.FC = () => {
   const contentRef = useRef<HTMLIonContentElement>(null)
   const textareaRef = useRef<HTMLIonTextareaElement>(null)
 
+  useEffect(() => {
+    if (profile?.user?._id) {
+      fetch(`/api/credit?userId=${profile.user._id}`)
+        .then(res => res.json())
+        .then(data => setCredits(Array.isArray(data) ? data : []))
+        .catch(err => console.error("Erreur fetch credits:", err))
+    }
+  }, [profile])
   // Scroll to bottom of messages
   const scrollToBottom = () => {
     if (contentRef.current) {
@@ -150,6 +159,7 @@ const ChatBotMobile: React.FC = () => {
               cin: userCin,
               phone: userPhone,
               address: userAddress,
+              credits: credits,
             },
           }
         : { message: text }
