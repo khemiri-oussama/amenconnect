@@ -322,9 +322,7 @@ const CompteMobile: React.FC = () => {
             <IonSegmentButton value="credits">
               <IonLabel>Crédits</IonLabel>
             </IonSegmentButton>
-            <IonSegmentButton value="cheques">
-              <IonLabel>Chèques</IonLabel>
-            </IonSegmentButton>
+
           </IonSegment>
           <IonSearchbar placeholder="Rechercher" className="custom-searchbar" mode="ios"></IonSearchbar>
 
