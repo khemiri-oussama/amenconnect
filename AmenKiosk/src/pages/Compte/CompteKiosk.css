@@ -562,3 +562,86 @@
     font-size: 1.25rem;
   }
 }
+/* Add these styles to CompteKiosk.css */
+.payment-progress-container {
+  margin-top: 0.75rem;
+  background-color: rgba(18, 22, 96, 0.05);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+.payment-progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--kiosk-primary, #121660);
+}
+
+.payment-progress-bar {
+  height: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.payment-progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--kiosk-primary, #121660), var(--kiosk-secondary, #181e92));
+  border-radius: 0.25rem;
+}
+
+.payment-progress-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--kiosk-text-muted, #666);
+}
+
+/* Enhance credit item styling */
+.compte-kiosk-credit-item {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: var(--kiosk-surface, #ffffff);
+  box-shadow: var(--kiosk-shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.05));
+  margin-bottom: 0.75rem;
+}
+
+.compte-kiosk-credit-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Credit simulator enhancements */
+.compte-kiosk-simulator-results {
+  background-color: rgba(18, 22, 96, 0.05);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(18, 22, 96, 0.1);
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-label {
+  font-size: 0.875rem;
+  color: var(--kiosk-text-muted, #666);
+}
+
+.result-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--kiosk-primary, #121660);
+}
+

@@ -363,7 +363,7 @@ const CompteKiosk: React.FC = () => {
             </div>
 
             <div className="compte-kiosk-tabs">
-              <IonSegment value={activeTab} onIonChange={(e) => setActiveTab(e.detail.value!)}>
+              <IonSegment value={activeTab} onIonChange={(e) => setActiveTab(String(e.detail.value))}>
                 <IonSegmentButton value="overview">
                   <IonIcon icon={walletOutline} />
                   <IonLabel>Aperçu</IonLabel>
@@ -631,7 +631,7 @@ const CompteKiosk: React.FC = () => {
                             <IonIcon icon={walletOutline} />
                           </div>
                           <div className="compte-kiosk-credit-details">
-                            <div className="compte-kiosk-credit-title">{credit.typeCredit}</div>
+                            <div className="compte-kiosk-credit-title">{credit.type}</div>
                             <div className="compte-kiosk-credit-meta">
                               <span className="compte-kiosk-credit-date">
                                 Demande du {formatDate(credit.createdAt)}
@@ -639,6 +639,26 @@ const CompteKiosk: React.FC = () => {
                               <span className="compte-kiosk-credit-amount">{formatCurrency(credit.montant)}</span>
                               <span className="compte-kiosk-credit-duree">Durée: {credit.duree} mois</span>
                             </div>
+
+                            {/* Payment Progress Bar for Approved Credits */}
+                            {credit.status === "approved" && (
+                              <div className="payment-progress-container">
+                                <div className="payment-progress-header">
+                                  <span>Progression des paiements</span>
+                                  <span>{Math.round((credit.montantPaye / credit.montant) * 100)}%</span>
+                                </div>
+                                <div className="payment-progress-bar">
+                                  <div
+                                    className="payment-progress-fill"
+                                    style={{ width: `${(credit.montantPaye / credit.montant) * 100}%` }}
+                                  ></div>
+                                </div>
+                                <div className="payment-progress-details">
+                                  <span>Payé: {formatCurrency(credit.montantPaye)}</span>
+                                  <span>Restant: {formatCurrency(credit.montant - credit.montantPaye)}</span>
+                                </div>
+                              </div>
+                            )}
                           </div>
                           <div className={`compte-kiosk-credit-status status-${credit.status}`}>
                             {renderCreditStatus(credit.status)}
