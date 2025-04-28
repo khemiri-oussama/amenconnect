@@ -55,6 +55,20 @@ import Navbar from "../../../components/Navbar"
 import "./CompteDesktop.css"
 import { useAuth, type Transaction } from "../../../AuthContext"
 import LoadingProgressBar from "../../../components/LoadingProgressBar"
+import BudgetCategoryManager from "../../../components/BudgetCategory/BudgetCategoryManager"
+
+interface BudgetCategory {
+  userId: string;
+  id: string;
+  name: string;
+  limit: number;
+  color: string;
+  current: number;
+  _id: string;
+  __v: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
 const ComptePageDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const [activeTab, setActiveTab] = useState<string>("overview")
@@ -76,7 +90,24 @@ const ComptePageDesktop: React.FC = () => {
   const [userCredits, setUserCredits] = useState<any[]>([])
   const [creditDetails, setCreditDetails] = useState<any>(null)
   const [loadingCredits, setLoadingCredits] = useState(true)
+  const [budgetCategories, setBudgetCategories] = useState<BudgetCategory[]>([])
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState<boolean>(false)
 
+  // Fetch budget categories
+  useEffect(() => {
+    const fetchBudgetCategories = async () => {
+      if (!profile?.user._id) return
+      try {
+        const response = await fetch(`/api/categories?userId=${profile.user._id}`)
+        if (!response.ok) throw new Error("Error fetching budget categories")
+        const data = await response.json()
+        setBudgetCategories(data.map((cat: any) => ({ ...cat, id: cat._id })))
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchBudgetCategories()
+  }, [profile])
   // Add this useEffect hook to fetch user credits
 
   const fetchUserCredits = async () => {
@@ -331,7 +362,6 @@ const ComptePageDesktop: React.FC = () => {
   }
 
   // Category colors for pie chart
-  const CATEGORY_COLORS = ["#47ce65", "#ffcc00", "#346fce", "#f472b6", "#60a5fa", "#878787"]
 
   // Handle account selection
   const handleAccountChange = (accountId: string) => {
@@ -350,6 +380,7 @@ const ComptePageDesktop: React.FC = () => {
     setDateRange("all")
     setIsFilterModalOpen(false)
   }
+  const categoryData = budgetCategories.map(cat => ({ name: cat.name, value: cat.current, color: cat.color }))
 
   if (authLoading || isLoading) {
     return (
@@ -363,7 +394,6 @@ const ComptePageDesktop: React.FC = () => {
   const card = getAssociatedCard()
   const stats = getAccountStats()
   const chartData = getChartData()
-  const categoryData = getCategoryData()
 
   return (
     <IonPage>
@@ -424,7 +454,7 @@ const ComptePageDesktop: React.FC = () => {
               onClick={() => setActiveTab("credit")}
               className="tab-button"
             >
-              Suivi/Demande de crédit
+              Suivi & Demande de crédit
             </IonButton>
           </div>
 
@@ -706,7 +736,7 @@ const ComptePageDesktop: React.FC = () => {
                             label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                           >
                             {categoryData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]} />
+                              <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
                           </Pie>
                           <Tooltip
@@ -730,7 +760,7 @@ const ComptePageDesktop: React.FC = () => {
                         <div key={index} className="category-item">
                           <div
                             className="category-color"
-                            style={{ backgroundColor: CATEGORY_COLORS[index % CATEGORY_COLORS.length] }}
+                            style={{ backgroundColor: category.color}}
                           ></div>
                           <div className="category-name">{category.name}</div>
                           <div className="category-amount">{formatCurrency(category.value)}</div>
