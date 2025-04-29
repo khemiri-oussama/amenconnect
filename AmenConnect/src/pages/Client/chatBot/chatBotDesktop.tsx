@@ -171,11 +171,14 @@ const ChatBotDesktop: React.FC = () => {
         : { message: text }
         console.log("About to send payload:", { message});
 
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
+      // around line 178 in chatBotDesktop.tsx
+const response = await fetch("/api/chat", {
+  method: "POST",
+  credentials: "include",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ message: text }),
+});
+
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`)

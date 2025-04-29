@@ -1,9 +1,13 @@
 // routes/chatRoutes.js
-const express = require("express");
-const router = express.Router();
-const chatController = require("../controllers/chatController");
+const express  = require('express');
+const passport = require('../config/passport');
+const { chat } = require('../controllers/chatController');
+const router   = express.Router();
 
-// Define a POST endpoint for /chat
-router.post("/", chatController.chat);
+router.post(
+  '/', 
+  passport.authenticate('jwt', { session: false }),  // ← protect it
+  chat
+);
 
 module.exports = router;

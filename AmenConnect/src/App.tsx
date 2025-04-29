@@ -68,7 +68,6 @@ const AuthenticationSecurity = lazy(() => import("./pages/Admin/AuthenticationSe
 const InteractiveTotemManagement = lazy(() => import("./pages/Admin/GestiondesTotem/InteractiveTotemManagement"))
 const VideoConferenceManagement = lazy(() => import("./pages/Admin/videoconfmanage/videoconfmanage"))
 const theme = lazy(() => import("./pages/Admin/Themes/page"))
-import ChatPage from "./pages/Client/ChatPage"
 // Lazy load your kiosk component
 const KioskComponent = lazy(() => import("./pages/HomeKiosk"))
 
@@ -104,7 +103,6 @@ const AppContent: React.FC = () => {
             <Route exact path="/accountcreation" component={AccountCreationForm} />
             <Route exact path="/admin/Themes" component={theme} />
             <Route path="/video/:roomId" component={JitsiMeetComponent} />
-            <Route exact path="/chat" component={ChatPage} />
             <Route
               exact
               path="/otp"

@@ -76,15 +76,6 @@ def chat():
     try:
         reply_message = generate_reply(message, user_context)
 
-        # Si le numéro de téléphone est fourni, on tente d'envoyer la réponse via Green API
-        if user.get('phone'):
-            try:
-                response_api = send_via_green_api(user['phone'], reply_message)
-                if response_api.status_code != 200:
-                    print("Green API response (non-fatal):", response_api.text)
-            except Exception as send_err:
-                print("Green API send error (non-fatal):", send_err)
-
         return jsonify({"response": reply_message})
     except Exception as e:
         print("Error:", e)
