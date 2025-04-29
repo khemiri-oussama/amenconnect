@@ -1,36 +1,53 @@
 from together import Together
 from datetime import datetime
 from config import TOGETHER_API_KEY, TOGETHER_MODEL
-
+import re
 client = Together(api_key=TOGETHER_API_KEY)
 
 def generate_reply(message: str, user_context: str = "") -> str:
+
+    # --- 1. Détection et simulation crédit immobilier ---
+    immobilier_match = re.search(
+        r"j[' ]ai\s*([0-9]+(?:\s*mille)?)\s*(dinars?)?.*acheter.*appartement\s*[àa]\s*([0-9]+(?:\s*mille)?)",
+        message.lower()
+    )
+    if immobilier_match:
+        def parse_tnd(s: str) -> int:
+            s = s.replace("mille", "").strip()
+            return int(s) * (1000 if "mille" in s else 1)
+
+        apport = parse_tnd(immobilier_match.group(1))
+        prix   = parse_tnd(immobilier_match.group(3))
+        montant_pret = prix - apport
+
+        # Paramètres du crédit
+        taux_annuel = 4.75  # taux indicatif Immobilier
+        duree_annees = 25   # durée max
+        i = taux_annuel / 100 / 12
+        n = duree_annees * 12
+        mensualite = round(montant_pret * i / (1 - (1 + i)**(-n)), 2)
+
+        return (
+            f"🔍 Vous avez un apport de **{apport:,} TND** "
+            f"pour un bien à **{prix:,} TND** (prêt nécessaire : **{montant_pret:,} TND**).\n\n"
+            f"💡 **Proposition de Crédit Immobilier**\n"
+            f"• Montant du prêt : {montant_pret:,} TND\n"
+            f"• Durée maximale : {duree_annees} ans\n"
+            f"• Taux fixe indicatif : {taux_annuel}%\n"
+            f"• Mensualité estimée : {mensualite:,} TND/mois\n\n"
+            "✅ Vous pouvez ajuster la durée ou le montant selon vos besoins.\n"
+            "📌 Besoin d’un autre scénario ? Dites-le !"
+        )
 
     # Enhanced non-banking filter with additional keywords
     NON_BANKING_KEYWORDS = {
         # English
         'python', 'code', 'programming', 'algorithm', 'development', 'math', 'physics',
         'engineering', 'gaming', 'game', 'games', 'play', 'movie', 'movies', 'film', 'series',
-        'tv', 'music', 'song', 'sports', 'travel', 'trip', 'recipe', 'recipes', 'cooking',
-        'joke', 'jokes', 'poetry', 'literature', 'art', 'history', 'news', 'politics', 'health',
-        'fitness', 'education', 'fashion', 'shopping', 'weather', 'science', 'horoscope',
-        'technology', 'tech', 'social media', 'stock', 'stocks', 'investment', 'investments',
-        'finance', 'financial', 'crypto', 'cryptocurrency', 'blockchain', 'bitcoin', 'ethereum',
-        'stock market', 'real estate', 'jobs', 'career', 'startup', 'entrepreneur', 'business',
-        'marketing', 'advertising', 'ads', 'memes', 'meme', 'podcast', 'podcasts', 'diy',
-        'pets', 'animals', 'dog', 'dogs','cats', 'photography', 'photo', 'nutrition',
-        'diet', 'family', 'relationships', 'love', 'memories', 'hobbies', 'gardening',
-        'home', 'garden', 'crafts', 'bricolage',
+        'tv', 'music', 'song', 'sports'
         # French
-        'jeu', 'jeux', 'jouer', 'films', 'film', 'musique', 'sport', 'voyage', 'recette',
-        'recettes', 'blague', 'blagues', 'poésie', 'littérature', 'histoire', 'actualité',
-        'politique', 'santé', 'fitness', 'éducation', 'mode', 'shopping', 'météo', 'science',
-        'horoscope', 'technologie', 'serie', 'series', 'jeu vidéo', 'jeux vidéo', 'cuisine',
-        'cuisiner', 'politique', 'bourse', 'cryptomonnaie', 'blockchain', 'bitcoin',
-        'emploi', 'carrière', 'startup', 'entrepreneur', 'business', 'marketing', 'publicité',
-        'réseaux sociaux', 'instagram', 'facebook', 'twitter', 'tiktok', 'animaux', 'chiens',
-        'chats', 'photographie', 'photo', 'nutrition', 'régime', 'famille', 'relations',
-        'amour', 'loisirs', 'jardinage', 'bricolage'
+        'jeu', 'jeux', 'jouer', 'films', 'film', 'musique', 'recette',
+        'recettes', 'blague', 'blagues', 'poésie', 'littérature'
     }
 
     # Comprehensive bank profile with dynamic elements
