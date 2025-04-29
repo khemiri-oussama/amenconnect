@@ -70,13 +70,39 @@ const ChatBotDesktop: React.FC = () => {
   }, [messages])
 
   // Focus on textarea when component mounts
-  useEffect(() => {
-    if (!authLoading && textareaRef.current) {
-      setTimeout(() => {
-        textareaRef.current?.setFocus()
-      }, 500)
-    }
-  }, [authLoading])
+  // once authenticated, load today’s chat
+useEffect(() => {
+  if (!authLoading && profile?.user?._id) {
+    fetch("/api/chat", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(res => res.json())
+      .then((msgs: { sender: string; text: string; date: string }[]) => {
+        // convert into your Message shape
+        const formatted: Message[] = msgs.map((m, i) => ({
+          id: i + 1,
+          sender: (m.sender as "user"|"bot"),
+          text: m.text,
+          timestamp: new Date(m.date),
+        }));
+        // if no messages, seed with greeting
+        if (formatted.length === 0) {
+          formatted.push({
+            id: 1,
+            sender: "bot",
+            text: `Bonjour ${profile.user.prenom}! Je suis votre assistant bancaire. Comment puis-je vous aider aujourd'hui ?`,
+            timestamp: new Date(),
+          });
+        }
+        setMessages(formatted);
+      })
+      .catch(err => {
+        console.error("Erreur loading chat:", err);
+      });
+  }
+}, [authLoading, profile]);
+
 
   // Handle typing animation for bot messages
   useEffect(() => {
