@@ -41,12 +41,6 @@ const ChatBotDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const [message, setMessage] = useState<string>("")
   const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: `Bonjour ${profile?.user.prenom || ""} ! Je suis votre assistant bancaire. Comment puis-je vous aider aujourd'hui ?	`,
-      sender: "bot",
-      timestamp: new Date(),
-    },
   ])
   const [credits, setCredits] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -71,37 +65,37 @@ const ChatBotDesktop: React.FC = () => {
 
   // Focus on textarea when component mounts
   // once authenticated, load today’s chat
-useEffect(() => {
-  if (!authLoading && profile?.user?._id) {
-    fetch("/api/chat", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then(res => res.json())
-      .then((msgs: { sender: string; text: string; date: string }[]) => {
-        // convert into your Message shape
-        const formatted: Message[] = msgs.map((m, i) => ({
-          id: i + 1,
-          sender: (m.sender as "user"|"bot"),
-          text: m.text,
-          timestamp: new Date(m.date),
-        }));
-        // if no messages, seed with greeting
-        if (formatted.length === 0) {
-          formatted.push({
-            id: 1,
-            sender: "bot",
-            text: `Bonjour ${profile.user.prenom}! Je suis votre assistant bancaire. Comment puis-je vous aider aujourd'hui ?`,
-            timestamp: new Date(),
-          });
-        }
-        setMessages(formatted);
+  useEffect(() => {
+    if (!authLoading && profile?.user?._id) {
+      fetch("/api/chat", {
+        method: "GET",
+        credentials: "include",
       })
-      .catch(err => {
-        console.error("Erreur loading chat:", err);
-      });
-  }
-}, [authLoading, profile]);
+        .then(res => res.json())
+        .then((msgs: { sender: string; text: string; date: string }[]) => {
+          // Map to internal Message[]
+          const formatted = msgs.map((m, i) => ({
+            id:        i + 1,
+            sender:    m.sender as "user"|"bot",
+            text:      m.text,
+            timestamp: new Date(m.date),
+          }));
+  
+          // If empty, show greeting
+          if (formatted.length === 0) {
+            formatted.push({
+              id:        1,
+              sender:    "bot",
+              text:      `Bonjour ${profile.user.prenom}! Je suis votre assistant …`,
+              timestamp: new Date(),
+            });
+          }
+  
+          setMessages(formatted);
+        })
+        .catch(err => console.error("Erreur loading chat:", err));
+    }
+  }, [authLoading, profile]);
 
 
   // Handle typing animation for bot messages
@@ -164,91 +158,78 @@ useEffect(() => {
   }
 
   const sendMessage = async (text = message) => {
-    if (!text.trim()) return
-
-    // Ajouter le message de l'utilisateur au chat
+    if (!text.trim()) return;
+  
+    // 1) Add user’s message to the UI immediately
     const userMessage: Message = {
-      id: messages.length + 1,
-      text: text,
-      sender: "user",
+      id:        messages.length + 1,
+      text,
+      sender:    "user",
       timestamp: new Date(),
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setLoading(true);
+    setShowSuggestions(false);
+    setMessage("");
+  
+    // 2) Build the payload exactly once, with a console.log to inspect it:
+    let payload: { message: string; user?: unknown } = { message: text };
+    if (isAuthenticated && profile) {
+      payload.user = {
+        id:       profile.user._id,
+        name:     `${profile.user.prenom} ${profile.user.nom}`,
+        email:    profile.user.email,
+        cin:      profile.user.cin,
+        phone:    profile.user.telephone,
+        address:  profile.user.adresseEmployeur,
+        accounts: profile.comptes,
+        credits,
+      };
     }
-
-    setMessages((prev) => [...prev, userMessage])
-    setLoading(true)
-    setMessage("") // Effacer le champ de saisie
-    setShowSuggestions(false) // Masquer les suggestions après l'envoi d'un message
-
+    console.log("🔶 Sending payload to /api/chat:", payload);
+  
     try {
-      // Préparer la charge utile de la requête en fonction du statut d'authentification
-      const payload = isAuthenticated
-        ? {
-            message: text,
-            user: {
-              name: userName,
-              email: userEmail,
-              accounts: userAccounts,
-              cin: userCin,
-              phone: userPhone,
-              address: userAddress,
-              credits: credits,
-            },
-          }
-        : { message: text }
-        console.log("About to send payload:", { message});
-
-      // around line 178 in chatBotDesktop.tsx
-const response = await fetch("/api/chat", {
-  method: "POST",
-  credentials: "include",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ message: text }),
-});
-
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`)
-      }
-
-      const data = await response.json()
-
-      // Ajouter la réponse du bot au chat
+      // 3) POST it
+      const response = await fetch("/api/chat", {
+        method:      "POST",
+        credentials: "include",
+        headers:     { "Content-Type": "application/json" },
+        body:        JSON.stringify(payload),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  
+      // 4) Read the bot’s reply
+      const data = await response.json();
       const botMessage: Message = {
-        id: messages.length + 2,
-        text: data.response || "Je suis désolé, je n'ai pas pu traiter votre demande.",
-        sender: "bot",
+        id:        messages.length + 2,
+        text:      data.response || "Désolé, je n'ai pas pu traiter votre demande.",
+        sender:    "bot",
         timestamp: new Date(),
-      }
-
-      setMessages((prev) => [...prev, botMessage])
-
-      // Afficher à nouveau les suggestions après la réponse du bot
-      setShowSuggestions(true)
-    } catch (error) {
-      console.error("Erreur:", error)
-
-      // Show toast instead of error message in chat
-      setToastMessage("Une erreur s'est produite. Veuillez réessayer plus tard.")
-      setShowToast(true)
-
-      // Ajouter un message d'erreur au chat
-      const errorMessage: Message = {
-        id: messages.length + 2,
-        text: "Une erreur s'est produite lors de la communication avec l'API. Veuillez réessayer plus tard.",
-        sender: "bot",
-        timestamp: new Date(),
-      }
-
-      setMessages((prev) => [...prev, errorMessage])
+      };
+      setMessages(prev => [...prev, botMessage]);
+      setShowSuggestions(true);
+  
+    } catch (err) {
+      console.error("❌ sendMessage error:", err);
+      setToastMessage("Une erreur est survenue, réessayez.");
+      setShowToast(true);
+  
+      setMessages(prev => [
+        ...prev,
+        {
+          id:        messages.length + 2,
+          text:      "Erreur de communication. Veuillez réessayer.",
+          sender:    "bot",
+          timestamp: new Date(),
+        }
+      ]);
+    } finally {
+      setLoading(false);
+      // 5) refocus
+      setTimeout(() => textareaRef.current?.setFocus(), 100);
     }
-
-    setLoading(false)
-
-    // Focus back on textarea after sending
-    setTimeout(() => {
-      textareaRef.current?.setFocus()
-    }, 100)
-  }
+  };
+  
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
