@@ -1,3 +1,4 @@
+//models/AdminNotification
 const mongoose = require("mongoose");
 
 const AdminNotificationSchema = new mongoose.Schema({
