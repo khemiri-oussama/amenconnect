@@ -226,7 +226,17 @@ const options = {
           },
           required: ['cardId', 'userId', 'amount']
         },
-
+        AdminNotification: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            title: { type: 'string', example: 'Nouvelle demande de vidéoconférence' },
+            message: { type: 'string' },
+            requestId: { type: 'string' },
+            read: { type: 'boolean' },
+            createdAt: { type: 'string', format: 'date-time' }
+          }
+        },        
         // Kiosk Schema
         Kiosk: {
           type: 'object',
@@ -567,6 +577,59 @@ const options = {
         lastActive: { type: 'string', format: 'date-time' }
       }
     },
+    Chat: {
+      type: 'object',
+      properties: {
+        _id: { type: 'string' },
+        user: { type: 'string' },
+        date: { type: 'string', example: '2025-04-30' },
+        messages: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              sender: { type: 'string', enum: ['user', 'bot'] },
+              text: { type: 'string' },
+              date: { type: 'string', format: 'date-time' }
+            }
+          }
+        },
+        createdAt: { type: 'string', format: 'date-time' },
+        updatedAt: { type: 'string', format: 'date-time' },
+      }
+    },
+    Credit: {
+      type: 'object',
+      properties: {
+        _id: { type: 'string' },
+        userId: { type: 'string' },
+        compteId: { type: 'string' },
+        type: { type: 'string', enum: ['Auto', 'Immobilier', 'Études', 'Liquidité'] },
+        montant: { type: 'number' },
+        duree: { type: 'number' },
+        RevenuMensuel: { type: 'number' },
+        tauxInteret: { type: 'number' },
+        mensualite: { type: 'number' },
+        montantPaye: { type: 'number' },
+        payments: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              date: { type: 'string', format: 'date-time' },
+              amount: { type: 'number' }
+            }
+          }
+        },
+        dateDebut: { type: 'string', format: 'date-time' },
+        dateFin: { type: 'string', format: 'date-time' },
+        status: {
+          type: 'string',
+          enum: ['received', 'pending', 'approved', 'rejected']
+        },
+        createdAt: { type: 'string', format: 'date-time' }
+      }
+    },    
     TwoFactorConfig: {
       type: 'object',
       properties: {
@@ -577,14 +640,6 @@ const options = {
         googleAuthSecret: { type: 'string' },
         updatedAt: { type: 'string', format: 'date-time' }
       }
-    },
-    ChatRequest: {
-      type: 'object',
-      properties: {
-        message: { type: 'string', example: "Quel est mon solde actuel?" },
-        user: { $ref: '#/components/schemas/User' }
-      },
-      required: ['message']
     },
       }
     },
