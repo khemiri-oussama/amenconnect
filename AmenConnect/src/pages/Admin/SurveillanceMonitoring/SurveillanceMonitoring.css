@@ -10,7 +10,41 @@
   flex-direction: column;
   gap: 1.5rem;
 }
+/* Location thumbnail styling */
+.location-thumbnail {
+  border-radius: 8px;
+  object-fit: cover;
+}
 
+/* Status badge styling */
+.admin-transaction-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.admin-transaction-status.active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.admin-transaction-status.inactive {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.admin-transaction-status.maintenance {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.admin-transaction-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #666;
+}
 .admin-map-container {
   background-color: #f8fafc;
   border-radius: 8px;

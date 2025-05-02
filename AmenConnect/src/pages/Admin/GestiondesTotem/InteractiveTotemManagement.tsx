@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { IonPage, IonIcon, IonModal, IonTextarea, IonAlert } from "@ionic/react"
+import { IonPage, IonIcon, IonModal, IonTextarea, IonAlert,IonButton } from "@ionic/react"
 import {
   refreshOutline,
   powerOutline,
@@ -9,6 +9,7 @@ import {
   thermometerOutline,
   closeCircleOutline,
   checkmarkCircleOutline,
+  arrowBackOutline,
 } from "ionicons/icons"
 import SidebarAdmin from "../../../components/SidebarAdmin"
 import { useAdminAuth } from "../../../AdminAuthContext"
@@ -41,7 +42,25 @@ const InteractiveTotemManagement = () => {
 
   // Use a ref to track which totems have already been logged as offline.
   const loggedIncidentsRef = useRef<{ [totemId: string]: boolean }>({})
-
+  interface InteractiveTotemManagementProps {
+    totemId: string;
+    onClose: () => void;
+  }
+  
+  // Add a close button in your InteractiveTotemManagement component
+  const InteractiveTotemManagement: React.FC<InteractiveTotemManagementProps> = ({ totemId, onClose }) => {
+    return (
+      <div className="management-view">
+        <div className="management-header">
+          <h2>Gestion du Totem {totemId}</h2>
+          <IonButton fill="clear" onClick={onClose}>
+            <IonIcon slot="icon-only" icon={arrowBackOutline} />
+          </IonButton>
+        </div>
+        {/* Rest of your management UI */}
+      </div>
+    );
+  };
   // Periodically check each totem and log an incident if offline and not already logged.
   // Using a ref here prevents unnecessary re-creation of the effect.
   useEffect(() => {

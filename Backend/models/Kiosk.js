@@ -12,7 +12,9 @@ const KioskSchema = new mongoose.Schema({
   agencyName: { type: String, required: true },
   enabled: { type: Boolean, default: false },
   // Add last_heartbeat as a Number (Unix timestamp in seconds)
-  last_heartbeat: { type: Number, default: 0 }
+  last_heartbeat: { type: Number, default: 0 },
+  longitude: { type: String, required: true },
+  latitude: { type: String, required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Kiosk', KioskSchema);
