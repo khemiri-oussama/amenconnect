@@ -176,7 +176,10 @@ const options = {
             fromAccount: { type: 'string', example: '613c3f1f8a0b5f00123abcde' },
             toAccount: { type: 'string', example: '613c3f1f8a0b5f00123defgh' },
             amount: { type: 'number', example: 200 },
+            occurrences: { type: 'number', example: 5 },
+            Totalamount: { type: 'number', example: 1000 },
             description: { type: 'string', example: 'Abonnement mensuel' },
+            status: { type: 'string', example: 'En cours' },
             frequency: { 
               type: 'string', 
               example: 'mensuel',
