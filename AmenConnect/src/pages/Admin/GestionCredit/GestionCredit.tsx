@@ -35,7 +35,7 @@ import axios from "axios"
 import "./GestionCredit.css"
 import SidebarAdmin from "../../../components/SidebarAdmin"
 import AdminPageHeader from "../adminpageheader"
-
+import { useAdminAuth } from "../../../AdminAuthContext"
 interface Credit {
   _id: string
   userId: {
@@ -62,6 +62,7 @@ interface Credit {
 }
 
 const GestionCredit = () => {
+  const { authLoading } = useAdminAuth()
   const [credits, setCredits] = useState<Credit[]>([])
   const [filteredCredits, setFilteredCredits] = useState<Credit[]>([])
   const [loading, setLoading] = useState(true)
@@ -108,10 +109,10 @@ const GestionCredit = () => {
       const searchLower = searchText.toLowerCase()
       result = result.filter(
         (credit) =>
-          credit.userId.nom.toLowerCase().includes(searchLower) ||
-          credit.userId.prenom.toLowerCase().includes(searchLower) ||
-          credit.userId.email.toLowerCase().includes(searchLower) ||
-          credit.compteId.numéroCompte.toLowerCase().includes(searchLower) ||
+          credit.userId?.nom?.toLowerCase().includes(searchLower) ||
+          credit.userId?.prenom?.toLowerCase().includes(searchLower) ||
+          credit.userId?.email?.toLowerCase().includes(searchLower) ||
+          credit.compteId?.numéroCompte?.toLowerCase().includes(searchLower) ||
           credit._id.toLowerCase().includes(searchLower),
       )
     }
@@ -230,7 +231,9 @@ const GestionCredit = () => {
         return cashOutline
     }
   }
-
+  if (authLoading) {
+    return <div className="admin-loading">Loading...</div>
+  }
   return (
     <IonPage>
       <div className="admin-dashboard-layout">
@@ -348,14 +351,14 @@ const GestionCredit = () => {
                           <span className="mobile-label">Client:</span>
                           <div className="client-info">
                             <div className="client-avatar">
-                              {credit.userId.prenom.charAt(0)}
-                              {credit.userId.nom.charAt(0)}
+                              {credit.userId?.prenom?.charAt(0) || "?"}
+                              {credit.userId?.nom?.charAt(0) || "?"}
                             </div>
                             <div className="client-details">
                               <div className="client-name">
-                                {credit.userId.prenom} {credit.userId.nom}
+                                {credit.userId?.prenom || "N/A"} {credit.userId?.nom || ""}
                               </div>
-                              <div className="client-email">{credit.userId.email}</div>
+                              <div className="client-email">{credit.userId?.email || "N/A"}</div>
                             </div>
                           </div>
                         </td>
@@ -478,7 +481,7 @@ const GestionCredit = () => {
                           Nom complet
                         </div>
                         <div className="detail-value">
-                          {selectedCredit.userId.prenom} {selectedCredit.userId.nom}
+                          {selectedCredit.userId?.prenom || "N/A"} {selectedCredit.userId?.nom || ""}
                         </div>
                       </div>
                       <div className="detail-item">
@@ -486,7 +489,7 @@ const GestionCredit = () => {
                           <IonIcon icon={personOutline} />
                           Email
                         </div>
-                        <div className="detail-value">{selectedCredit.userId.email}</div>
+                        <div className="detail-value">{selectedCredit.userId?.email || "N/A"}</div>
                       </div>
                       <div className="detail-item">
                         <div className="detail-label">
@@ -500,7 +503,7 @@ const GestionCredit = () => {
                           <IonIcon icon={cardOutline} />
                           Numéro de compte
                         </div>
-                        <div className="detail-value">{selectedCredit.compteId.numéroCompte}</div>
+                        <div className="detail-value">{selectedCredit.compteId?.numéroCompte || "N/A"}</div>
                       </div>
                     </div>
                   </div>
