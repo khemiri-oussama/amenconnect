@@ -4,7 +4,7 @@
 @import "../SurveillanceMonitoring/SurveillanceMonitoring.css";
 @import "../Permissions/permissionsManagement.css";
 @import "../videoconfmanage/videoconfmanage.css";
-/* Security List Styles */
+
 .admin-security-list {
   display: flex;
   flex-direction: column;
@@ -34,7 +34,7 @@
   --handle-background-checked: white;
 }
 
-/* Range Styles */
+
 .range-item {
   flex-direction: column;
   align-items: flex-start;
