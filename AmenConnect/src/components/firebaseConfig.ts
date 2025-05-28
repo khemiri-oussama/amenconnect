@@ -12,12 +12,12 @@ const firebaseConfig = {
   measurementId: "G-KVKTSYT6E3"
 };
 
-// Initialize Firebase only if it's not already initialized
+
 let firebaseApp: FirebaseApp;
 if (!getApps().length) {
   firebaseApp = initializeApp(firebaseConfig);
 } else {
-  firebaseApp = getApps()[0]; // Use the existing initialized app
+  firebaseApp = getApps()[0]; 
 }
 
 const database = getDatabase(firebaseApp);
