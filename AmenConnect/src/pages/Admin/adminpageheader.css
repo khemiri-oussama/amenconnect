@@ -80,7 +80,6 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
-  /* Notfications ane */
   .admin-notifications-panel {
     position: absolute;
     top: calc(100% + 10px);
