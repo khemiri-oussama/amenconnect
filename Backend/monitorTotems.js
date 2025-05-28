@@ -1,31 +1,36 @@
+// monitorTotems.js
 const Kiosk = require('./models/Kiosk');
 
-const checkTotemStatus = async () => {
+async function checkTotemStatus() {
   try {
-    // Retrieve all enabled kiosks
     const kiosks = await Kiosk.find({ enabled: true });
-    const now = Date.now() / 1000; // current time in seconds
+    const now = Math.floor(Date.now() / 1000); // seconds
 
+    console.log(`Checking ${kiosks.length} kiosks at ${new Date().toISOString()}`);
     for (const kiosk of kiosks) {
-      // Use the 'last_heartbeat' field consistently
       const lastHeartbeat = kiosk.last_heartbeat;
       if (!lastHeartbeat) {
-        // If there's no heartbeat timestamp, skip this kiosk.
+        console.log(` • [${kiosk.SN}] no heartbeat recorded — skipping`);
         continue;
       }
 
-      // If the kiosk is currently online and hasn't updated in the last 15 seconds, mark it offline.
-      if (kiosk.status === 'online' && (now - lastHeartbeat > 15)) {
+      const age = now - lastHeartbeat;
+      console.log(` • [${kiosk.SN}] status=${kiosk.status} last_heartbeat=${lastHeartbeat} age=${age}s`);
+
+      if (kiosk.status !== 'offline' && age > 15) {
         kiosk.status = 'offline';
-        kiosk.temperature = 0; // Optionally reset temperature
+        kiosk.temperature = 0;
         await kiosk.save();
-        console.log(`Kiosk ${kiosk.SN} marked as offline due to heartbeat timeout.`);
+        console.log(`   → Marked OFFLINE (timeout >15s)`);
       }
-      // If the kiosk is already offline, do nothing.
     }
   } catch (err) {
-    console.error('Error checking totem status:', err);
+    console.error('Error in checkTotemStatus:', err);
   }
-};
+}
 
-setInterval(checkTotemStatus, 10000);
+module.exports = function startTotemMonitor() {
+  // Run immediately, then every 10s
+  checkTotemStatus();
+  setInterval(checkTotemStatus, 10_000);
+};

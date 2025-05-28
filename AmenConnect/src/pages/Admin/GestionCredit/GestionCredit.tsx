@@ -28,12 +28,14 @@ import {
   cardOutline,
   personOutline,
   calendarOutline,
+  homeOutline,
+  schoolOutline,
 } from "ionicons/icons"
 import axios from "axios"
 import "./GestionCredit.css"
 import SidebarAdmin from "../../../components/SidebarAdmin"
 import AdminPageHeader from "../adminpageheader"
-
+import { useAdminAuth } from "../../../AdminAuthContext"
 interface Credit {
   _id: string
   userId: {
@@ -60,6 +62,7 @@ interface Credit {
 }
 
 const GestionCredit = () => {
+  const { authLoading } = useAdminAuth()
   const [credits, setCredits] = useState<Credit[]>([])
   const [filteredCredits, setFilteredCredits] = useState<Credit[]>([])
   const [loading, setLoading] = useState(true)
@@ -85,11 +88,11 @@ const GestionCredit = () => {
   const fetchCredits = async () => {
     setLoading(true)
     try {
-      const response = await axios.get<Credit[]>('/api/credit/all')
+      const response = await axios.get<Credit[]>("/api/credit/all")
       setCredits(response.data)
       setFilteredCredits(response.data)
     } catch (error) {
-      console.error('Erreur lors de la récupération des crédits:', error)
+      console.error("Erreur lors de la récupération des crédits:", error)
       // Optionnel : afficher un message d'erreur à l'utilisateur
       setCredits([])
       setFilteredCredits([])
@@ -105,36 +108,42 @@ const GestionCredit = () => {
     if (searchText) {
       const searchLower = searchText.toLowerCase()
       result = result.filter(
-        credit =>
-          credit.userId.nom.toLowerCase().includes(searchLower) ||
-          credit.userId.prenom.toLowerCase().includes(searchLower) ||
-          credit.userId.email.toLowerCase().includes(searchLower) ||
-          credit.compteId.numéroCompte.toLowerCase().includes(searchLower) ||
-          credit._id.toLowerCase().includes(searchLower)
+        (credit) =>
+          credit.userId?.nom?.toLowerCase().includes(searchLower) ||
+          credit.userId?.prenom?.toLowerCase().includes(searchLower) ||
+          credit.userId?.email?.toLowerCase().includes(searchLower) ||
+          credit.compteId?.numéroCompte?.toLowerCase().includes(searchLower) ||
+          credit._id.toLowerCase().includes(searchLower),
       )
     }
 
     // Filtre statut
-    if (statusFilter !== 'all') {
-      result = result.filter(c => c.status === statusFilter)
+    if (statusFilter !== "all") {
+      result = result.filter((c) => c.status === statusFilter)
     }
 
     // Filtre type
-    if (typeFilter !== 'all') {
-      result = result.filter(c => c.type === typeFilter)
+    if (typeFilter !== "all") {
+      result = result.filter((c) => c.type === typeFilter)
     }
 
     // Tri
     result.sort((a, b) => {
       let comp = 0
       switch (sortField) {
-        case 'montant': comp = a.montant - b.montant; break
-        case 'duree': comp = a.duree - b.duree; break
-        case 'mensualite': comp = a.mensualite - b.mensualite; break
+        case "montant":
+          comp = a.montant - b.montant
+          break
+        case "duree":
+          comp = a.duree - b.duree
+          break
+        case "mensualite":
+          comp = a.mensualite - b.mensualite
+          break
         default:
           comp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       }
-      return sortDirection === 'asc' ? comp : -comp
+      return sortDirection === "asc" ? comp : -comp
     })
 
     setFilteredCredits(result)
@@ -149,16 +158,15 @@ const GestionCredit = () => {
     }
   }
 
-
   const confirmStatusAction = async () => {
     if (!selectedCredit) return
-    const status = actionType === 'approve' ? 'approved' : 'rejected'
+    const status = actionType === "approve" ? "approved" : "rejected"
     const payload: any = { status }
-    if (status === 'rejected') payload.rejectionReason = rejectionReason
+    if (status === "rejected") payload.rejectionReason = rejectionReason
     try {
       const { data } = await axios.patch(`/api/credit/${selectedCredit._id}/status`, payload)
       const updated = data.credit || data
-      setCredits(cs => cs.map(c => c._id === updated._id ? updated : c))
+      setCredits((cs) => cs.map((c) => (c._id === updated._id ? updated : c)))
     } catch (e) {
       console.error(e)
     } finally {
@@ -166,7 +174,6 @@ const GestionCredit = () => {
       setShowModal(false)
     }
   }
-
 
   const viewCreditDetails = (credit: Credit) => {
     setSelectedCredit(credit)
@@ -179,8 +186,6 @@ const GestionCredit = () => {
     setRejectionReason("")
     setShowConfirmModal(true)
   }
-
-
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -212,6 +217,23 @@ const GestionCredit = () => {
     }).format(amount)
   }
 
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case "Auto":
+        return cardOutline
+      case "Immobilier":
+        return homeOutline
+      case "Études":
+        return schoolOutline
+      case "Liquidité":
+        return cashOutline
+      default:
+        return cashOutline
+    }
+  }
+  if (authLoading) {
+    return <div className="admin-loading">Loading...</div>
+  }
   return (
     <IonPage>
       <div className="admin-dashboard-layout">
@@ -268,94 +290,139 @@ const GestionCredit = () => {
           {/* Credits Table */}
           <div className="credit-table-container">
             {loading ? (
-              <div className="credit-loading">Chargement des données...</div>
+              <div className="credit-loading">
+                <div className="loading-spinner"></div>
+                Chargement des données...
+              </div>
             ) : filteredCredits.length === 0 ? (
-              <div className="credit-empty">Aucune demande de crédit trouvée</div>
+              <div className="credit-empty">
+                <div className="empty-icon">
+                  <IonIcon icon={documentTextOutline} />
+                </div>
+                <p>Aucune demande de crédit trouvée</p>
+              </div>
             ) : (
-              <table className="credit-table">
-                <thead>
-                  <tr>
-                    <th className="id-column">ID</th>
-                    <th className="client-column">Client</th>
-                    <th className="type-column">Type</th>
-                    <th onClick={() => handleSort("montant")} className="sortable-header amount-column">
-                      <span>Montant</span>
-                      {sortField === "montant" && (
-                        <IonIcon icon={sortDirection === "asc" ? chevronUpOutline : chevronDownOutline} />
-                      )}
-                    </th>
-                    <th onClick={() => handleSort("duree")} className="sortable-header duration-column">
-                      <span>Durée (mois)</span>
-                      {sortField === "duree" && (
-                        <IonIcon icon={sortDirection === "asc" ? chevronUpOutline : chevronDownOutline} />
-                      )}
-                    </th>
-                    <th onClick={() => handleSort("mensualite")} className="sortable-header monthly-column">
-                      <span>Mensualité</span>
-                      {sortField === "mensualite" && (
-                        <IonIcon icon={sortDirection === "asc" ? chevronUpOutline : chevronDownOutline} />
-                      )}
-                    </th>
-                    <th onClick={() => handleSort("createdAt")} className="sortable-header date-column">
-                      <span>Date de demande</span>
-                      {sortField === "createdAt" && (
-                        <IonIcon icon={sortDirection === "asc" ? chevronUpOutline : chevronDownOutline} />
-                      )}
-                    </th>
-                    <th className="status-column">Statut</th>
-                    <th className="actions-column">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredCredits.map((credit) => (
-                    <tr key={credit._id} className={`credit-row status-${credit.status}`}>
-                      <td className="credit-id">{credit._id.substring(0, 8)}...</td>
-                      <td className="credit-client">
-                        <div className="client-name">
-                          {credit.userId.prenom} {credit.userId.nom}
+              <div className="responsive-table-wrapper">
+                <table className="credit-table">
+                  <thead>
+                    <tr>
+                      <th className="client-column">Client</th>
+                      <th className="type-column">Type</th>
+                      <th className="amount-column">
+                        <div className="header-content" onClick={() => handleSort("montant")}>
+                          <span>Montant</span>
+                          {sortField === "montant" && (
+                            <IonIcon icon={sortDirection === "asc" ? chevronUpOutline : chevronDownOutline} />
+                          )}
                         </div>
-                        <div className="client-email">{credit.userId.email}</div>
-                      </td>
-                      <td className="credit-type">{credit.type}</td>
-                      <td className="credit-amount">{formatCurrency(credit.montant)}</td>
-                      <td className="credit-duration">{credit.duree}</td>
-                      <td className="credit-monthly">{formatCurrency(credit.mensualite)}</td>
-                      <td className="credit-date">{formatDate(credit.createdAt)}</td>
-                      <td className="credit-status">{getStatusBadge(credit.status)}</td>
-                      <td className="credit-actions">
-                        <IonButton
-                          fill="clear"
-                          size="small"
-                          onClick={() => viewCreditDetails(credit)}
-                          className="action-button view"
-                        >
-                          <IonIcon icon={eyeOutline} />
-                        </IonButton>
-                        {credit.status === "pending" && (
-                          <>
-                            <IonButton
-                              fill="clear"
-                              size="small"
-                              onClick={() => handleStatusAction(credit, "approve")}
-                              className="action-button approve"
-                            >
-                              <IonIcon icon={checkmarkCircleOutline} />
-                            </IonButton>
-                            <IonButton
-                              fill="clear"
-                              size="small"
-                              onClick={() => handleStatusAction(credit, "reject")}
-                              className="action-button reject"
-                            >
-                              <IonIcon icon={closeCircleOutline} />
-                            </IonButton>
-                          </>
-                        )}
-                      </td>
+                      </th>
+                      <th className="duration-column">
+                        <div className="header-content" onClick={() => handleSort("duree")}>
+                          <span>Durée</span>
+                          {sortField === "duree" && (
+                            <IonIcon icon={sortDirection === "asc" ? chevronUpOutline : chevronDownOutline} />
+                          )}
+                        </div>
+                      </th>
+                      <th className="monthly-column">
+                        <div className="header-content" onClick={() => handleSort("mensualite")}>
+                          <span>Mensualité</span>
+                          {sortField === "mensualite" && (
+                            <IonIcon icon={sortDirection === "asc" ? chevronUpOutline : chevronDownOutline} />
+                          )}
+                        </div>
+                      </th>
+                      <th className="date-column">
+                        <div className="header-content" onClick={() => handleSort("createdAt")}>
+                          <span>Date</span>
+                          {sortField === "createdAt" && (
+                            <IonIcon icon={sortDirection === "asc" ? chevronUpOutline : chevronDownOutline} />
+                          )}
+                        </div>
+                      </th>
+                      <th className="status-column">Statut</th>
+                      <th className="actions-column">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredCredits.map((credit) => (
+                      <tr key={credit._id} className={`credit-row status-${credit.status}`}>
+                        <td className="credit-client">
+                          <span className="mobile-label">Client:</span>
+                          <div className="client-info">
+                            <div className="client-avatar">
+                              {credit.userId?.prenom?.charAt(0) || "?"}
+                              {credit.userId?.nom?.charAt(0) || "?"}
+                            </div>
+                            <div className="client-details">
+                              <div className="client-name">
+                                {credit.userId?.prenom || "N/A"} {credit.userId?.nom || ""}
+                              </div>
+                              <div className="client-email">{credit.userId?.email || "N/A"}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="credit-type">
+                          <span className="mobile-label">Type:</span>
+                          <div className="credit-type-badge">
+                            <IonIcon icon={getTypeIcon(credit.type)} className="type-icon" />
+                            {credit.type}
+                          </div>
+                        </td>
+                        <td className="credit-amount">
+                          <span className="mobile-label">Montant:</span>
+                          {formatCurrency(credit.montant)}
+                        </td>
+                        <td className="credit-duration">
+                          <span className="mobile-label">Durée:</span>
+                          {credit.duree} mois
+                        </td>
+                        <td className="credit-monthly">
+                          <span className="mobile-label">Mensualité:</span>
+                          {formatCurrency(credit.mensualite)}
+                        </td>
+                        <td className="credit-date">
+                          <span className="mobile-label">Date:</span>
+                          {formatDate(credit.createdAt)}
+                        </td>
+                        <td className="credit-status">
+                          <span className="mobile-label">Statut:</span>
+                          {getStatusBadge(credit.status)}
+                        </td>
+                        <td className="credit-actions">
+                          <div className="action-buttons-container">
+                            <button
+                              className="action-button view"
+                              onClick={() => viewCreditDetails(credit)}
+                              title="Voir les détails"
+                            >
+                              <IonIcon icon={eyeOutline} />
+                            </button>
+                            {credit.status === "pending" && (
+                              <>
+                                <button
+                                  className="action-button approve"
+                                  onClick={() => handleStatusAction(credit, "approve")}
+                                  title="Approuver"
+                                >
+                                  <IonIcon icon={checkmarkCircleOutline} />
+                                </button>
+                                <button
+                                  className="action-button reject"
+                                  onClick={() => handleStatusAction(credit, "reject")}
+                                  title="Rejeter"
+                                >
+                                  <IonIcon icon={closeCircleOutline} />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
 
@@ -414,7 +481,7 @@ const GestionCredit = () => {
                           Nom complet
                         </div>
                         <div className="detail-value">
-                          {selectedCredit.userId.prenom} {selectedCredit.userId.nom}
+                          {selectedCredit.userId?.prenom || "N/A"} {selectedCredit.userId?.nom || ""}
                         </div>
                       </div>
                       <div className="detail-item">
@@ -422,7 +489,7 @@ const GestionCredit = () => {
                           <IonIcon icon={personOutline} />
                           Email
                         </div>
-                        <div className="detail-value">{selectedCredit.userId.email}</div>
+                        <div className="detail-value">{selectedCredit.userId?.email || "N/A"}</div>
                       </div>
                       <div className="detail-item">
                         <div className="detail-label">
@@ -436,7 +503,7 @@ const GestionCredit = () => {
                           <IonIcon icon={cardOutline} />
                           Numéro de compte
                         </div>
-                        <div className="detail-value">{selectedCredit.compteId.numéroCompte}</div>
+                        <div className="detail-value">{selectedCredit.compteId?.numéroCompte || "N/A"}</div>
                       </div>
                     </div>
                   </div>
