@@ -5,7 +5,7 @@ import { IonIcon, IonProgressBar, IonSelect, IonSelectOption, IonModal, IonButto
 import { cloudUploadOutline, terminalOutline, copyOutline, closeCircleOutline } from "ionicons/icons"
 import axios from "axios"
 import { ref, onValue, remove } from "firebase/database"
-import { database } from "./firebaseClient" // Adjust the path as needed
+import { database } from "./firebaseClient" 
 
 import "./terminal-styles.css"
 
