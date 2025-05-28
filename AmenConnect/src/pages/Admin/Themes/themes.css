@@ -6,7 +6,7 @@
 @import "../videoconfmanage/videoconfmanage.css";
 @import "../Permissions/permissionsManagement.css";
 
-/* Theme Page Styles */
+
 .admin-theme-actions {
   display: flex;
   gap: 1rem;
