@@ -33,7 +33,9 @@
   justify-content: space-between;
   align-items: center;
 }
-
+h2{
+  color:white;
+}
 .welcome-title {
   font-size: 36px;
   font-weight: 700;

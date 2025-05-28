@@ -65,7 +65,7 @@ const generateAccountApprovedEmailHTML = (userEmail, generatedPassword) => {
 <body>
   <div class="container">
     <div class="logo">
-      <img src="https://amennet.com.tn/images/RefG/AmenbankLogo.png" alt="AmenBank">
+      <img src="https://www.amenbank.com.tn/img/logo.jpg" alt="AmenBank">
     </div>
     <div class="header">
       Félicitations! Votre Compte est Approuvé

@@ -86,7 +86,7 @@ const ChatBotDesktop: React.FC = () => {
             formatted.push({
               id:        1,
               sender:    "bot",
-              text:      `Bonjour ${profile.user.prenom}! Je suis votre assistant …`,
+              text:      `Bonjour ${profile.user.prenom}! Je suis votre assistant bancaire. Comment puis-je vous aider aujourd'hui?`,
               timestamp: new Date(),
             });
           }
