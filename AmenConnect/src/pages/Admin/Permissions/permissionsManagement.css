@@ -5,7 +5,7 @@
 @import "../SurveillanceMonitoring/SurveillanceMonitoring.css";
 @import "../videoconfmanage/videoconfmanage.css";
 
-/* Permissions Matrix Styles */
+
 .admin-permissions-matrix {
   display: flex;
   flex-direction: column;

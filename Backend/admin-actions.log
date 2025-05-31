@@ -403,6 +403,7 @@
 {"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-10T12:36:18.385Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"f6f58ddd44c09ff488773a0f69b11066","timestamp":"2025-05-10T12:36:46.505Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-10T12:36:47.076Z"}
+<<<<<<< HEAD
 {"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-10T14:37:39.215Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-10T14:37:39.618Z"}
 {"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-10T14:37:41.577Z"}
@@ -457,3 +458,10 @@
 {"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-29T09:05:58.281Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"4ae295344984e187b09c2e0c41254438","timestamp":"2025-05-29T09:06:09.344Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-29T09:06:09.427Z"}
+=======
+{"email":"khemirioussama00@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-29T00:45:12.550Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-29T00:45:12.910Z"}
+{"email":"khemirioussama00@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-29T00:45:15.546Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"New admin session created","sessionId":"e6a1c8cbde7a6f9a377e6ec81bdd2edf","timestamp":"2025-05-29T00:45:25.570Z"}
+{"adminId":"67cec467625e2d46982a197f","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-29T00:45:25.662Z"}
+>>>>>>> ea78b3ee743e93c136a64cc450ed1b5e6f11ea37

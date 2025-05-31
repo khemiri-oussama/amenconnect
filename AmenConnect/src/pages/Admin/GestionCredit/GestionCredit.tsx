@@ -93,7 +93,6 @@ const GestionCredit = () => {
       setFilteredCredits(response.data)
     } catch (error) {
       console.error("Erreur lors de la récupération des crédits:", error)
-      // Optionnel : afficher un message d'erreur à l'utilisateur
       setCredits([])
       setFilteredCredits([])
     } finally {

@@ -15,14 +15,12 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
   const [prevLocation, setPrevLocation] = useState(location.pathname)
 
   useEffect(() => {
-    // If the location has changed, set navigating to true
     if (location.pathname !== prevLocation) {
       setIsNavigating(true)
       setPrevLocation(location.pathname)
     }
   }, [location, prevLocation])
 
-  // This will be called when the new component has loaded
   const handleLoaded = () => {
     setIsNavigating(false)
   }

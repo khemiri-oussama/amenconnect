@@ -1,4 +1,4 @@
-/* Admin Header Styles */
+
 .admin-dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -8,7 +8,7 @@
     border-bottom: 1px solid rgba(226, 232, 240, 0.8);
   }
   
-  /* Header Title Styles */
+
   .admin-header-title h1 {
     color: #0f172a;
     font-size: 1.75rem;
@@ -24,7 +24,7 @@
     font-size: 0.95rem;
   }
   
-  /* Header Actions Styles */
+
   .admin-header-actions {
     display: flex;
     align-items: center;
@@ -80,7 +80,6 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
-  /* Notifications Panel */
   .admin-notifications-panel {
     position: absolute;
     top: calc(100% + 10px);
