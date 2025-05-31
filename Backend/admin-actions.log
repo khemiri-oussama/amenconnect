@@ -403,3 +403,57 @@
 {"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-10T12:36:18.385Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"f6f58ddd44c09ff488773a0f69b11066","timestamp":"2025-05-10T12:36:46.505Z"}
 {"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-10T12:36:47.076Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-10T14:37:39.215Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-10T14:37:39.618Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-10T14:37:41.577Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"c0e5d0c764515d4ac8f5c9a8781d015b","timestamp":"2025-05-10T14:38:39.111Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-10T14:38:39.224Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-10T17:02:17.316Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-10T17:02:17.860Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-10T17:02:20.174Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"warn","message":"OTP verification failed: Invalid OTP","timestamp":"2025-05-10T17:02:55.524Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"warn","message":"OTP verification failed: Invalid OTP","timestamp":"2025-05-10T17:03:03.328Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"9e88e01a3f489936183c7b437617c0bc","timestamp":"2025-05-10T17:03:06.925Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-10T17:03:06.996Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-14T16:15:48.146Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-14T16:15:49.070Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-14T16:15:51.748Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"c7226bf331778a0711362d039dc3d207","timestamp":"2025-05-14T16:16:14.233Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-14T16:16:14.323Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-22T11:24:38.409Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-22T11:24:39.109Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-22T11:24:42.023Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"803ff5806d54ce9c56a3bdd4f71016d1","timestamp":"2025-05-22T11:25:27.898Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-22T11:25:27.981Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-22T14:53:15.582Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-22T14:53:16.097Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-22T14:53:18.201Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"38cf1dbe52a4815300345b384e135b7e","timestamp":"2025-05-22T14:53:42.592Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-22T14:53:42.659Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-23T17:22:39.541Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-23T17:22:40.002Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-23T17:22:41.601Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"58b6083b69a8ef466c816232e7538ea3","timestamp":"2025-05-23T17:23:03.602Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-23T17:23:03.674Z"}
+{"kioskId":"6830a8eb6255dcd1a1fc23a3","level":"info","message":"Kiosk rejected successfully","timestamp":"2025-05-23T17:23:14.900Z"}
+{"kioskId":"6830af06b0f661f91e4ee8f4","level":"info","message":"Kiosk approved successfully","timestamp":"2025-05-23T17:23:23.237Z","tote":"TM3"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-23T20:02:18.497Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-23T20:02:18.978Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-23T20:02:20.695Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"c073d9d69d65dd5a5284dc50c928f358","timestamp":"2025-05-23T20:02:42.590Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-23T20:02:42.697Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-23T20:57:56.369Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-23T20:57:57.043Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-23T20:57:59.744Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"35bae566c85230ade65c62ac6bc9d115","timestamp":"2025-05-23T20:58:31.604Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-23T20:58:31.972Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-24T21:00:51.568Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-24T21:00:52.615Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-24T21:00:55.828Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"4901563af234f02c57c6db1de43f3405","timestamp":"2025-05-24T21:06:17.911Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-24T21:06:17.985Z"}
+{"email":"rayen1ouertani@gmail.com","ip":"::1","level":"info","message":"Login attempt","timestamp":"2025-05-29T09:05:55.910Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP generated and saved for admin","timestamp":"2025-05-29T09:05:56.591Z"}
+{"email":"rayen1ouertani@gmail.com","level":"info","message":"OTP email sent","timestamp":"2025-05-29T09:05:58.281Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"New admin session created","sessionId":"4ae295344984e187b09c2e0c41254438","timestamp":"2025-05-29T09:06:09.344Z"}
+{"adminId":"67cec3ec625e2d46982a196e","level":"info","message":"OTP verified successfully. Admin logged in","timestamp":"2025-05-29T09:06:09.427Z"}
