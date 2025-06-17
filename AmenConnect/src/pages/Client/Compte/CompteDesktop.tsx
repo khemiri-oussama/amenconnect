@@ -20,6 +20,7 @@ import {
   IonButtons,
   IonInput,
   IonTextarea,
+  IonRange,
 } from "@ionic/react"
 import {
   walletOutline,
@@ -38,6 +39,9 @@ import {
   documentTextOutline,
   eyeOutline,
   eyeOffOutline,
+  refreshOutline,
+  checkmarkCircleOutline,
+  warningOutline,
 } from "ionicons/icons"
 import {
   AreaChart,
@@ -50,25 +54,34 @@ import {
   PieChart,
   Pie,
   Cell,
+  BarChart,
+  Bar,
 } from "recharts"
 import Navbar from "../../../components/Navbar"
 import "./CompteDesktop.css"
 import { useAuth, type Transaction } from "../../../AuthContext"
 import LoadingProgressBar from "../../../components/LoadingProgressBar"
-import BudgetCategoryManager from "../../../components/BudgetCategory/BudgetCategoryManager"
 
 interface BudgetCategory {
-  userId: string;
-  id: string;
-  name: string;
-  limit: number;
-  color: string;
-  current: number;
-  _id: string;
-  __v: number;
-  createdAt: Date;
-  updatedAt: Date;
+  userId: string
+  id: string
+  name: string
+  limit: number
+  color: string
+  current: number
+  _id: string
+  __v: number
+  createdAt: Date
+  updatedAt: Date
 }
+
+interface SimulationResults {
+  mensualite: number
+  coutTotal: number
+  montantTotal: number
+  tauxEndettement: number
+}
+
 const ComptePageDesktop: React.FC = () => {
   const { profile, authLoading } = useAuth()
   const [activeTab, setActiveTab] = useState<string>("overview")
@@ -81,7 +94,8 @@ const ComptePageDesktop: React.FC = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false)
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true)
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  // en haut de votre composant
+
+  // États pour les demandes de crédit
   const [typeCreditValue, setTypeCreditValue] = useState<string>("")
   const [montantValue, setMontantValue] = useState<number>()
   const [RevenuMensuel, setRevenuMensuel] = useState<number>(0)
@@ -92,6 +106,19 @@ const ComptePageDesktop: React.FC = () => {
   const [loadingCredits, setLoadingCredits] = useState(true)
   const [budgetCategories, setBudgetCategories] = useState<BudgetCategory[]>([])
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState<boolean>(false)
+
+  // États pour le simulateur de crédit interactif
+  const [simulatorMontant, setSimulatorMontant] = useState<number>(10000)
+  const [simulatorTaux, setSimulatorTaux] = useState<number>(7.5)
+  const [simulatorDuree, setSimulatorDuree] = useState<number>(36)
+  const [simulatorRevenu, setSimulatorRevenu] = useState<number>(2000)
+  const [simulatorResults, setSimulatorResults] = useState<SimulationResults>({
+    mensualite: 0,
+    coutTotal: 0,
+    montantTotal: 0,
+    tauxEndettement: 0,
+  })
+  const [showAmortissement, setShowAmortissement] = useState<boolean>(false)
 
   // Fetch budget categories
   useEffect(() => {
@@ -108,8 +135,8 @@ const ComptePageDesktop: React.FC = () => {
     }
     fetchBudgetCategories()
   }, [profile])
-  // Add this useEffect hook to fetch user credits
 
+  // Fetch user credits
   const fetchUserCredits = async () => {
     if (!profile?.user?._id) return
     setLoadingCredits(true)
@@ -125,11 +152,76 @@ const ComptePageDesktop: React.FC = () => {
       setLoadingCredits(false)
     }
   }
+
   useEffect(() => {
     if (profile?.user?._id) {
       fetchUserCredits()
     }
   }, [profile?.user?._id])
+
+  // Calcul automatique du simulateur
+  useEffect(() => {
+    const results = calculateCredit(simulatorMontant, simulatorTaux, simulatorDuree, simulatorRevenu)
+    setSimulatorResults(results)
+  }, [simulatorMontant, simulatorTaux, simulatorDuree, simulatorRevenu])
+
+  // Fonction de calcul du crédit
+  const calculateCredit = (montant: number, taux: number, duree: number, revenu: number): SimulationResults => {
+    if (montant <= 0 || taux <= 0 || duree <= 0) {
+      return { mensualite: 0, coutTotal: 0, montantTotal: 0, tauxEndettement: 0 }
+    }
+
+    const tauxMensuel = taux / 100 / 12
+    const mensualite =
+      (montant * tauxMensuel * Math.pow(1 + tauxMensuel, duree)) / (Math.pow(1 + tauxMensuel, duree) - 1)
+    const montantTotal = mensualite * duree
+    const coutTotal = montantTotal - montant
+    const tauxEndettement = revenu > 0 ? (mensualite / revenu) * 100 : 0
+
+    return {
+      mensualite: isNaN(mensualite) ? 0 : mensualite,
+      coutTotal: isNaN(coutTotal) ? 0 : coutTotal,
+      montantTotal: isNaN(montantTotal) ? 0 : montantTotal,
+      tauxEndettement: isNaN(tauxEndettement) ? 0 : tauxEndettement,
+    }
+  }
+
+  // Générer le tableau d'amortissement (12 premiers mois)
+  const generateAmortissement = () => {
+    const tauxMensuel = simulatorTaux / 100 / 12
+    const mensualite = simulatorResults.mensualite
+    let capitalRestant = simulatorMontant
+    const amortissement = []
+
+    for (let mois = 1; mois <= Math.min(12, simulatorDuree); mois++) {
+      const interets = capitalRestant * tauxMensuel
+      const capital = mensualite - interets
+      capitalRestant -= capital
+
+      amortissement.push({
+        mois,
+        mensualite,
+        capital: capital,
+        interets,
+        capitalRestant: Math.max(0, capitalRestant),
+      })
+    }
+
+    return amortissement
+  }
+
+  // Générer données pour le graphique de comparaison
+  const generateComparisonData = () => {
+    const durees = [12, 24, 36, 48, 60]
+    return durees.map((duree) => {
+      const result = calculateCredit(simulatorMontant, simulatorTaux, duree, simulatorRevenu)
+      return {
+        duree: `${duree} mois`,
+        mensualite: result.mensualite,
+        coutTotal: result.coutTotal,
+      }
+    })
+  }
 
   // Update the credit status display logic
   const renderCreditStatus = (status: string) => {
@@ -244,6 +336,7 @@ const ComptePageDesktop: React.FC = () => {
     if (!profile || !selectedAccount) return null
     return profile.cartes.find((carte) => carte.comptesId === selectedAccount)
   }
+
   const handleSubmitCredit = async () => {
     if (!typeCreditValue || !montantValue || !dureeValue || !RevenuMensuel) {
       return alert("Tous les champs sont obligatoires")
@@ -272,10 +365,26 @@ const ComptePageDesktop: React.FC = () => {
       setRevenuMensuel(0)
     } catch (err) {
       console.error(err)
-      alert("Impossible d’enregistrer la demande")
+      alert("Impossible d'enregistrer la demande")
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // Fonction pour utiliser les paramètres du simulateur dans la demande
+  const useSimulatorParams = () => {
+    setTypeCreditValue("Simulation")
+    setMontantValue(simulatorMontant)
+    setDureeValue(simulatorDuree.toString())
+    setRevenuMensuel(simulatorRevenu)
+  }
+
+  // Fonction pour réinitialiser le simulateur
+  const resetSimulator = () => {
+    setSimulatorMontant(10000)
+    setSimulatorTaux(7.5)
+    setSimulatorDuree(36)
+    setSimulatorRevenu(2000)
   }
 
   if (authLoading || isLoading) {
@@ -291,7 +400,6 @@ const ComptePageDesktop: React.FC = () => {
     if (!transactions.length) return { income: 0, expenses: 0, balance: getSelectedAccount()?.solde || 0 }
 
     const income = transactions.filter((tx) => tx.type === "credit").reduce((sum, tx) => sum + tx.amount, 0)
-
     const expenses = transactions.filter((tx) => tx.type === "debit").reduce((sum, tx) => sum + tx.amount, 0)
 
     return {
@@ -361,8 +469,6 @@ const ComptePageDesktop: React.FC = () => {
     return Object.entries(categories).map(([name, value]) => ({ name, value }))
   }
 
-  // Category colors for pie chart
-
   // Handle account selection
   const handleAccountChange = (accountId: string) => {
     setSelectedAccount(accountId)
@@ -380,20 +486,14 @@ const ComptePageDesktop: React.FC = () => {
     setDateRange("all")
     setIsFilterModalOpen(false)
   }
-  const categoryData = budgetCategories.map(cat => ({ name: cat.name, value: cat.current, color: cat.color }))
 
-  if (authLoading || isLoading) {
-    return (
-      <IonPage>
-        <LoadingProgressBar />
-      </IonPage>
-    )
-  }
-
+  const categoryData = budgetCategories.map((cat) => ({ name: cat.name, value: cat.current, color: cat.color }))
   const account = getSelectedAccount()
   const card = getAssociatedCard()
   const stats = getAccountStats()
   const chartData = getChartData()
+  const amortissementData = generateAmortissement()
+  const comparisonData = generateComparisonData()
 
   return (
     <IonPage>
@@ -758,10 +858,7 @@ const ComptePageDesktop: React.FC = () => {
                     <div className="categories-list">
                       {categoryData.map((category, index) => (
                         <div key={index} className="category-item">
-                          <div
-                            className="category-color"
-                            style={{ backgroundColor: category.color}}
-                          ></div>
+                          <div className="category-color" style={{ backgroundColor: category.color }}></div>
                           <div className="category-name">{category.name}</div>
                           <div className="category-amount">{formatCurrency(category.value)}</div>
                         </div>
@@ -1057,6 +1154,7 @@ const ComptePageDesktop: React.FC = () => {
                         <IonInput
                           type="number"
                           placeholder="Revenus en TND"
+                          value={RevenuMensuel}
                           onIonChange={(e) => setRevenuMensuel(Number(e.detail.value!))}
                         />
                       </div>
@@ -1067,54 +1165,280 @@ const ComptePageDesktop: React.FC = () => {
                       </div>
 
                       <div className="form-actions">
-                        <IonButton expand="block" className="submit-button" onClick={handleSubmitCredit}>
-                          Soumettre ma demande
+                        <IonButton
+                          expand="block"
+                          className="submit-button"
+                          onClick={handleSubmitCredit}
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? "Envoi en cours..." : "Soumettre ma demande"}
                         </IonButton>
                       </div>
                     </form>
                   </IonCardContent>
                 </IonCard>
 
-                <IonCard className="credit-simulator-card">
-                  <IonCardHeader>Simulateur de crédit</IonCardHeader>
-                  <IonCardContent>
-                    <div className="simulator-form">
-                      <div className="form-group">
-                        <label>Montant du crédit</label>
-                        <IonInput type="number" placeholder="Montant en TND" value="10000" />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Taux d'intérêt annuel (%)</label>
-                        <IonInput type="number" placeholder="Taux en %" value="7.5" />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Durée (en mois)</label>
-                        <IonInput type="number" placeholder="Durée en mois" value="36" />
-                      </div>
-
-                      <IonButton expand="block" className="calculate-button">
-                        Calculer
+                {/* Simulateur de crédit interactif amélioré */}
+                <IonCard className="credit-simulator-card" style={{ gridColumn: "1 / -1" }}>
+                  <IonCardHeader>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span>Simulateur de crédit interactif</span>
+                      <IonButton fill="clear" onClick={resetSimulator}>
+                        <IonIcon slot="start" icon={refreshOutline} />
+                        Réinitialiser
                       </IonButton>
                     </div>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                      {/* Contrôles du simulateur */}
+                      <div className="simulator-controls">
+                        <div className="form-group" style={{ marginBottom: "20px" }}>
+                          <label style={{ fontWeight: "bold", marginBottom: "10px", display: "block" }}>
+                            Montant du crédit: {formatCurrency(simulatorMontant)}
+                          </label>
+                          <IonRange
+                            min={1000}
+                            max={100000}
+                            step={1000}
+                            value={simulatorMontant}
+                            onIonChange={(e) => setSimulatorMontant(e.detail.value as number)}
+                            color="primary"
+                          />
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              fontSize: "0.8em",
+                              color: "#666",
+                            }}
+                          >
+                            <span>1 000 TND</span>
+                            <span>100 000 TND</span>
+                          </div>
+                        </div>
 
-                    <div className="simulator-results">
-                      <div className="result-item">
-                        <div className="result-label">Mensualité estimée</div>
-                        <div className="result-value">{formatCurrency(310.76)}</div>
+                        <div className="form-group" style={{ marginBottom: "20px" }}>
+                          <label style={{ fontWeight: "bold", marginBottom: "10px", display: "block" }}>
+                            Taux d'intérêt annuel: {simulatorTaux}%
+                          </label>
+                          <IonRange
+                            min={3}
+                            max={15}
+                            step={0.1}
+                            value={simulatorTaux}
+                            onIonChange={(e) => setSimulatorTaux(e.detail.value as number)}
+                            color="secondary"
+                          />
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              fontSize: "0.8em",
+                              color: "#666",
+                            }}
+                          >
+                            <span>3%</span>
+                            <span>15%</span>
+                          </div>
+                        </div>
+
+                        <div className="form-group" style={{ marginBottom: "20px" }}>
+                          <label style={{ fontWeight: "bold", marginBottom: "10px", display: "block" }}>
+                            Durée: {simulatorDuree} mois
+                          </label>
+                          <IonRange
+                            min={12}
+                            max={120}
+                            step={6}
+                            value={simulatorDuree}
+                            onIonChange={(e) => setSimulatorDuree(e.detail.value as number)}
+                            color="tertiary"
+                          />
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              fontSize: "0.8em",
+                              color: "#666",
+                            }}
+                          >
+                            <span>12 mois</span>
+                            <span>120 mois</span>
+                          </div>
+                        </div>
+
+                        <div className="form-group" style={{ marginBottom: "20px" }}>
+                          <label style={{ fontWeight: "bold", marginBottom: "10px", display: "block" }}>
+                            Revenus mensuels: {formatCurrency(simulatorRevenu)}
+                          </label>
+                          <IonRange
+                            min={500}
+                            max={10000}
+                            step={100}
+                            value={simulatorRevenu}
+                            onIonChange={(e) => setSimulatorRevenu(e.detail.value as number)}
+                            color="success"
+                          />
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              fontSize: "0.8em",
+                              color: "#666",
+                            }}
+                          >
+                            <span>500 TND</span>
+                            <span>10 000 TND</span>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="result-item">
-                        <div className="result-label">Coût total du crédit</div>
-                        <div className="result-value">{formatCurrency(11187.36)}</div>
-                      </div>
+                      {/* Résultats de la simulation */}
+                      <div className="simulator-results">
+                        <div
+                          className="result-preview"
+                          style={{
+                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            padding: "20px",
+                            borderRadius: "12px",
+                            color: "white",
+                            marginBottom: "20px",
+                          }}
+                        >
+                          <h4 style={{ margin: "0 0 15px 0", textAlign: "center" }}>Résultats de la simulation</h4>
+                          <div
+                            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px", fontSize: "0.9em" }}
+                          >
+                            <div>
+                              <div style={{ opacity: 0.8 }}>Mensualité</div>
+                              <div style={{ fontSize: "1.2em", fontWeight: "bold" }}>
+                                {formatCurrency(simulatorResults.mensualite)}
+                              </div>
+                            </div>
+                            <div>
+                              <div style={{ opacity: 0.8 }}>Coût total</div>
+                              <div style={{ fontSize: "1.2em", fontWeight: "bold" }}>
+                                {formatCurrency(simulatorResults.coutTotal)}
+                              </div>
+                            </div>
+                            <div>
+                              <div style={{ opacity: 0.8 }}>Total à rembourser</div>
+                              <div style={{ fontSize: "1.2em", fontWeight: "bold" }}>
+                                {formatCurrency(simulatorResults.montantTotal)}
+                              </div>
+                            </div>
+                            <div>
+                              <div style={{ opacity: 0.8 }}>Taux d'endettement</div>
+                              <div style={{ fontSize: "1.2em", fontWeight: "bold" }}>
+                                {simulatorResults.tauxEndettement.toFixed(1)}%
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
-                      <div className="result-item">
-                        <div className="result-label">Montant total à rembourser</div>
-                        <div className="result-value">{formatCurrency(11187.36)}</div>
+                        {/* Indicateur de faisabilité */}
+                        <div
+                          className="feasibility-indicator"
+                          style={{
+                            padding: "15px",
+                            borderRadius: "8px",
+                            marginBottom: "15px",
+                            background: simulatorResults.tauxEndettement > 33 ? "#ffebee" : "#e8f5e8",
+                            border: `2px solid ${simulatorResults.tauxEndettement > 33 ? "#f44336" : "#4caf50"}`,
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                            <IonIcon
+                              icon={simulatorResults.tauxEndettement > 33 ? warningOutline : checkmarkCircleOutline}
+                              style={{
+                                color: simulatorResults.tauxEndettement > 33 ? "#f44336" : "#4caf50",
+                                marginRight: "10px",
+                              }}
+                            />
+                            <span style={{ fontWeight: "bold" }}>
+                              {simulatorResults.tauxEndettement > 33 ? "Attention" : "Faisable"}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: "0.9em", color: "#666" }}>
+                            {simulatorResults.tauxEndettement > 33
+                              ? "Votre taux d'endettement dépasse 33%. Il sera difficile d'obtenir ce crédit."
+                              : "Votre taux d'endettement est acceptable. Ce crédit semble réalisable."}
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="simulator-actions">
+                          <IonButton expand="block" onClick={useSimulatorParams} style={{ marginBottom: "10px" }}>
+                            Utiliser ces paramètres pour ma demande
+                          </IonButton>
+
+                          <IonButton
+                            expand="block"
+                            fill="outline"
+                            onClick={() => setShowAmortissement(!showAmortissement)}
+                          >
+                            {showAmortissement ? "Masquer" : "Voir"} le tableau d'amortissement
+                          </IonButton>
+                        </div>
                       </div>
                     </div>
+
+                    {/* Graphique de comparaison */}
+                    <div style={{ marginTop: "30px" }}>
+                      <h4>Comparaison par durée</h4>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={comparisonData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="duree" />
+                          <YAxis />
+                          <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                          <Bar dataKey="mensualite" fill="#8884d8" name="Mensualité" />
+                          <Bar dataKey="coutTotal" fill="#82ca9d" name="Coût total" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* Tableau d'amortissement */}
+                    {showAmortissement && (
+                      <div style={{ marginTop: "30px" }}>
+                        <h4>Tableau d'amortissement (12 premiers mois)</h4>
+                        <div style={{ overflowX: "auto" }}>
+                          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9em" }}>
+                            <thead>
+                              <tr style={{ background: "#f5f5f5" }}>
+                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>Mois</th>
+                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>Mensualité</th>
+                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>Capital</th>
+                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>Intérêts</th>
+                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>Capital restant</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {amortissementData.map((row, index) => (
+                                <tr key={index}>
+                                  <td style={{ padding: "8px", border: "1px solid #ddd", textAlign: "center" }}>
+                                    {row.mois}
+                                  </td>
+                                  <td style={{ padding: "8px", border: "1px solid #ddd", textAlign: "right" }}>
+                                    {formatCurrency(row.mensualite)}
+                                  </td>
+                                  <td style={{ padding: "8px", border: "1px solid #ddd", textAlign: "right" }}>
+                                    {formatCurrency(row.capital)}
+                                  </td>
+                                  <td style={{ padding: "8px", border: "1px solid #ddd", textAlign: "right" }}>
+                                    {formatCurrency(row.interets)}
+                                  </td>
+                                  <td style={{ padding: "8px", border: "1px solid #ddd", textAlign: "right" }}>
+                                    {formatCurrency(row.capitalRestant)}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
                   </IonCardContent>
                 </IonCard>
               </div>

@@ -9,7 +9,7 @@
 .compte-page-container {
   --cp-color-background: linear-gradient(180deg, rgba(30, 30, 30, 0.95) 0%, rgba(24, 24, 24, 0.98) 100%);
   --cp-color-text: #ffffff;
-  --cp-color-text-secondary: #878787;
+  --cp-color-text-secondary: #ffffff;
   --cp-color-card-bg: rgba(255, 255, 255, 0.1);
   --cp-color-card-hover: rgba(255, 255, 255, 0.15);
   --cp-color-positive: #47ce65;
